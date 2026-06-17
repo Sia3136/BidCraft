@@ -4,7 +4,10 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "migrate": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
+    "migrate:status": "node-pg-migrate status"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -18,6 +21,7 @@
     "pg": "^8.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "node-pg-migrate": "^6.10.0"
   }
 }
