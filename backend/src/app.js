@@ -3,6 +3,9 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
+const logger = require('./utils/logger');
+const db = require('./utils/db');
 
 const authRoutes      = require('./routes/auth');
 const listingsRoutes  = require('./routes/listings');
@@ -17,9 +20,13 @@ const disputesRoutes  = require('./routes/disputes');
 const wishlistRoutes  = require('./routes/wishlist');
 const followsRoutes   = require('./routes/follows');
 const notificationsRoutes = require('./routes/notifications');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 app.use(helmet());
+
+const morganFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
+app.use(morgan(morganFormat, { stream: { write: message => logger.info(message.trim()) } }));
 
 // Capture raw body for Razorpay webhook signature verification
 app.use((req, res, next) => {
@@ -40,7 +47,15 @@ app.use((req, res, next) => {
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/api/health', async (req, res) => {
+  try {
+    await db.query('SELECT 1');
+    res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
+  } catch (err) {
+    logger.error('Health check failed', err);
+    res.status(503).json({ status: 'error', db: 'disconnected' });
+  }
+});
 app.use('/api/auth',      authRoutes);
 app.use('/api/listings',  listingsRoutes);
 app.use('/api/auctions',  auctionsRoutes);
@@ -54,9 +69,10 @@ app.use('/api/disputes',  disputesRoutes);
 app.use('/api/wishlist',  wishlistRoutes);
 app.use('/api',           followsRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/admin',     adminRoutes);
 
 app.use((err, req, res, next) => {
-  console.error(err);
+  logger.error(err.message || 'internal_error', { error: err, stack: err.stack });
   res.status(err.status || 500).json({ error: err.message || 'internal_error' });
 });
 

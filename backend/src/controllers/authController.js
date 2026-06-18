@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
@@ -17,8 +18,11 @@ async function register(req, res, next) {
       [email, hashed, name || null]
     );
     const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-    res.json({ user, accessToken: token });
+    const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
+    const refreshToken = crypto.randomBytes(40).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
+    res.json({ user, accessToken, refreshToken });
   } catch (err) {
     if (err.code === '23505') return res.status(409).json({ error: 'email_taken' });
     next(err);
@@ -34,8 +38,13 @@ async function login(req, res, next) {
     if (!user) return res.status(401).json({ error: 'invalid_credentials' });
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: 'invalid_credentials' });
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-    res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken: token });
+    
+    const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
+    const refreshToken = crypto.randomBytes(40).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
+    
+    res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken, refreshToken });
   } catch (err) {
     next(err);
   }
@@ -85,8 +94,12 @@ async function googleLogin(req, res, next) {
       user = createResult.rows[0];
     }
 
-    const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '24h' });
-    res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role, avatarUrl: user.avatar_url }, accessToken });
+    const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
+    const refreshTokenStr = crypto.randomBytes(40).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshTokenStr, user.id, expiresAt]);
+
+    res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role, avatarUrl: user.avatar_url }, accessToken, refreshToken: refreshTokenStr });
   } catch (err) {
     if (err.message && err.message.includes('verifyIdToken')) {
       return res.status(401).json({ error: 'invalid_google_token' });
@@ -107,7 +120,39 @@ async function me(req, res, next) {
 }
 
 async function logout(req, res) {
+  // If the client sends the refresh token to logout, delete it
+  const { refreshToken } = req.body;
+  if (refreshToken) {
+    await db.query('DELETE FROM refresh_tokens WHERE token=$1', [refreshToken]);
+  }
   res.json({ success: true });
 }
 
-module.exports = { register, login, googleLogin, me, logout };
+async function refreshToken(req, res, next) {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ error: 'token_required' });
+    
+    const result = await db.query('SELECT user_id, expires_at FROM refresh_tokens WHERE token=$1', [token]);
+    const rt = result.rows[0];
+    if (!rt) return res.status(401).json({ error: 'invalid_refresh_token' });
+    
+    if (new Date() > new Date(rt.expires_at)) {
+      await db.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
+      return res.status(401).json({ error: 'refresh_token_expired' });
+    }
+    
+    const accessToken = jwt.sign({ userId: rt.user_id }, JWT_SECRET, { expiresIn: '15m' });
+    const newRefreshToken = crypto.randomBytes(40).toString('hex');
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    
+    await db.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [newRefreshToken, rt.user_id, expiresAt]);
+    
+    res.json({ accessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, googleLogin, me, logout, refreshToken };
