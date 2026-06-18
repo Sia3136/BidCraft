@@ -4,16 +4,50 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
-const authRoutes = require('./routes/auth');
+const authRoutes      = require('./routes/auth');
+const listingsRoutes  = require('./routes/listings');
+const auctionsRoutes  = require('./routes/auctions');
+const imagesRoutes    = require('./routes/images');
+const profileRoutes   = require('./routes/profile');
+const usersRoutes     = require('./routes/users');
+const ordersRoutes    = require('./routes/orders');
+const paymentsRoutes  = require('./routes/payments');
+const reviewsRoutes   = require('./routes/reviews');
+const disputesRoutes  = require('./routes/disputes');
 
 const app = express();
 app.use(helmet());
-app.use(express.json());
+
+// Capture raw body for Razorpay webhook signature verification
+app.use((req, res, next) => {
+  if (req.path === '/api/payments/webhook') {
+    let data = '';
+    req.setEncoding('utf8');
+    req.on('data', (chunk) => { data += chunk; });
+    req.on('end', () => {
+      req.rawBody = data;
+      try { req.body = JSON.parse(data); } catch (e) { req.body = {}; }
+      next();
+    });
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-app.use('/api/auth', authRoutes);
+app.use('/api/auth',      authRoutes);
+app.use('/api/listings',  listingsRoutes);
+app.use('/api/auctions',  auctionsRoutes);
+app.use('/api/images',    imagesRoutes);
+app.use('/api/profile',   profileRoutes);
+app.use('/api/users',     usersRoutes);
+app.use('/api/orders',    ordersRoutes);
+app.use('/api/payments',  paymentsRoutes);
+app.use('/api/reviews',   reviewsRoutes);
+app.use('/api/disputes',  disputesRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
