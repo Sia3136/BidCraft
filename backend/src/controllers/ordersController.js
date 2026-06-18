@@ -138,6 +138,24 @@ async function updateOrderStatus(req, res, next) {
       [newStatus, id]
     );
 
+    // Notify buyer if order is shipped
+    if (newStatus === 'shipped') {
+      try {
+        const listingRes = await db.query('SELECT title FROM listings WHERE id = $1', [order.listing_id]);
+        const listingTitle = listingRes.rows[0]?.title || 'item';
+        const notificationService = require('../services/notificationService');
+        await notificationService.createNotification(null, {
+          userId: order.buyer_id,
+          type: 'order_shipped',
+          title: 'Order Shipped!',
+          message: `Your order for "${listingTitle}" has been shipped.`,
+          data: { order_id: id }
+        });
+      } catch (notifErr) {
+        console.error('Failed to send order shipped notification:', notifErr);
+      }
+    }
+
     // When buyer confirms delivery, update listing status and profile stats
     if (newStatus === 'delivered') {
       await db.query(

@@ -14,6 +14,9 @@ const ordersRoutes    = require('./routes/orders');
 const paymentsRoutes  = require('./routes/payments');
 const reviewsRoutes   = require('./routes/reviews');
 const disputesRoutes  = require('./routes/disputes');
+const wishlistRoutes  = require('./routes/wishlist');
+const followsRoutes   = require('./routes/follows');
+const notificationsRoutes = require('./routes/notifications');
 
 const app = express();
 app.use(helmet());
@@ -48,6 +51,9 @@ app.use('/api/orders',    ordersRoutes);
 app.use('/api/payments',  paymentsRoutes);
 app.use('/api/reviews',   reviewsRoutes);
 app.use('/api/disputes',  disputesRoutes);
+app.use('/api/wishlist',  wishlistRoutes);
+app.use('/api',           followsRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

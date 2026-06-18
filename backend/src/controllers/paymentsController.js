@@ -127,6 +127,9 @@ async function verifyPayment(req, res, next) {
       [order_id]
     );
 
+    // Notify seller
+    await notifySellerOfPayment(order_id);
+
     res.json({ success: true, order_id, status: 'paid' });
   } catch (err) {
     next(err);
@@ -169,6 +172,8 @@ async function handleWebhook(req, res, next) {
             `UPDATE orders SET status='paid', updated_at=NOW() WHERE id=$1 AND status IN ('awaiting_payment','pending')`,
             [orderId]
           );
+          // Notify seller
+          await notifySellerOfPayment(orderId);
         }
       }
     } else if (eventType === 'payment.failed') {
@@ -213,6 +218,34 @@ async function getPaymentByOrder(req, res, next) {
     res.json({ payments: paymentRes.rows });
   } catch (err) {
     next(err);
+  }
+}
+
+/**
+ * Helper: Notify seller of payment received
+ */
+async function notifySellerOfPayment(orderId) {
+  try {
+    const orderRes = await db.query(
+      `SELECT o.seller_id, o.total_amount, l.title
+       FROM orders o
+       LEFT JOIN listings l ON l.id = o.listing_id
+       WHERE o.id = $1`,
+      [orderId]
+    );
+    const order = orderRes.rows[0];
+    if (order) {
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(null, {
+        userId: order.seller_id,
+        type: 'payment_received',
+        title: 'Payment Received!',
+        message: `Payment of ${order.total_amount} has been received for "${order.title || 'item'}".`,
+        data: { order_id: orderId, amount: order.total_amount }
+      });
+    }
+  } catch (err) {
+    console.error('Failed to notify seller of payment:', err);
   }
 }
 

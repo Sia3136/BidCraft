@@ -30,6 +30,20 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
 
     if (Number(bidAmount) < minRequired) throw new Error('bid_too_low');
 
+    // Get previous highest bidder
+    const prevBidRes = await client.query(
+      `SELECT bidder_id, bid_amount FROM bids WHERE auction_id = $1 ORDER BY bid_amount DESC, created_at ASC LIMIT 1`,
+      [auctionId]
+    );
+    const prevBid = prevBidRes.rows[0];
+
+    // Fetch listing title for notification
+    const listingRes = await client.query(
+      `SELECT l.title FROM auctions a JOIN listings l ON l.id = a.listing_id WHERE a.id = $1`,
+      [auctionId]
+    );
+    const listingTitle = listingRes.rows[0]?.title || 'item';
+
     // Insert bid and update auction atomically
     await client.query(
       'INSERT INTO bids (auction_id, bidder_id, bid_amount, created_at) VALUES ($1,$2,$3,NOW())',
@@ -40,6 +54,18 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
       'UPDATE auctions SET current_bid = $1, total_bids = total_bids + 1, updated_at = NOW() WHERE id = $2',
       [bidAmount, auctionId]
     );
+
+    // If there is a previous highest bidder and they are not the current bidder, notify them
+    if (prevBid && prevBid.bidder_id !== bidderId) {
+      const notificationService = require('./notificationService');
+      await notificationService.createNotification(client, {
+        userId: prevBid.bidder_id,
+        type: 'outbid',
+        title: 'You have been outbid!',
+        message: `You have been outbid on "${listingTitle}". The new highest bid is ${bidAmount}.`,
+        data: { auction_id: auctionId, new_bid_amount: bidAmount }
+      });
+    }
 
     await client.query('COMMIT');
     return { success: true };

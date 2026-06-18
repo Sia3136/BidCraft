@@ -137,6 +137,36 @@ async function closeAuction(auctionId) {
       [auction.listing_id]
     );
 
+    // Fetch listing title for notifications
+    const listingRes = await client.query('SELECT title FROM listings WHERE id = $1', [auction.listing_id]);
+    const listingTitle = listingRes.rows[0]?.title || 'item';
+
+    const notificationService = require('./notificationService');
+    
+    // Notify winner
+    await notificationService.createNotification(client, {
+      userId: winningBid.bidder_id,
+      type: 'auction_won',
+      title: 'Auction Won!',
+      message: `Congratulations! You won the auction for "${listingTitle}" with a bid of ${winningBid.bid_amount}.`,
+      data: { auction_id: auctionId, order_id: order.id, bid_amount: winningBid.bid_amount }
+    });
+
+    // Notify other unique bidders
+    const otherBiddersRes = await client.query(
+      `SELECT DISTINCT bidder_id FROM bids WHERE auction_id = $1 AND bidder_id <> $2`,
+      [auctionId, winningBid.bidder_id]
+    );
+    for (const row of otherBiddersRes.rows) {
+      await notificationService.createNotification(client, {
+        userId: row.bidder_id,
+        type: 'auction_lost',
+        title: 'Auction Ended',
+        message: `The auction for "${listingTitle}" has ended. Unfortunately, you did not win this time.`,
+        data: { auction_id: auctionId }
+      });
+    }
+
     await client.query('COMMIT');
     return { settled: true, order, reason: 'settled' };
   } catch (err) {

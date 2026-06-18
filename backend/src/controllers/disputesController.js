@@ -88,6 +88,23 @@ async function createDispute(req, res, next) {
       }
     }
 
+    // Notify other party of the dispute
+    try {
+      const otherPartyId = order.buyer_id === initiatorId ? order.seller_id : order.buyer_id;
+      const initiatorRes = await db.query('SELECT name FROM users WHERE id = $1', [initiatorId]);
+      const initiatorName = initiatorRes.rows[0]?.name || 'Someone';
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(null, {
+        userId: otherPartyId,
+        type: 'dispute_update',
+        title: 'Dispute Opened!',
+        message: `${initiatorName} has opened a dispute on order #${order_id}.`,
+        data: { dispute_id: result.rows[0].id, order_id }
+      });
+    } catch (notifErr) {
+      console.error('Failed to send dispute opened notification:', notifErr);
+    }
+
     res.status(201).json({ dispute: result.rows[0] });
   } catch (err) {
     next(err);
@@ -191,6 +208,22 @@ async function updateDisputeStatus(req, res, next) {
     }
 
     const result = await db.query(query, params);
+
+    // Notify other party of the dispute status update
+    try {
+      const otherPartyId = dispute.buyer_id === userId ? dispute.seller_id : dispute.buyer_id;
+      const notificationService = require('../services/notificationService');
+      await notificationService.createNotification(null, {
+        userId: otherPartyId,
+        type: 'dispute_update',
+        title: 'Dispute Status Updated!',
+        message: `The dispute on order #${dispute.order_id} has been marked as "${newStatus}".`,
+        data: { dispute_id: id, order_id: dispute.order_id, status: newStatus }
+      });
+    } catch (notifErr) {
+      console.error('Failed to send dispute status update notification:', notifErr);
+    }
+
     res.json({ dispute: result.rows[0] });
   } catch (err) {
     next(err);
