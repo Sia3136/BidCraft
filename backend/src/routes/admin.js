@@ -25,4 +25,8 @@ router.patch('/reports/:id/status', adminController.updateReportStatus);
 // Disputes Admin Override
 router.patch('/disputes/:id/resolve', adminController.adminResolveDispute);
 
+// KYC Approval Flow
+router.get('/kyc', adminController.getPendingKyc);
+router.patch('/kyc/:userId', adminController.reviewKyc);
+
 module.exports = router;

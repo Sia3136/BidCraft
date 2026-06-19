@@ -126,6 +126,88 @@ async function adminResolveDispute(req, res, next) {
   }
 }
 
+const reviewKycSchema = Joi.object({
+  status: Joi.string().valid('approved', 'rejected').required(),
+  rejection_reason: Joi.string().max(1000).allow('', null)
+});
+
+async function reviewKyc(req, res, next) {
+  try {
+    const { userId } = req.params;
+    const { error, value } = reviewKycSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const { status, rejection_reason } = value;
+
+    // Check if user exists
+    const userRes = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ error: 'user_not_found' });
+    }
+
+    const isVerified = status === 'approved';
+    const reason = isVerified ? null : (rejection_reason || null);
+
+    const result = await db.query(
+      `UPDATE profiles
+       SET kyc_status = $1,
+           is_verified = $2,
+           kyc_rejection_reason = $3,
+           updated_at = NOW()
+       WHERE user_id = $4
+       RETURNING *`,
+      [status, isVerified, reason, userId]
+    );
+
+    if (result.rows.length === 0) {
+      await db.query(
+        `INSERT INTO profiles (user_id, kyc_status, is_verified, kyc_rejection_reason, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+        [userId, status, isVerified, reason]
+      );
+    }
+
+    // Notify the user of KYC outcome
+    const notificationService = require('../services/notificationService');
+    const msg = isVerified 
+      ? 'Congratulations! Your seller verification (KYC) has been approved.'
+      : `Your seller verification (KYC) was rejected. Reason: ${rejection_reason || 'Incomplete details'}`;
+    
+    await notificationService.createNotification(null, {
+      userId,
+      type: 'kyc_update',
+      title: isVerified ? 'KYC Approved!' : 'KYC Rejected',
+      message: msg,
+      data: { status, rejection_reason: reason }
+    });
+
+    res.json({
+      success: true,
+      userId,
+      kyc_status: status,
+      is_verified: isVerified,
+      kyc_rejection_reason: reason
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getPendingKyc(req, res, next) {
+  try {
+    const result = await db.query(
+      `SELECT u.id, u.email, u.name, p.kyc_status, p.kyc_document_type, p.kyc_document_url, p.created_at
+       FROM users u
+       JOIN profiles p ON p.user_id = u.id
+       WHERE p.kyc_status = 'pending'
+       ORDER BY p.updated_at ASC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getUsers,
   updateUserRole,
@@ -135,5 +217,7 @@ module.exports = {
   getReports,
   createReport,
   updateReportStatus,
-  adminResolveDispute
+  adminResolveDispute,
+  reviewKyc,
+  getPendingKyc
 };

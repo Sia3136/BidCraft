@@ -12,9 +12,10 @@ describe('Auth Integration Tests', () => {
 
   afterAll(async () => {
     // Cleanup test users
-    await db.query("DELETE FROM users WHERE email LIKE 'test-%' OR email LIKE 'google_mock_%'");
+    await db.query("DELETE FROM users WHERE email LIKE 'test-auth-%' OR email LIKE 'google_mock_%'");
     await db.pool.end();
   });
+
 
   describe('POST /api/auth/register', () => {
     it('should register a new user successfully', async () => {

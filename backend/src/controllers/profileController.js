@@ -35,7 +35,7 @@ async function getMyProfile(req, res, next) {
       `SELECT
          u.id, u.email, u.name, u.avatar_url, u.role, u.created_at,
          p.bio, p.phone, p.social_links, p.is_verified, p.trust_score,
-         p.total_sales, p.total_revenue
+         p.total_sales, p.total_revenue, p.razorpay_customer_id, p.razorpay_card_token
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,
@@ -110,7 +110,7 @@ async function updateMyProfile(req, res, next) {
       `SELECT
          u.id, u.email, u.name, u.avatar_url, u.role, u.created_at,
          p.bio, p.phone, p.social_links, p.is_verified, p.trust_score,
-         p.total_sales, p.total_revenue
+         p.total_sales, p.total_revenue, p.razorpay_customer_id, p.razorpay_card_token
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,
@@ -151,4 +151,42 @@ async function getPublicProfile(req, res, next) {
   }
 }
 
-module.exports = { getMyProfile, updateMyProfile, getPublicProfile };
+const submitKycSchema = Joi.object({
+  document_type: Joi.string().max(50).required(),
+  document_url: Joi.string().uri().max(500).required()
+});
+
+async function submitKyc(req, res, next) {
+  try {
+    const userId = req.userId;
+    const { error, value } = submitKycSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const { document_type, document_url } = value;
+
+    await ensureProfileExists(userId);
+
+    // Update profiles table with KYC details
+    await db.query(
+      `UPDATE profiles
+       SET kyc_status = 'pending',
+           kyc_document_type = $1,
+           kyc_document_url = $2,
+           kyc_rejection_reason = NULL,
+           updated_at = NOW()
+       WHERE user_id = $3`,
+      [document_type, document_url, userId]
+    );
+
+    res.json({
+      success: true,
+      kyc_status: 'pending',
+      kyc_document_type: document_type,
+      kyc_document_url: document_url
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getMyProfile, updateMyProfile, getPublicProfile, submitKyc };

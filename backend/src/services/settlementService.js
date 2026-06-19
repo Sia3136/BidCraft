@@ -167,6 +167,37 @@ async function closeAuction(auctionId) {
       });
     }
 
+    // Send transactional emails for settlement
+    try {
+      const emailService = require('./emailService');
+      
+      // Fetch winner details
+      const winnerRes = await client.query('SELECT email, name FROM users WHERE id = $1', [winningBid.bidder_id]);
+      const winnerUser = winnerRes.rows[0];
+
+      // Fetch seller details
+      const sellerRes = await client.query('SELECT email, name FROM users WHERE id = $1', [auction.seller_id]);
+      const sellerUser = sellerRes.rows[0];
+
+      if (winnerUser && winnerUser.email) {
+        await emailService.sendEmail({
+          to: winnerUser.email,
+          subject: `Congratulations! You won the auction for "${listingTitle}"`,
+          text: `Hello ${winnerUser.name || 'Collector'},\n\nGreat news! You won the auction for "${listingTitle}" with a final bid of $${winningBid.bid_amount}.\n\nTo secure your purchase, please visit BidCraft and complete your escrow-protected payment.\n\nBest,\nThe BidCraft Team`
+        });
+      }
+
+      if (sellerUser && sellerUser.email) {
+        await emailService.sendEmail({
+          to: sellerUser.email,
+          subject: `Your BidCraft auction for "${listingTitle}" has settled!`,
+          text: `Hello ${sellerUser.name || 'Creator'},\n\nYour auction for "${listingTitle}" has successfully ended and settled. The final winning bid is $${winningBid.bid_amount} by ${winnerUser ? winnerUser.name : 'a buyer'}.\n\nOnce the buyer completes their secure payment, we will notify you to ship the item.\n\nBest,\nThe BidCraft Team`
+        });
+      }
+    } catch (emailErr) {
+      console.error('Failed to send settlement emails:', emailErr);
+    }
+
     await client.query('COMMIT');
     return { settled: true, order, reason: 'settled' };
   } catch (err) {

@@ -33,9 +33,10 @@ describe('Listings Integration Tests', () => {
   afterAll(async () => {
     // Cleanup listings and users
     await db.query("DELETE FROM listings WHERE title LIKE 'Test Listing%'");
-    await db.query("DELETE FROM users WHERE email LIKE 'test-%'");
+    await db.query("DELETE FROM users WHERE email LIKE 'test-seller-%' OR email LIKE 'test-other-%'");
     await db.pool.end();
   });
+
 
   describe('POST /api/listings', () => {
     it('should create a listing successfully', async () => {

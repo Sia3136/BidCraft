@@ -36,7 +36,8 @@ async function createBid(req, res, next) {
       err.message === 'auction_not_active' ||
       err.message === 'auction_ended' ||
       err.message === 'auction_not_started' ||
-      err.message === 'bid_too_low'
+      err.message === 'bid_too_low' ||
+      err.message === 'pre_authorization_required'
     ) {
       const statusCode = err.message === 'auction_not_found' ? 404 : 400;
       return res.status(statusCode).json({ error: err.message });

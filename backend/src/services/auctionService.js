@@ -6,6 +6,16 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
   try {
     await client.query('BEGIN');
 
+    // Verify bidder has a pre-authorized payment method
+    const profileRes = await client.query(
+      `SELECT razorpay_card_token FROM profiles WHERE user_id = $1`,
+      [bidderId]
+    );
+    const profile = profileRes.rows[0];
+    if (!profile || !profile.razorpay_card_token) {
+      throw new Error('pre_authorization_required');
+    }
+
     const res = await client.query(
       `SELECT id, start_bid, current_bid, min_bid_increment, reserve_price, start_time, end_time, status
        FROM auctions
@@ -65,6 +75,22 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
         message: `You have been outbid on "${listingTitle}". The new highest bid is ${bidAmount}.`,
         data: { auction_id: auctionId, new_bid_amount: bidAmount }
       });
+
+      // Send transactional email
+      try {
+        const bidderUserRes = await client.query('SELECT email, name FROM users WHERE id = $1', [prevBid.bidder_id]);
+        const bidderUser = bidderUserRes.rows[0];
+        if (bidderUser && bidderUser.email) {
+          const emailService = require('./emailService');
+          await emailService.sendEmail({
+            to: bidderUser.email,
+            subject: `You've been outbid on ${listingTitle}!`,
+            text: `Hello ${bidderUser.name || 'Bidder'},\n\nYou have been outbid on "${listingTitle}". The new highest bid is $${bidAmount}.\n\nVisit BidCraft to place another bid and stay in the running!\n\nBest,\nThe BidCraft Team`
+          });
+        }
+      } catch (emailErr) {
+        console.error('Failed to send outbid email:', emailErr);
+      }
     }
 
     await client.query('COMMIT');

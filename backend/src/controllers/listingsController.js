@@ -53,7 +53,7 @@ async function createListing(req, res, next) {
 
 async function getListings(req, res, next) {
   try {
-    const { category_id, listing_type, status, search } = req.query;
+    const { category_id, listing_type, status, search, seller_id } = req.query;
 
     let queryText = 'SELECT * FROM listings WHERE 1=1';
     const params = [];
@@ -66,6 +66,11 @@ async function getListings(req, res, next) {
     if (listing_type) {
       params.push(listing_type);
       queryText += ` AND listing_type = $${params.length}`;
+    }
+
+    if (seller_id) {
+      params.push(seller_id);
+      queryText += ` AND seller_id = $${params.length}`;
     }
 
     if (status) {

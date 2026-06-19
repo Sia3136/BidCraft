@@ -31,6 +31,18 @@ describe('Notifications API Integration Tests', () => {
     buyerBToken = resB.body.accessToken;
     buyerBId = resB.body.user.id;
 
+    // Pre-authorize Buyer A and Buyer B by registering mock card details
+    await request(app)
+      .post('/api/payments/save-card')
+      .set('Authorization', `Bearer ${buyerAToken}`)
+      .send({ razorpay_payment_id: 'pay_mockbuyerA' });
+
+    await request(app)
+      .post('/api/payments/save-card')
+      .set('Authorization', `Bearer ${buyerBToken}`)
+      .send({ razorpay_payment_id: 'pay_mockbuyerB' });
+
+
     // Create Seller
     const resS = await request(app).post('/api/auth/register')
       .send({ email: `test-notif-seller-${Date.now()}@example.com`, password: 'Password123!', name: 'Main Seller' });

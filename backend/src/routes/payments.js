@@ -5,7 +5,8 @@ const {
   createPaymentOrder,
   verifyPayment,
   handleWebhook,
-  getPaymentByOrder
+  getPaymentByOrder,
+  saveCard
 } = require('../controllers/paymentsController');
 
 // Webhook needs raw body for signature verification
@@ -14,6 +15,7 @@ router.post('/webhook', handleWebhook);
 
 router.post('/create-order', authMiddleware, createPaymentOrder);
 router.post('/verify',       authMiddleware, verifyPayment);
+router.post('/save-card',    authMiddleware, saveCard);
 router.get('/order/:orderId', authMiddleware, getPaymentByOrder);
 
 module.exports = router;

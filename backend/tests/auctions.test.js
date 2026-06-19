@@ -38,6 +38,17 @@ describe('Auctions and Bidding Integration Tests', () => {
       .send({ email: buyerBEmail, password: 'Password123!', name: 'Buyer B' });
     buyerBToken = buyerBRes.body.accessToken;
 
+    // Pre-authorize Buyer A and Buyer B by registering mock card details
+    await request(app)
+      .post('/api/payments/save-card')
+      .set('Authorization', `Bearer ${buyerAToken}`)
+      .send({ razorpay_payment_id: 'pay_mockbuyerA' });
+
+    await request(app)
+      .post('/api/payments/save-card')
+      .set('Authorization', `Bearer ${buyerBToken}`)
+      .send({ razorpay_payment_id: 'pay_mockbuyerB' });
+
     // Create an auction listing
     const listingRes = await request(app)
       .post('/api/listings')
@@ -281,6 +292,23 @@ describe('Auctions and Bidding Integration Tests', () => {
   });
 
   describe('POST /api/auctions/:id/bids', () => {
+    it('should fail if bidder has not pre-authorized their card', async () => {
+      // Register a third buyer who does not perform pre-authorization
+      const testEmail = `test-no-auth-${Date.now()}@example.com`;
+      const registerRes = await request(app)
+        .post('/api/auth/register')
+        .send({ email: testEmail, password: 'Password123!', name: 'No PreAuth Buyer' });
+      const noAuthToken = registerRes.body.accessToken;
+
+      const res = await request(app)
+        .post(`/api/auctions/${auctionId}/bids`)
+        .set('Authorization', `Bearer ${noAuthToken}`)
+        .send({ bid_amount: 115.00 });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('pre_authorization_required');
+    });
+
     it('should place a valid bid successfully', async () => {
       const res = await request(app)
         .post(`/api/auctions/${auctionId}/bids`)

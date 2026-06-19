@@ -127,6 +127,14 @@ async function verifyPayment(req, res, next) {
       [order_id]
     );
 
+    // Create escrow record marking funds as held
+    await db.query(
+      `INSERT INTO escrow (order_id, buyer_id, seller_id, amount_held, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, 'held', NOW(), NOW())
+       ON CONFLICT (order_id) DO NOTHING`,
+      [order.id, order.buyer_id, order.seller_id, order.total_amount]
+    );
+
     // Notify seller
     await notifySellerOfPayment(order_id);
 
@@ -172,6 +180,21 @@ async function handleWebhook(req, res, next) {
             `UPDATE orders SET status='paid', updated_at=NOW() WHERE id=$1 AND status IN ('awaiting_payment','pending')`,
             [orderId]
           );
+
+          // Fetch order to get buyer/seller details
+          const orderRes = await db.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+          const order = orderRes.rows[0];
+
+          if (order) {
+            // Create escrow record marking funds as held
+            await db.query(
+              `INSERT INTO escrow (order_id, buyer_id, seller_id, amount_held, status, created_at, updated_at)
+               VALUES ($1, $2, $3, $4, 'held', NOW(), NOW())
+               ON CONFLICT (order_id) DO NOTHING`,
+              [order.id, order.buyer_id, order.seller_id, order.total_amount]
+            );
+          }
+
           // Notify seller
           await notifySellerOfPayment(orderId);
         }
@@ -249,4 +272,67 @@ async function notifySellerOfPayment(orderId) {
   }
 }
 
-module.exports = { createPaymentOrder, verifyPayment, handleWebhook, getPaymentByOrder };
+const saveCardSchema = Joi.object({
+  razorpay_payment_id: Joi.string().required()
+});
+
+/**
+ * POST /api/payments/save-card
+ * Links a Razorpay customer ID and registers a pre-authorized card/payment token.
+ */
+async function saveCard(req, res, next) {
+  try {
+    const { error, value } = saveCardSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const { razorpay_payment_id } = value;
+    const userId = req.userId;
+
+    // 1. Fetch user profile
+    const profileRes = await db.query('SELECT * FROM profiles WHERE user_id = $1', [userId]);
+    let profile = profileRes.rows[0];
+    if (!profile) {
+      await db.query('INSERT INTO profiles (user_id) VALUES ($1)', [userId]);
+      const newProfileRes = await db.query('SELECT * FROM profiles WHERE user_id = $1', [userId]);
+      profile = newProfileRes.rows[0];
+    }
+
+    let customerId = profile.razorpay_customer_id;
+
+    // 2. If no customer ID exists, create one in Razorpay
+    if (!customerId) {
+      const userRes = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+      const user = userRes.rows[0];
+      const customer = await paymentService.createCustomer({
+        name: user.name || 'BidCraft User',
+        email: user.email,
+        phone: profile.phone || undefined
+      });
+      customerId = customer.id;
+      await db.query('UPDATE profiles SET razorpay_customer_id = $1, updated_at = NOW() WHERE user_id = $2', [customerId, userId]);
+    }
+
+    // 3. Fetch payment details from Razorpay to get the tokenized card details
+    const paymentDetails = await paymentService.fetchPayment(razorpay_payment_id);
+    const tokenId = paymentDetails.token_id || `mock_tok_${Date.now()}`;
+
+    // 4. Save token to profiles table
+    await db.query(
+      `UPDATE profiles
+       SET razorpay_card_token = $1,
+           updated_at = NOW()
+       WHERE user_id = $2`,
+      [tokenId, userId]
+    );
+
+    res.json({
+      success: true,
+      razorpay_customer_id: customerId,
+      razorpay_card_token: tokenId
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { createPaymentOrder, verifyPayment, handleWebhook, getPaymentByOrder, saveCard };

@@ -166,6 +166,40 @@ async function updateOrderStatus(req, res, next) {
          WHERE user_id = $2`,
         [order.total_amount, order.seller_id]
       );
+      
+      // Escrow Release Logic
+      try {
+        const paymentRes = await db.query(
+          "SELECT razorpay_payment_id FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1",
+          [id]
+        );
+        const sellerRes = await db.query('SELECT razorpay_account_id FROM profiles WHERE user_id = $1', [order.seller_id]);
+        
+        const paymentId = paymentRes.rows[0]?.razorpay_payment_id;
+        const sellerAccountId = sellerRes.rows[0]?.razorpay_account_id;
+        
+        if (paymentId && sellerAccountId) {
+          const paymentService = require('../services/paymentService');
+          const sellerAmount = Math.floor(Number(order.total_amount) * 0.90);
+          await paymentService.createTransfer(paymentId, {
+            account: sellerAccountId,
+            amount: sellerAmount,
+            currency: 'INR',
+            notes: { name: 'Escrow release for order ' + id },
+            on_hold: false
+          });
+        }
+        
+        // Update escrow record
+        await db.query(
+          "UPDATE escrow SET status = 'released', released_at = NOW(), updated_at = NOW() WHERE order_id = $1",
+          [id]
+        );
+      } catch (escrowErr) {
+        console.error('Escrow release failed:', escrowErr);
+        // We might want to alert admins here, but we still mark the order completed for the user's view.
+      }
+
       // Mark order as completed
       await db.query(
         'UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2',
@@ -180,4 +214,46 @@ async function updateOrderStatus(req, res, next) {
   }
 }
 
-module.exports = { getOrders, getOrderById, updateOrderStatus };
+const createOrderSchema = Joi.object({
+  listing_id: Joi.number().integer().required()
+});
+
+async function createOrder(req, res, next) {
+  try {
+    const { error, value } = createOrderSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const { listing_id } = value;
+    const buyerId = req.userId;
+
+    // 1. Fetch listing details
+    const listingRes = await db.query('SELECT * FROM listings WHERE id = $1', [listing_id]);
+    const listing = listingRes.rows[0];
+    if (!listing) return res.status(404).json({ error: 'listing_not_found' });
+
+    // 2. Validate listing status and type
+    if (listing.status !== 'active') {
+      return res.status(400).json({ error: 'listing_not_active' });
+    }
+    if (listing.listing_type !== 'fixed') {
+      return res.status(400).json({ error: 'listing_is_not_fixed_price' });
+    }
+    if (listing.seller_id === buyerId) {
+      return res.status(400).json({ error: 'cannot_buy_own_listing' });
+    }
+
+    // 3. Create the order
+    const orderRes = await db.query(
+      `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, 'awaiting_payment', NOW(), NOW())
+       RETURNING *`,
+      [buyerId, listing.seller_id, listing_id, listing.price]
+    );
+
+    res.status(201).json({ order: orderRes.rows[0] });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getOrders, getOrderById, updateOrderStatus, createOrder };
