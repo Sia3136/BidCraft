@@ -1,23 +1,29 @@
-import { SiteNavbar } from "@/components/site-navbar"
-import { HeroSection } from "@/components/hero-section"
-import { CategoryShowcase } from "@/components/category-showcase"
-import { FeaturedCreators } from "@/components/featured-creators"
-import { LiveAuctions } from "@/components/live-auctions"
-import { CraftOfDay } from "@/components/craft-of-day"
-import { TrustSection } from "@/components/trust-section"
-import { SiteFooter } from "@/components/site-footer"
+import { Navbar } from '@/components/navbar'
+import { HeroSection } from '@/components/hero-section'
+import { LiveAuctionsSection } from '@/components/sections/live-auctions'
+import { TrendingProductsSection } from '@/components/sections/trending-products'
+import { CategoriesSection } from '@/components/sections/categories'
+import { SellYourWaySection } from '@/components/sections/sell-your-way'
+import { HowItWorksSection } from '@/components/sections/how-it-works'
+import { CreatorSpotlightSection } from '@/components/sections/creator-spotlight'
+import { FeaturedCollectionsSection } from '@/components/sections/featured-collections'
+import { EscrowTrustSection } from '@/components/sections/escrow-trust'
+import { Footer } from '@/components/sections/footer'
 
-export default function Page() {
+export default function Home() {
   return (
     <main className="min-h-screen bg-background">
-      <SiteNavbar />
+      <Navbar />
       <HeroSection />
-      <CategoryShowcase />
-      <FeaturedCreators />
-      <LiveAuctions />
-      <CraftOfDay />
-      <TrustSection />
-      <SiteFooter />
+      <LiveAuctionsSection />
+      <TrendingProductsSection />
+      <CategoriesSection />
+      <SellYourWaySection />
+      <HowItWorksSection />
+      <CreatorSpotlightSection />
+      <FeaturedCollectionsSection />
+      <EscrowTrustSection />
+      <Footer />
     </main>
   )
 }

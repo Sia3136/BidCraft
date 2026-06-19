@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, Fraunces } from 'next/font/google'
+import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -8,16 +8,10 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 })
-const fraunces = Fraunces({
-  variable: '--font-fraunces',
-  subsets: ['latin'],
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
-  title: 'BidCraft — Where Creativity Finds Its Value',
-  description:
-    'A premium auction marketplace and digital exhibition for artists, creators, collectors and crafters. Escrow-protected bidding on handcrafted art, crafts, and collectibles.',
+  title: 'BidCraft - Creator Marketplace',
+  description: 'The premier marketplace for creators. Buy, auction, and make offers on unique products from verified creators worldwide.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -46,18 +40,19 @@ export const viewport: Viewport = {
   ],
 }
 
+import { AuthProvider } from '@/lib/auth-context'
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} bg-background`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
