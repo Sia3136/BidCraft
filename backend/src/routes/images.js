@@ -11,7 +11,7 @@ const upload = multer({
   storage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB per file
-    files: 5                    // Max 5 files per request
+    files: 6                    // Max 6 files per request
   },
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -30,7 +30,7 @@ function multerErrorHandler(err, req, res, next) {
     return res.status(400).json({ error: 'file_too_large', message: 'Each file must be under 5MB' });
   }
   if (err && err.code === 'LIMIT_FILE_COUNT') {
-    return res.status(400).json({ error: 'too_many_files', message: 'Maximum 5 files per upload' });
+    return res.status(400).json({ error: 'too_many_files', message: 'Maximum 6 files per upload' });
   }
   if (err && err.message === 'invalid_file_type') {
     return res.status(400).json({ error: 'invalid_file_type', message: 'Only JPEG, PNG, and WebP images are allowed' });
@@ -38,11 +38,11 @@ function multerErrorHandler(err, req, res, next) {
   next(err);
 }
 
-// POST /api/images/upload — requires auth, accepts up to 5 images
+// POST /api/images/upload — requires auth, accepts up to 6 images
 router.post(
   '/upload',
   authMiddleware,
-  upload.array('images', 5),
+  upload.array('images', 6),
   multerErrorHandler,
   uploadImages
 );

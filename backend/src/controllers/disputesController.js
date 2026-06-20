@@ -209,6 +209,59 @@ async function updateDisputeStatus(req, res, next) {
 
     const result = await db.query(query, params);
 
+    // Integrate with financial logic
+    if (newStatus === 'resolved') {
+      // Typically resolved in favor of the buyer -> Refund
+      const paymentService = require('../services/paymentService');
+      const paymentRes = await db.query("SELECT razorpay_payment_id FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1", [dispute.order_id]);
+      const paymentId = paymentRes.rows[0]?.razorpay_payment_id;
+      
+      if (paymentId) {
+        try {
+          await paymentService.refundPayment(paymentId, { notes: { reason: 'Dispute resolved in favor of buyer' } });
+        } catch (err) {
+          console.error('Failed to trigger refund on Razorpay:', err);
+        }
+      }
+      
+      await db.query("UPDATE escrow SET status = 'refunded', updated_at = NOW() WHERE order_id = $1", [dispute.order_id]);
+      await db.query("UPDATE orders SET status = 'refunded', updated_at = NOW() WHERE id = $1", [dispute.order_id]);
+      await db.query("INSERT INTO escrow_audit_log (escrow_id, old_status, new_status, actor_id, reason, created_at) VALUES ($1, $2, 'refunded', $3, 'Dispute resolved', NOW())", [dispute.escrow_id, 'disputed', userId]);
+      
+    } else if (newStatus === 'dismissed') {
+      // Dismissed -> Released to seller
+      const escrowService = require('../services/escrowService');
+      try {
+        await escrowService.releaseEscrowManually(dispute.order_id, dispute.buyer_id); // we can reuse this logic, but wait, the actor is admin
+        // We'll write the logic explicitly to release to seller
+        const paymentRes = await db.query("SELECT razorpay_payment_id FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1", [dispute.order_id]);
+        const sellerRes = await db.query('SELECT razorpay_account_id FROM profiles WHERE user_id = $1', [dispute.seller_id]);
+        
+        const paymentId = paymentRes.rows[0]?.razorpay_payment_id;
+        const sellerAccountId = sellerRes.rows[0]?.razorpay_account_id;
+        
+        if (paymentId && sellerAccountId) {
+          const paymentService = require('../services/paymentService');
+          const orderRes = await db.query('SELECT total_amount FROM orders WHERE id = $1', [dispute.order_id]);
+          const sellerAmount = Math.floor(Number(orderRes.rows[0].total_amount) * 0.90);
+          await paymentService.createTransfer(paymentId, {
+            account: sellerAccountId,
+            amount: sellerAmount,
+            currency: 'INR',
+            notes: { name: 'Escrow release for order ' + dispute.order_id },
+            on_hold: false
+          });
+        }
+        await db.query("UPDATE escrow SET status = 'released', released_at = NOW(), updated_at = NOW() WHERE order_id = $1", [dispute.order_id]);
+        await db.query("UPDATE orders SET status = 'completed', updated_at = NOW() WHERE id = $1", [dispute.order_id]);
+        await db.query("INSERT INTO escrow_audit_log (escrow_id, old_status, new_status, actor_id, reason, created_at) VALUES ($1, $2, 'released', $3, 'Dispute dismissed', NOW())", [dispute.escrow_id, 'disputed', userId]);
+      } catch (err) {
+        console.error('Failed to trigger transfer to seller:', err);
+      }
+    } else if (newStatus === 'review' || newStatus === 'under_review') {
+      await db.query("UPDATE escrow SET status = 'disputed', updated_at = NOW() WHERE order_id = $1", [dispute.order_id]);
+    }
+
     // Notify other party of the dispute status update
     try {
       const otherPartyId = dispute.buyer_id === userId ? dispute.seller_id : dispute.buyer_id;

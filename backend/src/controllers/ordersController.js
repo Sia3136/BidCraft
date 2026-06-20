@@ -167,45 +167,18 @@ async function updateOrderStatus(req, res, next) {
         [order.total_amount, order.seller_id]
       );
       
-      // Escrow Release Logic
+      // Update escrow record to 'inspection' to start the 24-hour window
       try {
-        const paymentRes = await db.query(
-          "SELECT razorpay_payment_id FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1",
-          [id]
-        );
-        const sellerRes = await db.query('SELECT razorpay_account_id FROM profiles WHERE user_id = $1', [order.seller_id]);
-        
-        const paymentId = paymentRes.rows[0]?.razorpay_payment_id;
-        const sellerAccountId = sellerRes.rows[0]?.razorpay_account_id;
-        
-        if (paymentId && sellerAccountId) {
-          const paymentService = require('../services/paymentService');
-          const sellerAmount = Math.floor(Number(order.total_amount) * 0.90);
-          await paymentService.createTransfer(paymentId, {
-            account: sellerAccountId,
-            amount: sellerAmount,
-            currency: 'INR',
-            notes: { name: 'Escrow release for order ' + id },
-            on_hold: false
-          });
-        }
-        
-        // Update escrow record
         await db.query(
-          "UPDATE escrow SET status = 'released', released_at = NOW(), updated_at = NOW() WHERE order_id = $1",
+          "UPDATE escrow SET status = 'inspection', updated_at = NOW() WHERE order_id = $1",
           [id]
         );
       } catch (escrowErr) {
-        console.error('Escrow release failed:', escrowErr);
-        // We might want to alert admins here, but we still mark the order completed for the user's view.
+        console.error('Escrow transition to inspection failed:', escrowErr);
       }
 
-      // Mark order as completed
-      await db.query(
-        'UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2',
-        ['completed', id]
-      );
-      updated.rows[0].status = 'completed';
+      // Do NOT mark order as completed here. It stays 'delivered' or 'inspection'
+      // It will be marked completed when escrow is released.
     }
 
     res.json({ order: updated.rows[0] });

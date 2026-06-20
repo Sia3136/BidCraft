@@ -21,6 +21,8 @@ const wishlistRoutes  = require('./routes/wishlist');
 const followsRoutes   = require('./routes/follows');
 const notificationsRoutes = require('./routes/notifications');
 const adminRoutes = require('./routes/admin');
+const shipmentsRoutes = require('./routes/shipments');
+const qaRoutes = require('./routes/qa');
 
 const app = express();
 app.use(helmet());
@@ -70,6 +72,8 @@ app.use('/api/wishlist',  wishlistRoutes);
 app.use('/api',           followsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/admin',     adminRoutes);
+app.use('/api/shipments', shipmentsRoutes);
+app.use('/api/qa',        qaRoutes);
 
 app.use((err, req, res, next) => {
   logger.error(err.message || 'internal_error', { error: err, stack: err.stack });

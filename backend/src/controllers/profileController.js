@@ -1,5 +1,6 @@
 const db = require('../utils/db');
 const Joi = require('joi');
+const kycProvider = require('../services/kycProvider');
 
 const updateProfileSchema = Joi.object({
   name: Joi.string().max(200).allow('', null),
@@ -168,6 +169,17 @@ async function submitKyc(req, res, next) {
     const { document_type, document_url, pan_number, bank_account_number, bank_ifsc } = value;
 
     await ensureProfileExists(userId);
+
+    // Verify PAN and Bank using KYC Provider
+    const panResult = await kycProvider.verifyPAN(pan_number);
+    if (!panResult.isValid) {
+      return res.status(400).json({ error: 'invalid_pan' });
+    }
+
+    const bankResult = await kycProvider.verifyBank(bank_account_number, bank_ifsc);
+    if (!bankResult.isValid) {
+      return res.status(400).json({ error: 'invalid_bank_account' });
+    }
 
     // Update profiles table with KYC details
     await db.query(

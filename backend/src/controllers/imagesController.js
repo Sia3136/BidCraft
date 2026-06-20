@@ -1,4 +1,5 @@
 const { uploadMany } = require('../services/imageService');
+const similarityService = require('../services/similarityService');
 
 const ALLOWED_MIMETYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_MB = 5;
@@ -24,6 +25,12 @@ async function uploadImages(req, res, next) {
           message: `Each file must be under ${MAX_FILE_SIZE_MB}MB`
         });
       }
+    }
+
+    // Detect duplicates (pluggable similarity-detection architecture)
+    const similarityResult = await similarityService.detectDuplicates(req.files.map(f => f.buffer));
+    if (similarityResult.hasDuplicates) {
+      return res.status(400).json({ error: 'duplicate_images_detected', message: 'Similar images detected. Please upload unique photos.' });
     }
 
     // Upload all to Cloudinary concurrently

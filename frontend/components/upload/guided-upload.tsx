@@ -32,12 +32,31 @@ export function GuidedUpload({ onPhotosChange }: GuidedUploadProps) {
 
     setUploading(slotId)
 
-    // Using mock upload implementation. In production, connect to Cloudinary/S3.
-    setTimeout(() => {
-      const mockUrl = URL.createObjectURL(file)
+    try {
+      const formData = new FormData()
+      formData.append('images', file)
+
+      const token = localStorage.getItem('accessToken')
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
       
+      const res = await fetch(`${apiUrl}/images/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.message || 'Upload failed')
+      }
+
+      const data = await res.json()
+      const uploadedUrl = data.urls[0]
+
       setSlots(prev => {
-        const next = prev.map(s => s.id === slotId ? { ...s, url: mockUrl } : s)
+        const next = prev.map(s => s.id === slotId ? { ...s, url: uploadedUrl } : s)
         
         // Notify parent if all 6 are uploaded
         const allUrls = next.map(s => s.url)
@@ -49,8 +68,11 @@ export function GuidedUpload({ onPhotosChange }: GuidedUploadProps) {
 
         return next
       })
+    } catch (err: any) {
+      alert(err.message)
+    } finally {
       setUploading(null)
-    }, 1000)
+    }
   }
 
   return (

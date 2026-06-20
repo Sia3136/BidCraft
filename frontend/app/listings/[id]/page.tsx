@@ -7,6 +7,7 @@ import { Footer } from '@/components/sections/footer'
 import { useAuth } from '@/lib/auth-context'
 import { listingsApi, auctionsApi, ordersApi, paymentsApi, profileApi, wishlistApi } from '@/lib/api'
 import { CountdownTimer } from '@/components/countdown-timer'
+import { ListingQA } from '@/components/listing-qa'
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -444,6 +445,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         )}
+
+        {/* Q&A Section */}
+        <div className="max-w-2xl mt-12">
+          <ListingQA listingId={listing.id} isSeller={user?.id === listing.seller_id} />
+        </div>
       </div>
 
       <Footer />

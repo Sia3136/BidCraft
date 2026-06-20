@@ -40,7 +40,7 @@ export default function CheckoutPage() {
       setPurchasing(true)
       
       // 1. Create order
-      const orderRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders/buy-now`, {
+      const orderRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
