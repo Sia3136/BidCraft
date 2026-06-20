@@ -1,6 +1,9 @@
 'use client'
 
+import Link from 'next/link'
+
 interface CreatorCardProps {
+  id: string
   name: string
   image: string
   trustScore: number
@@ -11,6 +14,7 @@ interface CreatorCardProps {
 }
 
 export function CreatorCard({
+  id,
   name,
   image,
   trustScore,
@@ -21,22 +25,24 @@ export function CreatorCard({
 }: CreatorCardProps) {
   return (
     <div className="bg-card rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 text-center hover:-translate-y-1">
-      {/* Avatar */}
-      <div className="relative mb-4">
-        <img
-          src={image}
-          alt={name}
-          className="w-16 h-16 rounded-full mx-auto object-cover border-3 border-primary"
-        />
-        {verified && (
-          <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 bg-secondary text-white rounded-full p-1">
-            <span className="text-xs">✓</span>
-          </div>
-        )}
-      </div>
+      <Link href={`/creator/${id}`} className="block">
+        {/* Avatar */}
+        <div className="relative mb-4">
+          <img
+            src={image}
+            alt={name}
+            className="w-16 h-16 rounded-full mx-auto object-cover border-3 border-primary group-hover:scale-105 transition-transform"
+          />
+          {verified && (
+            <div className="absolute bottom-0 right-1/2 translate-x-1/2 translate-y-1/2 bg-secondary text-white rounded-full p-1">
+              <span className="text-xs">✓</span>
+            </div>
+          )}
+        </div>
 
-      {/* Name */}
-      <h3 className="font-semibold text-foreground mb-1">{name}</h3>
+        {/* Name */}
+        <h3 className="font-semibold text-foreground mb-1 hover:text-primary transition-colors">{name}</h3>
+      </Link>
 
       {/* Trust & Rating */}
       <div className="flex items-center justify-center gap-2 mb-3">

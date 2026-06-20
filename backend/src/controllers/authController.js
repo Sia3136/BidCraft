@@ -155,4 +155,73 @@ async function refreshToken(req, res, next) {
   }
 }
 
-module.exports = { register, login, googleLogin, me, logout, refreshToken };
+const emailService = require('../services/emailService');
+
+async function sendVerification(req, res, next) {
+  try {
+    const userId = req.userId;
+    const userRes = await db.query('SELECT email FROM users WHERE id = $1', [userId]);
+    const user = userRes.rows[0];
+    if (!user) return res.status(404).json({ error: 'user_not_found' });
+
+    // Check if already verified
+    const profileRes = await db.query('SELECT is_verified FROM profiles WHERE user_id = $1', [userId]);
+    if (profileRes.rows[0]?.is_verified) {
+      return res.status(400).json({ error: 'already_verified' });
+    }
+
+    // Generate 6 digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+    await db.query(
+      'INSERT INTO verification_codes (user_id, code, expires_at) VALUES ($1, $2, $3)',
+      [userId, otp, expiresAt]
+    );
+
+    await emailService.sendEmail({
+      to: user.email,
+      subject: 'BidCraft Account Verification',
+      text: `Your verification code is: ${otp}. It will expire in 15 minutes.`
+    });
+
+    res.json({ success: true, message: 'verification_sent' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function verifyEmail(req, res, next) {
+  try {
+    const userId = req.userId;
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: 'code_required' });
+
+    const codeRes = await db.query(
+      'SELECT * FROM verification_codes WHERE user_id = $1 AND code = $2 AND purpose = $3 ORDER BY created_at DESC LIMIT 1',
+      [userId, code, 'email_verification']
+    );
+    const vCode = codeRes.rows[0];
+
+    if (!vCode) return res.status(400).json({ error: 'invalid_code' });
+    if (new Date() > new Date(vCode.expires_at)) {
+      return res.status(400).json({ error: 'code_expired' });
+    }
+
+    // Mark as verified
+    await db.query(`
+      INSERT INTO profiles (user_id, is_verified, created_at, updated_at) 
+      VALUES ($1, TRUE, NOW(), NOW()) 
+      ON CONFLICT (user_id) DO UPDATE SET is_verified = TRUE, updated_at = NOW()
+    `, [userId]);
+
+    // Delete used codes
+    await db.query('DELETE FROM verification_codes WHERE user_id = $1 AND purpose = $2', [userId, 'email_verification']);
+
+    res.json({ success: true, message: 'verified' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail };

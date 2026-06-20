@@ -43,16 +43,19 @@ export const api = {
 
 // Strong-typed endpoints
 export const authApi = {
-  login: (credentials: any) => api.post('/auth/login', credentials),
+  login: (data: any) => api.post('/auth/login', data),
   register: (data: any) => api.post('/auth/register', data),
+  googleLogin: (data: any) => api.post('/auth/google', data),
   me: () => api.get('/auth/me'),
+  sendVerification: () => api.post('/auth/send-verification', {}),
+  verifyEmail: (code: string) => api.post('/auth/verify-email', { code }),
 };
 
 export const profileApi = {
   getOwn: () => api.get('/profile'),
   update: (data: any) => api.put('/profile', data),
-  getPublic: (userId: string) => api.get(`/users/${userId}`),
-  submitKyc: (data: { document_type: string; document_url: string }) => api.post('/profile/kyc', data),
+  getPublic: (id: string) => api.get(`/users/${id}`),
+  submitKyc: (data: { document_type: string; document_url: string; pan_number: string; bank_account_number: string; bank_ifsc: string }) => api.post('/profile/kyc', data),
 };
 
 export const listingsApi = {
@@ -89,6 +92,7 @@ export const followsApi = {
 
 export const paymentsApi = {
   createOrder: (orderId: number) => api.post('/payments/create-order', { order_id: orderId }),
+  createSetupOrder: () => api.post('/payments/create-setup-order', {}),
   verifyPayment: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string; order_id: number }) =>
     api.post('/payments/verify', data),
   saveCard: (razorpayPaymentId: string) => api.post('/payments/save-card', { razorpay_payment_id: razorpayPaymentId }),

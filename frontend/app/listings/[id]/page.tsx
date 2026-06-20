@@ -5,7 +5,7 @@ import Script from 'next/script'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/sections/footer'
 import { useAuth } from '@/lib/auth-context'
-import { listingsApi, auctionsApi, ordersApi, paymentsApi, profileApi } from '@/lib/api'
+import { listingsApi, auctionsApi, ordersApi, paymentsApi, profileApi, wishlistApi } from '@/lib/api'
 import { CountdownTimer } from '@/components/countdown-timer'
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,6 +16,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [bids, setBids] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isWatchlisted, setIsWatchlisted] = useState(false)
+  const [watchLoading, setWatchLoading] = useState(false)
   
   // Checkout & Bid state
   const [bidAmount, setBidAmount] = useState('')
@@ -48,6 +50,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           setBidAmount(String(current + increment))
         }
       }
+
+      if (user) {
+        try {
+          const wl = await wishlistApi.list()
+          const inWl = wl.wishlist?.find((item: any) => String(item.listing_id) === String(id))
+          setIsWatchlisted(!!inWl)
+        } catch (e) {
+          console.error("Failed to fetch wishlist", e)
+        }
+      }
+
     } catch (err: any) {
       setError(err.message || 'Failed to load listing.')
     } finally {
@@ -57,7 +70,29 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     loadData()
-  }, [id])
+  }, [id, user])
+
+  const toggleWatchlist = async () => {
+    if (!user) {
+      alert("Please sign in to add to your watchlist.")
+      return
+    }
+    try {
+      setWatchLoading(true)
+      if (isWatchlisted) {
+        setIsWatchlisted(false)
+        await wishlistApi.remove(id)
+      } else {
+        setIsWatchlisted(true)
+        await wishlistApi.add(id)
+      }
+    } catch (err: any) {
+      setIsWatchlisted(!isWatchlisted)
+      alert(err.message || "Failed to update watchlist")
+    } finally {
+      setWatchLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -88,61 +123,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   const handleBuyNow = async () => {
     if (!user) {
-      alert('Please sign in to make a purchase.')
+      alert('Please sign in to buy items.')
       return
     }
-    try {
-      setPurchasing(true)
-      // 1. Create order
-      const orderRes = await ordersApi.create(Number(id))
-      const order = orderRes.order
-      setCreatedOrder(order)
-
-      // 2. Initialize payment order
-      const payRes = await paymentsApi.createOrder(order.id)
-      setPaymentData(payRes)
-      setCheckoutStep('order_created')
-
-      // 3. Open Razorpay Checkout if not mock key
-      if (payRes.key_id && payRes.key_id !== 'mock_key' && (window as any).Razorpay) {
-        const options = {
-          key: payRes.key_id,
-          amount: payRes.amount * 100, // paise
-          currency: payRes.currency,
-          name: 'BidCraft Marketplace',
-          description: `Payment for ${listing.title}`,
-          order_id: payRes.provider_order_id,
-          handler: async function (response: any) {
-            try {
-              await paymentsApi.verifyPayment({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                order_id: order.id,
-              })
-              setCheckoutStep('success')
-              alert('Payment confirmed! Funds are held in escrow.')
-              loadData()
-            } catch (err: any) {
-              alert('Payment verification failed: ' + err.message)
-            }
-          },
-          prefill: {
-            name: user.name,
-            email: user.email,
-          },
-          theme: {
-            color: '#6366F1',
-          },
-        }
-        const rzp = new (window as any).Razorpay(options)
-        rzp.open()
-      }
-    } catch (err: any) {
-      alert('Failed to place order: ' + err.message)
-    } finally {
-      setPurchasing(false)
-    }
+    router.push(`/checkout/${id}`)
   }
 
   const handleSimulatePayment = async () => {
@@ -172,13 +156,50 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const handlePreauthorizeCard = async () => {
     try {
       setPreauthorizing(true)
-      // Save card using a mock payment transaction id
-      await paymentsApi.saveCard(`mock_preauth_pay_${Date.now()}`)
-      await refreshUser()
-      alert('Card successfully pre-authorized for bidding!')
+      const setupRes = await paymentsApi.createSetupOrder()
+
+      if (setupRes.key_id && setupRes.key_id !== 'mock_key' && (window as any).Razorpay) {
+        const options = {
+          key: setupRes.key_id,
+          amount: setupRes.amount,
+          currency: setupRes.currency,
+          name: 'BidCraft Card Auth',
+          description: `Pre-authorization for bidding`,
+          order_id: setupRes.provider_order_id,
+          handler: async function (response: any) {
+            try {
+              setPreauthorizing(true)
+              await paymentsApi.saveCard(response.razorpay_payment_id)
+              await refreshUser()
+              alert('Card successfully pre-authorized for bidding!')
+            } catch (err: any) {
+              alert('Save Card failed: ' + err.message)
+            } finally {
+              setPreauthorizing(false)
+            }
+          },
+          prefill: {
+            name: user?.name,
+            email: user?.email,
+          },
+          theme: { color: '#6366F1' },
+          modal: {
+            ondismiss: function() {
+              setPreauthorizing(false)
+            }
+          }
+        }
+        const rzp = new (window as any).Razorpay(options)
+        rzp.open()
+      } else {
+        // Mock mode
+        await paymentsApi.saveCard(`mock_preauth_pay_${Date.now()}`)
+        await refreshUser()
+        alert('Mock Card successfully pre-authorized for bidding!')
+        setPreauthorizing(false)
+      }
     } catch (err: any) {
-      alert('Pre-authorization failed: ' + err.message)
-    } finally {
+      alert('Pre-authorization setup failed: ' + err.message)
       setPreauthorizing(false)
     }
   }
@@ -257,7 +278,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   {listing.condition}
                 </span>
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">{listing.title}</h1>
+              <div className="flex items-center justify-between mb-2">
+                <h1 className="text-3xl font-bold text-foreground">{listing.title}</h1>
+                <button
+                  onClick={toggleWatchlist}
+                  disabled={watchLoading}
+                  className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 transition-colors text-xl"
+                  title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
+                >
+                  {isWatchlisted ? '❤️' : '🤍'}
+                </button>
+              </div>
               <p className="text-xs text-muted-foreground">Seller ID: #{listing.seller_id}</p>
             </div>
 

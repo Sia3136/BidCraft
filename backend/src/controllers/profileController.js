@@ -153,7 +153,10 @@ async function getPublicProfile(req, res, next) {
 
 const submitKycSchema = Joi.object({
   document_type: Joi.string().max(50).required(),
-  document_url: Joi.string().uri().max(500).required()
+  document_url: Joi.string().uri().max(500).required(),
+  pan_number: Joi.string().max(50).required(),
+  bank_account_number: Joi.string().max(100).required(),
+  bank_ifsc: Joi.string().max(50).required()
 });
 
 async function submitKyc(req, res, next) {
@@ -162,7 +165,7 @@ async function submitKyc(req, res, next) {
     const { error, value } = submitKycSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { document_type, document_url } = value;
+    const { document_type, document_url, pan_number, bank_account_number, bank_ifsc } = value;
 
     await ensureProfileExists(userId);
 
@@ -173,9 +176,12 @@ async function submitKyc(req, res, next) {
            kyc_document_type = $1,
            kyc_document_url = $2,
            kyc_rejection_reason = NULL,
+           pan_number = $3,
+           bank_account_number = $4,
+           bank_ifsc = $5,
            updated_at = NOW()
-       WHERE user_id = $3`,
-      [document_type, document_url, userId]
+       WHERE user_id = $6`,
+      [document_type, document_url, pan_number, bank_account_number, bank_ifsc, userId]
     );
 
     res.json({

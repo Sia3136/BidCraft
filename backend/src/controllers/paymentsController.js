@@ -81,6 +81,28 @@ async function createPaymentOrder(req, res, next) {
 }
 
 /**
+ * POST /api/payments/create-setup-order
+ * Creates a low-value Razorpay order to securely pre-authorize and save a card.
+ */
+async function createSetupOrder(req, res, next) {
+  try {
+    const rpOrder = await paymentService.createOrder({
+      amount: 100, // 1 INR (100 paise)
+      currency: 'INR',
+      receipt: `setup_${req.userId}_${Date.now()}`
+    });
+    res.status(201).json({
+      provider_order_id: rpOrder.id,
+      amount: 100,
+      currency: 'INR',
+      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
  * POST /api/payments/verify
  * Verifies Razorpay payment signature and marks the order as paid.
  */
@@ -335,4 +357,4 @@ async function saveCard(req, res, next) {
   }
 }
 
-module.exports = { createPaymentOrder, verifyPayment, handleWebhook, getPaymentByOrder, saveCard };
+module.exports = { createPaymentOrder, createSetupOrder, verifyPayment, handleWebhook, getPaymentByOrder, saveCard };

@@ -6,7 +6,7 @@ const createListingSchema = Joi.object({
   description: Joi.string().allow('', null),
   category_id: Joi.number().integer().required(),
   condition: Joi.string().max(40).required(),
-  photos: Joi.array().items(Joi.string()).min(1).required(),
+  photos: Joi.array().items(Joi.string()).length(6).required(), // Enforce exactly 6 photos
   listing_type: Joi.string().valid('fixed', 'auction').required(),
   price: Joi.number().precision(2).positive().allow(null),
   status: Joi.string().valid('active', 'paused', 'sold', 'archived').default('active')

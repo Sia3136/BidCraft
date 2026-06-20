@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const {
   createPaymentOrder,
+  createSetupOrder,
   verifyPayment,
   handleWebhook,
   getPaymentByOrder,
@@ -14,6 +15,7 @@ const {
 router.post('/webhook', handleWebhook);
 
 router.post('/create-order', authMiddleware, createPaymentOrder);
+router.post('/create-setup-order', authMiddleware, createSetupOrder);
 router.post('/verify',       authMiddleware, verifyPayment);
 router.post('/save-card',    authMiddleware, saveCard);
 router.get('/order/:orderId', authMiddleware, getPaymentByOrder);

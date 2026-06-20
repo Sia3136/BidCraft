@@ -1,8 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { SellingMethodBadge } from './selling-method-badge'
 import { CountdownTimer } from './countdown-timer'
+import { wishlistApi } from '@/lib/api'
+import { useAuth } from '@/lib/auth-context'
 
 interface ProductCardProps {
   id: string
@@ -18,6 +21,7 @@ interface ProductCardProps {
   currentBid?: number
   bidCount?: number
   endsIn?: string
+  isWatchlisted?: boolean
 }
 
 export function ProductCard({
@@ -33,7 +37,39 @@ export function ProductCard({
   currentBid,
   bidCount,
   endsIn,
+  isWatchlisted = false,
 }: ProductCardProps) {
+  const { user } = useAuth()
+  const [watchlisted, setWatchlisted] = useState(isWatchlisted)
+  const [watchLoading, setWatchLoading] = useState(false)
+
+  useEffect(() => {
+    setWatchlisted(isWatchlisted)
+  }, [isWatchlisted])
+
+  const toggleWatchlist = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (!user) {
+      alert("Please sign in to add to your watchlist.")
+      return
+    }
+    try {
+      setWatchLoading(true)
+      if (watchlisted) {
+        setWatchlisted(false)
+        await wishlistApi.remove(id)
+      } else {
+        setWatchlisted(true)
+        await wishlistApi.add(id)
+      }
+    } catch (err: any) {
+      setWatchlisted(!watchlisted)
+      alert(err.message || "Failed to update watchlist")
+    } finally {
+      setWatchLoading(false)
+    }
+  }
+
   return (
     <div className="group bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-border">
       {/* Clickable Image & Title Area */}
@@ -44,10 +80,19 @@ export function ProductCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         {badge && (
-          <div className="absolute top-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
             {badge}
           </div>
         )}
+        <button
+          onClick={toggleWatchlist}
+          disabled={watchLoading}
+          className="absolute top-3 right-3 z-20 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors text-lg"
+          style={badge ? { top: '3rem' } : {}}
+          title={watchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
+        >
+          {watchlisted ? '❤️' : '🤍'}
+        </button>
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
           {methods.map(method => (
             <SellingMethodBadge key={method} method={method as 'AUCTION' | 'BUY_NOW' | 'OFFERS'} size="sm" />

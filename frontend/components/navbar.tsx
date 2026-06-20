@@ -1,8 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { AuthModal } from '@/components/auth-modal'
+
+function SearchBar() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    const q = searchParams.get('search')
+    if (q) {
+      setSearchQuery(q)
+    }
+  }, [searchParams])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/listings?search=${encodeURIComponent(searchQuery.trim())}`)
+    } else {
+      router.push(`/listings`)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSearch} className="relative">
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search products, auctions, creators..."
+        className="w-full px-4 py-2 bg-muted text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
+        🔍
+      </button>
+    </form>
+  )
+}
 
 export function Navbar() {
   const { user, logout } = useAuth()
@@ -13,25 +52,18 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center text-white font-bold text-lg">
               ✦
             </div>
             <span className="text-xl font-bold text-foreground hidden sm:inline">BidCraft</span>
-          </div>
+          </Link>
 
           {/* Search Bar - Center */}
           <div className="flex-1 max-w-2xl mx-4 hidden sm:block">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products, auctions, creators..."
-                className="w-full px-4 py-2 bg-muted text-foreground placeholder:text-muted-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
-                🔍
-              </button>
-            </div>
+            <Suspense fallback={<div className="h-10 bg-muted rounded-lg animate-pulse w-full"></div>}>
+              <SearchBar />
+            </Suspense>
           </div>
 
           {/* Right Actions */}

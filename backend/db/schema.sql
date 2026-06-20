@@ -65,6 +65,16 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Verification Codes
+CREATE TABLE IF NOT EXISTS verification_codes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  code VARCHAR(10) NOT NULL,
+  purpose VARCHAR(50) DEFAULT 'email_verification',
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Profiles (extended)
 CREATE TABLE IF NOT EXISTS profiles (
   id SERIAL PRIMARY KEY,
@@ -74,6 +84,15 @@ CREATE TABLE IF NOT EXISTS profiles (
   trust_score NUMERIC(3,2) DEFAULT 0,
   total_sales INTEGER DEFAULT 0,
   total_revenue NUMERIC(12,2) DEFAULT 0,
+  kyc_status VARCHAR(30) DEFAULT 'unverified',
+  kyc_document_type VARCHAR(50),
+  kyc_document_url VARCHAR(500),
+  kyc_rejection_reason TEXT,
+  pan_number VARCHAR(50),
+  bank_account_number VARCHAR(100),
+  bank_ifsc VARCHAR(50),
+  razorpay_customer_id VARCHAR(100),
+  razorpay_card_token VARCHAR(100),
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

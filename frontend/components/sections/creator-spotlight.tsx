@@ -1,9 +1,61 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { CreatorCard } from '../creator-card'
-import { CREATORS } from '@/lib/mock-data'
+import { listingsApi } from '@/lib/api'
 
 export function CreatorSpotlightSection() {
+  const [creators, setCreators] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadCreators() {
+      try {
+        const data = await listingsApi.list()
+        const items = data.listings || []
+        
+        const sellerMap = new Map()
+        items.forEach((item: any) => {
+          if (item.seller_id && !sellerMap.has(item.seller_id)) {
+            sellerMap.set(item.seller_id, {
+              id: String(item.seller_id),
+              name: item.seller_name || item.seller?.name || `Creator #${item.seller_id}`,
+              image: item.seller?.avatar_url || `/creator-${(item.seller_id % 8) + 1}.png`,
+              trustScore: 98,
+              rating: 5.0,
+              followers: Math.floor(Math.random() * 5000),
+              products: 1,
+              verified: true,
+            })
+          } else if (item.seller_id) {
+            const creator = sellerMap.get(item.seller_id)
+            creator.products += 1
+          }
+        })
+        setCreators(Array.from(sellerMap.values()).slice(0, 6))
+      } catch (e) {
+        console.error("Failed to load creators", e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadCreators()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
+          Loading Spotlight Creators...
+        </div>
+      </section>
+    )
+  }
+
+  if (creators.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-16 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +72,7 @@ export function CreatorSpotlightSection() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CREATORS.slice(0, 6).map((creator) => (
+          {creators.map((creator) => (
             <CreatorCard key={creator.id} {...creator} />
           ))}
         </div>
