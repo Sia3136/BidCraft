@@ -93,8 +93,6 @@ async function autoReleaseEscrow() {
   }
 }
 
-}
-
 /**
  * Manually release escrow by the buyer.
  */
