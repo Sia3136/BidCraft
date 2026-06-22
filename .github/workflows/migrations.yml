@@ -19,5 +19,12 @@ jobs:
       - name: Run migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run migrate
+          DB_SSL: true
+          DB_SSL_REJECT: false
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Error: DATABASE_URL secret is not set!"
+            exit 1
+          fi
+          npm run migrate
         working-directory: backend

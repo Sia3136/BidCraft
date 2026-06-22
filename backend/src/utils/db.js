@@ -1,6 +1,11 @@
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/bidcraft';
+let connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/bidcraft';
+if (connectionString.includes('?sslmode=require')) {
+  connectionString = connectionString.replace('?sslmode=require', '');
+} else if (connectionString.includes('&sslmode=require')) {
+  connectionString = connectionString.replace('&sslmode=require', '');
+}
 
 const poolConfig = { connectionString };
 

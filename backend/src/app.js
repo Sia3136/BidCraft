@@ -49,6 +49,15 @@ app.use((req, res, next) => {
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
+app.get('/', (req, res) => {
+  res.json({
+    name: 'BidCraft API',
+    version: '0.1.0',
+    environment: process.env.NODE_ENV || 'development',
+    healthEndpoint: '/api/health'
+  });
+});
+
 app.get('/api/health', async (req, res) => {
   try {
     await db.query('SELECT 1');

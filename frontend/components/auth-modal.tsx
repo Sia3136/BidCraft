@@ -55,9 +55,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <div className="p-8">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">
-              ✦
-            </div>
+            <img src="/logo.png" alt="BidCraft Logo" className="h-12 w-auto mx-auto mb-3" />
             <h2 className="text-2xl font-bold text-foreground">
               {isLogin ? 'Welcome Back' : 'Join BidCraft'}
             </h2>

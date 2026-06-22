@@ -53,9 +53,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              ✦
-            </div>
+            <img src="/logo.png" alt="BidCraft Logo" className="h-10 w-auto" />
             <span className="text-xl font-bold text-foreground hidden sm:inline">BidCraft</span>
           </Link>
 
