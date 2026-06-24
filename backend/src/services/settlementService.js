@@ -111,7 +111,7 @@ async function closeAuction(auctionId) {
     const orderRes = await client.query(
       `INSERT INTO orders
          (buyer_id, seller_id, listing_id, auction_id, winner_bid_id, total_amount, status, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, 'awaiting_payment', NOW(), NOW())
+       VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW(), NOW())
        RETURNING *`,
       [
         winningBid.bidder_id,
