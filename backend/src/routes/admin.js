@@ -23,6 +23,7 @@ router.post('/reports', adminController.createReport); // Any user can create a 
 router.patch('/reports/:id/status', adminController.updateReportStatus);
 
 // Disputes Admin Override
+router.get('/disputes', adminController.getDisputes);
 router.patch('/disputes/:id/resolve', adminController.adminResolveDispute);
 
 // KYC Approval Flow

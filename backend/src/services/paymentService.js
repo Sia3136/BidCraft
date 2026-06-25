@@ -141,6 +141,21 @@ async function fetchPayment(paymentId) {
   return await rp.payments.fetch(paymentId);
 }
 
+/**
+ * Refund a Razorpay Payment.
+ */
+async function refundPayment(paymentId, { amount, notes } = {}) {
+  if (MOCK_MODE) {
+    return { id: `mock_rfnd_${Date.now()}`, payment_id: paymentId, status: 'processed' };
+  }
+  const rp = getRazorpay();
+  const payload = notes ? { notes } : {};
+  if (amount) {
+    payload.amount = Math.round(amount * 100);
+  }
+  return await rp.payments.refund(paymentId, payload);
+}
+
 module.exports = {
   createOrder,
   createTransfer,
@@ -148,5 +163,6 @@ module.exports = {
   verifyWebhookSignature,
   createCustomer,
   fetchPayment,
+  refundPayment,
   MOCK_MODE
 };

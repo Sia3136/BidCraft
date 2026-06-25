@@ -109,3 +109,10 @@ export const notificationsApi = {
   markRead: (id: string) => api.patch(`/notifications/${id}/read`, {}),
   markAllRead: () => api.patch('/notifications/read-all', {}),
 };
+
+export const adminApi = {
+  getDisputes: () => api.get('/admin/disputes'),
+  resolveDispute: (id: string, resolution: string, action: 'refund' | 'release' | 'dismiss') => 
+    api.patch(`/admin/disputes/${id}/resolve`, { resolution, action }),
+};
+

@@ -41,7 +41,7 @@ END$$;
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'escrow_status') THEN
-    CREATE TYPE escrow_status AS ENUM ('pending','held','released','cancelled');
+    CREATE TYPE escrow_status AS ENUM ('pending','held','paid','shipped','delivered','inspection','released','cancelled','refunded','disputed');
   END IF;
 END$$;
 

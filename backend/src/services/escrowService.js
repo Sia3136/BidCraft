@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const emailService = require('./emailService');
 const notificationService = require('./notificationService');
+const paymentService = require('./paymentService');
 
 /**
  * Automatically releases escrow for orders delivered > 24 hours ago,
@@ -19,10 +20,13 @@ async function autoReleaseEscrow() {
     // 3. NO active disputes for this escrow (disputes.status IN ('open', 'under_review'))
     const eligibleRes = await client.query(`
       SELECT e.id as escrow_id, e.order_id, e.amount_held, e.seller_id,
-             u.email as seller_email, u.name as seller_name
+             u.email as seller_email, u.name as seller_name,
+             p.razorpay_payment_id, pr.razorpay_account_id
       FROM escrow e
       JOIN shipments s ON s.order_id = e.order_id
       JOIN users u ON u.id = e.seller_id
+      LEFT JOIN profiles pr ON pr.user_id = e.seller_id
+      LEFT JOIN payments p ON p.order_id = e.order_id AND p.status = 'paid'
       WHERE e.status = 'held'
         AND s.status = 'delivered'
         AND s.delivered_at <= NOW() - INTERVAL '1 day'
@@ -35,6 +39,15 @@ async function autoReleaseEscrow() {
     `);
 
     for (const row of eligibleRes.rows) {
+      if (row.razorpay_payment_id && row.razorpay_account_id) {
+        await paymentService.createTransfer(row.razorpay_payment_id, {
+          account: row.razorpay_account_id,
+          amount: Number(row.amount_held),
+          currency: 'INR',
+          notes: { escrow_id: String(row.escrow_id) }
+        });
+      }
+
       // 1. Update escrow status
       await client.query(`
         UPDATE escrow 
@@ -102,10 +115,13 @@ async function releaseEscrowManually(orderId, buyerId) {
     await client.query('BEGIN');
 
     const escrowRes = await client.query(
-      `SELECT e.*, o.buyer_id, u.email as seller_email, u.name as seller_name 
+      `SELECT e.*, o.buyer_id, u.email as seller_email, u.name as seller_name,
+              p.razorpay_payment_id, pr.razorpay_account_id
        FROM escrow e
        JOIN orders o ON o.id = e.order_id
        JOIN users u ON u.id = e.seller_id
+       LEFT JOIN profiles pr ON pr.user_id = e.seller_id
+       LEFT JOIN payments p ON p.order_id = e.order_id AND p.status = 'paid'
        WHERE e.order_id = $1 FOR UPDATE OF e`,
       [orderId]
     );
@@ -115,6 +131,15 @@ async function releaseEscrowManually(orderId, buyerId) {
     if (escrow.buyer_id !== buyerId) throw new Error('unauthorized_action');
     if (escrow.status === 'released') throw new Error('already_released');
     if (escrow.status === 'disputed' || escrow.status === 'refunded') throw new Error('cannot_release_in_current_state');
+
+    if (escrow.razorpay_payment_id && escrow.razorpay_account_id) {
+      await paymentService.createTransfer(escrow.razorpay_payment_id, {
+        account: escrow.razorpay_account_id,
+        amount: Number(escrow.amount_held),
+        currency: 'INR',
+        notes: { escrow_id: String(escrow.id) }
+      });
+    }
 
     // Release
     await client.query(`UPDATE escrow SET status = 'released', released_at = NOW(), updated_at = NOW() WHERE id = $1`, [escrow.id]);

@@ -104,22 +104,96 @@ async function updateReportStatus(req, res, next) {
   }
 }
 
+async function getDisputes(req, res, next) {
+  try {
+    const result = await db.query(
+      `SELECT d.*, 
+              o.buyer_id, o.seller_id, o.total_amount, o.status as order_status,
+              u.email as initiator_email, u.name as initiator_name
+       FROM disputes d
+       JOIN orders o ON o.id = d.order_id
+       JOIN users u ON u.id = d.initiator_id
+       ORDER BY d.created_at DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function adminResolveDispute(req, res, next) {
   try {
     const { id } = req.params;
-    const { resolution } = req.body;
+    const { resolution, action } = req.body; // action: 'refund' or 'release'
     if (!resolution) return res.status(400).json({ error: 'resolution_required' });
+    if (!['refund', 'release', 'dismiss'].includes(action)) return res.status(400).json({ error: 'action_required (refund, release, dismiss)' });
     
-    // Admin forces the dispute to be resolved
-    const result = await db.query(
-      `UPDATE disputes
-       SET status = 'resolved', resolution = $1, resolved_by = $2, resolved_at = NOW()
-       WHERE id = $3
-       RETURNING *`,
-      [resolution, req.userId, id]
+    // Fetch dispute + order
+    const disputeRes = await db.query(
+      `SELECT d.*, o.buyer_id, o.seller_id
+       FROM disputes d
+       JOIN orders o ON o.id = d.order_id
+       WHERE d.id = $1`,
+      [id]
     );
 
-    if (result.rows.length === 0) return res.status(404).json({ error: 'dispute_not_found' });
+    const dispute = disputeRes.rows[0];
+    if (!dispute) return res.status(404).json({ error: 'dispute_not_found' });
+
+    if (['resolved', 'dismissed'].includes(dispute.status)) {
+      return res.status(400).json({ error: 'dispute_already_closed' });
+    }
+
+    const newStatus = action === 'refund' ? 'resolved' : 'dismissed';
+
+    const result = await db.query(
+      `UPDATE disputes
+       SET status = $1, resolution = $2, resolved_by = $3, resolved_at = NOW()
+       WHERE id = $4
+       RETURNING *`,
+      [newStatus, resolution, req.userId, id]
+    );
+
+    // Apply financial logic
+    const paymentService = require('../services/paymentService');
+    const paymentRes = await db.query("SELECT razorpay_payment_id FROM payments WHERE order_id = $1 AND status = 'paid' LIMIT 1", [dispute.order_id]);
+    const paymentId = paymentRes.rows[0]?.razorpay_payment_id;
+
+    if (action === 'refund') {
+      if (paymentId) {
+        try {
+          await paymentService.refundPayment(paymentId, { notes: { reason: 'Admin resolved dispute in favor of buyer' } });
+        } catch (err) {
+          console.error('Failed to trigger refund on Razorpay:', err);
+        }
+      }
+      await db.query("UPDATE escrow SET status = 'refunded', updated_at = NOW() WHERE order_id = $1", [dispute.order_id]);
+      await db.query("UPDATE orders SET status = 'refunded', updated_at = NOW() WHERE id = $1", [dispute.order_id]);
+      await db.query("INSERT INTO escrow_audit_log (escrow_id, old_status, new_status, actor_id, reason, created_at) VALUES ($1, $2, 'refunded', $3, 'Admin resolved dispute', NOW())", [dispute.escrow_id, 'disputed', req.userId]);
+    } else if (action === 'release' || action === 'dismiss') {
+      const sellerRes = await db.query('SELECT razorpay_account_id FROM profiles WHERE user_id = $1', [dispute.seller_id]);
+      const sellerAccountId = sellerRes.rows[0]?.razorpay_account_id;
+      
+      if (paymentId && sellerAccountId) {
+        const orderRes = await db.query('SELECT total_amount FROM orders WHERE id = $1', [dispute.order_id]);
+        const sellerAmount = Math.floor(Number(orderRes.rows[0].total_amount) * 0.90); // 10% fee
+        try {
+          await paymentService.createTransfer(paymentId, {
+            account: sellerAccountId,
+            amount: sellerAmount,
+            currency: 'INR',
+            notes: { name: 'Escrow release by Admin for order ' + dispute.order_id },
+            on_hold: false
+          });
+        } catch (err) {
+          console.error('Failed to trigger transfer to seller:', err);
+        }
+      }
+      await db.query("UPDATE escrow SET status = 'released', released_at = NOW(), updated_at = NOW() WHERE order_id = $1", [dispute.order_id]);
+      await db.query("UPDATE orders SET status = 'completed', updated_at = NOW() WHERE id = $1", [dispute.order_id]);
+      await db.query("INSERT INTO escrow_audit_log (escrow_id, old_status, new_status, actor_id, reason, created_at) VALUES ($1, $2, 'released', $3, 'Admin dismissed dispute', NOW())", [dispute.escrow_id, 'disputed', req.userId]);
+    }
+
     res.json(result.rows[0]);
   } catch (err) {
     next(err);
@@ -219,5 +293,6 @@ module.exports = {
   updateReportStatus,
   adminResolveDispute,
   reviewKyc,
-  getPendingKyc
+  getPendingKyc,
+  getDisputes
 };
