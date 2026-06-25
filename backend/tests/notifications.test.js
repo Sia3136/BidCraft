@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');
@@ -58,7 +59,7 @@ describe('Notifications API Integration Tests', () => {
         description: 'Bidding items',
         category_id: categoryId,
         condition: 'New',
-        photos: ['https://example.com/notif.jpg'],
+        photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
         listing_type: 'auction',
         price: 100.00
       });

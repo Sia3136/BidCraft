@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');

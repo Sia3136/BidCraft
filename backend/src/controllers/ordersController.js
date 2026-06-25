@@ -167,6 +167,16 @@ async function updateOrderStatus(req, res, next) {
         [order.total_amount, order.seller_id]
       );
       
+      // Update shipments record
+      try {
+        await db.query(
+          "UPDATE shipments SET status = 'delivered', delivered_at = NOW(), updated_at = NOW() WHERE order_id = $1",
+          [id]
+        );
+      } catch (shipErr) {
+        console.error('Shipment transition to delivered failed:', shipErr);
+      }
+
       // Update escrow record to 'inspection' to start the 24-hour window
       try {
         await db.query(

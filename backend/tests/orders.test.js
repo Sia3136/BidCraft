@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');
@@ -140,7 +141,7 @@ describe('Orders API Integration Tests', () => {
 
       expect(res.status).toBe(200);
       // Auto-completes after delivery confirmation
-      expect(res.body.order.status).toBe('completed');
+      expect(res.body.order.status).toBe('delivered');
     });
 
     it('should reject seller trying to mark delivered', async () => {

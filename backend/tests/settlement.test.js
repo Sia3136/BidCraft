@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');
@@ -43,7 +44,7 @@ describe('Auction Settlement Integration Tests', () => {
     // Create listing
     const lRes = await request(app).post('/api/listings').set('Authorization', `Bearer ${sellerToken}`)
       .send({ title: `Settle Test Listing ${Date.now()}`, category_id: categoryId, condition: 'New',
-              photos: ['https://example.com/p.jpg'], listing_type: 'auction' });
+              photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'], listing_type: 'auction' });
     const listingId = lRes.body.listing.id;
 
     // Create auction with past end_time if endedAlready

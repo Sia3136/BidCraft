@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');
@@ -38,7 +39,7 @@ describe('Wishlist API Integration Tests', () => {
         description: 'A wishable item',
         category_id: categoryId,
         condition: 'Used',
-        photos: ['https://example.com/item.jpg'],
+        photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
         listing_type: 'fixed',
         price: 100.00
       });

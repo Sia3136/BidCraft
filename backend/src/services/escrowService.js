@@ -27,7 +27,7 @@ async function autoReleaseEscrow() {
       JOIN users u ON u.id = e.seller_id
       LEFT JOIN profiles pr ON pr.user_id = e.seller_id
       LEFT JOIN payments p ON p.order_id = e.order_id AND p.status = 'paid'
-      WHERE e.status = 'held'
+      WHERE e.status = 'inspection'
         AND s.status = 'delivered'
         AND s.delivered_at <= NOW() - INTERVAL '1 day'
         AND NOT EXISTS (
@@ -58,7 +58,7 @@ async function autoReleaseEscrow() {
       // 2. Add audit log
       await client.query(`
         INSERT INTO escrow_audit_log (escrow_id, old_status, new_status, reason, created_at)
-        VALUES ($1, 'held', 'released', 'System auto-release after 24 hours', NOW())
+        VALUES ($1, 'inspection', 'released', 'System auto-release after 24 hours', NOW())
       `, [row.escrow_id]);
 
       // 3. Update order status if not already completed/closed

@@ -1,3 +1,4 @@
+jest.mock('../src/services/paymentService', () => require('../src/services/__mocks__/paymentService'));
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/utils/db');
@@ -48,7 +49,7 @@ describe('Listings Integration Tests', () => {
           description: 'A great test item',
           category_id: categoryId,
           condition: 'New',
-          photos: ['https://example.com/photo1.jpg'],
+          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
           listing_type: 'fixed',
           price: 500.00
         });
@@ -67,7 +68,7 @@ describe('Listings Integration Tests', () => {
           description: 'No title provided',
           category_id: categoryId,
           condition: 'New',
-          photos: ['https://example.com/photo.jpg'],
+          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
           listing_type: 'fixed'
         });
 

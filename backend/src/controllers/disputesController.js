@@ -1,7 +1,7 @@
 const db = require('../utils/db');
 const Joi = require('joi');
 
-const ELIGIBLE_ORDER_STATUSES = new Set(['paid', 'shipped', 'delivered', 'completed']);
+const ELIGIBLE_ORDER_STATUSES = new Set(['paid', 'shipped', 'delivered', 'inspection', 'completed']);
 
 const createDisputeSchema = Joi.object({
   order_id:      Joi.number().integer().required(),
@@ -68,7 +68,7 @@ async function createDispute(req, res, next) {
     } else {
       // Use a workaround: insert with a placeholder approach — but escrow_id is NOT NULL
       // We'll create a minimal escrow record if order is paid
-      if (['paid', 'shipped', 'delivered', 'completed'].includes(order.status)) {
+      if (['paid', 'shipped', 'delivered', 'inspection', 'completed'].includes(order.status)) {
         const newEscrowRes = await db.query(
           `INSERT INTO escrow (order_id, buyer_id, seller_id, amount_held, status, created_at, updated_at)
            VALUES ($1, $2, $3, $4, 'held', NOW(), NOW())
