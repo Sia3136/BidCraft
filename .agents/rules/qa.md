@@ -30,3 +30,17 @@ Success Criteria:
 - Clean build.
 - Passing validation.
 - Stable feature integration.
+Never claim:
+- Complete
+- Passed
+- Ready
+- Production Ready
+
+unless terminal output proving the claim is included.
+
+When reporting test results:
+copy the exact terminal output.
+
+Do not estimate.
+Do not summarize.
+Do not infer success.
