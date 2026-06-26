@@ -33,6 +33,11 @@ describe('KYC Identity Verification API Integration Tests', () => {
   });
 
   afterAll(async () => {
+    await db.query("DELETE FROM disputes WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%'))");
+    await db.query("DELETE FROM escrow WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%'))");
+    await db.query("DELETE FROM payments WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%'))");
+    await db.query("DELETE FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%')");
+    await db.query("DELETE FROM orders WHERE buyer_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%')");
     await db.query("DELETE FROM profiles WHERE user_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%')");
     await db.query("DELETE FROM notifications WHERE user_id IN (SELECT id FROM users WHERE email LIKE 'test-kyc-%')");
     await db.query("DELETE FROM users WHERE email LIKE 'test-kyc-%'");
@@ -59,7 +64,17 @@ describe('KYC Identity Verification API Integration Tests', () => {
       const res = await request(app)
         .post('/api/profile/kyc')
         .set('Authorization', `Bearer ${userToken}`)
-        .send({ document_type: 'aadhar', document_url: 'https://example.com/aadhar.png' });
+        .send({ 
+          document_type: 'aadhar', 
+          document_url: 'https://example.com/aadhar.png',
+          pan_number: 'ABCDE1234F',
+          bank_account_number: '1234567890',
+          bank_ifsc: 'HDFC0001234'
+        });
+
+      if (res.status !== 200) {
+        console.error('KYC Submit Error:', res.body);
+      }
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
@@ -90,6 +105,7 @@ describe('KYC Identity Verification API Integration Tests', () => {
       expect(Array.isArray(res.body)).toBe(true);
       
       const application = res.body.find(a => a.id === userId);
+      console.log('RES BODY:', res.body, 'USER ID:', userId);
       expect(application).toBeDefined();
       expect(application.kyc_status).toBe('pending');
       expect(application.kyc_document_type).toBe('aadhar');

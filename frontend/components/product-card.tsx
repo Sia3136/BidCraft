@@ -18,7 +18,7 @@ interface ProductCardProps {
   reviews: number
   methods: string[]
   badge?: string
-  currentBid?: number
+  currentBid?: number | null
   bidCount?: number
   endsIn?: string
   isWatchlisted?: boolean

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, use } from 'react'
 import Script from 'next/script'
+import { useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/sections/footer'
 import { useAuth } from '@/lib/auth-context'
@@ -10,6 +11,7 @@ import { CountdownTimer } from '@/components/countdown-timer'
 import { ListingQA } from '@/components/listing-qa'
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter()
   const { id } = use(params)
   const { user, refreshUser } = useAuth()
   const [listing, setListing] = useState<any>(null)
