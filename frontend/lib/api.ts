@@ -116,3 +116,10 @@ export const adminApi = {
     api.patch(`/admin/disputes/${id}/resolve`, { resolution, action }),
 };
 
+export const creatorsApi = {
+  /** GET /api/creators — public discovery, sortable */
+  discover: (sort: 'followers' | 'rating' | 'newest' = 'followers', limit = 20, offset = 0) =>
+    api.get(`/creators?sort=${sort}&limit=${limit}&offset=${offset}`),
+  /** GET /api/profile/analytics — own seller analytics (requires auth) */
+  analytics: () => api.get('/profile/analytics'),
+};

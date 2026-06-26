@@ -1,5 +1,6 @@
 const db = require('../utils/db');
 const Joi = require('joi');
+const notificationService = require('../services/notificationService');
 
 const createListingSchema = Joi.object({
   title: Joi.string().max(250).required(),
@@ -45,7 +46,29 @@ async function createListing(req, res, next) {
       [sellerId, title, description || null, category_id, condition, photosJson, listing_type, price || null, status || 'active']
     );
 
-    res.status(201).json({ listing: result.rows[0] });
+    const listing = result.rows[0];
+    res.status(201).json({ listing });
+
+    // Async: notify all followers of this seller about the new listing
+    setImmediate(async () => {
+      try {
+        const followersRes = await db.query(
+          'SELECT follower_id FROM follows WHERE seller_id = $1',
+          [sellerId]
+        );
+        for (const { follower_id } of followersRes.rows) {
+          await notificationService.createNotification(null, {
+            userId: follower_id,
+            type: 'new_listing',
+            title: 'New Listing from a seller you follow',
+            message: `A seller you follow just listed "${listing.title}".`,
+            data: { listing_id: listing.id, seller_id: sellerId }
+          });
+        }
+      } catch (err) {
+        console.error('[createListing] Failed to notify followers:', err.message);
+      }
+    });
   } catch (err) {
     next(err);
   }

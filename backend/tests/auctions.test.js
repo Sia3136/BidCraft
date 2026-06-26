@@ -67,10 +67,16 @@ describe('Auctions and Bidding Integration Tests', () => {
   });
 
   afterAll(async () => {
-    // Cleanup
+    // Cleanup — order matters: dependent tables first, users last
+    await db.query("DELETE FROM disputes WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%'))");
+    await db.query("DELETE FROM escrow WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%'))");
+    await db.query("DELETE FROM payments WHERE order_id IN (SELECT id FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%'))");
+    await db.query("DELETE FROM orders WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%')");
+    await db.query("DELETE FROM orders WHERE buyer_id IN (SELECT id FROM users WHERE email LIKE 'test-%')");
     await db.query("DELETE FROM bids WHERE auction_id IN (SELECT id FROM auctions WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%'))");
     await db.query("DELETE FROM auctions WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%')");
     await db.query("DELETE FROM listings WHERE seller_id IN (SELECT id FROM users WHERE email LIKE 'test-%')");
+    await db.query("DELETE FROM profiles WHERE user_id IN (SELECT id FROM users WHERE email LIKE 'test-%')");
     await db.query("DELETE FROM users WHERE email LIKE 'test-%'");
     await db.pool.end();
   });

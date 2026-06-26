@@ -207,4 +207,121 @@ async function submitKyc(req, res, next) {
   }
 }
 
-module.exports = { getMyProfile, updateMyProfile, getPublicProfile, submitKyc };
+/**
+ * GET /api/profile/analytics
+ * Returns seller analytics: sales, revenue, listing performance, follower count.
+ * Auth required (own data only).
+ */
+async function getMyAnalytics(req, res, next) {
+  try {
+    const userId = req.userId;
+
+    // Total orders + revenue as seller
+    const salesRes = await db.query(
+      `SELECT
+         COUNT(*)::int                                    AS total_orders,
+         COALESCE(SUM(total_amount), 0)::numeric         AS total_revenue,
+         COUNT(CASE WHEN status = 'completed' THEN 1 END)::int AS completed_orders,
+         COUNT(CASE WHEN status = 'refunded'  THEN 1 END)::int AS refunded_orders
+       FROM orders
+       WHERE seller_id = $1`,
+      [userId]
+    );
+
+    // Active / sold / archived listing counts
+    const listingsRes = await db.query(
+      `SELECT
+         COUNT(*)::int                                           AS total_listings,
+         COUNT(CASE WHEN status = 'active' THEN 1 END)::int     AS active_listings,
+         COUNT(CASE WHEN status = 'sold'   THEN 1 END)::int     AS sold_listings,
+         COUNT(CASE WHEN listing_type = 'auction' THEN 1 END)::int AS auction_listings,
+         COUNT(CASE WHEN listing_type = 'fixed'   THEN 1 END)::int AS fixed_listings
+       FROM listings
+       WHERE seller_id = $1 AND status != 'archived'`,
+      [userId]
+    );
+
+    // Follower count
+    const followersRes = await db.query(
+      `SELECT COUNT(*)::int AS follower_count FROM follows WHERE seller_id = $1`,
+      [userId]
+    );
+
+    // Average rating
+    const ratingRes = await db.query(
+      `SELECT
+         COUNT(*)::int                        AS total_reviews,
+         COALESCE(ROUND(AVG(rating)::numeric, 2), 0) AS average_rating
+       FROM reviews
+       WHERE reviewee_id = $1`,
+      [userId]
+    );
+
+    // Recent 30-day revenue
+    const recentRes = await db.query(
+      `SELECT COALESCE(SUM(total_amount), 0)::numeric AS revenue_30d,
+              COUNT(*)::int AS orders_30d
+       FROM orders
+       WHERE seller_id = $1
+         AND status = 'completed'
+         AND created_at >= NOW() - INTERVAL '30 days'`,
+      [userId]
+    );
+
+    res.json({
+      sales:     salesRes.rows[0],
+      listings:  listingsRes.rows[0],
+      followers: followersRes.rows[0],
+      reviews:   ratingRes.rows[0],
+      recent:    recentRes.rows[0]
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /api/creators
+ * Public creator discover page.
+ * Query: ?sort=followers|rating|newest&limit=20&offset=0
+ */
+async function getCreators(req, res, next) {
+  try {
+    const { sort = 'followers', limit = 20, offset = 0 } = req.query;
+    const safeLimit  = Math.min(Number(limit)  || 20, 100);
+    const safeOffset = Math.max(Number(offset) || 0,  0);
+
+    let orderBy;
+    if (sort === 'rating')      orderBy = 'p.trust_score DESC NULLS LAST';
+    else if (sort === 'newest') orderBy = 'u.created_at DESC';
+    else                        orderBy = 'follower_count DESC NULLS LAST'; // default: followers
+
+    const result = await db.query(
+      `SELECT
+         u.id, u.name, u.avatar_url, u.created_at,
+         p.bio, p.is_verified, p.trust_score, p.total_sales,
+         COUNT(DISTINCT f.follower_id)::int AS follower_count,
+         COUNT(DISTINCT l.id)::int          AS active_listing_count,
+         COALESCE(ROUND(AVG(r.rating)::numeric, 2), 0) AS average_rating,
+         COUNT(DISTINCT r.id)::int AS total_reviews
+       FROM users u
+       LEFT JOIN profiles p ON p.user_id = u.id
+       LEFT JOIN follows f  ON f.seller_id = u.id
+       LEFT JOIN listings l ON l.seller_id = u.id AND l.status = 'active'
+       LEFT JOIN reviews r  ON r.reviewee_id = u.id
+       WHERE u.role != 'admin'
+       GROUP BY u.id, u.name, u.avatar_url, u.created_at,
+                p.bio, p.is_verified, p.trust_score, p.total_sales
+       HAVING COUNT(DISTINCT l.id) > 0
+       ORDER BY ${orderBy}
+       LIMIT $1 OFFSET $2`,
+      [safeLimit, safeOffset]
+    );
+
+    res.json({ creators: result.rows, limit: safeLimit, offset: safeOffset });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { getMyProfile, updateMyProfile, getPublicProfile, submitKyc, getMyAnalytics, getCreators };

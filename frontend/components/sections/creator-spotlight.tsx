@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { CreatorCard } from '../creator-card'
-import { listingsApi } from '@/lib/api'
+import { creatorsApi } from '@/lib/api'
 
 export function CreatorSpotlightSection() {
   const [creators, setCreators] = useState<any[]>([])
@@ -11,30 +12,10 @@ export function CreatorSpotlightSection() {
   useEffect(() => {
     async function loadCreators() {
       try {
-        const data = await listingsApi.list()
-        const items = data.listings || []
-        
-        const sellerMap = new Map()
-        items.forEach((item: any) => {
-          if (item.seller_id && !sellerMap.has(item.seller_id)) {
-            sellerMap.set(item.seller_id, {
-              id: String(item.seller_id),
-              name: item.seller_name || item.seller?.name || `Creator #${item.seller_id}`,
-              image: item.seller?.avatar_url || `/creator-${(item.seller_id % 8) + 1}.png`,
-              trustScore: 98,
-              rating: 5.0,
-              followers: Math.floor(Math.random() * 5000),
-              products: 1,
-              verified: true,
-            })
-          } else if (item.seller_id) {
-            const creator = sellerMap.get(item.seller_id)
-            creator.products += 1
-          }
-        })
-        setCreators(Array.from(sellerMap.values()).slice(0, 6))
+        const data = await creatorsApi.discover('followers', 6, 0)
+        setCreators(data.creators || [])
       } catch (e) {
-        console.error("Failed to load creators", e)
+        console.error('Failed to load creators', e)
       } finally {
         setLoading(false)
       }
@@ -65,15 +46,25 @@ export function CreatorSpotlightSection() {
             <h2 className="text-3xl font-bold text-foreground">Creator Spotlight</h2>
             <p className="text-muted-foreground mt-1">Meet our top verified creators</p>
           </div>
-          <button className="px-4 py-2 text-primary font-semibold hover:bg-primary/10 rounded-lg transition-colors">
+          <Link href="/creators" className="px-4 py-2 text-primary font-semibold hover:bg-primary/10 rounded-lg transition-colors">
             View All →
-          </button>
+          </Link>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {creators.map((creator) => (
-            <CreatorCard key={creator.id} {...creator} />
+            <CreatorCard
+              key={creator.id}
+              id={String(creator.id)}
+              name={creator.name}
+              image={creator.avatar_url || `/creator-${(creator.id % 8) + 1}.png`}
+              trustScore={Math.round((Number(creator.trust_score) || 0) * 100)}
+              rating={Number(creator.average_rating) || 0}
+              followers={Number(creator.follower_count) || 0}
+              products={Number(creator.active_listing_count) || 0}
+              verified={creator.is_verified || false}
+            />
           ))}
         </div>
       </div>

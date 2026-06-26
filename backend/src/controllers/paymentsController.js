@@ -50,7 +50,7 @@ async function createPaymentOrder(req, res, next) {
       rpOrder = { id: payment.provider_order_id || payment.razorpay_order_id };
     } else {
       // Create Razorpay order
-      console.log('CREATE ORDER CALLED, MOCK:', paymentService.createOrder); rpOrder = await paymentService.createOrder({
+      rpOrder = await paymentService.createOrder({
         amount: Number(order.total_amount),
         currency: 'INR',
         receipt: `order_${order_id}`,
