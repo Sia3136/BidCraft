@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { AuthModal } from '@/components/auth-modal'
+import { NotificationBell } from '@/components/notification-bell'
 
 function SearchBar() {
   const router = useRouter()
@@ -72,10 +73,7 @@ export function Navbar() {
             <button className="hidden sm:block px-4 py-2 text-foreground hover:text-primary transition-colors font-medium">
               Sell
             </button>
-            <button className="relative px-3 py-2 text-foreground hover:text-primary transition-colors">
-              🛎️
-              <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
-            </button>
+            <NotificationBell />
             
             {user ? (
               <div className="flex items-center gap-3">

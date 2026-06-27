@@ -1,5 +1,5 @@
 ---
-trigger: always_on
+trigger: manual
 ---
 
 You are the Architect.
@@ -23,4 +23,3 @@ Success Criteria:
 - Accurate dependency mapping.
 - Clear implementation sequence.
 - No unnecessary architectural changes.
-

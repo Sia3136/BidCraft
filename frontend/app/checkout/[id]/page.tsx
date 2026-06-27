@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
 import { useAuth } from '@/lib/auth-context'
 import { listingsApi, paymentsApi } from '@/lib/api'
+import { ShippingForm, ShippingAddress } from '@/components/shipping-form'
 
 export default function CheckoutPage() {
   const { id } = useParams()
@@ -15,6 +16,15 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true)
   const [purchasing, setPurchasing] = useState(false)
   const [step, setStep] = useState<'review' | 'payment' | 'success'>('review')
+  const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
+    fullName: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: ''
+  })
 
   useEffect(() => {
     async function load() {
@@ -36,6 +46,11 @@ export default function CheckoutPage() {
       return
     }
 
+    if (!shippingAddress.fullName || !shippingAddress.addressLine1 || !shippingAddress.city || !shippingAddress.state || !shippingAddress.postalCode || !shippingAddress.country) {
+      alert('Please fill out all required shipping address fields.')
+      return
+    }
+
     try {
       setPurchasing(true)
       
@@ -46,7 +61,7 @@ export default function CheckoutPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         },
-        body: JSON.stringify({ listing_id: listing.id })
+        body: JSON.stringify({ listing_id: listing.id, shipping_address: shippingAddress })
       })
 
       if (!orderRes.ok) {
@@ -131,13 +146,11 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-8">
                 <section>
-                  <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
                   <div className="bg-card p-6 rounded-xl border border-border">
-                    <p className="text-sm text-muted-foreground mb-4">Select or add a shipping address</p>
-                    <textarea 
-                      placeholder="Full Address, City, ZIP Code" 
-                      className="w-full p-3 bg-muted/50 border border-border rounded-lg"
-                      rows={3}
+                    <ShippingForm 
+                      value={shippingAddress} 
+                      onChange={setShippingAddress}
+                      disabled={purchasing || step === 'success'}
                     />
                   </div>
                 </section>

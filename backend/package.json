@@ -28,6 +28,7 @@
     "node-cron": "^4.4.1",
     "pg": "^8.11.0",
     "razorpay": "^2.9.6",
+    "socket.io": "^4.8.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {

@@ -8,6 +8,7 @@
  *   - Handles no-bid and reserve-not-met cases
  */
 const db = require('../utils/db');
+const { getIo } = require('../socket');
 
 /**
  * Close an auction and create the resulting order.
@@ -196,6 +197,17 @@ async function closeAuction(auctionId) {
       }
     } catch (emailErr) {
       console.error('Failed to send settlement emails:', emailErr);
+    }
+
+    try {
+      const io = getIo();
+      io.to(`auction_${auctionId}`).emit('auction_ended', {
+        auction_id: auctionId,
+        winner_id: winningBid.bidder_id,
+        winning_bid: winningBid.bid_amount
+      });
+    } catch (ioErr) {
+      console.error('Socket.io error on auction_ended:', ioErr);
     }
 
     await client.query('COMMIT');

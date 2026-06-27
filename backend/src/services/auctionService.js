@@ -1,5 +1,6 @@
 const db = require('../utils/db');
 const { resolveStatus } = require('../utils/auctionLifecycle');
+const { getIo } = require('../socket');
 
 async function placeBid({ auctionId, bidderId, bidAmount }) {
   const client = await db.pool.connect();
@@ -65,6 +66,19 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
       [bidAmount, auctionId]
     );
 
+    // Emit real-time bid_placed event
+    try {
+      const io = getIo();
+      io.to(`auction_${auctionId}`).emit('bid_placed', {
+        auction_id: auctionId,
+        bidder_id: bidderId,
+        bid_amount: bidAmount,
+        created_at: new Date().toISOString()
+      });
+    } catch (ioErr) {
+      console.error('Socket.io error on bid_placed:', ioErr);
+    }
+
     // If there is a previous highest bidder and they are not the current bidder, notify them
     if (prevBid && prevBid.bidder_id !== bidderId) {
       const notificationService = require('./notificationService');
@@ -75,6 +89,18 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
         message: `You have been outbid on "${listingTitle}". The new highest bid is ${bidAmount}.`,
         data: { auction_id: auctionId, new_bid_amount: bidAmount }
       });
+
+      // Emit outbid event to specific user (requires them to join a room with their user ID)
+      try {
+        const io = getIo();
+        io.to(`user_${prevBid.bidder_id}`).emit('outbid', {
+          auction_id: auctionId,
+          listing_title: listingTitle,
+          new_bid_amount: bidAmount
+        });
+      } catch (ioErr) {
+        console.error('Socket.io error on outbid:', ioErr);
+      }
 
       // Send transactional email
       try {

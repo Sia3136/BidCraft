@@ -121,21 +121,25 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
 }
 
 @layer utilities {
+
   /* Fade up animation for scroll sections */
   @keyframes fadeUp {
     from {
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -148,6 +152,7 @@
       transform: translateY(0);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
+
     to {
       transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -202,6 +207,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

@@ -7,6 +7,7 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/sections/footer'
 import { useAuth } from '@/lib/auth-context'
 import { listingsApi, auctionsApi, ordersApi, paymentsApi, profileApi, wishlistApi } from '@/lib/api'
+import { useSocket } from '@/lib/useSocket'
 import { CountdownTimer } from '@/components/countdown-timer'
 import { ListingQA } from '@/components/listing-qa'
 
@@ -21,6 +22,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [error, setError] = useState<string | null>(null)
   const [isWatchlisted, setIsWatchlisted] = useState(false)
   const [watchLoading, setWatchLoading] = useState(false)
+  const socket = useSocket()
   
   // Checkout & Bid state
   const [bidAmount, setBidAmount] = useState('')
@@ -74,6 +76,44 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   useEffect(() => {
     loadData()
   }, [id, user])
+
+  useEffect(() => {
+    if (!socket || !auction?.id) return
+
+    socket.emit('join_auction', auction.id)
+
+    const handleBidPlaced = (data: any) => {
+      setAuction((prev: any) => ({ ...prev, current_bid: data.bid_amount }))
+      setBids((prev: any) => [
+        {
+          id: data.bidder_id + '_' + Date.now(),
+          bidder_name: 'Bidder #' + data.bidder_id,
+          bid_amount: data.bid_amount,
+          created_at: data.created_at,
+        },
+        ...prev,
+      ])
+      // Only auto-update bid input if it's currently less than new minimum
+      setBidAmount((prevAmount) => {
+        const minReq = Number(data.bid_amount) + Number(auction.min_bid_increment || 10)
+        return Number(prevAmount) < minReq ? String(minReq) : prevAmount
+      })
+    }
+
+    const handleAuctionEnded = (data: any) => {
+      setAuction((prev: any) => ({ ...prev, status: 'closed' }))
+      alert('This auction has ended!')
+    }
+
+    socket.on('bid_placed', handleBidPlaced)
+    socket.on('auction_ended', handleAuctionEnded)
+
+    return () => {
+      socket.off('bid_placed', handleBidPlaced)
+      socket.off('auction_ended', handleAuctionEnded)
+      socket.emit('leave_auction', auction.id)
+    }
+  }, [socket, auction?.id, auction?.min_bid_increment])
 
   const toggleWatchlist = async () => {
     if (!user) {
