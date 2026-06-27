@@ -7,6 +7,9 @@ const adminController = require('../controllers/adminController');
 router.use(auth);
 router.use(adminMiddleware);
 
+// Analytics
+router.get('/analytics', adminController.getAnalytics);
+
 // User Management
 router.get('/users', adminController.getUsers);
 router.patch('/users/:id/role', adminController.updateUserRole);

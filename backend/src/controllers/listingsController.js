@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const Joi = require('joi');
 const notificationService = require('../services/notificationService');
+const redis = require('../utils/redis');
 
 const createListingSchema = Joi.object({
   title: Joi.string().max(250).required(),
@@ -47,6 +48,19 @@ async function createListing(req, res, next) {
     );
 
     const listing = result.rows[0];
+    
+    // Invalidate listings cache
+    if (redis) {
+      try {
+        const keys = await redis.keys('cache:listings:*');
+        for (const key of keys) {
+          await redis.del(key);
+        }
+      } catch (e) {
+        console.error('Redis cache invalidation error:', e);
+      }
+    }
+
     res.status(201).json({ listing });
 
     // Async: notify all followers of this seller about the new listing
@@ -76,42 +90,138 @@ async function createListing(req, res, next) {
 
 async function getListings(req, res, next) {
   try {
-    const { category_id, listing_type, status, search, seller_id } = req.query;
+    const { category_id, listing_type, status, search, seller_id, min_price, max_price, condition, sort_by, sort_dir, page = 1, limit = 20 } = req.query;
+
+    const cacheKey = `cache:listings:${JSON.stringify(req.query)}`;
+    
+    if (redis) {
+      try {
+        const cachedData = await redis.get(cacheKey);
+        if (cachedData) {
+          return res.json(typeof cachedData === 'string' ? JSON.parse(cachedData) : cachedData);
+        }
+      } catch (e) {
+        console.error('Redis cache get error:', e);
+      }
+    }
 
     let queryText = 'SELECT * FROM listings WHERE 1=1';
+    let countQuery = 'SELECT COUNT(*) FROM listings WHERE 1=1';
     const params = [];
+    const countParams = [];
 
     if (category_id) {
       params.push(category_id);
+      countParams.push(category_id);
       queryText += ` AND category_id = $${params.length}`;
+      countQuery += ` AND category_id = $${countParams.length}`;
     }
 
     if (listing_type) {
       params.push(listing_type);
+      countParams.push(listing_type);
       queryText += ` AND listing_type = $${params.length}`;
+      countQuery += ` AND listing_type = $${countParams.length}`;
     }
 
     if (seller_id) {
       params.push(seller_id);
+      countParams.push(seller_id);
       queryText += ` AND seller_id = $${params.length}`;
+      countQuery += ` AND seller_id = $${countParams.length}`;
     }
 
     if (status) {
       params.push(status);
+      countParams.push(status);
       queryText += ` AND status = $${params.length}`;
+      countQuery += ` AND status = $${countParams.length}`;
     } else {
       queryText += " AND status != 'archived'";
+      countQuery += " AND status != 'archived'";
+    }
+
+    if (condition) {
+      params.push(condition);
+      countParams.push(condition);
+      queryText += ` AND condition = $${params.length}`;
+      countQuery += ` AND condition = $${countParams.length}`;
+    }
+
+    if (min_price) {
+      params.push(min_price);
+      countParams.push(min_price);
+      queryText += ` AND COALESCE(price, 0) >= $${params.length}`;
+      countQuery += ` AND COALESCE(price, 0) >= $${countParams.length}`;
+    }
+
+    if (max_price) {
+      params.push(max_price);
+      countParams.push(max_price);
+      queryText += ` AND COALESCE(price, 0) <= $${params.length}`;
+      countQuery += ` AND COALESCE(price, 0) <= $${countParams.length}`;
     }
 
     if (search) {
       params.push(search);
+      countParams.push(search);
       queryText += ` AND to_tsvector('english', title) @@ plainto_tsquery('english', $${params.length})`;
+      countQuery += ` AND to_tsvector('english', title) @@ plainto_tsquery('english', $${countParams.length})`;
     }
 
-    queryText += ' ORDER BY created_at DESC';
+    // Sorting
+    const validSortFields = ['created_at', 'price', 'end_time'];
+    const validSortDirs = ['asc', 'desc'];
+    
+    const sortField = validSortFields.includes(sort_by) ? sort_by : 'created_at';
+    const sortDirection = validSortDirs.includes(sort_dir?.toLowerCase()) ? sort_dir.toUpperCase() : 'DESC';
+    
+    // Sort by COALESCE(price, start_bid) if sorting by price
+    if (sortField === 'price') {
+       queryText += ` ORDER BY COALESCE(price, 0) ${sortDirection}`;
+    } else {
+       queryText += ` ORDER BY ${sortField} ${sortDirection}`;
+    }
 
-    const result = await db.query(queryText, params);
-    res.json({ listings: result.rows });
+    // Pagination
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 20;
+    const offset = (pageNum - 1) * limitNum;
+
+    params.push(limitNum);
+    queryText += ` LIMIT $${params.length}`;
+    
+    params.push(offset);
+    queryText += ` OFFSET $${params.length}`;
+
+    const [result, countResult] = await Promise.all([
+      db.query(queryText, params),
+      db.query(countQuery, countParams)
+    ]);
+    
+    const totalItems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limitNum);
+
+    const responseData = { 
+      listings: result.rows,
+      pagination: {
+        total: totalItems,
+        page: pageNum,
+        limit: limitNum,
+        totalPages
+      }
+    };
+
+    if (redis) {
+      try {
+        // Cache for 5 minutes (300 seconds)
+        await redis.set(cacheKey, JSON.stringify(responseData), { ex: 300 });
+      } catch (e) {
+        console.error('Redis cache set error:', e);
+      }
+    }
+
+    res.json(responseData);
   } catch (err) {
     next(err);
   }
@@ -120,9 +230,30 @@ async function getListings(req, res, next) {
 async function getListingById(req, res, next) {
   try {
     const { id } = req.params;
+    const cacheKey = `cache:listing:${id}`;
+
+    if (redis) {
+      try {
+        const cachedData = await redis.get(cacheKey);
+        if (cachedData) {
+          return res.json({ listing: typeof cachedData === 'string' ? JSON.parse(cachedData) : cachedData });
+        }
+      } catch (e) {
+        console.error('Redis cache get error:', e);
+      }
+    }
+
     const result = await db.query('SELECT * FROM listings WHERE id = $1', [id]);
     const listing = result.rows[0];
     if (!listing) return res.status(404).json({ error: 'listing_not_found' });
+
+    if (redis) {
+      try {
+        await redis.set(cacheKey, JSON.stringify(listing), { ex: 300 });
+      } catch (e) {
+        console.error('Redis cache set error:', e);
+      }
+    }
 
     res.json({ listing });
   } catch (err) {
@@ -165,6 +296,20 @@ async function updateListing(req, res, next) {
       RETURNING *`;
 
     const result = await db.query(queryText, params);
+    
+    // Invalidate cache
+    if (redis) {
+      try {
+        await redis.del(`cache:listing:${id}`);
+        const keys = await redis.keys('cache:listings:*');
+        for (const key of keys) {
+          await redis.del(key);
+        }
+      } catch (e) {
+        console.error('Redis cache invalidation error:', e);
+      }
+    }
+
     res.json({ listing: result.rows[0] });
   } catch (err) {
     next(err);
@@ -184,6 +329,20 @@ async function deleteListing(req, res, next) {
     // Mark as archived or physically delete. Let's do delete since cascade exists, but setting status to archived is safer for orders.
     // However, if we do cascade delete, let's just physically delete it as requested by standard CRUD.
     await db.query('DELETE FROM listings WHERE id = $1', [id]);
+    
+    // Invalidate cache
+    if (redis) {
+      try {
+        await redis.del(`cache:listing:${id}`);
+        const keys = await redis.keys('cache:listings:*');
+        for (const key of keys) {
+          await redis.del(key);
+        }
+      } catch (e) {
+        console.error('Redis cache invalidation error:', e);
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
     next(err);

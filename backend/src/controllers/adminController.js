@@ -10,6 +10,26 @@ async function getUsers(req, res, next) {
   }
 }
 
+async function getAnalytics(req, res, next) {
+  try {
+    const usersResult = await db.query('SELECT COUNT(*) FROM users');
+    const listingsResult = await db.query("SELECT COUNT(*) FROM listings WHERE status = 'active'");
+    const ordersResult = await db.query("SELECT COUNT(*) FROM orders WHERE status = 'completed'");
+    const revenueResult = await db.query("SELECT COALESCE(SUM(total_amount), 0) as total_revenue FROM orders WHERE status = 'completed'");
+    const disputesResult = await db.query("SELECT COUNT(*) FROM disputes WHERE status = 'open'");
+
+    res.json({
+      totalUsers: parseInt(usersResult.rows[0].count),
+      activeListings: parseInt(listingsResult.rows[0].count),
+      completedOrders: parseInt(ordersResult.rows[0].count),
+      totalRevenue: parseFloat(revenueResult.rows[0].total_revenue),
+      pendingDisputes: parseInt(disputesResult.rows[0].count)
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function updateUserRole(req, res, next) {
   try {
     const { id } = req.params;
@@ -284,6 +304,7 @@ async function getPendingKyc(req, res, next) {
 
 module.exports = {
   getUsers,
+  getAnalytics,
   updateUserRole,
   deleteUser,
   getListings,
