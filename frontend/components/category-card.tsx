@@ -1,25 +1,20 @@
 'use client'
 
+import Link from 'next/link'
+
 interface CategoryCardProps {
   name: string
   count: number
   color: string
 }
 
-export function CategoryCard({ name, count, color }: CategoryCardProps) {
+export function CategoryCard({ name, count }: CategoryCardProps) {
+  const href = `/category/${name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`
+  
   return (
-    <button className="group relative overflow-hidden rounded-xl h-32 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-      {/* Background */}
-      <div className={`absolute inset-0 ${color} opacity-80 group-hover:opacity-100 transition-opacity`}></div>
-
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10">
-        <h3 className="text-lg font-bold mb-1 group-hover:scale-110 transition-transform">{name}</h3>
-        <p className="text-sm opacity-90">{count.toLocaleString()} items</p>
-      </div>
-
-      {/* Overlay on hover */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
-    </button>
+    <Link href={href} className="group flex flex-col items-center justify-center rounded-[16px] h-32 border border-border bg-card hover:border-foreground/20 transition-all duration-300">
+      <h3 className="text-xl font-brand font-medium text-foreground mb-1 group-hover:-translate-y-0.5 transition-transform">{name}</h3>
+      <p className="text-[13px] text-muted-foreground">{count.toLocaleString()} items</p>
+    </Link>
   )
 }

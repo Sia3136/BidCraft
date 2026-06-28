@@ -71,7 +71,7 @@ export function ProductCard({
   }
 
   return (
-    <div className="group bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full border border-border">
+    <div className="group bg-card rounded-[16px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full border border-border">
       {/* Clickable Image & Title Area */}
       <Link href={`/listings/${id}`} className="block relative overflow-hidden bg-muted aspect-square">
         <img
@@ -143,29 +143,29 @@ export function ProductCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-auto flex gap-2">
+        <div className="mt-auto flex gap-2 pt-2">
           {methods.includes('AUCTION') && (
             <Link 
               href={`/listings/${id}`}
-              className="flex-1 bg-primary text-white py-2 rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors text-center block"
+              className="flex-1 bg-primary text-white py-2.5 rounded-[12px] text-xs font-semibold hover:bg-[#2B2B2B] transition-all text-center block shadow-sm"
             >
-              Bid
+              Bid Now
             </Link>
           )}
           {methods.includes('BUY_NOW') && (
             <Link 
               href={`/listings/${id}`}
-              className="flex-1 bg-secondary text-white py-2 rounded-lg text-xs font-semibold hover:bg-secondary/90 transition-colors text-center block"
+              className="flex-1 bg-primary text-white py-2.5 rounded-[12px] text-xs font-semibold hover:bg-[#2B2B2B] transition-all text-center block shadow-sm"
             >
-              Buy
+              Buy Now
             </Link>
           )}
           {methods.includes('OFFERS') && !methods.includes('BUY_NOW') && (
             <Link 
               href={`/listings/${id}`}
-              className="flex-1 border border-primary text-primary py-2 rounded-lg text-xs font-semibold hover:bg-primary/10 transition-colors text-center block"
+              className="flex-1 border border-border text-foreground py-2.5 rounded-[12px] text-xs font-semibold hover:bg-muted transition-all text-center block"
             >
-              Offer
+              Make Offer
             </Link>
           )}
         </div>

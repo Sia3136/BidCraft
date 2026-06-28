@@ -1,66 +1,145 @@
 'use client'
 
-import { ProductCard } from './product-card'
-import { PRODUCTS, MARKETPLACE_STATS } from '@/lib/mock-data'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+
+const SLIDES = [
+  {
+    id: 1,
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop',
+    headline: 'Curated Art',
+    subline: 'Contemporary paintings & sculptures.',
+    cta: 'Explore',
+    href: '/category/art'
+  },
+  {
+    id: 2,
+    image: 'https://images.unsplash.com/photo-1612423284934-2850a4ea6b0f?q=80&w=800&auto=format&fit=crop',
+    headline: 'Handmade Ceramics',
+    subline: 'Unique pottery crafted with care.',
+    cta: 'Shop Now',
+    href: '/category/crafts'
+  },
+  {
+    id: 3,
+    image: 'https://images.unsplash.com/photo-1581022295087-35e593704911?q=80&w=800&auto=format&fit=crop',
+    headline: 'Trending Auctions',
+    subline: 'Rare collectibles bidding now.',
+    cta: 'View Live',
+    href: '/category/hot-wheels'
+  },
+  {
+    id: 4,
+    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800&auto=format&fit=crop',
+    headline: 'Vintage Watches',
+    subline: 'Timeless luxury timepieces.',
+    cta: 'Discover',
+    href: '/category/collectibles'
+  },
+  {
+    id: 5,
+    image: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=800&auto=format&fit=crop',
+    headline: 'Modern Decor',
+    subline: 'Elevate your living space.',
+    cta: 'Decorate',
+    href: '/category/handmade-lifestyle'
+  }
+];
 
 export function HeroSection() {
-  const featuredProducts = PRODUCTS.slice(0, 6)
+  const [current, setCurrent] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  useEffect(() => {
+    const updateVisible = () => {
+      if (window.innerWidth < 768) setVisibleCount(1);
+      else if (window.innerWidth < 1024) setVisibleCount(2);
+      else setVisibleCount(3);
+    };
+    
+    updateVisible();
+    window.addEventListener('resize', updateVisible);
+    return () => window.removeEventListener('resize', updateVisible);
+  }, []);
+
+  const maxIndex = Math.max(0, SLIDES.length - visibleCount);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [maxIndex]);
+
+  const nextSlide = () => setCurrent(prev => (prev >= maxIndex ? 0 : prev + 1));
+  const prevSlide = () => setCurrent(prev => (prev === 0 ? maxIndex : prev - 1));
 
   return (
-    <section className="bg-gradient-to-b from-background to-background/95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Left: Headline & Stats */}
-          <div className="flex flex-col justify-center">
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4 leading-tight">
-              The Marketplace for Creators
-            </h1>
-            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              Buy unique handmade items through auctions, fixed prices, or make offers. Support independent creators worldwide.
-            </p>
+    <section className="bg-background py-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div className="relative group">
+          {/* Carousel Track Container */}
+          <div className="overflow-hidden rounded-[16px]">
+            <div 
+              className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]" 
+              style={{ transform: `translateX(-${current * (100 / visibleCount)}%)` }}
+            >
+              {SLIDES.map((slide) => (
+                <div 
+                  key={slide.id} 
+                  className="px-2"
+                  style={{ flex: `0 0 ${100 / visibleCount}%` }}
+                >
+                  <div className="relative h-[300px] sm:h-[350px] lg:h-[400px] rounded-[16px] overflow-hidden group/card shadow-sm border border-border">
+                    {/* Background Image */}
+                    <img 
+                      src={slide.image} 
+                      alt={slide.headline}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105"
+                    />
+                    
+                    {/* Premium Dark Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/80 via-[#171717]/30 to-transparent"></div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8 py-4 border-b border-border">
-              <div>
-                <p className="text-2xl font-bold text-primary">{MARKETPLACE_STATS.liveAuctions}</p>
-                <p className="text-sm text-muted-foreground">Live Auctions</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-secondary">{MARKETPLACE_STATS.activeListings.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">Active Listings</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-accent">{MARKETPLACE_STATS.verifiedCreators}</p>
-                <p className="text-sm text-muted-foreground">Verified Creators</p>
-              </div>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex gap-3">
-              <button className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors">
-                Start Bidding
-              </button>
-              <button className="px-6 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary/10 transition-colors">
-                Explore Items
-              </button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="flex items-center gap-2 mt-6 pt-6 border-t border-border">
-              <span className="text-2xl">🔒</span>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Escrow Protected</p>
-                <p className="text-xs text-muted-foreground">Funds held safely until you receive your item</p>
-              </div>
+                    {/* Content */}
+                    <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 flex flex-col items-start text-white">
+                      <h2 className="text-2xl md:text-3xl font-brand font-medium tracking-wide mb-2 drop-shadow-sm">
+                        {slide.headline}
+                      </h2>
+                      <p className="text-[13px] md:text-[14px] text-white/90 mb-5 max-w-[250px] drop-shadow-sm">
+                        {slide.subline}
+                      </p>
+                      <Link 
+                        href={slide.href}
+                        className="inline-flex px-6 py-2.5 bg-white text-[#171717] rounded-full font-medium text-[13px] hover:bg-[#F8F6F2] hover:scale-105 transition-all shadow-sm active:scale-95"
+                      >
+                        {slide.cta}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right: Featured Products Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
-            ))}
-          </div>
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prevSlide}
+            className="absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F8F6F2] rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md border border-border z-10 disabled:opacity-0"
+            disabled={current === 0}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          
+          <button 
+            onClick={nextSlide}
+            className="absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F8F6F2] rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md border border-border z-10 disabled:opacity-0"
+            disabled={current === maxIndex}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+
         </div>
       </div>
     </section>
