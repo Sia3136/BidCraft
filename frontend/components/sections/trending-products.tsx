@@ -33,7 +33,7 @@ export function TrendingProductsSection() {
   if (listings.length === 0) return null
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -46,8 +46,8 @@ export function TrendingProductsSection() {
           </button>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Horizontal Scroll Container */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
           {listings.slice(0, 8).map((product) => {
             let photos = []
             try {
@@ -57,18 +57,19 @@ export function TrendingProductsSection() {
             }
             const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
             return (
-              <ProductCard 
-                key={product.id} 
-                id={String(product.id)}
-                title={product.title}
-                image={image}
-                creator="Verified Creator"
-                creatorImage="/creator-2.png"
-                price={Number(product.price)}
-                rating={4.8}
-                reviews={10}
-                methods={['BUY_NOW']}
-              />
+              <div key={product.id} className="snap-start shrink-0 w-[280px] md:w-[320px]">
+                <ProductCard 
+                  id={String(product.id)}
+                  title={product.title}
+                  image={image}
+                  creator="Verified Creator"
+                  creatorImage="/creator-2.png"
+                  price={Number(product.price)}
+                  rating={4.8}
+                  reviews={10}
+                  methods={['BUY_NOW']}
+                />
+              </div>
             )
           })}
         </div>

@@ -18,10 +18,12 @@ export function FeaturedCollectionsSection() {
           </button>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Horizontal Scroll Container */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
           {COLLECTIONS.map((collection) => (
-            <CollectionCard key={collection.id} {...collection} />
+            <div key={collection.id} className="snap-start shrink-0 w-[280px] md:w-[350px]">
+              <CollectionCard {...collection} />
+            </div>
           ))}
         </div>
       </div>

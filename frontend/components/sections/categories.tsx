@@ -13,15 +13,16 @@ export function CategoriesSection() {
           <p className="text-[14px] text-muted-foreground mt-3">Curated collections for the discerning collector.</p>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Horizontal Scroll Container */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 no-scrollbar">
           {CATEGORIES.map((category) => (
-            <CategoryCard
-              key={category.id}
-              name={category.name}
-              count={category.count}
-              color={category.color}
-            />
+            <div key={category.id} className="snap-start shrink-0 w-[240px] md:w-[280px]">
+              <CategoryCard
+                name={category.name}
+                count={category.count}
+                color={category.color}
+              />
+            </div>
           ))}
         </div>
       </div>

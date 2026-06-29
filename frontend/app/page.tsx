@@ -1,13 +1,14 @@
 import { Navbar } from '@/components/navbar'
 import { HeroSection } from '@/components/hero-section'
-import { LiveAuctionsSection } from '@/components/sections/live-auctions'
-import { TrendingProductsSection } from '@/components/sections/trending-products'
-import { CategoriesSection } from '@/components/sections/categories'
-import { SellYourWaySection } from '@/components/sections/sell-your-way'
-import { HowItWorksSection } from '@/components/sections/how-it-works'
-import { CreatorSpotlightSection } from '@/components/sections/creator-spotlight'
+import { ExploreCategoriesSection } from '@/components/sections/explore-categories'
 import { FeaturedCollectionsSection } from '@/components/sections/featured-collections'
-import { EscrowTrustSection } from '@/components/sections/escrow-trust'
+import { TrendingProductsSection } from '@/components/sections/trending-products'
+import { CreatorSpotlightSection } from '@/components/sections/creator-spotlight'
+import { LiveAuctionsSection } from '@/components/sections/live-auctions'
+import { CollectorsPicksSection } from '@/components/sections/collectors-picks'
+import { HandmadeSpotlightSection } from '@/components/sections/handmade-spotlight'
+import { RecentlyAddedSection } from '@/components/sections/recently-added'
+import { TestimonialsSection } from '@/components/sections/testimonials'
 import { Footer } from '@/components/sections/footer'
 
 export default function Home() {
@@ -15,14 +16,15 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
-      <LiveAuctionsSection />
-      <TrendingProductsSection />
-      <CategoriesSection />
-      <SellYourWaySection />
-      <HowItWorksSection />
-      <CreatorSpotlightSection />
+      <ExploreCategoriesSection />
       <FeaturedCollectionsSection />
-      <EscrowTrustSection />
+      <TrendingProductsSection />
+      <CreatorSpotlightSection />
+      <LiveAuctionsSection />
+      <CollectorsPicksSection />
+      <HandmadeSpotlightSection />
+      <RecentlyAddedSection />
+      <TestimonialsSection />
       <Footer />
     </main>
   )

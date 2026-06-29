@@ -71,29 +71,31 @@ export function ProductCard({
   }
 
   return (
-    <div className="group bg-card rounded-[16px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full border border-border">
+    <div className="group bg-white rounded-[4px] overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-500 flex flex-col h-full border border-border/60">
       {/* Clickable Image & Title Area */}
       <Link href={`/listings/${id}`} className="block relative overflow-hidden bg-muted aspect-square">
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
+        {/* Gradients to ensure text/badges are visible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
         {badge && (
-          <div className="absolute top-3 right-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold z-10">
+          <div className="absolute top-4 right-4 bg-white text-[#171717] px-3 py-1.5 rounded-full text-[11px] font-bold z-10 shadow-lg tracking-wide uppercase">
             {badge}
           </div>
         )}
         <button
           onClick={toggleWatchlist}
           disabled={watchLoading}
-          className="absolute top-3 right-3 z-20 w-8 h-8 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-background transition-colors text-lg"
-          style={badge ? { top: '3rem' } : {}}
+          className={`absolute z-20 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white hover:scale-110 active:scale-95 transition-all shadow-md text-lg ${badge ? 'top-[4rem] right-4' : 'top-4 right-4'}`}
           title={watchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
         >
           {watchlisted ? '❤️' : '🤍'}
         </button>
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
           {methods.map(method => (
             <SellingMethodBadge key={method} method={method as 'AUCTION' | 'BUY_NOW' | 'OFFERS'} size="sm" />
           ))}
@@ -101,73 +103,75 @@ export function ProductCard({
       </Link>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-6 flex flex-col flex-1 bg-white">
+        
+        {/* Creator Info */}
+        <div className="flex items-center gap-2 mb-3">
+          <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{creator}</p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        </div>
+
         {/* Title */}
-        <Link href={`/listings/${id}`} className="block">
-          <h3 className="text-sm font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+        <Link href={`/listings/${id}`} className="block mb-6">
+          <h3 className="text-[17px] font-brand font-medium text-foreground line-clamp-2 group-hover:text-muted-foreground transition-colors leading-snug tracking-wide">
             {title}
           </h3>
         </Link>
 
-        {/* Creator */}
-        <p className="text-xs text-muted-foreground mb-3">{creator}</p>
-
-        {/* Price/Bid Section */}
-        <div className="mb-3 pb-3 border-b border-border mt-auto">
-          {currentBid !== undefined && currentBid !== null ? (
-            <div className="flex items-baseline justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">Current Bid</p>
-                <p className="text-lg font-bold text-primary">${currentBid}</p>
+        <div className="mt-auto">
+          {/* Price/Bid Section */}
+          <div className="mb-5 pb-5 border-b border-border/60">
+            {currentBid !== undefined && currentBid !== null ? (
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Current Bid</p>
+                  <p className="text-xl font-semibold text-foreground">${Number(currentBid).toLocaleString()}</p>
+                </div>
+                {bidCount !== undefined && (
+                  <p className="text-[12px] font-medium text-muted-foreground">{bidCount} bids</p>
+                )}
               </div>
-              {bidCount !== undefined && (
-                <p className="text-xs text-muted-foreground">{bidCount} bids</p>
-              )}
-            </div>
-          ) : (
-            <div>
-              <p className="text-xs text-muted-foreground">Price</p>
-              <p className="text-lg font-bold text-primary">${price}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Rating & Countdown */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-semibold text-foreground">{rating}</span>
-            <span className="text-sm">⭐</span>
-            <span className="text-xs text-muted-foreground">({reviews})</span>
+            ) : (
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1 font-semibold">Price</p>
+                <p className="text-xl font-semibold text-foreground">${Number(price).toLocaleString()}</p>
+              </div>
+            )}
           </div>
-          {endsIn && <CountdownTimer timeString={endsIn} size="sm" />}
-        </div>
 
-        {/* Action Buttons */}
-        <div className="mt-auto flex gap-2 pt-2">
-          {methods.includes('AUCTION') && (
-            <Link 
-              href={`/listings/${id}`}
-              className="flex-1 bg-primary text-white py-2.5 rounded-[12px] text-xs font-semibold hover:bg-[#2B2B2B] transition-all text-center block shadow-sm"
-            >
-              Bid Now
-            </Link>
-          )}
-          {methods.includes('BUY_NOW') && (
-            <Link 
-              href={`/listings/${id}`}
-              className="flex-1 bg-primary text-white py-2.5 rounded-[12px] text-xs font-semibold hover:bg-[#2B2B2B] transition-all text-center block shadow-sm"
-            >
-              Buy Now
-            </Link>
-          )}
-          {methods.includes('OFFERS') && !methods.includes('BUY_NOW') && (
-            <Link 
-              href={`/listings/${id}`}
-              className="flex-1 border border-border text-foreground py-2.5 rounded-[12px] text-xs font-semibold hover:bg-muted transition-all text-center block"
-            >
-              Make Offer
-            </Link>
-          )}
+          {/* Rating & Countdown */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-1">
+              <span className="text-[13px] font-semibold text-foreground">{rating}</span>
+              <span className="text-[13px] text-yellow-500">★</span>
+              <span className="text-[12px] text-muted-foreground">({reviews})</span>
+            </div>
+            {endsIn && (
+              <div className="text-red-500 font-semibold text-[13px]">
+                {endsIn}
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            {methods.includes('AUCTION') && (
+              <Link 
+                href={`/listings/${id}`}
+                className="flex-1 bg-white border border-[#171717] text-[#171717] py-2.5 rounded-[4px] text-[13px] tracking-wide font-medium hover:bg-[#171717] hover:text-white transition-all duration-300 text-center block"
+              >
+                Place Bid
+              </Link>
+            )}
+            {methods.includes('BUY_NOW') && (
+              <Link 
+                href={`/listings/${id}`}
+                className="flex-1 bg-[#171717] border border-[#171717] text-white py-2.5 rounded-[4px] text-[13px] tracking-wide font-medium hover:bg-[#2B2B2B] transition-all duration-300 text-center block"
+              >
+                Buy Now
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

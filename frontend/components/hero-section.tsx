@@ -80,7 +80,7 @@ export function HeroSection() {
         
         <div className="relative group">
           {/* Carousel Track Container */}
-          <div className="overflow-hidden rounded-[16px]">
+          <div className="overflow-hidden rounded-[4px]">
             <div 
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]" 
               style={{ transform: `translateX(-${current * (100 / visibleCount)}%)` }}
@@ -91,7 +91,7 @@ export function HeroSection() {
                   className="px-2"
                   style={{ flex: `0 0 ${100 / visibleCount}%` }}
                 >
-                  <div className="relative h-[300px] sm:h-[350px] lg:h-[400px] rounded-[16px] overflow-hidden group/card shadow-sm border border-border">
+                  <div className="relative h-[300px] sm:h-[350px] lg:h-[400px] rounded-[4px] overflow-hidden group/card border border-border/50">
                     {/* Background Image */}
                     <img 
                       src={slide.image} 
@@ -103,16 +103,16 @@ export function HeroSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/80 via-[#171717]/30 to-transparent"></div>
 
                     {/* Content */}
-                    <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 flex flex-col items-start text-white">
-                      <h2 className="text-2xl md:text-3xl font-brand font-medium tracking-wide mb-2 drop-shadow-sm">
+                    <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 flex flex-col items-start text-white">
+                      <h2 className="text-3xl md:text-4xl font-brand font-medium tracking-wide mb-3 drop-shadow-md">
                         {slide.headline}
                       </h2>
-                      <p className="text-[13px] md:text-[14px] text-white/90 mb-5 max-w-[250px] drop-shadow-sm">
+                      <p className="text-[14px] md:text-[15px] font-light text-white/90 mb-6 max-w-[280px] drop-shadow-sm tracking-wide">
                         {slide.subline}
                       </p>
                       <Link 
                         href={slide.href}
-                        className="inline-flex px-6 py-2.5 bg-white text-[#171717] rounded-full font-medium text-[13px] hover:bg-[#F8F6F2] hover:scale-105 transition-all shadow-sm active:scale-95"
+                        className="inline-flex px-8 py-3 bg-white text-[#171717] rounded-[4px] font-medium text-[13px] tracking-wide hover:bg-[#171717] hover:text-white hover:border-[#171717] border border-white transition-all duration-300 shadow-sm"
                       >
                         {slide.cta}
                       </Link>
@@ -126,18 +126,18 @@ export function HeroSection() {
           {/* Navigation Arrows */}
           <button 
             onClick={prevSlide}
-            className="absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F8F6F2] rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md border border-border z-10 disabled:opacity-0"
+            className="absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F7F4EE] hover:scale-105 rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-border z-10 disabled:opacity-0"
             disabled={current === 0}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           
           <button 
             onClick={nextSlide}
-            className="absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F8F6F2] rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md border border-border z-10 disabled:opacity-0"
+            className="absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white hover:bg-[#F7F4EE] hover:scale-105 rounded-full flex items-center justify-center text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-border z-10 disabled:opacity-0"
             disabled={current === maxIndex}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </button>
 
         </div>
