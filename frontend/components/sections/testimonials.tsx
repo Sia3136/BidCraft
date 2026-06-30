@@ -1,62 +1,78 @@
 'use client'
 
+import { Avatar } from '@/components/ui/avatar'
+
 const TESTIMONIALS = [
   {
-    id: 1,
-    quote: "BidCraft completely changed how I discover art. I found a rare 19th-century sketch that now hangs in my living room. The experience feels like walking through a high-end gallery.",
-    author: "Elena R.",
-    role: "Collector",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop"
+    quote: "I used to sell my pottery on generic marketplaces, but it always felt lost. BidCraft actually understands the value of handmade work. My sales have doubled.",
+    author: {
+      name: "Sarah Jenkins",
+      role: "Ceramic Artist",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop"
+    }
   },
   {
-    id: 2,
-    quote: "As a ceramic artist, finding the right audience was always my biggest challenge. Here, my work is presented beautifully and respected. It's a true community of creators.",
-    author: "Marcus T.",
-    role: "Verified Creator",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop"
+    quote: "The live auction feature is incredible for rare drops. It brings the StockX energy to collectibles that truly deserve it. Escrow makes it stress-free.",
+    author: {
+      name: "Marcus V.",
+      role: "Hot Wheels Collector",
+      avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop"
+    }
   },
   {
-    id: 3,
-    quote: "The auction experience is incredibly smooth, but what I love most is just browsing the categories. It's curated to perfection.",
-    author: "Sarah L.",
-    role: "Buyer",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop"
+    quote: "Finding unique, non-mass-produced gifts used to take hours of digging. Now I just browse the curated collections here. The quality is unmatched.",
+    author: {
+      name: "Priya Desai",
+      role: "Buyer",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop"
+    }
   }
 ]
 
-export function TestimonialsSection() {
+export function Testimonials() {
   return (
-    <section className="py-24 bg-[#FAF9F7]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-brand font-medium tracking-wide text-foreground">Community Stories</h2>
-          <p className="text-muted-foreground mt-4 text-[15px] max-w-xl mx-auto">Hear from the collectors and creators who make this marketplace unique.</p>
-        </div>
+    <section className="py-[var(--space-9)] max-w-[var(--container-max)] mx-auto px-4 md:px-6 xl:px-6">
+      
+      <div className="flex flex-col items-center text-center mb-[var(--space-7)] animate-fade-up">
+        <h2 className="text-display-lg text-[var(--color-ink-900)]">
+          Loved by Creators and Collectors
+        </h2>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.id} className="bg-white p-8 rounded-2xl shadow-sm border border-border flex flex-col">
-              <div className="flex-1">
-                <svg className="w-8 h-8 text-border mb-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-foreground/80 font-serif italic text-[16px] leading-relaxed mb-8">
-                  "{t.quote}"
-                </p>
-              </div>
-              <div className="flex items-center gap-4 border-t border-border pt-6">
-                <img src={t.image} alt={t.author} className="w-12 h-12 rounded-full object-cover" />
-                <div>
-                  <p className="font-semibold text-foreground text-[14px]">{t.author}</p>
-                  <p className="text-muted-foreground text-[13px]">{t.role}</p>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--space-5)]">
+        {TESTIMONIALS.map((testimonial, i) => (
+          <div 
+            key={i}
+            className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-[var(--space-6)] flex flex-col animate-fade-up"
+            style={{ animationDelay: `${i * 100}ms` }}
+          >
+            {/* Opening Quote Mark */}
+            <span 
+              className="font-brand italic text-[32px] text-[var(--color-terracotta-600)] leading-none -ml-2 mb-[var(--space-4)]"
+            >
+              &ldquo;
+            </span>
+
+            {/* Quote text */}
+            <p className="font-brand italic text-body-lg text-[var(--color-ink-900)] mb-[var(--space-5)] flex-1">
+              {testimonial.quote}
+            </p>
+
+            {/* Divider */}
+            <div className="h-[1px] w-full bg-[var(--color-border-subtle)] mb-[var(--space-4)]" />
+
+            {/* Author */}
+            <div className="flex items-center gap-[var(--space-3)]">
+              <Avatar src={testimonial.author.avatar} initials={testimonial.author.name[0]} size="default" className="w-[40px] h-[40px]" />
+              <div className="flex flex-col">
+                <span className="text-body-md font-semibold text-[var(--color-ink-900)]">{testimonial.author.name}</span>
+                <span className="text-caption text-[var(--color-ink-500)]">{testimonial.author.role}</span>
               </div>
             </div>
-          ))}
-        </div>
-
+          </div>
+        ))}
       </div>
+
     </section>
   )
 }

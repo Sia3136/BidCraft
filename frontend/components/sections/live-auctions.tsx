@@ -1,148 +1,132 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { auctionsApi } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Avatar } from '@/components/ui/avatar'
+import { cn } from '@/lib/utils'
 
-export function LiveAuctionsSection() {
-  const [auctions, setAuctions] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [currentIndex, setCurrentIndex] = useState(0)
+const LIVE_AUCTIONS = [
+  {
+    id: 1,
+    title: 'Vintage 1969 Hot Wheels Redline Twin Mill',
+    image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=400&auto=format&fit=crop',
+    creator: { name: 'Vikram S.', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop' },
+    currentBid: '₹4,500',
+    bidCount: 14,
+    timeLeft: '00:45:12', // under 1 hr
+    isUrgent: true,
+  },
+  {
+    id: 2,
+    title: 'Hand-painted Abstract Canvas 24x36"',
+    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=400&auto=format&fit=crop',
+    creator: { name: 'Aarav Art', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100&auto=format&fit=crop' },
+    currentBid: '₹2,100',
+    bidCount: 3,
+    timeLeft: '02:14:33',
+    isUrgent: false,
+  },
+  {
+    id: 3,
+    title: 'Custom Resin Ocean Table Lamp',
+    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=400&auto=format&fit=crop',
+    creator: { name: 'Priya Crafts', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop' },
+    currentBid: '₹3,850',
+    bidCount: 8,
+    timeLeft: '04:05:00',
+    isUrgent: false,
+  },
+  {
+    id: 4,
+    title: 'Limited Edition Comic Convention Badge 2019',
+    image: 'https://images.unsplash.com/photo-1610486806085-f3769c3a38a3?q=80&w=400&auto=format&fit=crop',
+    creator: { name: 'GeekVault', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=100&auto=format&fit=crop' },
+    currentBid: '₹950',
+    bidCount: 22,
+    timeLeft: '00:15:40', // under 1 hr
+    isUrgent: true,
+  },
+  {
+    id: 5,
+    title: 'Handmade Silver Filigree Earrings',
+    image: 'https://images.unsplash.com/photo-1490288860714-eb065c71a355?q=80&w=400&auto=format&fit=crop',
+    creator: { name: 'Lumina Jewels', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop' },
+    currentBid: '₹1,200',
+    bidCount: 5,
+    timeLeft: '12:00:00',
+    isUrgent: false,
+  },
+]
 
-  useEffect(() => {
-    async function loadAuctions() {
-      try {
-        const data = await auctionsApi.list('status=active')
-        setAuctions(data.auctions || [])
-      } catch (err) {
-        console.error('Failed to load active auctions:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadAuctions()
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="py-20 text-center text-muted-foreground bg-background">
-        Loading premium auctions...
-      </div>
-    )
-  }
-
-  if (auctions.length === 0) return null
-
-  const getRemainingTime = (endTime: string) => {
-    const diff = new Date(endTime).getTime() - Date.now()
-    if (diff <= 0) return 'Ended'
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const mins = Math.floor((diff / (1000 * 60)) % 60)
-    return `${hours}h ${mins}m`
-  }
-
-  const nextSlide = () => setCurrentIndex(prev => (prev === auctions.slice(0, 5).length - 1 ? 0 : prev + 1))
-  const prevSlide = () => setCurrentIndex(prev => (prev === 0 ? auctions.slice(0, 5).length - 1 : prev - 1))
-
-  const topAuctions = auctions.slice(0, 5)
-  const auc = topAuctions[currentIndex]
-  
-  let photos = []
-  try {
-    photos = typeof auc.photos === 'string' ? JSON.parse(auc.photos) : auc.photos
-  } catch (e) {
-    photos = auc.photos || []
-  }
-  const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
-
+export function LiveAuctions() {
   return (
-    <section className="py-24 bg-[#171717] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-brand font-medium tracking-wide">Live Auctions</h2>
-            <p className="text-white/70 mt-3 text-[15px]">Bid on exclusive and rare items closing soon.</p>
-          </div>
-          <div className="flex gap-4">
-            <button 
-              onClick={prevSlide}
-              className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <button 
-              onClick={nextSlide}
-              className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-          </div>
+    <section className="py-[var(--space-8)] max-w-[var(--container-max)] mx-auto px-4 md:px-6 xl:px-6 overflow-hidden">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-[var(--space-7)] animate-fade-up">
+        <div className="flex items-center gap-[var(--space-4)]">
+          <h2 className="text-display-lg text-[var(--color-ink-900)]">Live Auctions</h2>
+          <Badge variant="urgent">LIVE NOW</Badge>
         </div>
-
-        {/* Carousel Window */}
-        <div className="relative w-full overflow-hidden rounded-2xl bg-black border border-white/10 shadow-2xl">
-          <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-            {topAuctions.map((slide, idx) => {
-              let sPhotos = []
-              try { sPhotos = typeof slide.photos === 'string' ? JSON.parse(slide.photos) : slide.photos } catch (e) {}
-              const sImage = (sPhotos && sPhotos.length > 0) ? sPhotos[0] : '/placeholder.png'
-
-              return (
-                <div key={slide.id} className="w-full shrink-0 flex flex-col md:flex-row h-auto md:h-[500px]">
-                  {/* Left Image */}
-                  <div className="md:w-[55%] h-[350px] md:h-full relative overflow-hidden group">
-                    <img 
-                      src={sImage} 
-                      alt={slide.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent"></div>
-                    <div className="absolute top-6 left-6 bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg tracking-wider">
-                      <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span> LIVE AUCTION
-                    </div>
-                  </div>
-
-                  {/* Right Content */}
-                  <div className="md:w-[45%] p-8 md:p-12 flex flex-col justify-center bg-zinc-950">
-                    <h3 className="text-3xl lg:text-4xl font-brand font-medium mb-6 text-white leading-tight">
-                      {slide.title}
-                    </h3>
-                    
-                    <div className="grid grid-cols-2 gap-8 mb-8 border-y border-white/10 py-8">
-                      <div>
-                        <p className="text-[13px] text-white/50 mb-2 uppercase tracking-wider font-semibold">Current Bid</p>
-                        <p className="text-3xl font-semibold text-white">${Number(slide.current_bid || slide.start_bid).toLocaleString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-[13px] text-white/50 mb-2 uppercase tracking-wider font-semibold">Ends In</p>
-                        <p className="text-3xl font-semibold text-red-400">{getRemainingTime(slide.end_time)}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 mb-10">
-                      <div className="flex -space-x-3">
-                         <div className="w-10 h-10 rounded-full border-2 border-zinc-950 bg-zinc-800"></div>
-                         <div className="w-10 h-10 rounded-full border-2 border-zinc-950 bg-zinc-700"></div>
-                         <div className="w-10 h-10 rounded-full border-2 border-zinc-950 bg-zinc-600"></div>
-                      </div>
-                      <p className="text-[14px] text-white/70">{slide.total_bids} active bidders</p>
-                    </div>
-
-                    <Link 
-                      href={`/listings/${slide.listing_id || slide.id}`} 
-                      className="w-full py-4 bg-white text-black rounded-xl font-medium text-center hover:bg-zinc-200 transition-colors shadow-lg active:scale-[0.98]"
-                    >
-                      Place Bid Now
-                    </Link>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
+        <Button variant="ghost">View All</Button>
       </div>
+
+      {/* Rail */}
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-[20px] pb-[20px] hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0 animate-fade-up [animation-delay:100ms]">
+        {LIVE_AUCTIONS.map((auction) => (
+          <div 
+            key={auction.id}
+            className="group flex-shrink-0 w-[280px] snap-start hover-card rounded-[var(--radius-md)] bg-[var(--color-white)] relative flex flex-col"
+          >
+            {/* Image */}
+            <div className="w-full aspect-[4/5] rounded-t-[var(--radius-md)] overflow-hidden relative">
+              <img
+                src={auction.image}
+                alt={auction.title}
+                className="w-full h-full object-cover transition-transform duration-slow ease-default group-hover:scale-[1.04]"
+              />
+              {/* Countdown Chip */}
+              <div 
+                className={cn(
+                  "absolute top-[var(--space-3)] right-[var(--space-3)] rounded-[var(--radius-pill)] px-[12px] py-[6px] transition-transform duration-slow ease-default group-hover:scale-105",
+                  auction.isUrgent ? "bg-[var(--color-urgent-600)]" : "bg-[var(--color-slate-900)]/85"
+                )}
+              >
+                <span className="text-caption text-white font-mono">{auction.timeLeft}</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-[var(--space-4)] flex flex-col flex-1">
+              {/* Creator row */}
+              <div className="flex items-center gap-[var(--space-2)] mb-[var(--space-3)]">
+                <Avatar src={auction.creator.avatar} initials={auction.creator.name[0]} size="small" />
+                <span className="text-caption text-[var(--color-ink-700)] line-clamp-1">{auction.creator.name}</span>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-2)] line-clamp-2 min-h-[48px]">
+                {auction.title}
+              </h3>
+
+              <div className="flex-1" />
+
+              {/* Bid row */}
+              <div className="flex items-end justify-between mt-[var(--space-2)]">
+                <div className="flex flex-col">
+                  <span className="text-caption text-[var(--color-ink-500)]">Current Bid</span>
+                  <span className="text-price text-[var(--color-ink-900)]">{auction.currentBid}</span>
+                </div>
+                <span className="text-caption text-[var(--color-ink-500)]">{auction.bidCount} bids</span>
+              </div>
+            </div>
+          </div>
+        ))}
+        {/* Spacer for the .5 card peek effect on wide screens if we only have 5 cards */}
+        <div className="w-[40px] shrink-0" />
+      </div>
+
     </section>
   )
 }
