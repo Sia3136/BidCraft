@@ -174,3 +174,40 @@
     transform: scale(1.04);
   }
 }
+
+@keyframes progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes scale-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes highlight-flash {
+  0% { background-color: var(--color-terracotta-100); }
+  100% { background-color: transparent; }
+}
+
+.animate-scale-pulse {
+  animation: scale-pulse 250ms var(--ease-default);
+}
+
+.animate-highlight-flash {
+  animation: highlight-flash 600ms var(--ease-default);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scale-pulse,
+  .animate-highlight-flash,
+  .animate-pulse {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -95,8 +95,8 @@ export function NewArrivals() {
                 <Heart 
                   size={16} 
                   className={cn(
-                    "transition-colors duration-200",
-                    wishlist[product.id] ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)] scale-110" : "text-white"
+                    "transition-colors",
+                    wishlist[product.id] ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)] animate-scale-pulse" : "text-white"
                   )} 
                 />
               </button>
