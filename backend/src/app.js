@@ -24,6 +24,7 @@ const adminRoutes = require('./routes/admin');
 const shipmentsRoutes = require('./routes/shipments');
 const qaRoutes = require('./routes/qa');
 const creatorsRoutes = require('./routes/creators');
+const cartRoutes = require('./routes/cart');
 
 const app = express();
 app.use(helmet());
@@ -85,6 +86,7 @@ app.use('/api/admin',     adminRoutes);
 app.use('/api/shipments', shipmentsRoutes);
 app.use('/api/qa',        qaRoutes);
 app.use('/api/creators',  creatorsRoutes);
+app.use('/api/cart',      cartRoutes);
 
 app.use((err, req, res, next) => {
   logger.error(err.message || 'internal_error', { error: err, stack: err.stack });

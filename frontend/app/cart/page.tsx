@@ -1,38 +1,53 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { X, Minus, Plus } from 'lucide-react'
+import { X, Minus, Plus, Loader2 } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-
-const CART_ITEMS = [
-  {
-    id: 1,
-    title: 'Hand-thrown Ceramic Match Striker',
-    creator: 'Elena Rostova',
-    variant: 'Matte Black',
-    price: 1200,
-    image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=400&auto=format&fit=crop',
-    quantity: 1
-  },
-  {
-    id: 3,
-    title: 'Resin Ocean Wave Charcuterie Board',
-    creator: 'David Chen',
-    variant: 'Large (18x12")',
-    price: 4500,
-    image: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=400&auto=format&fit=crop',
-    quantity: 1
-  }
-]
+import { useAuth } from '@/lib/auth-context'
+import api from '@/lib/api'
 
 export default function CartPage() {
-  const [items, setItems] = useState(CART_ITEMS)
+  const { user } = useAuth()
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [promoCode, setPromoCode] = useState('')
+  
+  useEffect(() => {
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    fetchCart()
+  }, [user])
+
+  const fetchCart = async () => {
+    try {
+      setLoading(true)
+      const res = await api.get('/cart')
+      // map backend cart item to frontend structure
+      const mapped = res.data.cart.map((item: any) => ({
+        id: item.listing_id,
+        cart_id: item.id,
+        title: item.title,
+        creator: item.seller_name,
+        price: parseFloat(item.price),
+        image: item.photos?.[0] || 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=400&auto=format&fit=crop',
+        quantity: 1, // Default quantity
+        status: item.status
+      }))
+      setItems(mapped)
+    } catch (err: any) {
+      setError('Failed to load cart items')
+    } finally {
+      setLoading(false)
+    }
+  }
   
   const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
   
@@ -46,15 +61,21 @@ export default function CartPage() {
     }))
   }
 
-  const removeItem = (id: number) => {
-    setItems(items.filter(item => item.id !== id))
+  const removeItem = async (id: number) => {
+    try {
+      setItems(items.filter(item => item.id !== id))
+      await api.delete(`/cart/${id}`)
+    } catch (err: any) {
+      // Revert if failed
+      fetchCart()
+    }
   }
 
   return (
     <main className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
       <Navbar />
 
-      <div className="flex-1 max-w-[1280px] w-full mx-auto px-4 md:px-6 xl:px-6 py-[var(--space-8)] md:py-[var(--space-10)]">
+      <div className="flex-1 max-w-[1280px] w-full mx-auto px-4 md:px-6 xl:px-6 py-[var(--space-8)] md:py-[var(--space-10)] mt-[80px]">
         
         <h1 className="text-display-lg text-[var(--color-ink-900)] mb-[var(--space-8)]">Your Cart</h1>
 
@@ -62,7 +83,20 @@ export default function CartPage() {
           
           {/* Left: Cart Items List */}
           <div className="w-full lg:w-[65%] flex flex-col gap-[var(--space-4)]">
-            {items.length === 0 ? (
+            {!user ? (
+              <div className="py-[var(--space-10)] text-center">
+                <p className="text-body-lg text-[var(--color-ink-700)] mb-[var(--space-6)]">Please sign in to view your cart.</p>
+              </div>
+            ) : loading ? (
+              <div className="py-[var(--space-10)] flex justify-center text-[var(--color-terracotta-600)]">
+                <Loader2 className="animate-spin w-8 h-8" />
+              </div>
+            ) : error ? (
+              <div className="py-[var(--space-10)] text-center">
+                <p className="text-body-lg text-[var(--color-urgent-600)] mb-[var(--space-6)]">{error}</p>
+                <Button onClick={fetchCart}>Try Again</Button>
+              </div>
+            ) : items.length === 0 ? (
               <div className="py-[var(--space-10)] text-center">
                 <p className="text-body-lg text-[var(--color-ink-700)] mb-[var(--space-6)]">Your cart is empty.</p>
                 <Link href="/"><Button>Continue Shopping</Button></Link>
@@ -87,7 +121,7 @@ export default function CartPage() {
                     </div>
                     
                     <span className="text-caption text-[var(--color-ink-700)] mb-1">by {item.creator}</span>
-                    {item.variant && <span className="text-caption text-[var(--color-ink-500)] mb-[var(--space-3)]">{item.variant}</span>}
+                    {item.status !== 'active' && <span className="text-caption text-[var(--color-urgent-600)] mb-[var(--space-3)]">No longer available</span>}
                     
                     <div className="mt-auto flex items-center justify-between">
                       {/* Quantity Stepper */}
@@ -117,14 +151,12 @@ export default function CartPage() {
                           <button onClick={() => removeItem(item.id)} className="w-[32px] h-[32px] rounded-full flex items-center justify-center text-[var(--color-ink-500)] hover:bg-[var(--color-cream-deep)] hover:text-[var(--color-urgent-600)] transition-colors">
                             <X size={18} />
                           </button>
-                          <button className="text-caption text-[var(--color-terracotta-600)] hover:underline mt-1">Save for Later</button>
                         </div>
                       </div>
                     </div>
 
                     {/* Mobile Actions */}
                     <div className="sm:hidden flex items-center justify-between mt-[var(--space-4)] pt-[var(--space-3)] border-t border-[var(--color-border-subtle)]">
-                      <button className="text-caption text-[var(--color-terracotta-600)] hover:underline">Save for Later</button>
                       <button onClick={() => removeItem(item.id)} className="flex items-center gap-1 text-caption text-[var(--color-urgent-600)]">
                         <X size={14} /> Remove
                       </button>
@@ -189,3 +221,4 @@ export default function CartPage() {
     </main>
   )
 }
+

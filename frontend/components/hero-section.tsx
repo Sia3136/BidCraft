@@ -6,42 +6,42 @@ import Link from 'next/link'
 const SLIDES = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop',
-    headline: 'Curated Art',
-    subline: 'Contemporary paintings & sculptures.',
-    cta: 'Explore',
-    href: '/category/art'
+    image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=800&auto=format&fit=crop',
+    headline: 'Vintage Watches',
+    subline: 'Timeless luxury timepieces for collectors.',
+    cta: 'Explore Watches',
+    href: '/category/collectibles'
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1612423284934-2850a4ea6b0f?q=80&w=800&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop',
     headline: 'Handmade Ceramics',
-    subline: 'Unique pottery crafted with care.',
-    cta: 'Shop Now',
+    subline: 'Unique, dark clay pottery crafted with care.',
+    cta: 'Shop Ceramics',
     href: '/category/crafts'
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1581022295087-35e593704911?q=80&w=800&auto=format&fit=crop',
-    headline: 'Trending Auctions',
-    subline: 'Rare collectibles bidding now.',
-    cta: 'View Live',
+    image: 'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=800&auto=format&fit=crop',
+    headline: 'Collectible Diecasts',
+    subline: 'Rare Hot Wheels & vintage models.',
+    cta: 'View Live Auctions',
     href: '/category/hot-wheels'
   },
   {
     id: 4,
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800&auto=format&fit=crop',
-    headline: 'Vintage Watches',
-    subline: 'Timeless luxury timepieces.',
-    cta: 'Discover',
-    href: '/category/collectibles'
+    image: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=800&auto=format&fit=crop',
+    headline: 'Resin Masterpieces',
+    subline: 'Stunning ocean waves and wood crafts.',
+    cta: 'Discover Resin Art',
+    href: '/category/art'
   },
   {
     id: 5,
-    image: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=800&auto=format&fit=crop',
-    headline: 'Modern Decor',
-    subline: 'Elevate your living space.',
-    cta: 'Decorate',
+    image: 'https://images.unsplash.com/photo-1555529771-33da671f55cc?q=80&w=800&auto=format&fit=crop',
+    headline: 'Creator Workspaces',
+    subline: 'Tools and decor for the modern artist.',
+    cta: 'Shop Workspace',
     href: '/category/handmade-lifestyle'
   }
 ];
@@ -67,7 +67,7 @@ export function HeroSection() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev >= maxIndex ? 0 : prev + 1));
-    }, 5000);
+    }, 4000);
     return () => clearInterval(timer);
   }, [maxIndex]);
 

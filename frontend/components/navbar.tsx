@@ -7,8 +7,9 @@ import { useAuth } from '@/lib/auth-context'
 import { AuthModal } from '@/components/auth-modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MapPin, Heart, ShoppingBag, Search, Menu, X, ChevronRight } from 'lucide-react'
+import { MapPin, Heart, ShoppingBag, Search, Menu, X, ChevronRight, Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { NotificationPanel } from '@/components/notification-panel'
 
 const categoriesData = [
   {
@@ -142,6 +143,7 @@ export function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isNotifOpen, setIsNotifOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   const isHomepage = pathname === '/'
@@ -221,7 +223,7 @@ export function Navbar() {
           <div className="flex justify-center">
             <Link href="/" className="flex items-center">
               <span className={cn(
-                "text-display-md font-semibold tracking-[-0.01em] transition-colors duration-250 ease-default",
+                "font-brand text-[26px] md:text-[30px] font-semibold tracking-wide transition-colors duration-250 ease-default",
                 isTransparent ? "text-white" : "text-[var(--color-ink-900)]"
               )}>
                 BidCraft
@@ -229,17 +231,28 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Right: Wishlist, Cart */}
+          {/* Right: Wishlist, Cart, Notifications */}
           <div className="flex items-center gap-[var(--space-5)] justify-end">
-            <Button variant="icon" size="icon" className="text-inherit hover:bg-black/5" aria-label="Wishlist">
-              <Heart size={20} strokeWidth={1.5} />
-            </Button>
+            <Link href="/wishlist">
+              <Button variant="icon" size="icon" className="text-inherit hover:bg-black/5" aria-label="Wishlist">
+                <Heart size={20} strokeWidth={1.5} />
+              </Button>
+            </Link>
 
-            <Button variant="icon" size="icon" className="relative text-inherit hover:bg-black/5" aria-label="Cart">
-              <ShoppingBag size={20} strokeWidth={1.5} />
-              <div className="absolute top-1 right-1 h-[14px] w-[14px] flex items-center justify-center bg-[var(--color-terracotta-600)] rounded-full text-white text-[9px] font-bold">
-                2
-              </div>
+            <Link href="/cart">
+              <Button variant="icon" size="icon" className="relative text-inherit hover:bg-black/5" aria-label="Cart">
+                <ShoppingBag size={20} strokeWidth={1.5} />
+                <div className="absolute top-1 right-1 h-[14px] w-[14px] flex items-center justify-center bg-[var(--color-terracotta-600)] rounded-full text-white text-[9px] font-bold">
+                  2
+                </div>
+              </Button>
+            </Link>
+
+            <Button variant="icon" size="icon" className="text-inherit hover:bg-black/5 relative" aria-label="Notifications" onClick={() => setIsNotifOpen(true)}>
+              <Bell size={20} strokeWidth={1.5} />
+              {user && (
+                <div className="absolute top-[6px] right-[8px] h-2 w-2 rounded-full bg-[var(--color-terracotta-600)] border border-white" />
+              )}
             </Button>
           </div>
         </div>
@@ -385,6 +398,7 @@ export function Navbar() {
       </div>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <NotificationPanel isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} />
     </nav>
   )
 }

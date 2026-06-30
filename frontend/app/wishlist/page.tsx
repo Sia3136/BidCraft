@@ -1,59 +1,96 @@
 'use client'
 
-import { useState } from 'react'
-import { Heart, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Heart, X, Loader2 } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Badge } from '@/components/ui/badge'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-
-const WISHLIST_ITEMS = [
-  { 
-    id: 1, 
-    title: 'Vintage 1969 Hot Wheels Redline Twin Mill', 
-    image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=400&auto=format&fit=crop', 
-    creator: { name: 'Vikram S.', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop' }, 
-    currentBid: '₹8,400', 
-    bidCount: 14, 
-    method: 'AUCTION', 
-    isAuction: true,
-    addedAt: 'Added 2 days ago',
-    priceDrop: null
-  },
-  { 
-    id: 3, 
-    title: 'Resin Ocean Wave Charcuterie Board', 
-    image: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=400&auto=format&fit=crop', 
-    creator: { name: 'David Chen', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop' }, 
-    price: '₹4,500', 
-    method: 'BUY NOW', 
-    isAuction: false,
-    addedAt: 'Added 1 week ago',
-    priceDrop: 'Price dropped ₹500'
-  }
-]
+import { useAuth } from '@/lib/auth-context'
+import api from '@/lib/api'
 
 export default function WishlistPage() {
-  const [items, setItems] = useState(WISHLIST_ITEMS)
+  const { user } = useAuth()
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const removeItem = (id: number) => {
-    setItems(items.filter(item => item.id !== id))
+  useEffect(() => {
+    if (!user) {
+      setLoading(false)
+      return
+    }
+    fetchWishlist()
+  }, [user])
+
+  const fetchWishlist = async () => {
+    try {
+      setLoading(true)
+      const res = await api.get('/wishlist')
+      
+      const mapped = res.data.wishlist.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        image: item.photos?.[0] || 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=400&auto=format&fit=crop',
+        creator: { 
+          name: item.seller_name, 
+          avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop' 
+        },
+        price: `₹${parseFloat(item.price).toLocaleString('en-IN')}`,
+        currentBid: item.listing_type === 'auction' ? `₹${parseFloat(item.price).toLocaleString('en-IN')}` : null,
+        method: item.listing_type === 'auction' ? 'AUCTION' : 'BUY NOW',
+        isAuction: item.listing_type === 'auction',
+        addedAt: `Added ${new Date(item.wishlisted_at).toLocaleDateString()}`,
+        status: item.status
+      }))
+
+      setItems(mapped)
+    } catch (err: any) {
+      setError('Failed to load wishlist')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const removeItem = async (id: number) => {
+    try {
+      setItems(items.filter(item => item.id !== id))
+      await api.delete(`/wishlist/${id}`)
+    } catch (err: any) {
+      // Revert if failed
+      fetchWishlist()
+    }
   }
 
   return (
     <main className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
       <Navbar />
 
-      <div className="flex-1 max-w-[var(--container-max)] w-full mx-auto px-4 md:px-6 xl:px-6 py-[var(--space-10)]">
+      <div className="flex-1 max-w-[var(--container-max)] w-full mx-auto px-4 md:px-6 xl:px-6 py-[var(--space-10)] mt-[80px]">
         
         <div className="flex items-center justify-between mb-[var(--space-8)] border-b border-[var(--color-border-subtle)] pb-[var(--space-6)]">
           <h1 className="text-display-lg text-[var(--color-ink-900)]">Your Wishlist</h1>
           <span className="text-body-md text-[var(--color-ink-500)]">{items.length} items</span>
         </div>
 
-        {items.length === 0 ? (
+        {!user ? (
+          <div className="flex flex-col items-center justify-center py-[var(--space-10)] animate-fade-up">
+            <h2 className="text-display-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">
+              Please sign in to view your wishlist
+            </h2>
+          </div>
+        ) : loading ? (
+          <div className="flex justify-center py-[var(--space-10)] text-[var(--color-terracotta-600)]">
+            <Loader2 className="animate-spin w-8 h-8" />
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-[var(--space-10)]">
+            <p className="text-body-lg text-[var(--color-urgent-600)] mb-[var(--space-6)]">{error}</p>
+            <Button onClick={fetchWishlist}>Try Again</Button>
+          </div>
+        ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-[var(--space-10)] animate-fade-up">
             <div className="w-[64px] h-[64px] rounded-full bg-[var(--color-cream-deep)] flex items-center justify-center mb-[var(--space-5)] text-[var(--color-ink-500)]">
               <Heart size={32} />
@@ -83,6 +120,11 @@ export default function WishlistPage() {
                   >
                     <X size={16} className="text-[var(--color-ink-900)]" />
                   </button>
+                  {product.status !== 'active' && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="text-white font-bold bg-black/60 px-3 py-1 rounded">No longer available</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Info Area */}
@@ -111,7 +153,7 @@ export default function WishlistPage() {
                         <span className="text-caption text-[var(--color-ink-500)]">Current Bid</span>
                         <div className="flex items-center justify-between">
                           <span className="text-price text-[var(--color-ink-900)]">{product.currentBid}</span>
-                          <span className="text-caption text-[var(--color-ink-500)]">{product.bidCount} bids</span>
+                          <span className="text-caption text-[var(--color-ink-500)]">{product.bidCount || 0} bids</span>
                         </div>
                       </div>
                     ) : (
@@ -129,3 +171,4 @@ export default function WishlistPage() {
     </main>
   )
 }
+
