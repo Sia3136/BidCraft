@@ -48,6 +48,7 @@ function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [isExpanded, setIsExpanded] = useState(mobile)
+  const [isFocused, setIsFocused] = useState(false)
 
   useEffect(() => {
     const q = searchParams.get('search')
@@ -57,33 +58,81 @@ function SearchBar({ mobile = false }: { mobile?: boolean }) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      router.push(`/listings?search=${encodeURIComponent(searchQuery.trim())}`)
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
     } else {
-      router.push(`/listings`)
+      router.push(`/search`)
     }
+    setIsFocused(false)
   }
+
+  const showDropdown = isFocused && searchQuery.length >= 2
 
   if (!mobile && !isExpanded) {
     return (
-      <Button variant="icon" size="icon" onClick={() => setIsExpanded(true)} className="hidden xl:flex text-[var(--color-ink-700)]">
+      <Button variant="icon" size="icon" onClick={() => setIsExpanded(true)} className="hidden xl:flex text-[var(--color-ink-700)] relative">
         <Search size={20} strokeWidth={1.5} />
       </Button>
     )
   }
 
   return (
-    <form onSubmit={handleSearch} className={cn("relative flex items-center", mobile ? "w-full" : "w-[240px] xl:flex hidden")}>
-      <Search size={20} strokeWidth={1.5} className="absolute left-4 text-[var(--color-ink-500)]" />
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search curations..."
-        className="w-full h-[44px] pl-12 pr-4 bg-[var(--color-cream-deep)] text-[var(--color-ink-900)] text-body-md placeholder:text-[var(--color-ink-500)] rounded-[var(--radius-pill)] border border-transparent focus:border-[1.5px] focus:border-[var(--color-terracotta-600)] focus:bg-[var(--color-white)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] transition-all duration-250 ease-default"
-        autoFocus={!mobile}
-        onBlur={() => !searchQuery.trim() && !mobile && setIsExpanded(false)}
-      />
-    </form>
+    <div className={cn("relative flex items-center", mobile ? "w-full" : "w-[240px] xl:flex hidden")}>
+      <form onSubmit={handleSearch} className="w-full relative z-50">
+        <Search size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] pointer-events-none" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => {
+            // Delay closing so clicks on dropdown items can register
+            setTimeout(() => {
+              setIsFocused(false)
+              if (!searchQuery.trim() && !mobile) setIsExpanded(false)
+            }, 200)
+          }}
+          placeholder="Search curations..."
+          className="w-full h-[44px] pl-12 pr-4 bg-[var(--color-cream-deep)] text-[var(--color-ink-900)] text-body-md placeholder:text-[var(--color-ink-500)] rounded-[var(--radius-pill)] border border-transparent focus:border-[1.5px] focus:border-[var(--color-terracotta-600)] focus:bg-[var(--color-white)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] transition-all duration-250 ease-default"
+          autoFocus={!mobile}
+        />
+      </form>
+
+      {/* Live Suggestions Dropdown */}
+      {showDropdown && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] border border-[var(--color-border-subtle)] overflow-hidden z-[100] animate-fade-up">
+          <div className="flex flex-col max-h-[320px] overflow-y-auto">
+            {/* Mock Suggestions */}
+            {[
+              { id: 1, title: 'Resin Ocean Coasters (Set of 4)', price: '₹1,200', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=64&auto=format&fit=crop' },
+              { id: 2, title: 'Hand-poured Resin River Table', price: '₹14,500', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=64&auto=format&fit=crop' },
+              { id: 3, title: 'Resin Art Supplies Kit', price: '₹3,400', img: 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?q=80&w=64&auto=format&fit=crop' },
+            ].map(item => (
+              <Link 
+                key={item.id} 
+                href={`/listings/${item.id}`}
+                className="flex items-center gap-3 p-3 hover:bg-[var(--color-cream-deep)] transition-colors"
+                onClick={() => setIsFocused(false)}
+              >
+                <img src={item.img} alt={item.title} className="w-8 h-8 rounded-[var(--radius-sm)] object-cover shrink-0" />
+                <div className="flex flex-col overflow-hidden">
+                  <span className="text-body-md text-[var(--color-ink-900)] truncate">{item.title}</span>
+                  <span className="text-caption text-[var(--color-ink-500)]">{item.price}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="p-3 border-t border-[var(--color-border-subtle)] bg-[var(--color-cream-base)]">
+            <Link 
+              href={`/search?q=${encodeURIComponent(searchQuery)}`} 
+              className="text-body-md font-medium text-[var(--color-terracotta-600)] hover:underline"
+              onClick={() => setIsFocused(false)}
+            >
+              See all results for "{searchQuery}"
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

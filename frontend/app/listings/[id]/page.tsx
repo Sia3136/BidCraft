@@ -1,500 +1,343 @@
 'use client'
 
-import React, { useEffect, useState, use } from 'react'
-import Script from 'next/script'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import Link from 'next/link'
+import { Heart, ShieldCheck, ChevronDown, Minus, Plus } from 'lucide-react'
+import * as Accordion from '@radix-ui/react-accordion'
 import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/sections/footer'
-import { useAuth } from '@/lib/auth-context'
-import { listingsApi, auctionsApi, ordersApi, paymentsApi, profileApi, wishlistApi } from '@/lib/api'
-import { useSocket } from '@/lib/useSocket'
-import { CountdownTimer } from '@/components/countdown-timer'
-import { ListingQA } from '@/components/listing-qa'
+import { Footer } from '@/components/footer'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Avatar } from '@/components/ui/avatar'
+import { Input } from '@/components/ui/input'
+import { ReviewsSection } from '@/components/marketplace/reviews-section'
+import { cn } from '@/lib/utils'
 
-export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const router = useRouter()
-  const { id } = use(params)
-  const { user, refreshUser } = useAuth()
-  const [listing, setListing] = useState<any>(null)
-  const [auction, setAuction] = useState<any>(null)
-  const [bids, setBids] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isWatchlisted, setIsWatchlisted] = useState(false)
-  const [watchLoading, setWatchLoading] = useState(false)
-  const socket = useSocket()
-  
-  // Checkout & Bid state
-  const [bidAmount, setBidAmount] = useState('')
-  const [submittingBid, setSubmittingBid] = useState(false)
-  const [purchasing, setPurchasing] = useState(false)
-  const [preauthorizing, setPreauthorizing] = useState(false)
-  const [checkoutStep, setCheckoutStep] = useState<'idle' | 'order_created' | 'success'>('idle')
-  const [createdOrder, setCreatedOrder] = useState<any>(null)
-  const [paymentData, setPaymentData] = useState<any>(null)
+// Mock Product Data
+const PRODUCT = {
+  id: 1,
+  title: 'Vintage 1969 Hot Wheels Redline Twin Mill',
+  creator: { name: 'Vikram S.', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop', verified: true },
+  images: [
+    'https://images.unsplash.com/photo-1582562124811-c09040d0a901?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1610486806085-f3769c3a38a3?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=1200&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop'
+  ],
+  methods: ['Buy Now', 'Bid', 'Make Offer', 'Trade'],
+  price: '₹12,500',
+  currentBid: '₹8,400',
+  bidCount: 14,
+  timeLeft: '04:12:30',
+  minIncrement: 500,
+  description: 'An original 1969 Hot Wheels Redline Twin Mill in Spectreflame Red. Paint is about 85% intact with minor edge wear typical for its age. Wheels are straight and roll smoothly. A rare find for serious collectors looking to complete their Sweet 16 original lineup. Sourced from a private collection in Austin, TX.',
+  specs: [
+    { key: 'Brand', value: 'Hot Wheels (Mattel)' },
+    { key: 'Year', value: '1969' },
+    { key: 'Scale', value: '1:64' },
+    { key: 'Condition', value: 'Excellent (Vintage)' },
+    { key: 'Material', value: 'Die-cast Metal' }
+  ]
+}
 
-  const loadData = async () => {
-    try {
-      setLoading(true)
-      const listingData = await listingsApi.get(id)
-      setListing(listingData.listing)
+export default function ProductDetailPage() {
+  const [activeImage, setActiveImage] = useState(0)
+  const [wishlist, setWishlist] = useState(false)
+  const [activeTab, setActiveTab] = useState(PRODUCT.methods[0])
+  const [bidAmount, setBidAmount] = useState(8900)
+  const [offerAmount, setOfferAmount] = useState(10000)
 
-      if (listingData.listing.listing_type === 'auction') {
-        // Find matching auction
-        const auctionsRes = await auctionsApi.list()
-        const match = auctionsRes.auctions?.find((a: any) => String(a.listing_id) === String(id))
-        if (match) {
-          // Fetch full auction details + bids history
-          const fullAuc = await auctionsApi.get(match.id)
-          setAuction(fullAuc.auction)
-          setBids(fullAuc.bids || [])
-          
-          // Prefill minimum bid amount
-          const current = Number(fullAuc.auction.current_bid || fullAuc.auction.start_bid)
-          const increment = Number(fullAuc.auction.min_bid_increment || 10)
-          setBidAmount(String(current + increment))
-        }
-      }
-
-      if (user) {
-        try {
-          const wl = await wishlistApi.list()
-          const inWl = wl.wishlist?.find((item: any) => String(item.listing_id) === String(id))
-          setIsWatchlisted(!!inWl)
-        } catch (e) {
-          console.error("Failed to fetch wishlist", e)
-        }
-      }
-
-    } catch (err: any) {
-      setError(err.message || 'Failed to load listing.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadData()
-  }, [id, user])
-
-  useEffect(() => {
-    if (!socket || !auction?.id) return
-
-    socket.emit('join_auction', auction.id)
-
-    const handleBidPlaced = (data: any) => {
-      setAuction((prev: any) => ({ ...prev, current_bid: data.bid_amount }))
-      setBids((prev: any) => [
-        {
-          id: data.bidder_id + '_' + Date.now(),
-          bidder_name: 'Bidder #' + data.bidder_id,
-          bid_amount: data.bid_amount,
-          created_at: data.created_at,
-        },
-        ...prev,
-      ])
-      // Only auto-update bid input if it's currently less than new minimum
-      setBidAmount((prevAmount) => {
-        const minReq = Number(data.bid_amount) + Number(auction.min_bid_increment || 10)
-        return Number(prevAmount) < minReq ? String(minReq) : prevAmount
-      })
-    }
-
-    const handleAuctionEnded = (data: any) => {
-      setAuction((prev: any) => ({ ...prev, status: 'closed' }))
-      alert('This auction has ended!')
-    }
-
-    socket.on('bid_placed', handleBidPlaced)
-    socket.on('auction_ended', handleAuctionEnded)
-
-    return () => {
-      socket.off('bid_placed', handleBidPlaced)
-      socket.off('auction_ended', handleAuctionEnded)
-      socket.emit('leave_auction', auction.id)
-    }
-  }, [socket, auction?.id, auction?.min_bid_increment])
-
-  const toggleWatchlist = async () => {
-    if (!user) {
-      alert("Please sign in to add to your watchlist.")
-      return
-    }
-    try {
-      setWatchLoading(true)
-      if (isWatchlisted) {
-        setIsWatchlisted(false)
-        await wishlistApi.remove(id)
-      } else {
-        setIsWatchlisted(true)
-        await wishlistApi.add(id)
-      }
-    } catch (err: any) {
-      setIsWatchlisted(!isWatchlisted)
-      alert(err.message || "Failed to update watchlist")
-    } finally {
-      setWatchLoading(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-background">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 py-32 text-center text-muted-foreground">
-          Loading product details...
-        </div>
-        <Footer />
-      </main>
-    )
-  }
-
-  if (error || !listing) {
-    return (
-      <main className="min-h-screen bg-background">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 py-32 text-center text-red-500 font-semibold">
-          {error || 'Listing not found.'}
-        </div>
-        <Footer />
-      </main>
-    )
-  }
-
-  const photos = typeof listing.photos === 'string' ? JSON.parse(listing.photos) : listing.photos
-  const mainImage = photos && photos.length > 0 ? photos[0] : '/placeholder.png'
-
-  const handleBuyNow = async () => {
-    if (!user) {
-      alert('Please sign in to buy items.')
-      return
-    }
-    router.push(`/checkout/${id}`)
-  }
-
-  const handleSimulatePayment = async () => {
-    if (!createdOrder || !paymentData) return
-    try {
-      setPurchasing(true)
-      const mockPayId = `mock_pay_${Date.now()}`
-      const mockSig = `mock_sig_${paymentData.provider_order_id}_${mockPayId}`
-      
-      await paymentsApi.verifyPayment({
-        razorpay_order_id: paymentData.provider_order_id,
-        razorpay_payment_id: mockPayId,
-        razorpay_signature: mockSig,
-        order_id: createdOrder.id,
-      })
-
-      setCheckoutStep('success')
-      alert('Simulated payment successful! Escrow is active.')
-      loadData()
-    } catch (err: any) {
-      alert('Simulation failed: ' + err.message)
-    } finally {
-      setPurchasing(false)
-    }
-  }
-
-  const handlePreauthorizeCard = async () => {
-    try {
-      setPreauthorizing(true)
-      const setupRes = await paymentsApi.createSetupOrder()
-
-      if (setupRes.key_id && setupRes.key_id !== 'mock_key' && (window as any).Razorpay) {
-        const options = {
-          key: setupRes.key_id,
-          amount: setupRes.amount,
-          currency: setupRes.currency,
-          name: 'BidCraft Card Auth',
-          description: `Pre-authorization for bidding`,
-          order_id: setupRes.provider_order_id,
-          handler: async function (response: any) {
-            try {
-              setPreauthorizing(true)
-              await paymentsApi.saveCard(response.razorpay_payment_id)
-              await refreshUser()
-              alert('Card successfully pre-authorized for bidding!')
-            } catch (err: any) {
-              alert('Save Card failed: ' + err.message)
-            } finally {
-              setPreauthorizing(false)
-            }
-          },
-          prefill: {
-            name: user?.name,
-            email: user?.email,
-          },
-          theme: { color: '#6366F1' },
-          modal: {
-            ondismiss: function() {
-              setPreauthorizing(false)
-            }
-          }
-        }
-        const rzp = new (window as any).Razorpay(options)
-        rzp.open()
-      } else {
-        // Mock mode
-        await paymentsApi.saveCard(`mock_preauth_pay_${Date.now()}`)
-        await refreshUser()
-        alert('Mock Card successfully pre-authorized for bidding!')
-        setPreauthorizing(false)
-      }
-    } catch (err: any) {
-      alert('Pre-authorization setup failed: ' + err.message)
-      setPreauthorizing(false)
-    }
-  }
-
-  const handlePlaceBid = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!user) {
-      alert('Please sign in to place a bid.')
-      return
-    }
-    if (!auction) return
-
-    const amount = Number(bidAmount)
-    const current = Number(auction.current_bid || auction.start_bid)
-    const increment = Number(auction.min_bid_increment || 10)
-
-    if (amount < current + increment) {
-      alert(`Bid must be at least $${current + increment}`)
-      return
-    }
-
-    try {
-      setSubmittingBid(true)
-      await auctionsApi.placeBid(auction.id, amount)
-      alert('Bid placed successfully!')
-      loadData() // reload PDP
-    } catch (err: any) {
-      alert('Failed to place bid: ' + err.message)
-    } finally {
-      setSubmittingBid(false)
-    }
-  }
-
-  const getRemainingTime = (endTime: string) => {
-    const diff = new Date(endTime).getTime() - Date.now()
-    if (diff <= 0) return 'Ended'
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const mins = Math.floor((diff / (1000 * 60)) % 60)
-    return `${hours}h ${mins}m`
-  }
+  // Segmented control tabs
+  const tabs = PRODUCT.methods
 
   return (
-    <main className="min-h-screen bg-background">
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+    <main className="min-h-screen bg-[var(--color-cream-base)]">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left Column: Image Gallery */}
-          <div className="space-y-4">
-            <div className="aspect-square bg-muted rounded-2xl overflow-hidden border border-border">
-              <img
-                src={mainImage}
-                alt={listing.title}
-                className="w-full h-full object-cover"
-              />
+      {/* Main Container */}
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 xl:px-6 py-[var(--space-8)] md:py-[var(--space-10)]">
+        
+        {/* Top Split */}
+        <div className="flex flex-col lg:flex-row gap-[var(--space-8)] xl:gap-[var(--space-10)] mb-[var(--space-10)]">
+          
+          {/* Left: Image Gallery */}
+          <div className="w-full lg:w-[60%] flex flex-col gap-[var(--space-4)]">
+            
+            {/* Primary Image */}
+            <div className="relative w-full aspect-square rounded-[var(--radius-md)] overflow-hidden bg-[var(--color-cream-deep)]">
+              {PRODUCT.images.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`Product view ${i + 1}`}
+                  className={cn(
+                    "absolute inset-0 w-full h-full object-cover transition-opacity duration-base",
+                    activeImage === i ? "opacity-100 z-10" : "opacity-0 z-0"
+                  )}
+                />
+              ))}
+              <button 
+                onClick={() => setWishlist(!wishlist)}
+                className="absolute top-[var(--space-4)] right-[var(--space-4)] z-20 w-[44px] h-[44px] rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:bg-white hover:scale-105"
+              >
+                <Heart size={24} className={cn("transition-colors duration-200", wishlist ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-white")} />
+              </button>
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {photos?.slice(1, 5).map((photo: string, index: number) => (
-                <div key={index} className="aspect-square bg-muted rounded-xl overflow-hidden border border-border">
-                  <img src={photo} alt={`${listing.title}-${index}`} className="w-full h-full object-cover" />
-                </div>
+
+            {/* Thumbnail Strip */}
+            <div className="flex gap-[var(--space-3)] overflow-x-auto hide-scrollbar">
+              {PRODUCT.images.slice(0, 6).map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className={cn(
+                    "relative w-[72px] h-[72px] shrink-0 rounded-[var(--radius-sm)] overflow-hidden transition-all duration-200",
+                    activeImage === i ? "ring-2 ring-[var(--color-terracotta-600)]" : "ring-1 ring-[var(--color-border-subtle)] opacity-70 hover:opacity-100"
+                  )}
+                >
+                  <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                </button>
               ))}
             </div>
+
           </div>
 
-          {/* Right Column: Information & Actions */}
-          <div className="flex flex-col">
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider">
-                  {listing.listing_type}
-                </span>
-                <span className="px-3 py-1 bg-muted text-muted-foreground text-xs font-semibold rounded-full">
-                  {listing.condition}
-                </span>
-              </div>
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-3xl font-bold text-foreground">{listing.title}</h1>
-                <button
-                  onClick={toggleWatchlist}
-                  disabled={watchLoading}
-                  className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 transition-colors text-xl"
-                  title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
-                >
-                  {isWatchlisted ? '❤️' : '🤍'}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">Seller ID: #{listing.seller_id}</p>
+          {/* Right: Purchase Panel */}
+          <div className="w-full lg:w-[40%] flex flex-col gap-[var(--space-5)]">
+            
+            {/* 1. Creator Byline */}
+            <Link href={`/creator/${PRODUCT.creator.name}`} className="flex items-center gap-[var(--space-3)] group inline-flex w-max">
+              <Avatar src={PRODUCT.creator.avatar} initials={PRODUCT.creator.name[0]} verified={PRODUCT.creator.verified} size="small" />
+              <span className="text-body-md font-semibold text-[var(--color-ink-900)] group-hover:text-[var(--color-terracotta-600)] transition-colors">{PRODUCT.creator.name}</span>
+            </Link>
+
+            {/* 2. Title */}
+            <h1 className="text-display-md text-[var(--color-ink-900)] leading-tight">
+              {PRODUCT.title}
+            </h1>
+
+            {/* 3. Badges */}
+            <div className="flex flex-wrap gap-[var(--space-2)]">
+              {PRODUCT.methods.map(m => <Badge key={m} variant="method">{m}</Badge>)}
             </div>
 
-            {/* Escrow Guarantee Banner */}
-            <div className="p-4 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-xl mb-6 flex gap-3 items-start">
-              <span className="text-xl">🛡️</span>
-              <div>
-                <h4 className="text-sm font-semibold text-emerald-800 dark:text-emerald-400">Escrow Protected Transaction</h4>
-                <p className="text-xs text-emerald-600 dark:text-emerald-500 mt-0.5">
-                  Your funds are held securely by BidCraft. We only release payment to the creator after you confirm delivery of your item.
+            {/* 4. Price Block */}
+            {activeTab === 'Buy Now' || activeTab === 'Make Offer' || activeTab === 'Trade' ? (
+              <div className="flex flex-col">
+                <span className="text-[32px] font-mono tracking-tight text-[var(--color-ink-900)] font-semibold">{PRODUCT.price}</span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <span className="text-caption text-[var(--color-ink-500)] uppercase tracking-wider">Current Bid</span>
+                <div className="flex items-end gap-3">
+                  <span className="text-[32px] font-mono tracking-tight text-[var(--color-ink-900)] font-semibold leading-none">{PRODUCT.currentBid}</span>
+                  <div className="rounded-[var(--radius-pill)] px-[12px] py-[4px] bg-[var(--color-slate-900)] mb-1">
+                    <span className="text-caption text-white font-mono">{PRODUCT.timeLeft}</span>
+                  </div>
+                </div>
+                <span className="text-caption text-[var(--color-ink-500)]">{PRODUCT.bidCount} bids · Reserve met</span>
+              </div>
+            )}
+
+            {/* 5. Buying-method tabs */}
+            <div className="p-1 bg-[var(--color-cream-deep)] rounded-[var(--radius-pill)] flex items-center">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "flex-1 py-[8px] px-[12px] rounded-[var(--radius-pill)] text-body-md font-medium transition-all duration-250",
+                    activeTab === tab ? "bg-white text-[var(--color-ink-900)] shadow-[var(--shadow-card)]" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
+                  )}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* 6. Action Block */}
+            <div className="relative min-h-[120px]">
+              {/* Buy Now */}
+              <div className={cn("absolute inset-0 flex flex-col gap-[var(--space-3)] transition-opacity duration-base", activeTab === 'Buy Now' ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
+                <Button size="large" className="w-full h-[48px]">Buy Now — {PRODUCT.price}</Button>
+                <Button size="large" variant="secondary" className="w-full h-[48px]">Add to Cart</Button>
+              </div>
+
+              {/* Bid */}
+              <div className={cn("absolute inset-0 flex flex-col gap-[var(--space-3)] transition-opacity duration-base", activeTab === 'Bid' ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
+                <div className="flex items-center h-[48px] border border-[var(--color-border-strong)] rounded-[var(--radius-md)] overflow-hidden bg-white">
+                  <button 
+                    onClick={() => setBidAmount(prev => Math.max(8900, prev - PRODUCT.minIncrement))}
+                    className="w-[48px] h-full flex items-center justify-center text-[var(--color-ink-700)] hover:bg-[var(--color-cream-deep)] border-r border-[var(--color-border-subtle)]"
+                  >
+                    <Minus size={20} />
+                  </button>
+                  <div className="flex-1 flex items-center justify-center font-mono text-body-lg text-[var(--color-ink-900)]">
+                    ₹{bidAmount.toLocaleString('en-IN')}
+                  </div>
+                  <button 
+                    onClick={() => setBidAmount(prev => prev + PRODUCT.minIncrement)}
+                    className="w-[48px] h-full flex items-center justify-center text-[var(--color-ink-700)] hover:bg-[var(--color-cream-deep)] border-l border-[var(--color-border-subtle)]"
+                  >
+                    <Plus size={20} />
+                  </button>
+                </div>
+                <Button size="large" className="w-full h-[48px]">Place Bid</Button>
+                <p className="text-caption text-[var(--color-ink-500)] text-center">
+                  By bidding you agree to BidCraft's <Link href="#" className="underline">auction terms</Link>
+                </p>
+                {/* Bid History (Mocked summary) */}
+                <div className="mt-[var(--space-4)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] p-[var(--space-3)]">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-caption font-semibold">Latest Bids</span>
+                    <button className="text-caption text-[var(--color-terracotta-600)]">View All</button>
+                  </div>
+                  <div className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-2"><Avatar src="" initials="R" size="small" className="w-5 h-5"/> <span className="text-caption">R***h K.</span></div>
+                    <span className="text-caption font-mono">₹8,400</span>
+                  </div>
+                  <div className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-2"><Avatar src="" initials="M" size="small" className="w-5 h-5"/> <span className="text-caption">M***a S.</span></div>
+                    <span className="text-caption font-mono">₹7,900</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Make Offer */}
+              <div className={cn("absolute inset-0 flex flex-col gap-[var(--space-3)] transition-opacity duration-base", activeTab === 'Make Offer' ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] font-mono">₹</span>
+                  <Input 
+                    type="number" 
+                    value={offerAmount} 
+                    onChange={e => setOfferAmount(Number(e.target.value))}
+                    className="w-full h-[48px] pl-8 font-mono text-body-lg"
+                  />
+                  {offerAmount < 12500 && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-caption text-[var(--color-urgent-600)]">
+                      {Math.round(((12500 - offerAmount) / 12500) * 100)}% below asking
+                    </span>
+                  )}
+                </div>
+                <Button size="large" className="w-full h-[48px]">Submit Offer</Button>
+                <p className="text-caption text-[var(--color-ink-500)] text-center">
+                  Seller has 24 hours to respond.
                 </p>
               </div>
+
+              {/* Trade */}
+              <div className={cn("absolute inset-0 flex flex-col gap-[var(--space-3)] transition-opacity duration-base", activeTab === 'Trade' ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
+                <Button size="large" variant="secondary" className="w-full h-[48px]">Select items from inventory</Button>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-caption text-[var(--color-ink-500)]">+ Cash (Optional) ₹</span>
+                  <Input type="number" placeholder="0" className="w-full h-[48px] pl-[140px] font-mono" />
+                </div>
+                <Button size="large" className="w-full h-[48px]">Propose Trade</Button>
+              </div>
             </div>
 
-            <div className="p-6 bg-card border border-border rounded-2xl shadow-sm mb-6">
-              {listing.listing_type === 'fixed' ? (
-                // FIXED PRICE DETAILS
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Price</p>
-                  <p className="text-3xl font-extrabold text-primary mb-6">${listing.price}</p>
+            {/* Spacer to handle absolute positioning of action blocks based on tallest (Bid block) */}
+            <div className="h-[80px]" />
 
-                  {checkoutStep === 'idle' && (
-                    <button
-                      onClick={handleBuyNow}
-                      disabled={purchasing || listing.status !== 'active'}
-                      className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
-                    >
-                      {purchasing ? 'Processing Order...' : listing.status === 'active' ? 'Buy Now' : 'Not Available'}
-                    </button>
-                  )}
+            {/* 7. Trust Strip */}
+            <div className="flex items-center gap-[var(--space-4)] bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-[var(--space-4)] mt-[var(--space-2)]">
+              <ShieldCheck size={28} className="text-[var(--color-terracotta-600)] shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-body-md font-semibold text-[var(--color-ink-900)]">Escrow-protected purchase</span>
+                <span className="text-caption text-[var(--color-ink-500)]">Funds released only after you confirm delivery</span>
+              </div>
+            </div>
 
-                  {checkoutStep === 'order_created' && (
-                    <div className="space-y-3">
-                      <p className="text-xs text-amber-600 font-semibold">Order created! Please complete payment.</p>
-                      <button
-                        onClick={handleSimulatePayment}
-                        className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all"
-                      >
-                        Simulate Mock Payment (Local Dev Only)
-                      </button>
-                    </div>
-                  )}
+            <div className="h-[1px] w-full bg-[var(--color-border-subtle)] my-[var(--space-2)]" />
 
-                  {checkoutStep === 'success' && (
-                    <div className="p-3 bg-green-50 dark:bg-green-950/30 text-green-700 border border-green-200 dark:border-green-900/30 rounded-xl text-center text-sm font-semibold">
-                      ✓ Order paid successfully! Check your notifications.
-                    </div>
-                  )}
-                </div>
-              ) : (
-                // AUCTION DETAILS
-                <div>
-                  {auction ? (
-                    <div>
-                      <div className="flex justify-between items-baseline mb-4">
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">Current Highest Bid</p>
-                          <p className="text-3xl font-extrabold text-primary">
-                            ${auction.current_bid || auction.start_bid}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground mb-1">Time Remaining</p>
-                          <CountdownTimer timeString={getRemainingTime(auction.end_time)} size="lg" />
-                        </div>
+            {/* Accordions */}
+            <Accordion.Root type="multiple" defaultValue={['desc']} className="flex flex-col">
+              
+              {/* Description */}
+              <Accordion.Item value="desc" className="border-b border-[var(--color-border-subtle)]">
+                <Accordion.Header>
+                  <Accordion.Trigger className="flex items-center justify-between w-full py-[var(--space-4)] group">
+                    <span className="text-heading-sm text-[var(--color-ink-900)]">Description</span>
+                    <ChevronDown size={20} className="text-[var(--color-ink-500)] transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </Accordion.Trigger>
+                </Accordion.Header>
+                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+                  <p className="text-body-lg text-[var(--color-ink-700)] pb-[var(--space-4)] max-w-[60ch]">
+                    {PRODUCT.description}
+                  </p>
+                </Accordion.Content>
+              </Accordion.Item>
+
+              {/* Specs */}
+              <Accordion.Item value="specs" className="border-b border-[var(--color-border-subtle)]">
+                <Accordion.Header>
+                  <Accordion.Trigger className="flex items-center justify-between w-full py-[var(--space-4)] group">
+                    <span className="text-heading-sm text-[var(--color-ink-900)]">Specifications</span>
+                    <ChevronDown size={20} className="text-[var(--color-ink-500)] transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </Accordion.Trigger>
+                </Accordion.Header>
+                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+                  <div className="flex flex-col pb-[var(--space-4)]">
+                    {PRODUCT.specs.map((spec, i) => (
+                      <div key={i} className="flex py-2 border-b border-[var(--color-border-subtle)] last:border-0 text-body-md">
+                        <span className="w-1/3 text-[var(--color-ink-500)]">{spec.key}</span>
+                        <span className="w-2/3 text-[var(--color-ink-900)]">{spec.value}</span>
                       </div>
+                    ))}
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
 
-                      {user && !user.razorpay_card_token ? (
-                        // Pre-authorization mandate required
-                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-xl space-y-3">
-                          <p className="text-xs text-amber-700 dark:text-amber-400">
-                            <strong>Pre-authorization Required:</strong> To prevent non-payment, you must register a payment method before bidding.
-                          </p>
-                          <button
-                            onClick={handlePreauthorizeCard}
-                            disabled={preauthorizing}
-                            className="w-full py-2.5 bg-amber-600 text-white text-xs font-bold rounded-lg hover:bg-amber-700 transition-all"
-                          >
-                            {preauthorizing ? 'Saving Payment Info...' : 'Pre-authorize Card'}
-                          </button>
-                        </div>
-                      ) : (
-                        // Bidding form active
-                        <form onSubmit={handlePlaceBid} className="space-y-4">
-                          <div>
-                            <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-                              Your Bid (USD)
-                            </label>
-                            <input
-                              type="number"
-                              required
-                              value={bidAmount}
-                              onChange={(e) => setBidAmount(e.target.value)}
-                              className="w-full px-4 py-3 bg-muted text-foreground border border-border rounded-xl text-lg font-bold focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                            <p className="text-[10px] text-muted-foreground mt-1">
-                              Minimum bid: ${Number(auction.current_bid || auction.start_bid) + Number(auction.min_bid_increment || 10)}
-                            </p>
-                          </div>
+              {/* Shipping & Returns */}
+              <Accordion.Item value="shipping" className="border-b border-[var(--color-border-subtle)]">
+                <Accordion.Header>
+                  <Accordion.Trigger className="flex items-center justify-between w-full py-[var(--space-4)] group">
+                    <span className="text-heading-sm text-[var(--color-ink-900)]">Shipping & Returns</span>
+                    <ChevronDown size={20} className="text-[var(--color-ink-500)] transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </Accordion.Trigger>
+                </Accordion.Header>
+                <Accordion.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+                  <div className="flex flex-col gap-[var(--space-3)] pb-[var(--space-4)] text-body-md text-[var(--color-ink-700)]">
+                    <p><strong>Shipping:</strong> Usually ships within 2-3 business days. Estimated delivery: 5-7 days.</p>
+                    <p><strong>Returns:</strong> Escrow-protected. If the item does not match the description, you have 3 days from delivery to open a dispute for a full refund.</p>
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
 
-                          <button
-                            type="submit"
-                            disabled={submittingBid || auction.status !== 'active'}
-                            className="w-full py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary/95 transition-all shadow-md shadow-primary/10"
-                          >
-                            {submittingBid ? 'Placing Bid...' : 'Place Bid'}
-                          </button>
-                        </form>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-amber-600 font-semibold">Auction details are loading...</p>
-                  )}
-                </div>
-              )}
-            </div>
+            </Accordion.Root>
 
-            {/* Description */}
-            <div className="border-t border-border pt-6 mt-6 flex-1">
-              <h3 className="text-lg font-bold text-foreground mb-2">Description</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {listing.description || 'No description provided.'}
-              </p>
-            </div>
           </div>
         </div>
 
-        {/* Bids Log for Auctions */}
-        {listing.listing_type === 'auction' && bids.length > 0 && (
-          <div className="mt-16 pt-8 border-t border-border">
-            <h3 className="text-xl font-bold text-foreground mb-6">Bid History</h3>
-            <div className="max-w-2xl bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-muted text-muted-foreground text-xs uppercase tracking-wider border-b border-border">
-                  <tr>
-                    <th className="px-6 py-4">Bidder</th>
-                    <th className="px-6 py-4">Bid Amount</th>
-                    <th className="px-6 py-4">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {bids.map((bid) => (
-                    <tr key={bid.id} className="hover:bg-muted/10 transition-colors">
-                      <td className="px-6 py-4 font-semibold text-foreground">{bid.bidder_name}</td>
-                      <td className="px-6 py-4 font-bold text-primary">${bid.bid_amount}</td>
-                      <td className="px-6 py-4 text-xs text-muted-foreground">
-                        {new Date(bid.created_at).toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* Bottom Full-Width Sections */}
+        <div className="flex flex-col gap-[var(--space-10)]">
+          <ReviewsSection scope="product" />
+          
+          <section className="w-full">
+            <h2 className="text-display-lg text-[var(--color-ink-900)] mb-[var(--space-6)]">More from {PRODUCT.creator.name}</h2>
+            {/* Horizontal Rail Placeholder */}
+            <div className="flex overflow-x-auto snap-x snap-mandatory gap-[var(--space-4)] pb-4 hide-scrollbar">
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className="w-[280px] h-[360px] bg-[var(--color-cream-deep)] rounded-[var(--radius-md)] shrink-0 snap-start animate-pulse" />
+              ))}
             </div>
-          </div>
-        )}
-
-        {/* Q&A Section */}
-        <div className="max-w-2xl mt-12">
-          <ListingQA listingId={listing.id} isSeller={user?.id === listing.seller_id} />
+          </section>
         </div>
+
       </div>
 
       <Footer />
+
+      {/* Mobile Sticky CTA (Appears when scrolled past initial purchase panel - simplified logic for demo) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--color-border-subtle)] p-4 flex items-center justify-between z-40 lg:hidden shadow-[var(--shadow-modal-reverse)]">
+        <div className="flex flex-col">
+          <span className="text-caption text-[var(--color-ink-500)]">Total</span>
+          <span className="text-price text-[var(--color-ink-900)]">{PRODUCT.price}</span>
+        </div>
+        <Button size="default">Buy Now</Button>
+      </div>
     </main>
   )
 }
