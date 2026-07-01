@@ -65,9 +65,10 @@ export default function ContactPage() {
                       <div className="relative">
                         <select
                           required
+                          defaultValue=""
                           className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-4 pr-10 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all appearance-none cursor-pointer"
                         >
-                          <option value="" disabled selected hidden>Select a topic</option>
+                          <option value="" disabled hidden>Select a topic</option>
                           <option value="general">General Enquiry</option>
                           <option value="order">Order Issue</option>
                           <option value="seller">Seller Support</option>

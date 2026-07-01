@@ -267,7 +267,7 @@ export default function ExplorePage() {
                   {[...Array(4)].map((_, i) => (
                     <div key={i} className="bg-[var(--color-white)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] overflow-hidden shadow-sm group">
                       <div className="h-[80px] bg-[var(--color-cream-deep)] relative">
-                        <CloudinaryImage publicId="hero-bg" alt="Cover" width={300} height={80} className="w-full h-full object-cover" />
+                        <CloudinaryImage publicId={`creator-cover-${i+1}`} alt="Cover" width={300} height={80} className="w-full h-full object-cover" />
                         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-[var(--color-white)]">
                           <CloudinaryImage publicId="cat-crafts" alt="Avatar" width={48} height={48} className="w-full h-full object-cover" />
                         </div>
