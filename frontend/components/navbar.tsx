@@ -13,34 +13,35 @@ import { NotificationPanel } from '@/components/notification-panel'
 
 const categoriesData = [
   {
+    name: 'Explore',
+    href: '/explore',
+    isExplore: true,
+    subcategories: []
+  },
+  {
     name: 'Art',
     href: '/category/art',
-    subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art', 'Illustrations', 'Prints & Posters', 'Sculptures']
+    subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art', 'Illustrations', 'Prints & Posters', 'Sculptures', 'Calligraphy']
   },
   {
-    name: 'Crafts',
+    name: 'Handmade & Crafts',
     href: '/category/crafts',
-    subcategories: ['Handmade Decor', 'Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'Candles & Soaps']
-  },
-  {
-    name: 'Hot Wheels',
-    href: '/category/hot-wheels',
-    subcategories: ['Premium Series', 'Mainline', 'Treasure Hunts', 'Super Treasure Hunts', 'Vintage Models']
+    subcategories: ['Handmade Decor', 'Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'DIY Creations', 'Candles & Soaps', 'Paper Crafts']
   },
   {
     name: 'Collectibles',
     href: '/category/collectibles',
-    subcategories: ['Action Figures', 'Trading Cards', 'Coins', 'Stamps', 'Vintage Memorabilia']
+    subcategories: ['Action Figures', 'Trading Cards', 'Coins', 'Stamps', 'Funko Pops', 'LEGO Collectibles', 'Vintage Memorabilia', 'Hot Wheels']
   },
   {
-    name: 'Handmade & Lifestyle',
-    href: '/category/handmade-lifestyle',
-    subcategories: ['Jewelry', 'Home Decor', 'Accessories', 'Stationery', 'Personalized Gifts']
+    name: 'Gaming & Hobby',
+    href: '/category/gaming',
+    subcategories: ['Gaming Merchandise', 'Board Games', 'Model Kits', 'Anime Merchandise', 'Cosplay Props', 'Trading Card Games', 'Puzzle Collections']
   },
   {
-    name: 'Hobby & Gaming',
-    href: '/category/hobby-gaming',
-    subcategories: ['Gaming Merchandise', 'Board Games', 'Model Kits', 'Anime Merchandise', 'Cosplay Props']
+    name: 'Lifestyle & Gifts',
+    href: '/category/lifestyle',
+    subcategories: ['Jewelry', 'Home Decor', 'Keychains', 'Accessories', 'Stationery', 'Personalized Gifts', 'Miniatures']
   }
 ];
 
@@ -212,7 +213,12 @@ export function Navbar() {
                 </Button>
               )}
               
-              <div className="flex items-center gap-[var(--space-2)] text-body-md text-inherit cursor-pointer hover:text-[var(--color-terracotta-600)] transition-colors">
+              <div className="flex items-center gap-[var(--space-4)] text-body-md">
+                <Link href="/our-story" className="hover:text-[var(--color-terracotta-600)] transition-colors">Our Story</Link>
+                <Link href="/contact" className="hover:text-[var(--color-terracotta-600)] transition-colors">Contact</Link>
+              </div>
+
+              <div className="flex items-center gap-[var(--space-2)] text-body-md text-inherit cursor-pointer hover:text-[var(--color-terracotta-600)] transition-colors border-l border-[var(--color-border-subtle)] pl-[var(--space-4)] ml-[var(--space-2)]">
                 <MapPin size={20} strokeWidth={1.5} />
                 <span>New York</span>
               </div>
@@ -298,39 +304,71 @@ export function Navbar() {
                   )}
                 >
                   <div className="grid grid-cols-4 gap-8">
-                    {/* Columns 1-3: Subcategories (Simulated logic to split into 3 cols) */}
-                    {[0, 1, 2].map((colIndex) => {
-                      const itemsPerCol = Math.ceil(cat.subcategories.length / 3);
-                      const items = cat.subcategories.slice(colIndex * itemsPerCol, (colIndex + 1) * itemsPerCol);
-                      
-                      if (items.length === 0) return <div key={colIndex} />;
-
-                      return (
-                        <div key={colIndex} className="flex flex-col gap-3">
-                          <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">{colIndex === 0 ? "Categories" : "More"}</h4>
-                          {items.map(sub => (
-                            <Link 
-                              key={sub}
-                              href={`${cat.href}?subcategory=${encodeURIComponent(sub.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'))}`}
-                              className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors duration-150"
-                            >
-                              {sub}
-                            </Link>
-                          ))}
+                    {cat.isExplore ? (
+                      <>
+                        <div className="flex flex-col gap-3">
+                          <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">Discover</h4>
+                          <Link href="/explore/trending" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Trending This Week</Link>
+                          <Link href="/explore/editors-picks" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Editor's Picks</Link>
+                          <Link href="/explore/new-arrivals" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">New Arrivals</Link>
+                          <Link href="/explore/most-wishlisted" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Most Wishlisted</Link>
+                          <Link href="/explore/auctions-ending-soon" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Auctions Ending Soon</Link>
                         </div>
-                      )
-                    })}
-
-                    {/* Column 4: Editorial Promo Tile */}
-                    <div className="col-span-1">
-                      <Link href={cat.href} className="block group/promo h-full min-h-[200px] w-full rounded-[var(--radius-md)] overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=400&auto=format&fit=crop" alt="Promo" className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 ease-default group-hover/promo:scale-105" />
-                        <div className="absolute inset-0 bg-black/40 p-4 flex flex-col justify-end">
-                          <span className="text-caption text-white/80 uppercase tracking-wider mb-1">Featured</span>
-                          <span className="text-heading-sm text-white">Curated {cat.name} Collection</span>
+                        <div className="flex flex-col gap-3">
+                          <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">Inspiration</h4>
+                          <Link href="/explore/featured-creators" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Featured Creators</Link>
+                          <Link href="/explore/creator-spotlights" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Creator Spotlights</Link>
+                          <Link href="/explore/rare-finds" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Rare Finds</Link>
+                          <Link href="/explore/gift-ideas" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Gift Ideas</Link>
+                          <Link href="/explore/seasonal-collections" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Seasonal Collections</Link>
                         </div>
-                      </Link>
-                    </div>
+                        <div className="col-span-2">
+                          <Link href="/explore" className="block group/promo h-full min-h-[200px] w-full rounded-[var(--radius-md)] overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=600&auto=format&fit=crop" alt="Explore" className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 ease-default group-hover/promo:scale-105" />
+                            <div className="absolute inset-0 bg-black/40 p-6 flex flex-col justify-end">
+                              <span className="text-caption text-white/80 uppercase tracking-wider mb-2">The Gallery</span>
+                              <span className="text-heading-lg text-white">Curated Exhibition</span>
+                            </div>
+                          </Link>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Columns 1-3: Subcategories */}
+                        {[0, 1, 2].map((colIndex) => {
+                          const itemsPerCol = Math.ceil(cat.subcategories.length / 3);
+                          const items = cat.subcategories.slice(colIndex * itemsPerCol, (colIndex + 1) * itemsPerCol);
+                          
+                          if (items.length === 0) return <div key={colIndex} />;
+
+                          return (
+                            <div key={colIndex} className="flex flex-col gap-3">
+                              <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">{colIndex === 0 ? "Categories" : "More"}</h4>
+                              {items.map(sub => (
+                                <Link 
+                                  key={sub}
+                                  href={`${cat.href}?subcategory=${encodeURIComponent(sub.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'))}`}
+                                  className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors duration-150"
+                                >
+                                  {sub}
+                                </Link>
+                              ))}
+                            </div>
+                          )
+                        })}
+
+                        {/* Column 4: Editorial Promo Tile */}
+                        <div className="col-span-1">
+                          <Link href={cat.href} className="block group/promo h-full min-h-[200px] w-full rounded-[var(--radius-md)] overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=400&auto=format&fit=crop" alt="Promo" className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 ease-default group-hover/promo:scale-105" />
+                            <div className="absolute inset-0 bg-black/40 p-4 flex flex-col justify-end">
+                              <span className="text-caption text-white/80 uppercase tracking-wider mb-1">Featured</span>
+                              <span className="text-heading-sm text-white">Curated {cat.name} Collection</span>
+                            </div>
+                          </Link>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -389,9 +427,10 @@ export function Navbar() {
             ))}
 
             <div className="p-6 flex flex-col gap-4">
-              <Link href="#" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Wishlist</Link>
-              <Link href="#" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Help</Link>
-              <Link href="#" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">About</Link>
+              <Link href="/our-story" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Our Story</Link>
+              <Link href="/contact" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Contact</Link>
+              <Link href="/wishlist" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Wishlist</Link>
+              <Link href="/help" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Help</Link>
             </div>
           </div>
         </div>

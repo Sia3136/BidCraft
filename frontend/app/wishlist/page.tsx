@@ -9,7 +9,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth-context'
-import api from '@/lib/api'
+import { api } from '@/lib/api'
 
 export default function WishlistPage() {
   const { user } = useAuth()

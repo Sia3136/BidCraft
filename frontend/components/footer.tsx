@@ -23,8 +23,8 @@ const footerLinks = [
   {
     title: 'Sell',
     links: [
-      { name: 'Start Selling', href: '#' },
-      { name: 'Creator Resources', href: '#' },
+      { name: 'Become a Seller', href: '#' },
+      { name: 'Creator Stories', href: '#' },
       { name: 'Seller Dashboard', href: '#' },
       { name: 'Fees & Pricing', href: '#' },
     ],
@@ -33,15 +33,15 @@ const footerLinks = [
     title: 'Trust & Support',
     links: [
       { name: 'How Escrow Works', href: '#' },
-      { name: 'Buyer Protection', href: '#' },
+      { name: 'Community Guidelines', href: '#' },
       { name: 'Help Center', href: '#' },
-      { name: 'Contact Us', href: '#' },
+      { name: 'Contact Us', href: '/contact' },
     ],
   },
   {
     title: 'Company',
     links: [
-      { name: 'About', href: '#' },
+      { name: 'Our Story', href: '/our-story' },
       { name: 'Blog', href: '#' },
       { name: 'Careers', href: '#' },
       { name: 'Press', href: '#' },

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth-context'
-import api from '@/lib/api'
+import { api } from '@/lib/api'
 
 export default function CartPage() {
   const { user } = useAuth()
