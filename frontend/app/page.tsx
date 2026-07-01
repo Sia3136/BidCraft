@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Shield, CheckCircle, Package, ArrowRight, Heart } from 'lucide-react'
+import { Shield, CheckCircle, Package, Heart } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { CloudinaryImage } from '@/components/CloudinaryImage'
@@ -22,6 +23,14 @@ const products = [
   { id: 'p2', title: 'Limited Edition Comic #1', price: 3400, creator: 'GeekVault', avatar: 'G', image: 'cat-collectibles' },
   { id: 'p3', title: 'Terracotta Vases (Set of 3)', price: 1800, creator: 'Earth&Fire', avatar: 'E', image: 'cat-crafts' },
   { id: 'p4', title: 'Custom Mechanical Keyboard', price: 14500, creator: 'KeyMech', avatar: 'K', image: 'cat-hobby' },
+]
+
+const heroImages = [
+  '/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo.jpeg',
+  '/images/968355308d40d83a2e1f59daa61c5089.jpg',
+  '/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg',
+  '/images/7f69e85a737d75f85a041d457c9be525.jpg',
+  '/images/586fa4c05a4543d441ec3c2bf877f807.jpg'
 ]
 
 const revealVariant = {
@@ -70,6 +79,14 @@ const ProductCard = ({ product }: { product: any }) => {
 
 export default function Home() {
   const { user } = useStore()
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveHeroIndex((prev) => (prev + 1) % heroImages.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen bg-[var(--color-cream-base)]">
@@ -78,10 +95,31 @@ export default function Home() {
       <main>
         {/* 1. Hero */}
         <section className="relative w-full h-[640px] bg-[var(--color-slate-900)] overflow-hidden">
-          <CloudinaryImage publicId="hero-main" width={1920} height={1080} alt="BidCraft Hero" priority className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent" />
+          {heroImages.map((src, index) => (
+            <div 
+              key={src} 
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: index === activeHeroIndex ? 1 : 0,
+                transition: 'opacity 800ms var(--ease-default)'
+              }}
+            >
+              <Image 
+                src={src}
+                fill
+                style={{ objectFit: 'cover' }}
+                priority={index === 0}
+                loading={index === 0 ? undefined : "lazy"}
+                alt={`Hero image ${index + 1}`}
+              />
+            </div>
+          ))}
+          <div 
+            style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top, rgba(43,42,40,0.55) 0%, rgba(43,42,40,0) 60%)' }} 
+          />
           
-          <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24">
+          <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
               <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block">Curated this week</span>
               <h1 className="text-display-xl text-white mb-6">Where creativity becomes opportunity.</h1>
@@ -122,23 +160,30 @@ export default function Home() {
             </motion.h2>
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:justify-center md:overflow-visible md:pb-0"
             >
               {[
-                { name: 'Art', img: 'cat-art' },
-                { name: 'Crafts', img: 'cat-crafts' },
-                { name: 'Hot Wheels', img: 'cat-hotwheels' },
-                { name: 'Collectibles', img: 'cat-collectibles' },
-                { name: 'Handmade', img: 'cat-handmade' },
-                { name: 'Hobby', img: 'cat-hobby' }
+                { name: 'Art', img: '/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg', slug: 'art' },
+                { name: 'Handmade & Crafts', img: '/images/04809f445775b05edf65772b67c139d9.jpg', slug: 'handmade-crafts' },
+                { name: 'Collectibles', img: '/images/4256f8dcb8f244ba618721219f550054.jpg', slug: 'collectibles' },
+                { name: 'Gaming & Hobby', img: '/images/5139a72a8fd930206d06b40689c6e35c.jpg', slug: 'gaming-hobby' },
+                { name: 'Lifestyle & Gifts', img: '/images/7f69e85a737d75f85a041d457c9be525.jpg', slug: 'lifestyle-gifts' }
               ].map((cat) => (
-                <motion.div key={cat.name} variants={revealVariant} className="group relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden cursor-pointer snap-start">
-                  <CloudinaryImage publicId={cat.img} width={300} height={400} alt={cat.name} className="w-full h-full object-cover transition-transform duration-slow ease-default group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <h3 className="text-heading-lg text-white">{cat.name}</h3>
-                    <div className="w-0 h-[2px] bg-white mt-1 transition-all duration-fast ease-out group-hover:w-full" />
-                  </div>
+                <motion.div key={cat.name} variants={revealVariant} className="shrink-0 w-[42vw] min-w-[160px] md:min-w-0 md:w-[calc(33.333%-11px)] lg:w-[calc(20%-13px)] snap-start">
+                  <Link href={`/category/${cat.slug}`} className="group block relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden cursor-pointer bg-[var(--color-cream-deep)]">
+                    <Image 
+                      src={cat.img}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      alt={cat.name}
+                      className="transition-transform duration-[400ms] ease-default group-hover:scale-[1.06]"
+                    />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(43,42,40,0.70) 0%, rgba(43,42,40,0) 55%)' }} />
+                    <div className="absolute bottom-0 left-0 p-[var(--space-4)]">
+                      <h3 className="text-heading-lg font-[var(--font-display)] font-semibold text-white">{cat.name}</h3>
+                      <div className="w-0 h-[1.5px] bg-white mt-1 transition-all duration-[250ms] ease-out group-hover:w-[24px]" />
+                    </div>
+                  </Link>
                 </motion.div>
               ))}
             </motion.div>
