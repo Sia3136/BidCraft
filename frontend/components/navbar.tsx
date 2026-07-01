@@ -1,443 +1,452 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/lib/auth-context'
-import { AuthModal } from '@/components/auth-modal'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { MapPin, Heart, ShoppingBag, Search, Menu, X, ChevronRight, Bell } from 'lucide-react'
+import { Search, Heart, ShoppingBag, Bell, MapPin, ChevronDown, User, Store, Package, LogOut } from 'lucide-react'
+import { useStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
-import { NotificationPanel } from '@/components/notification-panel'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter, usePathname } from 'next/navigation'
+import { CloudinaryImage } from '@/components/CloudinaryImage'
 
-const categoriesData = [
-  {
-    name: 'Explore',
-    href: '/explore',
-    isExplore: true,
-    subcategories: []
-  },
-  {
-    name: 'Art',
-    href: '/category/art',
-    subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art', 'Illustrations', 'Prints & Posters', 'Sculptures', 'Calligraphy']
-  },
-  {
-    name: 'Handmade & Crafts',
-    href: '/category/crafts',
-    subcategories: ['Handmade Decor', 'Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'DIY Creations', 'Candles & Soaps', 'Paper Crafts']
-  },
-  {
-    name: 'Collectibles',
-    href: '/category/collectibles',
-    subcategories: ['Action Figures', 'Trading Cards', 'Coins', 'Stamps', 'Funko Pops', 'LEGO Collectibles', 'Vintage Memorabilia', 'Hot Wheels']
-  },
-  {
-    name: 'Gaming & Hobby',
-    href: '/category/gaming',
-    subcategories: ['Gaming Merchandise', 'Board Games', 'Model Kits', 'Anime Merchandise', 'Cosplay Props', 'Trading Card Games', 'Puzzle Collections']
-  },
-  {
-    name: 'Lifestyle & Gifts',
-    href: '/category/lifestyle',
-    subcategories: ['Jewelry', 'Home Decor', 'Keychains', 'Accessories', 'Stationery', 'Personalized Gifts', 'Miniatures']
-  }
-];
+const categories = ['Art', 'Crafts', 'Hot Wheels', 'Collectibles', 'Handmade & Lifestyle', 'Hobby & Gaming']
 
-function SearchBar({ mobile = false }: { mobile?: boolean }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isExpanded, setIsExpanded] = useState(mobile)
-  const [isFocused, setIsFocused] = useState(false)
+const megaMenuData: Record<string, string[]> = {
+  'Art': ['Drawing & Illustration', 'Painting (Oil/Watercolour/Acrylic)', 'Digital Art Prints', 'Sculpture', 'Photography Prints', 'Mixed Media', 'Commissioned Portraits'],
+  'Crafts': ['Crochet & Knitting', 'Resin Art', 'Macramé', 'Candle Making', 'Pottery & Ceramics', 'Paper Crafts', 'Embroidery'],
+  'Hot Wheels': ['Treasure Hunts', 'Super Treasure Hunts', 'Mainline Series', 'Premium Cars', 'Custom Hot Wheels', 'Vintage Redlines', 'Case & Display Accessories'],
+  'Collectibles': ['Action Figures', 'Trading Cards', 'Stamps & Coins', 'Vintage Toys', 'Anime Figurines', 'Movie Memorabilia', 'Sports Collectibles'],
+  'Handmade & Lifestyle': ['Handmade Jewellery', 'Home Décor', 'Personalised Gifts', 'Organic & Natural Products', 'Stationery', 'Bags & Accessories', 'Festive & Seasonal'],
+  'Hobby & Gaming': ['Board Games', 'Miniatures & Wargaming', 'Puzzles', 'RC Models', 'Vintage Video Games', 'Comic Books', 'DIY & Craft Kits']
+}
 
-  useEffect(() => {
-    const q = searchParams.get('search')
-    if (q) setSearchQuery(q)
-  }, [searchParams])
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-    } else {
-      router.push(`/search`)
-    }
-    setIsFocused(false)
-  }
-
-  const showDropdown = isFocused && searchQuery.length >= 2
-
-  if (!mobile && !isExpanded) {
-    return (
-      <Button variant="icon" size="icon" onClick={() => setIsExpanded(true)} className="hidden xl:flex text-[var(--color-ink-700)] relative">
-        <Search size={20} strokeWidth={1.5} />
-      </Button>
-    )
-  }
-
-  return (
-    <div className={cn("relative flex items-center", mobile ? "w-full" : "w-[240px] xl:flex hidden")}>
-      <form onSubmit={handleSearch} className="w-full relative z-50">
-        <Search size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] pointer-events-none" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => {
-            // Delay closing so clicks on dropdown items can register
-            setTimeout(() => {
-              setIsFocused(false)
-              if (!searchQuery.trim() && !mobile) setIsExpanded(false)
-            }, 200)
-          }}
-          placeholder="Search curations..."
-          className="w-full h-[44px] pl-12 pr-4 bg-[var(--color-cream-deep)] text-[var(--color-ink-900)] text-body-md placeholder:text-[var(--color-ink-500)] rounded-[var(--radius-pill)] border border-transparent focus:border-[1.5px] focus:border-[var(--color-terracotta-600)] focus:bg-[var(--color-white)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] transition-all duration-250 ease-default"
-          autoFocus={!mobile}
-        />
-      </form>
-
-      {/* Live Suggestions Dropdown */}
-      {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] border border-[var(--color-border-subtle)] overflow-hidden z-[100] animate-fade-up">
-          <div className="flex flex-col max-h-[320px] overflow-y-auto">
-            {/* Mock Suggestions */}
-            {[
-              { id: 1, title: 'Resin Ocean Coasters (Set of 4)', price: '₹1,200', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=64&auto=format&fit=crop' },
-              { id: 2, title: 'Hand-poured Resin River Table', price: '₹14,500', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=64&auto=format&fit=crop' },
-              { id: 3, title: 'Resin Art Supplies Kit', price: '₹3,400', img: 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?q=80&w=64&auto=format&fit=crop' },
-            ].map(item => (
-              <Link 
-                key={item.id} 
-                href={`/listings/${item.id}`}
-                className="flex items-center gap-3 p-3 hover:bg-[var(--color-cream-deep)] transition-colors"
-                onClick={() => setIsFocused(false)}
-              >
-                <img src={item.img} alt={item.title} className="w-8 h-8 rounded-[var(--radius-sm)] object-cover shrink-0" />
-                <div className="flex flex-col overflow-hidden">
-                  <span className="text-body-md text-[var(--color-ink-900)] truncate">{item.title}</span>
-                  <span className="text-caption text-[var(--color-ink-500)]">{item.price}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="p-3 border-t border-[var(--color-border-subtle)] bg-[var(--color-cream-base)]">
-            <Link 
-              href={`/search?q=${encodeURIComponent(searchQuery)}`} 
-              className="text-body-md font-medium text-[var(--color-terracotta-600)] hover:underline"
-              onClick={() => setIsFocused(false)}
-            >
-              See all results for "{searchQuery}"
-            </Link>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+const promoTiles: Record<string, { img: string, title: string }> = {
+  'Art': { img: 'cat-art', title: 'Curated Masterpieces' },
+  'Crafts': { img: 'cat-crafts', title: 'Handcrafted With Love' },
+  'Hot Wheels': { img: 'cat-hotwheels', title: 'Rare Finds' },
+  'Collectibles': { img: 'cat-collectibles', title: 'Vintage Wonders' },
+  'Handmade & Lifestyle': { img: 'cat-handmade', title: 'Everyday Essentials' },
+  'Hobby & Gaming': { img: 'cat-hobby', title: 'Level Up Your Game' }
 }
 
 export function Navbar() {
-  const { user, logout } = useAuth()
+  const router = useRouter()
   const pathname = usePathname()
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isNotifOpen, setIsNotifOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
   const isHomepage = pathname === '/'
+  
+  const { user, location, cart, wishlist, notifications, logout, setLocation } = useStore()
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [openDropdown, setOpenDropdown] = useState<'notifications' | 'profile' | null>(null)
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [isScrolled, setIsScrolled] = useState(false)
+  
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const megaMenuRef = useRef<HTMLDivElement>(null)
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0)
+  const wishlistCount = wishlist.length
+  const unreadNotificationsCount = notifications.filter((n) => !n.read).length
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true)
-      } else {
-        setScrolled(false)
-      }
+      setIsScrolled(window.scrollY > 80)
     }
     window.addEventListener('scroll', handleScroll)
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // The header logic: if homepage and not scrolled, transparent/dark text (we will just invert text if needed, spec says: "inverts to dark over imagery", but wait, "header floats transparent over it with white/light text and icons ... crossfades to solid cream ... once scrolled").
-  // So:
-  const isTransparent = isHomepage && !scrolled
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-  return (
-    <nav 
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 flex flex-col transition-colors duration-400 ease-default",
-        isTransparent ? "bg-transparent border-transparent text-white" : "bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)] text-[var(--color-ink-900)]"
-      )}
+  useEffect(() => {
+    if (user && !location) {
+      const cachedLocation = localStorage.getItem('bidcraft_user_location')
+      if (cachedLocation) {
+        setLocation(cachedLocation)
+      } else {
+        setLocation('Detecting...')
+        fetch('https://ipapi.co/json/')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.city) {
+              const city = data.city
+              localStorage.setItem('bidcraft_user_location', city)
+              setLocation(city)
+            } else {
+              setLocation('Unknown')
+            }
+          })
+          .catch(() => setLocation('Unknown'))
+      }
+    }
+  }, [user, location, setLocation])
+
+  const handleCategoryMouseEnter = (cat: string) => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
+    setActiveCategory(cat)
+  }
+
+  const handleCategoryMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveCategory(null)
+    }, 120)
+  }
+
+  // Text is always dark as per latest UI requirement
+  const textClass = "text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
+  
+  const NotificationsDropdown = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      className="absolute top-full right-0 mt-2 w-[320px] max-h-[420px] overflow-y-auto bg-[var(--color-white)] rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] z-50 flex flex-col border border-[var(--color-border-subtle)] hide-scrollbar"
     >
-      <div className="w-full max-w-[var(--container-max)] mx-auto px-4 md:px-6 xl:px-6 relative">
-        
-        {/* TOP ROW - 80px */}
-        <div className="grid grid-cols-3 items-center h-[80px]">
-          
-          {/* Left: Sign In & Location (Desktop) / Hamburger (Mobile) */}
-          <div className="flex items-center gap-[var(--space-5)] justify-start">
-            <Button 
-              variant="icon" 
-              size="icon"
-              className="lg:hidden text-inherit hover:bg-[var(--color-cream-deep)]/20"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={24} strokeWidth={1.5} />
-            </Button>
-
-            <div className="hidden lg:flex items-center gap-[var(--space-5)]">
-              {user ? (
-                <div className="flex items-center gap-3">
-                  {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.name} className="h-8 w-8 rounded-[var(--radius-pill)] object-cover" />
-                  ) : (
-                    <div className="h-8 w-8 rounded-[var(--radius-pill)] bg-[var(--color-slate-100)] text-[var(--color-slate-700)] flex items-center justify-center font-bold text-caption">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <Button variant="ghost" onClick={logout} className="text-inherit hover:text-[var(--color-terracotta-600)] p-0 h-auto">
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <Button 
-                  variant="ghost" 
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="text-inherit hover:text-[var(--color-terracotta-600)] px-0"
-                >
-                  Sign In
-                </Button>
-              )}
-              
-              <div className="flex items-center gap-[var(--space-4)] text-body-md">
-                <Link href="/our-story" className="hover:text-[var(--color-terracotta-600)] transition-colors">Our Story</Link>
-                <Link href="/contact" className="hover:text-[var(--color-terracotta-600)] transition-colors">Contact</Link>
+      <div className="p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between sticky top-0 bg-[var(--color-white)] z-10">
+        <h3 className="text-heading-sm text-[var(--color-ink-900)]">What's Happening</h3>
+        {user && <button className="text-caption text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Mark all read</button>}
+      </div>
+      
+      <div className="flex flex-col">
+        {!user && (
+          <>
+            <div className="p-4 flex gap-3 hover:bg-[var(--color-cream-raised)] transition-colors border-b border-[var(--color-border-subtle)] cursor-pointer">
+              <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-cream-deep)] overflow-hidden shrink-0">
+                <CloudinaryImage publicId="cat-hotwheels" width={40} height={40} alt="alert" className="w-full h-full object-cover" />
               </div>
-
-              <div className="flex items-center gap-[var(--space-2)] text-body-md text-inherit cursor-pointer hover:text-[var(--color-terracotta-600)] transition-colors border-l border-[var(--color-border-subtle)] pl-[var(--space-4)] ml-[var(--space-2)]">
-                <MapPin size={20} strokeWidth={1.5} />
-                <span>New York</span>
+              <div className="flex-1">
+                <p className="text-body-md text-[var(--color-ink-900)] leading-snug">New Hot Wheels Treasure Hunt auction is now live!</p>
+                <p className="text-caption text-[var(--color-ink-500)] mt-1">2 mins ago</p>
               </div>
             </div>
-          </div>
+            <div className="p-4 text-center">
+              <p className="text-caption text-[var(--color-ink-500)] mb-2">Sign in to get personalised alerts</p>
+              <Link href="/auth" onClick={() => setOpenDropdown(null)} className="text-body-md font-medium text-[var(--color-terracotta-600)] hover:underline">
+                Sign In
+              </Link>
+            </div>
+          </>
+        )}
+        
+        {user && (
+          notifications.length > 0 ? notifications.map(n => (
+            <div key={n.id} className={cn("p-4 flex gap-3 hover:bg-[var(--color-cream-raised)] transition-colors border-b border-[var(--color-border-subtle)] cursor-pointer relative", !n.read && "bg-[var(--color-cream-raised)]")}>
+              {!n.read && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[var(--color-terracotta-600)]" />}
+              <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-cream-deep)] flex items-center justify-center shrink-0">
+                <Bell className="w-5 h-5 text-[var(--color-terracotta-600)]" strokeWidth={1.5} />
+              </div>
+              <div className="flex-1">
+                <p className="text-body-md text-[var(--color-ink-900)] leading-snug">{n.message}</p>
+                <p className="text-caption text-[var(--color-ink-500)] mt-1">Just now</p>
+              </div>
+            </div>
+          )) : (
+            <div className="p-8 text-center text-body-md text-[var(--color-ink-500)]">No new notifications</div>
+          )
+        )}
+      </div>
+    </motion.div>
+  )
 
-          {/* Center: Logo */}
-          <div className="flex justify-center">
-            <Link href="/" className="flex items-center">
-              <span className={cn(
-                "font-brand text-[26px] md:text-[30px] font-semibold tracking-wide transition-colors duration-250 ease-default",
-                isTransparent ? "text-white" : "text-[var(--color-ink-900)]"
-              )}>
-                BidCraft
-              </span>
-            </Link>
-          </div>
+  const ProfileDropdown = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 8 }}
+      className="absolute top-full right-0 mt-2 w-[240px] bg-[var(--color-white)] rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] py-2 border border-[var(--color-border-subtle)] z-50 flex flex-col"
+    >
+      <div className="px-4 py-4 border-b border-[var(--color-border-subtle)] mb-2 flex flex-col items-center bg-[var(--color-cream-raised)] mx-2 rounded-[var(--radius-md)]">
+        <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-heading-lg font-display mb-2">
+          {user?.name.charAt(0).toUpperCase()}
+        </div>
+        <p className="text-heading-sm text-[var(--color-ink-900)] text-center w-full truncate">{user?.name}</p>
+        <p className="text-caption text-[var(--color-ink-500)] text-center w-full truncate">{user?.email}</p>
+      </div>
+      
+      <Link href="/orders" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+        <Package className="w-5 h-5" strokeWidth={1.5} />
+        Previous Orders
+      </Link>
+      <Link href="/settings" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+        <User className="w-5 h-5" strokeWidth={1.5} />
+        Account Info
+      </Link>
+      <Link href="/sell" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+        <Store className="w-5 h-5" strokeWidth={1.5} />
+        Be a Seller
+      </Link>
+      
+      <div className="h-px bg-[var(--color-border-subtle)] my-2" />
+      
+      <button onClick={() => { logout(); setOpenDropdown(null); router.push('/') }} className="flex items-center gap-3 w-full text-left px-4 h-[44px] text-body-md text-[var(--color-urgent-700)] hover:bg-[var(--color-urgent-100)] transition-colors">
+        <LogOut className="w-5 h-5" strokeWidth={1.5} />
+        Sign Out
+      </button>
+    </motion.div>
+  )
 
-          {/* Right: Wishlist, Cart, Notifications */}
-          <div className="flex items-center gap-[var(--space-5)] justify-end">
-            <Link href="/wishlist">
-              <Button variant="icon" size="icon" className="text-inherit hover:bg-black/5" aria-label="Wishlist">
-                <Heart size={20} strokeWidth={1.5} />
-              </Button>
-            </Link>
-
-            <Link href="/cart">
-              <Button variant="icon" size="icon" className="relative text-inherit hover:bg-black/5" aria-label="Cart">
-                <ShoppingBag size={20} strokeWidth={1.5} />
-                <div className="absolute top-1 right-1 h-[14px] w-[14px] flex items-center justify-center bg-[var(--color-terracotta-600)] rounded-full text-white text-[9px] font-bold">
-                  2
+  return (
+    <>
+      <div className="h-[128px] md:h-[136px]" /> {/* Spacer for fixed header (80px + 56px approx) */}
+      <header 
+        className={cn(
+          "w-full fixed top-0 z-50 transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] border-b",
+          (isHomepage && !isScrolled)
+            ? "bg-transparent border-transparent" 
+            : "bg-[rgba(253,251,247,0.92)] backdrop-blur-[12px] saturate-[1.4] shadow-[0_1px_0_var(--color-border-subtle),0_4px_16px_rgba(43,42,40,0.08)] border-transparent"
+        )}
+        onMouseLeave={handleCategoryMouseLeave}
+      >
+        {/* Row 1 */}
+        <div className="h-[80px] flex items-center px-[var(--space-5)] xl:px-[var(--space-8)] border-b border-[var(--color-border-subtle)]/30">
+          <div className="w-full max-w-[var(--container-max)] mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+            
+            {/* Left Zone */}
+            <div className="flex items-center gap-6 justify-self-start">
+              <Link href="/our-story" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                Our Story
+              </Link>
+              <Link href="/contact" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                Contact
+              </Link>
+              {user && location && (
+                <div className={cn("flex items-center gap-1.5 text-body-md transition-colors hidden sm:flex", textClass)}>
+                  <MapPin className="w-4 h-4" strokeWidth={1.5} />
+                  <span>{location}</span>
                 </div>
-              </Button>
-            </Link>
-
-            <Button variant="icon" size="icon" className="text-inherit hover:bg-black/5 relative" aria-label="Notifications" onClick={() => setIsNotifOpen(true)}>
-              <Bell size={20} strokeWidth={1.5} />
-              {user && (
-                <div className="absolute top-[6px] right-[8px] h-2 w-2 rounded-full bg-[var(--color-terracotta-600)] border border-white" />
               )}
-            </Button>
+            </div>
+
+            {/* Center Zone */}
+            <div className="justify-self-center">
+              <Link href="/" className="text-display-lg font-display text-[var(--color-ink-900)] transition-colors">
+                BidCraft
+              </Link>
+            </div>
+
+            {/* Right Zone */}
+            <div className="flex items-center justify-self-end relative" ref={dropdownRef}>
+              
+              <div className="flex flex-col items-end">
+                {/* Action Icons */}
+                <div className="flex items-center gap-2 xl:gap-3">
+                  <Link 
+                    href="/wishlist"
+                    className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                    aria-label="Wishlist"
+                  >
+                    <Heart className="w-5 h-5" strokeWidth={1.5} />
+                    {wishlistCount > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[var(--color-terracotta-600)] rounded-full text-[9px] font-bold text-white flex items-center justify-center animate-scale-pulse border-[1.5px] border-transparent">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  <Link 
+                    href="/cart"
+                    className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                    aria-label="Cart"
+                  >
+                    <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
+                    {cartCount > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[var(--color-terracotta-600)] rounded-full text-[9px] font-bold text-white flex items-center justify-center animate-scale-pulse border-[1.5px] border-transparent">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  <div className="relative">
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === 'notifications' ? null : 'notifications')}
+                      className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                      aria-label="Notifications"
+                    >
+                      <Bell className="w-5 h-5" strokeWidth={1.5} />
+                      {unreadNotificationsCount > 0 && (
+                        <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-[var(--color-urgent-600)] rounded-full border-[1.5px] border-transparent" />
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {openDropdown === 'notifications' && <NotificationsDropdown />}
+                    </AnimatePresence>
+                  </div>
+
+                  {user ? (
+                    <div className="relative ml-1">
+                      <button 
+                        onClick={() => setOpenDropdown(openDropdown === 'profile' ? null : 'profile')}
+                        className="w-[36px] h-[36px] rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-heading-sm font-display ring-2 ring-transparent focus:ring-[rgba(200,100,58,0.3)] transition-all"
+                        aria-label="User menu"
+                      >
+                        {user.name.charAt(0).toUpperCase()}
+                      </button>
+                      <AnimatePresence>
+                        {openDropdown === 'profile' && <ProfileDropdown />}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <Link 
+                      href="/auth"
+                      className="ml-2 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-[24px] py-[10px] rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast whitespace-nowrap"
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                </div>
+
+              </div>
+
+            </div>
           </div>
         </div>
-      </div>
+        
+        {/* Row 2 / Sub-nav container */}
+        <div className="relative hidden md:block border-b border-[var(--color-border-subtle)]/30 bg-[var(--color-cream-base)]">
+          <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between px-[var(--space-5)] xl:px-[var(--space-8)] h-[56px]">
+            
+            {/* Centered Categories - Needs to be absolute to be truly centered if right side has width */}
+            <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+              <div className="flex items-center gap-[40px] pointer-events-auto h-full">
+                {categories.map((category) => (
+                  <div 
+                    key={category} 
+                    className="h-[56px] flex items-center group relative cursor-pointer"
+                    onMouseEnter={() => handleCategoryMouseEnter(category)}
+                  >
+                    <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className={cn("text-body-md font-medium transition-colors duration-fast", activeCategory === category ? "text-[var(--color-terracotta-600)]" : textClass)}>
+                      {category}
+                    </Link>
+                    <span className={cn("absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-[var(--color-terracotta-600)] transition-all duration-fast ease-out", activeCategory === category ? "w-full" : "w-0 group-hover:w-full")} />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* BOTTOM ROW (Desktop Only) - Category Bar - 56px */}
-      <div 
-        className={cn(
-          "hidden lg:flex border-t border-[var(--color-border-subtle)] h-[56px] w-full transition-all duration-400 ease-default",
-          isTransparent ? "bg-transparent opacity-0 pointer-events-none" : "bg-[var(--color-cream-base)] opacity-100"
-        )} 
-        onMouseLeave={() => setHoveredCategory(null)}
-      >
-        <div className="w-full max-w-[var(--container-max)] mx-auto px-6 flex items-center justify-between">
-          <div className="flex-1" />
-          {/* Categories Centered */}
-          <div className="flex items-center gap-[40px] h-full justify-center shrink-0">
-            {categoriesData.map((cat) => (
-              <div 
-                key={cat.name} 
-                className="h-full flex items-center relative group"
-                onMouseEnter={() => setHoveredCategory(cat.name)}
+            {/* Empty Left Placeholder to balance flex */}
+            <div className="w-[200px]" />
+
+            {/* Right side - Search bar directly under action buttons */}
+            <div className="w-[300px] xl:w-[320px] pointer-events-auto z-10 flex justify-end">
+              <div className={cn(
+                "flex items-center w-full h-[40px] bg-[var(--color-white)] border rounded-[var(--radius-pill)] px-4 transition-all duration-fast",
+                isSearchFocused ? "border-[var(--color-terracotta-600)] shadow-[0_0_0_3px_rgba(200,100,58,0.12)]" : "border-[var(--color-border-subtle)]"
+              )}>
+                <Search className="w-4 h-4 text-[var(--color-ink-500)] shrink-0" strokeWidth={1.5} />
+                <input 
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full bg-transparent border-none outline-none ml-2 text-body-md text-[var(--color-ink-900)] placeholder:text-[var(--color-ink-500)]"
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+          </div>
+
+          {/* Autocomplete absolute positioned */}
+          <AnimatePresence>
+            {isSearchFocused && searchQuery.length >= 2 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                className="absolute top-[60px] right-[var(--space-5)] xl:right-[var(--space-8)] w-[320px] bg-[var(--color-white)] rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] border border-[var(--color-border-subtle)] overflow-hidden z-[100]"
               >
-                <Link 
-                  href={cat.href}
-                  className={cn(
-                    "text-body-md font-medium transition-colors duration-150 ease-default relative py-[16px]",
-                    hoveredCategory === cat.name ? "text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]"
-                  )}
-                >
-                  {cat.name}
-                  <span className={cn(
-                    "absolute bottom-[8px] left-1/2 -translate-x-1/2 h-[2px] bg-[var(--color-terracotta-600)] transition-all duration-150 ease-default",
-                    hoveredCategory === cat.name ? "w-full" : "w-0"
-                  )} />
+                <div className="p-2">
+                  <div className="flex items-center gap-3 p-2 hover:bg-[var(--color-cream-raised)] rounded-[var(--radius-sm)] cursor-pointer transition-colors">
+                    <div className="w-10 h-10 bg-[var(--color-cream-deep)] rounded-[var(--radius-sm)] animate-pulse" />
+                    <div>
+                      <p className="text-body-md text-[var(--color-ink-900)] line-clamp-1">Mock Product for "{searchQuery}"</p>
+                      <p className="text-caption text-[var(--color-ink-500)]">Art</p>
+                    </div>
+                  </div>
+                </div>
+                <Link href={`/explore?q=${searchQuery}`} className="block w-full p-3 text-center text-body-md font-medium text-[var(--color-terracotta-600)] border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-cream-base)] transition-colors">
+                  See all results
                 </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Mobile Search Bar - Collapsed under header on mobile */}
+        <div className="md:hidden bg-[var(--color-cream-base)] p-3 border-b border-[var(--color-border-subtle)]">
+          <div className={cn(
+            "flex items-center h-[44px] bg-[var(--color-white)] border rounded-[var(--radius-pill)] px-4 transition-all duration-fast",
+            isSearchFocused ? "border-[var(--color-terracotta-600)] shadow-[0_0_0_3px_rgba(200,100,58,0.12)]" : "border-[var(--color-border-subtle)]"
+          )}>
+            <Search className="w-5 h-5 text-[var(--color-ink-500)] shrink-0" strokeWidth={1.5} />
+            <input 
+              type="text"
+              placeholder="Search..."
+              className="w-full bg-transparent border-none outline-none ml-2 text-body-md text-[var(--color-ink-900)] placeholder:text-[var(--color-ink-500)]"
+            />
+          </div>
+        </div>
+
+        {/* Mega Menu Dropdown */}
+        <AnimatePresence>
+          {activeCategory && (
+            <motion.div
+              ref={megaMenuRef}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute top-[136px] left-1/2 -translate-x-1/2 w-full max-w-[var(--container-max)] bg-[var(--color-white)] rounded-b-[var(--radius-lg)] shadow-[var(--shadow-modal)] z-[100] overflow-hidden border-t border-[var(--color-border-subtle)]"
+              onMouseEnter={() => handleCategoryMouseEnter(activeCategory)}
+              onMouseLeave={handleCategoryMouseLeave}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-[var(--space-6)] gap-[var(--space-5)]">
+                {/* 3 Columns of links - distributing items */}
+                {Array.from({ length: 3 }).map((_, colIndex) => {
+                  const links = megaMenuData[activeCategory] || []
+                  const itemsPerCol = Math.ceil(links.length / 3)
+                  const colLinks = links.slice(colIndex * itemsPerCol, (colIndex + 1) * itemsPerCol)
+                  
+                  return (
+                    <div key={colIndex} className="flex flex-col">
+                      {colIndex === 0 && <h3 className="text-heading-sm text-[var(--color-ink-900)] font-semibold mb-4">{activeCategory}</h3>}
+                      {colIndex !== 0 && <div className="h-[40px] hidden lg:block" />}
+                      <div className="flex flex-col gap-[10px]">
+                        {colLinks.map(link => (
+                          <Link key={link} href={`/category/${activeCategory.toLowerCase().replace(/ /g, '-')}/${link.toLowerCase().replace(/ /g, '-')}`} className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors">
+                            {link}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
                 
-                {/* Mega Menu Dropdown */}
-                <div 
-                  className={cn(
-                    "absolute top-[56px] left-1/2 -translate-x-1/2 w-[var(--container-max)] max-w-[95vw] bg-[var(--color-white)] rounded-b-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8 transition-all duration-250 ease-default z-50 overflow-hidden",
-                    hoveredCategory === cat.name ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2 delay-150"
-                  )}
-                >
-                  <div className="grid grid-cols-4 gap-8">
-                    {cat.isExplore ? (
-                      <>
-                        <div className="flex flex-col gap-3">
-                          <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">Discover</h4>
-                          <Link href="/explore/trending" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Trending This Week</Link>
-                          <Link href="/explore/editors-picks" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Editor's Picks</Link>
-                          <Link href="/explore/new-arrivals" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">New Arrivals</Link>
-                          <Link href="/explore/most-wishlisted" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Most Wishlisted</Link>
-                          <Link href="/explore/auctions-ending-soon" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Auctions Ending Soon</Link>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                          <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">Inspiration</h4>
-                          <Link href="/explore/featured-creators" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Featured Creators</Link>
-                          <Link href="/explore/creator-spotlights" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Creator Spotlights</Link>
-                          <Link href="/explore/rare-finds" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Rare Finds</Link>
-                          <Link href="/explore/gift-ideas" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Gift Ideas</Link>
-                          <Link href="/explore/seasonal-collections" className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]">Seasonal Collections</Link>
-                        </div>
-                        <div className="col-span-2">
-                          <Link href="/explore" className="block group/promo h-full min-h-[200px] w-full rounded-[var(--radius-md)] overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=600&auto=format&fit=crop" alt="Explore" className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 ease-default group-hover/promo:scale-105" />
-                            <div className="absolute inset-0 bg-black/40 p-6 flex flex-col justify-end">
-                              <span className="text-caption text-white/80 uppercase tracking-wider mb-2">The Gallery</span>
-                              <span className="text-heading-lg text-white">Curated Exhibition</span>
-                            </div>
-                          </Link>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {/* Columns 1-3: Subcategories */}
-                        {[0, 1, 2].map((colIndex) => {
-                          const itemsPerCol = Math.ceil(cat.subcategories.length / 3);
-                          const items = cat.subcategories.slice(colIndex * itemsPerCol, (colIndex + 1) * itemsPerCol);
-                          
-                          if (items.length === 0) return <div key={colIndex} />;
-
-                          return (
-                            <div key={colIndex} className="flex flex-col gap-3">
-                              <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-2">{colIndex === 0 ? "Categories" : "More"}</h4>
-                              {items.map(sub => (
-                                <Link 
-                                  key={sub}
-                                  href={`${cat.href}?subcategory=${encodeURIComponent(sub.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'))}`}
-                                  className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors duration-150"
-                                >
-                                  {sub}
-                                </Link>
-                              ))}
-                            </div>
-                          )
-                        })}
-
-                        {/* Column 4: Editorial Promo Tile */}
-                        <div className="col-span-1">
-                          <Link href={cat.href} className="block group/promo h-full min-h-[200px] w-full rounded-[var(--radius-md)] overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=400&auto=format&fit=crop" alt="Promo" className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 ease-default group-hover/promo:scale-105" />
-                            <div className="absolute inset-0 bg-black/40 p-4 flex flex-col justify-end">
-                              <span className="text-caption text-white/80 uppercase tracking-wider mb-1">Featured</span>
-                              <span className="text-heading-sm text-white">Curated {cat.name} Collection</span>
-                            </div>
-                          </Link>
-                        </div>
-                      </>
-                    )}
+                {/* Promo Tile (Column 4) */}
+                <div className="hidden lg:block relative rounded-[var(--radius-md)] overflow-hidden aspect-[4/5]">
+                  <CloudinaryImage publicId={promoTiles[activeCategory]?.img || 'cat-art'} width={300} height={400} alt={activeCategory} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="text-caption uppercase tracking-wider text-white/90 mb-1">Featured</p>
+                    <h4 className="text-heading-sm text-white">{promoTiles[activeCategory]?.title}</h4>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-          
-          <div className="flex-1 flex justify-end items-center h-full">
-            <Suspense fallback={<div className="w-8 h-8" />}>
-              <SearchBar />
-            </Suspense>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Persistent Search (Shows only when not transparent and on mobile) */}
-      <div className={cn(
-        "lg:hidden w-full px-4 pb-3 transition-colors duration-400 ease-default",
-        isTransparent ? "hidden" : "bg-[var(--color-cream-base)]"
-      )}>
-        <Suspense fallback={<div className="w-full h-[44px] bg-[var(--color-cream-deep)] rounded-[var(--radius-pill)]" />}>
-          <SearchBar mobile={true} />
-        </Suspense>
-      </div>
-
-      {/* Mobile Drawer */}
-      <div className={cn(
-        "fixed inset-0 z-[100] lg:hidden transition-all duration-250 ease-default",
-        isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-      )}>
-        <div className="absolute inset-0 bg-[var(--color-ink-900)]/40 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-        <div className={cn(
-          "absolute top-0 left-0 w-[85%] max-w-[360px] h-full bg-[var(--color-cream-base)] shadow-[var(--shadow-modal)] transition-transform duration-250 ease-emphasis flex flex-col",
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        )}>
-          <div className="p-6 flex items-center justify-between border-b border-[var(--color-border-subtle)]">
-            <Button variant="ghost" onClick={() => setIsMobileMenuOpen(false)} className="px-0 text-[var(--color-ink-900)] h-auto">
-              {user ? "Sign Out" : "Sign In"}
-            </Button>
-            <Button variant="icon" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-              <X size={24} strokeWidth={1.5} />
-            </Button>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto">
-            {categoriesData.map((cat) => (
-              <div key={cat.name} className="border-b border-[var(--color-border-subtle)]">
-                <Link 
-                  href={cat.href} 
-                  onClick={() => setIsMobileMenuOpen(false)} 
-                  className="flex items-center justify-between h-[56px] px-6 text-heading-sm text-[var(--color-ink-900)] hover:bg-[var(--color-cream-deep)]"
-                >
-                  {cat.name}
-                  <ChevronRight size={20} strokeWidth={1.5} className="text-[var(--color-ink-500)]" />
-                </Link>
-              </div>
-            ))}
-
-            <div className="p-6 flex flex-col gap-4">
-              <Link href="/our-story" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Our Story</Link>
-              <Link href="/contact" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Contact</Link>
-              <Link href="/wishlist" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Wishlist</Link>
-              <Link href="/help" className="text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Help</Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-      <NotificationPanel isOpen={isNotifOpen} onClose={() => setIsNotifOpen(false)} />
-    </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   )
 }

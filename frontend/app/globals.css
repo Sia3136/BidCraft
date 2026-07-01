@@ -203,11 +203,32 @@
   animation: highlight-flash 600ms var(--ease-default);
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--color-cream-deep) 25%, var(--color-white) 50%, var(--color-cream-deep) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-scale-pulse,
   .animate-highlight-flash,
   .animate-pulse {
     animation: none !important;
     transition: none !important;
+  }
+  .skeleton-shimmer {
+    animation: none !important;
+    background: var(--color-cream-deep) !important;
+    opacity: 0.6;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
   }
 }

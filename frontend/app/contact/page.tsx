@@ -1,131 +1,164 @@
+'use client'
+
+import React, { useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Mail, MessageSquare, MapPin } from 'lucide-react'
+import { Mail, Store, Shield, CheckCircle2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 export default function ContactPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitted(true)
+  }
+
   return (
-    <main className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
+    <div className="min-h-screen bg-[var(--color-cream-base)]">
       <Navbar />
-      
-      <div className="flex-1 mt-[80px]">
-        <div className="max-w-[1200px] mx-auto px-6 py-[var(--space-10)] md:py-16">
+
+      <main className="pt-[var(--space-9)] pb-[var(--space-10)] px-[var(--space-5)] w-full max-w-[var(--container-max)] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-12 lg:gap-16">
           
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h1 className="text-display-lg text-[var(--color-ink-900)] mb-4">Get in Touch</h1>
-            <p className="text-body-lg text-[var(--color-ink-700)]">
-              Whether you have a question about a product, need help setting up your storefront, or just want to share feedback, we'd love to hear from you.
-            </p>
+          {/* Left Column - Form / Success State */}
+          <div>
+            <AnimatePresence mode="wait">
+              {!isSubmitted ? (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h1 className="text-display-md font-display text-[var(--color-ink-900)] mb-2">
+                    Get in touch.
+                  </h1>
+                  <p className="text-body-lg text-[var(--color-ink-700)] mb-[var(--space-6)]">
+                    We're a small team and we read every message.
+                  </p>
+
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div>
+                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Name</label>
+                      <input
+                        type="text"
+                        required
+                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Email</label>
+                      <input
+                        type="email"
+                        required
+                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Subject</label>
+                      <div className="relative">
+                        <select
+                          required
+                          className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-4 pr-10 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="" disabled selected hidden>Select a topic</option>
+                          <option value="general">General Enquiry</option>
+                          <option value="order">Order Issue</option>
+                          <option value="seller">Seller Support</option>
+                          <option value="report">Report a Listing</option>
+                          <option value="press">Press & Partnerships</option>
+                          <option value="other">Other</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--color-ink-500)]">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Message</label>
+                      <textarea
+                        required
+                        className="w-full min-h-[140px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] p-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all resize-y"
+                        placeholder="How can we help?"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-sm)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-2"
+                    >
+                      Send Message
+                    </button>
+                  </form>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center text-center py-12 px-6 h-full bg-[var(--color-white)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] shadow-sm"
+                >
+                  <CheckCircle2 className="w-16 h-16 text-[var(--color-success-600)] mb-4" strokeWidth={1.5} />
+                  <h2 className="text-display-md font-display text-[var(--color-ink-900)] mb-2">Message received.</h2>
+                  <p className="text-body-lg text-[var(--color-ink-700)] mb-[var(--space-6)] max-w-[320px]">
+                    We'll get back to you within 24 hours. Keep an eye on your inbox.
+                  </p>
+                  <Link 
+                    href="/"
+                    className="px-6 py-3 border-[1.5px] border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-cream-raised)] hover:border-[var(--color-ink-300)] transition-colors"
+                  >
+                    Back to Home
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-[var(--space-10)] lg:gap-[var(--space-12)] items-start">
+          {/* Right Column - Info Cards */}
+          <div className="flex flex-col gap-[var(--space-4)] lg:mt-[72px]">
             
-            {/* Contact Form */}
-            <div className="bg-white p-[var(--space-8)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] shadow-sm">
-              <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">Send a Message</h2>
-              <form className="flex flex-col gap-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-body-sm font-bold text-[var(--color-ink-900)]">First Name</label>
-                    <Input type="text" placeholder="Jane" className="bg-[var(--color-cream-base)] h-[44px]" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-body-sm font-bold text-[var(--color-ink-900)]">Last Name</label>
-                    <Input type="text" placeholder="Doe" className="bg-[var(--color-cream-base)] h-[44px]" />
-                  </div>
-                </div>
-                
-                <div className="flex flex-col gap-2">
-                  <label className="text-body-sm font-bold text-[var(--color-ink-900)]">Email Address</label>
-                  <Input type="email" placeholder="jane@example.com" className="bg-[var(--color-cream-base)] h-[44px]" />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-body-sm font-bold text-[var(--color-ink-900)]">Subject</label>
-                  <select className="flex h-[44px] w-full rounded-md border border-input bg-[var(--color-cream-base)] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                    <option>General Inquiry</option>
-                    <option>Order Support</option>
-                    <option>Seller Support</option>
-                    <option>Feedback</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-body-sm font-bold text-[var(--color-ink-900)]">Message</label>
-                  <textarea 
-                    rows={5} 
-                    placeholder="How can we help?" 
-                    className="flex w-full rounded-md border border-input bg-[var(--color-cream-base)] px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                  ></textarea>
-                </div>
-
-                <Button size="large" className="w-full mt-2">Send Message</Button>
-              </form>
+            <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-[var(--space-5)] border border-[var(--color-border-subtle)]/50">
+              <Mail className="w-[24px] h-[24px] text-[var(--color-terracotta-600)] mb-3" strokeWidth={1.5} />
+              <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Email Support</h3>
+              <p className="text-body-md text-[var(--color-ink-700)]">
+                support@bidcraft.in <br/>
+                Typically replies within 24 hours.
+              </p>
             </div>
 
-            {/* Support Info */}
-            <div className="flex flex-col gap-[var(--space-8)]">
-              <div>
-                <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">Contact Information</h2>
-                <div className="flex flex-col gap-6">
-                  
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-cream-deep)] flex items-center justify-center shrink-0 text-[var(--color-terracotta-600)]">
-                      <Mail size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Email Us</h4>
-                      <p className="text-body-md text-[var(--color-ink-700)] mb-2">Our friendly team is here to help.</p>
-                      <a href="mailto:support@bidcraft.com" className="text-body-md font-medium text-[var(--color-terracotta-600)] hover:underline">support@bidcraft.com</a>
-                    </div>
-                  </div>
+            <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-[var(--space-5)] border border-[var(--color-border-subtle)]/50">
+              <Store className="w-[24px] h-[24px] text-[var(--color-terracotta-600)] mb-3" strokeWidth={1.5} />
+              <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Seller Queries</h3>
+              <p className="text-body-md text-[var(--color-ink-700)]">
+                sellers@bidcraft.in <br/>
+                For listing, payouts, and account questions.
+              </p>
+            </div>
 
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-cream-deep)] flex items-center justify-center shrink-0 text-[var(--color-terracotta-600)]">
-                      <MessageSquare size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Live Chat</h4>
-                      <p className="text-body-md text-[var(--color-ink-700)] mb-2">Available Mon-Fri, 9am-5pm EST.</p>
-                      <button className="text-body-md font-medium text-[var(--color-terracotta-600)] hover:underline">Start a chat</button>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-cream-deep)] flex items-center justify-center shrink-0 text-[var(--color-terracotta-600)]">
-                      <MapPin size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Office</h4>
-                      <p className="text-body-md text-[var(--color-ink-700)]">
-                        100 Creator Lane<br />
-                        Suite 400<br />
-                        New York, NY 10001
-                      </p>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              <div className="bg-[var(--color-ink-900)] text-white p-[var(--space-8)] rounded-[var(--radius-lg)]">
-                <h3 className="text-heading-md text-white mb-3">Looking for quick answers?</h3>
-                <p className="text-body-md text-white/80 mb-6">
-                  Check out our FAQ section for immediate answers to common questions about buying, selling, and shipping.
-                </p>
-                <Button variant="secondary" className="bg-white text-[var(--color-ink-900)] hover:bg-[var(--color-cream-base)]">
-                  Visit Help Center
-                </Button>
-              </div>
-
+            <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-[var(--space-5)] border border-[var(--color-border-subtle)]/50">
+              <Shield className="w-[24px] h-[24px] text-[var(--color-terracotta-600)] mb-3" strokeWidth={1.5} />
+              <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Dispute Resolution</h3>
+              <p className="text-body-md text-[var(--color-ink-700)]">
+                disputes@bidcraft.in <br/>
+                Escrow and order disputes prioritised.
+              </p>
             </div>
 
           </div>
+
         </div>
-      </div>
+      </main>
 
       <Footer />
-    </main>
+    </div>
   )
 }
