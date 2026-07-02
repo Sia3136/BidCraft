@@ -74,9 +74,9 @@ function SearchResults() {
           </select>
           
           <div className="flex items-center gap-1">
-            <input type="number" placeholder="Min $" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm" />
+            <input type="number" placeholder="Min ₹" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm" />
             <span>-</span>
-            <input type="number" placeholder="Max $" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm" />
+            <input type="number" placeholder="Max ₹" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="w-20 px-3 py-2 bg-card border border-border rounded-lg text-sm" />
           </div>
 
           <select 
@@ -116,18 +116,26 @@ function SearchResults() {
             }
             const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
             
+            const product = {
+              id: String(listing.id),
+              title: listing.title || 'Untitled',
+              image: image,
+              creator: listing.seller_name || listing.seller?.name || "Creator",
+              category: listing.category || 'Art',
+              subcategory: '',
+              price: Number(listing.price || listing.start_bid || 0),
+              buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : 'Buy Now',
+              description: listing.description || '',
+              verified: false,
+              offersAllowed: false,
+              bidCount: 0,
+              currentBid: listing.start_bid ? Number(listing.start_bid) : undefined
+            }
+            
             return (
               <ProductCard
                 key={listing.id}
-                id={String(listing.id)}
-                title={listing.title || 'Untitled'}
-                image={image}
-                creator={listing.seller_name || listing.seller?.name || "Creator"}
-                creatorImage={listing.seller?.avatar_url || "/creator-1.png"}
-                price={Number(listing.price || listing.start_bid || 0)}
-                rating={5.0}
-                reviews={0}
-                methods={listing.listing_type ? [listing.listing_type.toUpperCase()] : ['BUY_NOW']}
+                product={product as any}
               />
             )
           })}

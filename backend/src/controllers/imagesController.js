@@ -1,5 +1,6 @@
 const { uploadMany } = require('../services/imageService');
 const similarityService = require('../services/similarityService');
+const redisClient = require('../utils/redis');
 
 const ALLOWED_MIMETYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_MB = 5;
@@ -47,4 +48,34 @@ async function uploadImages(req, res, next) {
   }
 }
 
-module.exports = { uploadImages };
+async function resolveImage(req, res, next) {
+  try {
+    const { publicId } = req.params;
+    if (!publicId) return res.status(400).json({ error: 'missing_public_id' });
+
+    const cacheKey = `img:${publicId}`;
+    try {
+      const cachedUrl = await redisClient.get(cacheKey);
+      if (cachedUrl) {
+        return res.json({ url: cachedUrl, source: 'cache' });
+      }
+    } catch (redisErr) {
+      console.warn('Redis cache get error:', redisErr.message);
+    }
+
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || 'demo';
+    const url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${publicId}`;
+
+    try {
+      await redisClient.set(cacheKey, url, { ex: 86400 }); // Cache for 24 hours
+    } catch (redisErr) {
+      console.warn('Redis cache set error:', redisErr.message);
+    }
+
+    res.json({ url, source: 'cloudinary' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { uploadImages, resolveImage };

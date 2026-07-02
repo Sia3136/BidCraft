@@ -37,6 +37,11 @@ export const viewport: Viewport = {
 }
 
 import { AuthProvider } from '@/lib/auth-context'
+import { PrefetchRoutes } from '@/components/prefetch-routes'
+import { Navbar } from '@/components/navbar'
+import { Footer } from '@/components/footer'
+import { Suspense } from 'react'
+import { SkeletonGrid } from '@/components/skeleton-grid'
 
 export default function RootLayout({
   children,
@@ -47,7 +52,20 @@ export default function RootLayout({
     <html lang="en" className={`${playfair.variable} ${jakarta.variable}`}>
       <body className="font-sans antialiased">
         <AuthProvider>
-          {children}
+          <PrefetchRoutes />
+          <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
+            <Navbar />
+            <main className="flex-1 w-full">
+              <Suspense fallback={
+                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
+                  <SkeletonGrid count={8} />
+                </div>
+              }>
+                {children}
+              </Suspense>
+            </main>
+            <Footer />
+          </div>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

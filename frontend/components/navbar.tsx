@@ -32,7 +32,7 @@ const exploreData = [
   { label: 'Seasonal Collections', route: '/explore/seasonal' },
 ]
 
-export function Navbar() {
+export const Navbar = React.memo(function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const isHomepage = pathname === '/'
@@ -452,4 +452,4 @@ export function Navbar() {
       </header>
     </>
   )
-}
+})

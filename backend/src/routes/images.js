@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const { uploadImages } = require('../controllers/imagesController');
+const { uploadImages, resolveImage } = require('../controllers/imagesController');
 
 // Use memoryStorage — no disk writes, works in serverless/Neon environments
 const storage = multer.memoryStorage();
@@ -46,5 +46,8 @@ router.post(
   multerErrorHandler,
   uploadImages
 );
+
+// GET /api/images/resolve/:publicId — resolve Cloudinary URL with Redis cache
+router.get('/resolve/:publicId', resolveImage);
 
 module.exports = router;

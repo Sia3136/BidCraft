@@ -73,19 +73,26 @@ export default function WatchlistPage() {
               }
               const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
               
+              const product = {
+                id: String(listing.id || item.listing_id),
+                title: listing.title || 'Untitled',
+                image: image,
+                creator: listing.seller_name || listing.seller?.name || "Creator",
+                category: listing.category || 'Art',
+                subcategory: '',
+                price: Number(listing.price || listing.start_bid || 0),
+                buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : 'Buy Now',
+                description: listing.description || '',
+                verified: false,
+                offersAllowed: false,
+                bidCount: 0,
+                currentBid: listing.start_bid ? Number(listing.start_bid) : undefined
+              }
+              
               return (
                 <ProductCard
                   key={listing.id || item.listing_id}
-                  id={String(listing.id || item.listing_id)}
-                  title={listing.title || 'Untitled'}
-                  image={image}
-                  creator={listing.seller_name || listing.seller?.name || "Creator"}
-                  creatorImage={listing.seller?.avatar_url || "/creator-1.png"}
-                  price={Number(listing.price || listing.start_bid || 0)}
-                  rating={5.0}
-                  reviews={0}
-                  methods={listing.listing_type ? [listing.listing_type.toUpperCase()] : ['BUY_NOW']}
-                  isWatchlisted={true}
+                  product={product as any}
                 />
               )
             })}

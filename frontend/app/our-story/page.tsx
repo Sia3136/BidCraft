@@ -3,7 +3,7 @@
 import React from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { CloudinaryImage } from '@/components/CloudinaryImage'
+import Image from 'next/image'
 import { Heart, Shield, Users } from 'lucide-react'
 import Link from 'next/link'
 
@@ -30,11 +30,19 @@ export default function OurStoryPage() {
         {/* Origin Section */}
         <section className="w-full max-w-[880px] mx-auto px-[var(--space-5)] py-[var(--space-9)]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="aspect-[4/5] rounded-[var(--radius-lg)] overflow-hidden relative">
-              <img 
-                src="/images/e966528b52608962bd21f8abdeafbe0a.jpg" 
-                alt="Why BidCraft exists"
-                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '4/5',
+              borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden',
+            }}>
+              <Image
+                src="/images/e966528b52608962bd21f8abdeafbe0a.jpg"
+                fill
+                style={{ objectFit: 'cover', objectPosition: 'center' }}
+                alt="The story behind BidCraft"
+                priority
               />
             </div>
             <div>
