@@ -1,0 +1,245 @@
+export const exploreProducts = [
+  // ART
+  {
+    id: "exp-001",
+    title: "Abstract Oil Painting – Monsoon",
+    creator: "Priya Nair",
+    category: "Art",
+    subcategory: "Paintings",
+    price: 2800,
+    buyingMethod: "Auction",
+    image: "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
+    description: "A large-format abstract oil painting capturing the mood of the Indian monsoon in blues, greys, and deep greens.",
+    rating: 4.8,
+    reviewCount: 34
+  },
+  {
+    id: "exp-002",
+    title: "Digital Art Print – Abstract Botanicals",
+    creator: "Pixels by Pooja",
+    category: "Art",
+    subcategory: "Digital Art",
+    price: 499,
+    buyingMethod: "Buy Now",
+    image: "/images/images.jpeg",
+    description: "A4 high-resolution digital art print of abstract botanical forms on 250gsm matte paper.",
+    rating: 4.6,
+    reviewCount: 21
+  },
+  {
+    id: "exp-003",
+    title: "Resin Art Mirror",
+    creator: "Divya Sharma",
+    category: "Art",
+    subcategory: "Prints & Posters",
+    price: 2199,
+    buyingMethod: "Buy Now",
+    image: "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    description: "Round wall mirror with a hand-poured resin border in ocean-blue and gold tones. Each piece is one-of-a-kind.",
+    rating: 4.7,
+    reviewCount: 58
+  },
+
+  // HANDMADE & CRAFTS
+  {
+    id: "exp-004",
+    title: "Crochet Flower Pot Cover",
+    creator: "Tanvi Crafts",
+    category: "Handmade & Crafts",
+    subcategory: "Crochet & Knitting",
+    price: 750,
+    buyingMethod: "Buy Now",
+    image: "/images/images.jpeg",
+    description: "Hand-crocheted flower pot cover in soft cotton yarn. Fits standard 4-inch pots.",
+    rating: 4.5,
+    reviewCount: 17
+  },
+  {
+    id: "exp-005",
+    title: "Mini Heart Crochet Keychain – Set of 2",
+    creator: "Loop & Love Studio",
+    category: "Handmade & Crafts",
+    subcategory: "Crochet & Knitting",
+    price: 349,
+    buyingMethod: "Buy Now",
+    image: "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    description: "A pair of hand-crocheted heart keychains in blush and cream, made from soft cotton yarn.",
+    rating: 4.9,
+    reviewCount: 82
+  },
+  {
+    id: "exp-006",
+    title: "Crochet Flowers in Blue Pot",
+    creator: "Wool & Wonder",
+    category: "Handmade & Crafts",
+    subcategory: "Crochet & Knitting",
+    price: 1100,
+    buyingMethod: "Buy Now",
+    image: "/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo (1).jpeg",
+    description: "A vivid bouquet of hand-crocheted flowers arranged in a painted blue ceramic pot. A lasting gift that never wilts.",
+    rating: 4.8,
+    reviewCount: 44
+  },
+  {
+    id: "exp-007",
+    title: "Terracotta Vases – Set of 3",
+    creator: "Mitti Studio",
+    category: "Handmade & Crafts",
+    subcategory: "Clay & Pottery",
+    price: 1350,
+    buyingMethod: "Buy Now",
+    image: "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    description: "Hand-thrown terracotta vases in graduating heights, unglazed with a natural earthy finish.",
+    rating: 4.6,
+    reviewCount: 29
+  },
+  {
+    id: "exp-008",
+    title: "Handcrafted Shell Jewellery Stand",
+    creator: "Meera Pillai",
+    category: "Handmade & Crafts",
+    subcategory: "DIY Creations",
+    price: 799,
+    buyingMethod: "Auction",
+    image: "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
+    description: "A jewellery display stand made from natural sea shells, driftwood, and jute. Handassembled, every piece unique.",
+    rating: 4.4,
+    reviewCount: 12
+  },
+
+  // COLLECTIBLES
+  {
+    id: "exp-009",
+    title: "Rare 1999 Hot Wheels Treasure Hunt",
+    creator: "Rohan Desai",
+    category: "Collectibles",
+    subcategory: "Hot Wheels",
+    price: 1899,
+    buyingMethod: "Auction",
+    image: "/images/$_1.jpeg",
+    description: "Original 1999 Hot Wheels Treasure Hunt in near-mint condition. Original blister card intact. A serious collector's piece.",
+    rating: 4.9,
+    reviewCount: 61
+  },
+  {
+    id: "exp-010",
+    title: "Limited Edition Comic #1",
+    creator: "Rohan Illustrations",
+    category: "Collectibles",
+    subcategory: "Trading Cards",
+    price: 899,
+    buyingMethod: "Buy Now",
+    image: "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
+    description: "First print of an independent Indian comic series. Numbered edition, sealed in archival sleeve.",
+    rating: 4.7,
+    reviewCount: 38
+  },
+  {
+    id: "exp-011",
+    title: "Vintage Hand-carved Chess Set",
+    creator: "Arjun Mehta",
+    category: "Collectibles",
+    subcategory: "Action Figures",
+    price: 3200,
+    buyingMethod: "Auction",
+    image: "/images/p452729_2.jpg",
+    description: "A mid-century hand-carved wooden chess set with weighted pieces and a folding board. A rare find in excellent condition.",
+    rating: 4.8,
+    reviewCount: 27
+  },
+  {
+    id: "exp-012",
+    title: "Hirono Panda Designer Figure",
+    creator: "Vinyl Vault India",
+    category: "Collectibles",
+    subcategory: "Action Figures",
+    price: 2100,
+    buyingMethod: "Auction",
+    image: "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
+    description: "Official Hirono x Panda limited designer vinyl figure. Mint condition, original box included.",
+    rating: 4.6,
+    reviewCount: 19
+  },
+
+  // GAMING & HOBBY
+  {
+    id: "exp-013",
+    title: "Custom Mechanical Keyboard",
+    creator: "KeyForge India",
+    category: "Gaming & Hobby",
+    subcategory: "Model Kits",
+    price: 4800,
+    buyingMethod: "Negotiable",
+    image: "/images/da73bc9b03ca4657978e673c794395f8.jpg",
+    description: "65% layout mechanical keyboard with custom keycaps, lubed linear switches, and a brass weight base.",
+    rating: 4.7,
+    reviewCount: 53
+  },
+
+  // LIFESTYLE & GIFTS
+  {
+    id: "exp-014",
+    title: "Birthday Gift Hamper",
+    creator: "Gifting Atelier",
+    category: "Lifestyle & Gifts",
+    subcategory: "Personalized Gifts",
+    price: 1499,
+    buyingMethod: "Buy Now",
+    image: "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    description: "A curated birthday hamper with handpicked artisan products — candles, prints, and small keepsakes wrapped in kraft paper.",
+    rating: 4.8,
+    reviewCount: 74
+  },
+  {
+    id: "exp-015",
+    title: "Anniversary Keepsake Box",
+    creator: "Memoria Crafts",
+    category: "Lifestyle & Gifts",
+    subcategory: "Personalized Gifts",
+    price: 1899,
+    buyingMethod: "Buy Now",
+    image: "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    description: "A handcrafted wooden keepsake box with engraved initials, lined with velvet. Perfect for anniversaries.",
+    rating: 4.9,
+    reviewCount: 48
+  },
+  {
+    id: "exp-016",
+    title: "Housewarming Décor Set",
+    creator: "Home & Hearth Co.",
+    category: "Lifestyle & Gifts",
+    subcategory: "Home Decor",
+    price: 2250,
+    buyingMethod: "Buy Now",
+    image: "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
+    description: "A curated set of handmade home décor items — a small planter, a woven table runner, and a ceramic tray.",
+    rating: 4.6,
+    reviewCount: 33
+  },
+  {
+    id: "exp-017",
+    title: "Just Because — Surprise Gift Box",
+    creator: "The Thoughtful Box",
+    category: "Lifestyle & Gifts",
+    subcategory: "Personalized Gifts",
+    price: 999,
+    buyingMethod: "Buy Now",
+    image: "/images/4472fc60307774b77a3457158adcd98c.webp",
+    description: "A surprise gift box with 3–4 handpicked artisan items. Perfect for no reason at all — which is the best reason.",
+    rating: 4.7,
+    reviewCount: 61
+  },
+  {
+    id: "exp-018",
+    title: "All-Occasions Gift Card Bundle",
+    creator: "BidCraft Curated",
+    category: "Lifestyle & Gifts",
+    subcategory: "Personalized Gifts",
+    price: 499,
+    buyingMethod: "Buy Now",
+    image: "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
+    description: "A bundle of 5 hand-illustrated greeting cards for all occasions — birthdays, festivals, gratitude, and more.",
+    rating: 4.5,
+    reviewCount: 22
+  }
+];

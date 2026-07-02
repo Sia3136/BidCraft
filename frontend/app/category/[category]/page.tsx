@@ -17,28 +17,34 @@ const megaMenuData: Record<string, string[]> = {
   'Lifestyle & Gifts': ['Jewelry', 'Home Decor', 'Keychains', 'Accessories', 'Stationery', 'Personalized Gifts', 'Miniatures']
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+export default function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const { category } = React.use(params)
+  
+  if (!category) {
+    return <div>Category not found</div>;
+  }
+
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const activeSubcategorySlug = searchParams.get('subcategory')
   
   // Convert URL slugs to readable names
-  const categoryName = params.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+  const categoryName = category.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   
   // Try to find exact case match in our data to get the proper subcategory list
-  const dataKey = Object.keys(megaMenuData).find(k => k.toLowerCase().replace(/ /g, '-').replace('&-', '') === params.category) || categoryName
+  const dataKey = Object.keys(megaMenuData).find(k => k.toLowerCase().replace(/ /g, '-').replace('&-', '') === category) || categoryName
   const subcategories = megaMenuData[dataKey] || []
   
   // Find readable subcategory name from slug
   const activeSubcategoryName = subcategories.find(sub => sub.toLowerCase().replace(/ /g, '-') === activeSubcategorySlug)
 
   const handleSubcategorySelect = (slug: string) => {
-    router.push(`/category/${params.category}?subcategory=${slug}`, { scroll: false })
+    router.push(`/category/${category}?subcategory=${slug}`, { scroll: false })
   }
 
   const clearSubcategory = () => {
-    router.push(`/category/${params.category}`, { scroll: false })
+    router.push(`/category/${category}`, { scroll: false })
   }
 
   const SidebarContent = () => (

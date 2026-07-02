@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils'
 // Mock Data
 const activeAuctions = [
   { id: 1, title: 'Vintage Hand-carved Chess Set', bid: 3200, count: 11, creator: 'Arjun Mehta', avatar: 'A', image: '/images/p452729_2.jpg', end: '01:42:18' },
-  { id: 2, title: 'Rare 1999 Hot Wheels Treasure Hunt', bid: 4750, count: 28, creator: 'Rohan Desai', avatar: 'R', image: '/images/$_1.jpeg', end: '00:18:44' },
+  { id: 2, title: 'Rare 1999 Hot Wheels Treasure Hunt', bid: 1899, count: 28, creator: 'Rohan Desai', avatar: 'R', image: '/images/$_1.jpeg', end: '00:18:44' },
   { id: 3, title: 'Abstract Oil Painting "Monsoon"', bid: 2800, count: 7, creator: 'Priya Nair', avatar: 'P', image: '/images/43d02cac562d82f18e18ed3a0a7266ee.jpg', end: '03:55:10' },
-  { id: 4, title: 'Handcrafted Shell Jewellery Stand', bid: 1450, count: 5, creator: 'Meera Pillai', avatar: 'M', image: '/images/454b1c36b55a7aac07a46dec81f95a6f.jpg', end: '05:20:00' }
+  { id: 4, title: 'Handcrafted Shell Jewellery Stand', bid: 799, count: 5, creator: 'Meera Pillai', avatar: 'M', image: '/images/454b1c36b55a7aac07a46dec81f95a6f.jpg', end: '05:20:00' }
 ]
 
 const products = [
@@ -38,10 +38,10 @@ const heroImages = [
 ]
 
 const featuredCreators = [
-  { id: 1, name: 'Sneha Agarwal', specialty: 'Oil & Watercolour Paintings · Pune', bio: 'Capturing monsoons, marigolds, and memories through layered oil and watercolour canvases.', rating: '4.9', reviews: 214, followers: '1.2k', verified: true, avatarInitials: 'SA', avatarBg: 'bg-[var(--color-terracotta-600)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
-  { id: 2, name: 'Vikram Rao', specialty: 'Stone & Clay Sculpture · Jaipur', bio: 'Shaping raw stone and clay into forms that carry the weight of Indian craft traditions.', rating: '4.7', reviews: 98, followers: '876', verified: true, avatarInitials: 'VR', avatarBg: 'bg-[var(--color-slate-700)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
-  { id: 3, name: 'Aisha Malik', specialty: 'Handmade Jewellery · Hyderabad', bio: 'Crafting delicate silver and beadwork pieces rooted in Hyderabadi craft heritage.', rating: '4.8', reviews: 307, followers: '2.1k', verified: true, avatarInitials: 'AM', avatarBg: 'bg-[var(--color-success-600)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' },
-  { id: 4, name: 'Karan Sethi', specialty: 'Rare Collectibles & Vintage Finds · Mumbai', bio: 'Sourcing forgotten treasures — from vintage die-cast cars to first-edition comics — for serious collectors.', rating: '4.6', reviews: 183, followers: '3.4k', verified: false, avatarInitials: 'KS', avatarBg: 'bg-[var(--color-ink-700)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' }
+  { id: 1, name: 'Sneha Agarwal', specialty: 'Oil & Watercolour Paintings · Pune', bio: 'Capturing monsoons, marigolds, and memories through layered oil and watercolour canvases.', rating: '4.8', reviews: 91, followers: '634', verified: true, avatarInitials: 'SA', avatarBg: 'bg-[var(--color-terracotta-600)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
+  { id: 2, name: 'Vikram Rao', specialty: 'Stone & Clay Sculpture · Jaipur', bio: 'Shaping raw stone and clay into forms that carry the weight of Indian craft traditions.', rating: '4.6', reviews: 43, followers: '312', verified: true, avatarInitials: 'VR', avatarBg: 'bg-[var(--color-slate-700)]', cover: '/images/8891723f370ddd55a88b322a622406a2.jpg' },
+  { id: 3, name: 'Aisha Malik', specialty: 'Handmade Jewellery · Hyderabad', bio: 'Crafting delicate silver and beadwork pieces rooted in Hyderabadi craft heritage.', rating: '4.7', reviews: 118, followers: '827', verified: true, avatarInitials: 'AM', avatarBg: 'bg-[var(--color-success-600)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' },
+  { id: 4, name: 'Karan Sethi', specialty: 'Rare Collectibles & Vintage Finds · Mumbai', bio: 'Sourcing forgotten treasures — from vintage die-cast cars to first-edition comics — for serious collectors.', rating: '4.5', reviews: 67, followers: '489', verified: false, avatarInitials: 'KS', avatarBg: 'bg-[var(--color-ink-700)]', cover: '/images/1f92888deb74023c26ec86c954a18188.jpg' }
 ]
 
 const revealVariant = {
@@ -360,11 +360,17 @@ export default function Home() {
               Gifts With a Story
             </motion.h2>
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
-              {['Birthdays', 'Anniversaries', 'Housewarming', 'Just Because', 'All Occasions'].map((occ, i) => (
-                <motion.div key={occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="min-w-[200px] aspect-[3/4] relative rounded-[var(--radius-md)] overflow-hidden group snap-start cursor-pointer">
-                  <CloudinaryImage publicId={`gift-${i+1}`} width={300} height={400} alt={occ} className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2">{occ}</h3>
+              {[
+                { occ: 'Birthdays', img: '/images/a344e75529581e9f43f2c00dc233dea4.webp' },
+                { occ: 'Anniversaries', img: '/images/d156289ab52040263f59b16d6f3f5f2c.jpg' },
+                { occ: 'Housewarming', img: '/images/27c1a7020f1f1ae13757444e6e302582.jpg' },
+                { occ: 'Just Because', img: '/images/4472fc60307774b77a3457158adcd98c.webp' },
+                { occ: 'All Occasions', img: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg' }
+              ].map((item, i) => (
+                <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="min-w-[200px] aspect-[3/4] relative rounded-[var(--radius-md)] overflow-hidden group snap-start cursor-pointer bg-[var(--color-cream-deep)]">
+                  <Image src={item.img} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
+                  <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20">{item.occ}</h3>
                 </motion.div>
               ))}
             </div>
@@ -418,7 +424,18 @@ export default function Home() {
                   </p>
                   <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--color-ink-300)]" />
+                    <Image 
+                      src={
+                        i === 1 ? '/images/1da0c6767e60f79b79148794732a305f.jpg' : 
+                        i === 2 ? '/images/5ac5f5ecddd67235241297452010a237.jpg' : 
+                        '/images/71d0457823cf94b6f1003b8c50253c61.webp'
+                      } 
+                      width={40} 
+                      height={40} 
+                      style={{ objectFit: 'cover' }}
+                      alt={`User ${i}`}
+                      className="rounded-full bg-[var(--color-ink-300)]"
+                    />
                     <div>
                       <p className="text-heading-sm text-[var(--color-ink-900)]">User {i}</p>
                       <p className="text-caption text-[var(--color-ink-500)]">{i === 1 ? 'Creator' : 'Collector'}</p>
