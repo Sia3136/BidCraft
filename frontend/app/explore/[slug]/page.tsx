@@ -1,7 +1,8 @@
-import { getProducts } from '@/lib/dbProducts';
+import { exploreProducts } from '@/lib/exploreProducts';
 import ClientExplore from '@/components/client-explore';
 
-export const revalidate = 3600;
+// export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 // Simple deterministic shuffle based on slug
 function seededShuffle(array: any[], seedStr: string = '') {
@@ -23,9 +24,8 @@ function seededShuffle(array: any[], seedStr: string = '') {
 
 export default async function ExploreSlugPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const products = await getProducts();
   
-  const shuffledProducts = seededShuffle(products, slug);
+  const shuffledProducts = seededShuffle(exploreProducts, slug);
 
   return <ClientExplore allProducts={shuffledProducts} />;
 }

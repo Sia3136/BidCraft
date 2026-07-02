@@ -42,12 +42,12 @@ export default async function CategoryPage({
 
   const allProducts = await getProducts();
   const filtered = allProducts.filter((p) => {
-    // In our DB, p.category holds the subcategory name (e.g. "Paintings")
+    // In our DB, dbProducts maps DB category to subcategory, and sets category to 'Art'
     if (subcategory) {
-      return p.category.toLowerCase().replace(/ /g, '-') === subcategory.toLowerCase();
+      return p.subcategory.toLowerCase().replace(/ /g, '-') === subcategory.toLowerCase();
     }
     // If no subcategory is selected, show all items in this parent category
-    return subcategories.some(sub => sub.toLowerCase() === p.category.toLowerCase());
+    return subcategories.some(sub => sub.toLowerCase() === p.subcategory.toLowerCase());
   });
 
   return (

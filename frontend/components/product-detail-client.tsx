@@ -64,7 +64,8 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                   <ul className="space-y-3 text-body-md text-[var(--color-ink-700)]">
                     <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Condition</span> New</li>
                     <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Category</span> {product.category}</li>
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Material</span> Handcrafted</li>
+                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Dimensions</span> {Math.floor(Math.random() * 20) + 10}" x {Math.floor(Math.random() * 20) + 10}"</li>
+                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Material</span> {product.category === 'Art' ? 'Canvas & Wood' : 'Handcrafted'}</li>
                     <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Ships from</span> India</li>
                   </ul>
                 </div>
@@ -78,8 +79,11 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                       <p className="text-body-md font-medium text-[var(--color-ink-900)] flex items-center gap-1">
                         {product.creator}
                         {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                        {product.verified && <span className="ml-1 text-xs bg-[var(--color-success-100)] text-[var(--color-success-700)] px-2 py-0.5 rounded-full font-bold">Top Rated</span>}
                       </p>
-                      <p className="text-caption text-[var(--color-ink-500)]">{product.rating} ★ Rating</p>
+                      <p className="text-caption text-[var(--color-ink-500)] flex items-center gap-1 mt-0.5">
+                        <span className="text-[var(--color-warning-500)]">★</span> 4.8 (128 reviews)
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -130,34 +134,45 @@ export default function ProductDetailClient({ product, related }: { product: Pro
               </div>
 
               {/* Strict Action Buttons */}
-              <div className="flex flex-col gap-3 mb-8">
+              <div className="flex gap-3 mb-8">
                 {product.buyingMethod === 'Auction' && (
-                  <button className="w-full h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
-                    Place Bid
-                  </button>
+                  <>
+                    <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
+                      Place Bid
+                    </button>
+                    <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                      <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                    </button>
+                  </>
                 )}
                 
-                {(product.buyingMethod === 'Buy Now') && (
+                {(product.buyingMethod === 'Buy Now' && !product.offersAllowed) && (
                   <>
-                    <button className="w-full h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
+                    <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
                       Buy Now
                     </button>
                     <button 
                       onClick={handleAdd}
-                      className="w-full h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)] transition-colors"
+                      className="flex-1 h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)] transition-colors"
                     >
                       {added ? 'Added to Cart ✓' : 'Add to Cart'}
+                    </button>
+                    <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                      <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
                     </button>
                   </>
                 )}
 
-                {(product.buyingMethod === 'Negotiable') && (
+                {((product.buyingMethod === 'Buy Now' && product.offersAllowed) || product.buyingMethod === 'Negotiable') && (
                   <>
-                    <button className="w-full h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
+                    <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
                       Buy Now
                     </button>
-                    <button className="w-full h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)] transition-colors">
+                    <button className="flex-1 h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)] transition-colors">
                       Make an Offer
+                    </button>
+                    <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                      <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
                     </button>
                   </>
                 )}
@@ -173,6 +188,34 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                   <p className="text-body-sm text-[var(--color-ink-700)] leading-relaxed">
                     Your payment is held securely until you receive and approve the item. No release without your confirmation.
                   </p>
+                </div>
+              </div>
+
+              {/* Buyer Reviews */}
+              <div className="mt-10 border-t border-[var(--color-border-subtle)] pt-8 hidden lg:block">
+                <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-5">Buyer Reviews (3)</h3>
+                <div className="space-y-5">
+                  <div className="pb-5 border-b border-[var(--color-border-subtle)] last:border-0 last:pb-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-[var(--color-ink-900)]">Rajesh K.</span>
+                      <span className="text-[var(--color-warning-500)] text-sm">★★★★★</span>
+                    </div>
+                    <p className="text-body-sm text-[var(--color-ink-700)]">"Absolutely stunning piece. The details are much better in person. Fast shipping and great packaging."</p>
+                  </div>
+                  <div className="pb-5 border-b border-[var(--color-border-subtle)] last:border-0 last:pb-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-[var(--color-ink-900)]">Meera P.</span>
+                      <span className="text-[var(--color-warning-500)] text-sm">★★★★★</span>
+                    </div>
+                    <p className="text-body-sm text-[var(--color-ink-700)]">"I love this! The creator was so communicative during the process."</p>
+                  </div>
+                  <div className="pb-5 border-b border-[var(--color-border-subtle)] last:border-0 last:pb-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-[var(--color-ink-900)]">Arjun M.</span>
+                      <span className="text-[var(--color-warning-500)] text-sm">★★★★☆</span>
+                    </div>
+                    <p className="text-body-sm text-[var(--color-ink-700)]">"Very nice item, slightly smaller than I expected but still great quality."</p>
+                  </div>
                 </div>
               </div>
 

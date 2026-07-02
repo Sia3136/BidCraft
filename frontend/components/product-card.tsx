@@ -81,28 +81,28 @@ export const ProductCard = React.memo(function ProductCard({ product }: { produc
       </Link>
 
       {/* Action buttons are OUTSIDE the Link */}
-      <div className="card-actions" onClick={(e) => e.stopPropagation()} style={{ padding: '0 16px 16px', display: 'flex', gap: '8px' }}>
+      <div className="card-actions" onClick={(e) => e.stopPropagation()} style={{ padding: '0 16px 16px', display: 'flex', gap: '8px', flexWrap: 'nowrap' }}>
         
         {product.buyingMethod === 'Auction' && (
           <button style={{
             flex: 1, height: '36px',
             background: 'var(--color-terracotta-600)', color: 'white',
             border: 'none', borderRadius: 'var(--radius-sm)',
-            fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 600,
-            cursor: 'pointer',
+            fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600,
+            cursor: 'pointer', whiteSpace: 'nowrap'
           }}>
             {bidText}
           </button>
         )}
 
-        {(product.buyingMethod === 'Buy Now') && (
+        {(product.buyingMethod === 'Buy Now' && !product.offersAllowed) && (
           <>
             <button style={{
               flex: 1, height: '36px',
               background: 'var(--color-terracotta-600)', color: 'white',
               border: 'none', borderRadius: 'var(--radius-sm)',
-              fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 600,
-              cursor: 'pointer',
+              fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
               Buy Now
             </button>
@@ -111,22 +111,22 @@ export const ProductCard = React.memo(function ProductCard({ product }: { produc
               background: 'transparent', color: 'var(--color-slate-900)',
               border: '1.5px solid var(--color-slate-700)',
               borderRadius: 'var(--radius-sm)',
-              fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 600,
-              cursor: 'pointer',
+              fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
               Add to Cart
             </button>
           </>
         )}
 
-        {(product.buyingMethod === 'Negotiable') && (
+        {((product.buyingMethod === 'Buy Now' && product.offersAllowed) || product.buyingMethod === 'Negotiable') && (
           <>
             <button style={{
               flex: 1, height: '36px',
               background: 'var(--color-terracotta-600)', color: 'white',
               border: 'none', borderRadius: 'var(--radius-sm)',
-              fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 600,
-              cursor: 'pointer',
+              fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
               Buy Now
             </button>
@@ -135,10 +135,10 @@ export const ProductCard = React.memo(function ProductCard({ product }: { produc
               background: 'transparent', color: 'var(--color-slate-900)',
               border: '1.5px solid var(--color-slate-700)',
               borderRadius: 'var(--radius-sm)',
-              fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 600,
-              cursor: 'pointer',
+              fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 600,
+              cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
-              Make an Offer
+              Make Offer
             </button>
           </>
         )}
@@ -147,7 +147,7 @@ export const ProductCard = React.memo(function ProductCard({ product }: { produc
         <button 
           onClick={toggleWishlist}
           style={{
-            height: '36px', width: '36px',
+            height: '36px', width: '36px', flexShrink: 0,
             background: 'transparent', color: isWishlisted ? 'var(--color-urgent-600)' : 'var(--color-ink-500)',
             border: 'none', borderRadius: 'var(--radius-sm)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',

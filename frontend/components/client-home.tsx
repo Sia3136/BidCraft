@@ -232,7 +232,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
             </motion.div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-6 lg:gap-8">
-              {products.map((p, i) => (
+              {products.slice(0, 8).map((p, i) => (
                 <motion.div key={p.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
                   <ProductCard product={p} />
                 </motion.div>
@@ -308,11 +308,11 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
             </motion.h2>
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
               {[
-                { occ: 'Birthdays', image: '/images/3331bf8da919ff1b47c345584f0f91a3.jpg' },
-                { occ: 'Anniversaries', image: '/images/4134888be62cfb9c24de55ff67ed1ff6.jpg' },
-                { occ: 'Housewarming', image: '/images/491b292e10db0e5fc502847a9ffec01a.jpg' },
-                { occ: 'Just Because', image: '/images/674d816aef7f339f4d7629dd08bd2f11.jpg' },
-                { occ: 'All Occasions', image: '/images/a9497e74360e224e75618fce1b4447dd.jpg' }
+                { occ: 'Birthdays', image: '/images/a344e75529581e9f43f2c00dc233dea4.webp' },
+                { occ: 'Anniversaries', image: '/images/d156289ab52040263f59b16d6f3f5f2c.jpg' },
+                { occ: 'Housewarming', image: '/images/27c1a7020f1f1ae13757444e6e302582.jpg' },
+                { occ: 'Just Because', image: '/images/4472fc60307774b77a3457158adcd98c.webp' },
+                { occ: 'All Occasions', image: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg' }
               ].map((item, i) => (
                 <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="min-w-[200px] aspect-[3/4] relative rounded-[var(--radius-md)] overflow-hidden group snap-start cursor-pointer bg-[var(--color-cream-deep)]">
                   <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" />
@@ -372,7 +372,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
                   <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
                   <div className="flex items-center gap-3">
                     <Image 
-                      src={i === 1 ? "/images/03b5f7e44b827e8574483a31c50400cc.jpg" : i === 2 ? "/images/3eb29e504c405aefb1ba27f80db61db7.jpg" : "/images/7c4ab5f2316e16cf7d86f78f85f3bc7a.jpg"}
+                      src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
                       width={40} 
                       height={40} 
                       style={{ objectFit: 'cover' }}
