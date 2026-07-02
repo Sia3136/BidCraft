@@ -404,15 +404,15 @@ export function Navbar() {
               >
                 {activeCategory === 'Explore' ? (
                   /* Explore Menu Grid */
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-x-[var(--space-6)] gap-y-1">
                     {exploreData.map((item) => (
                       <Link 
                         key={item.label}
                         href={item.route}
                         onClick={() => setActiveCategory(null)}
-                        className="flex items-center gap-[10px] p-[var(--space-3)] rounded-[var(--radius-md)] bg-[var(--color-cream-raised)] hover:bg-[var(--color-terracotta-100)] hover:text-[var(--color-terracotta-700)] transition-colors group"
+                        className="text-body-md text-[var(--color-ink-700)] h-[36px] flex items-center px-2 rounded-[var(--radius-sm)] hover:bg-[var(--color-cream-deep)] hover:text-[var(--color-terracotta-600)] transition-colors"
                       >
-                        <span className="text-body-md font-semibold text-[var(--color-ink-900)] group-hover:text-[var(--color-terracotta-700)] transition-colors">{item.label}</span>
+                        {item.label}
                       </Link>
                     ))}
                   </div>

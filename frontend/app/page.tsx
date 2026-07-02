@@ -13,24 +13,35 @@ import { cn } from '@/lib/utils'
 
 // Mock Data
 const activeAuctions = [
-  { id: 1, title: 'Vintage Hand-carved Chess Set', bid: 15000, count: 12, creator: 'Artisan Works', avatar: 'A', image: 'collection-1', end: '02:15:00' },
-  { id: 2, title: 'Rare 1999 Hot Wheels Treasure Hunt', bid: 8500, count: 8, creator: 'WheelzCollector', avatar: 'W', image: 'cat-hotwheels', end: '00:45:30' },
-  { id: 3, title: 'Abstract Oil Painting "Monsoon"', bid: 45000, count: 24, creator: 'Maya Das', avatar: 'M', image: 'cat-art', end: '05:10:00' },
+  { id: 1, title: 'Vintage Hand-carved Chess Set', bid: 3200, count: 11, creator: 'Arjun Mehta', avatar: 'A', image: '/images/p452729_2.jpg', end: '01:42:18' },
+  { id: 2, title: 'Rare 1999 Hot Wheels Treasure Hunt', bid: 4750, count: 28, creator: 'Rohan Desai', avatar: 'R', image: '/images/$_1.jpeg', end: '00:18:44' },
+  { id: 3, title: 'Abstract Oil Painting "Monsoon"', bid: 2800, count: 7, creator: 'Priya Nair', avatar: 'P', image: '/images/43d02cac562d82f18e18ed3a0a7266ee.jpg', end: '03:55:10' },
+  { id: 4, title: 'Handcrafted Shell Jewellery Stand', bid: 1450, count: 5, creator: 'Meera Pillai', avatar: 'M', image: '/images/454b1c36b55a7aac07a46dec81f95a6f.jpg', end: '05:20:00' }
 ]
 
 const products = [
-  { id: 'p1', title: 'Handwoven Silk Saree', price: 12500, creator: 'Weaves of India', avatar: 'W', image: 'cat-handmade' },
-  { id: 'p2', title: 'Limited Edition Comic #1', price: 3400, creator: 'GeekVault', avatar: 'G', image: 'cat-collectibles' },
-  { id: 'p3', title: 'Terracotta Vases (Set of 3)', price: 1800, creator: 'Earth&Fire', avatar: 'E', image: 'cat-crafts' },
-  { id: 'p4', title: 'Custom Mechanical Keyboard', price: 14500, creator: 'KeyMech', avatar: 'K', image: 'cat-hobby' },
+  { id: 'p1', title: 'Resin Art Mirror', price: 2199, creator: 'Divya Sharma', avatar: 'D', image: '/images/e0e8112d8f5b16d5612a0e69efbae352.jpg' },
+  { id: 'p2', title: 'Limited Edition Comic #1', price: 899, creator: 'Rohan Illustrations', avatar: 'R', image: '/images/80891aa6bb34af3854d903c9a40bde21.jpg' },
+  { id: 'p3', title: 'Terracotta Vases (Set of 3)', price: 1350, creator: 'Mitti Studio', avatar: 'M', image: '/images/d497bf30fec759fddc8ce0890f380f18.jpg' },
+  { id: 'p4', title: 'Custom Mechanical Keyboard', price: 4800, creator: 'KeyForge India', avatar: 'K', image: '/images/da73bc9b03ca4657978e673c794395f8.jpg' },
+  { id: 'p5', title: 'Crochet Flower Pot', price: 750, creator: 'Tanvi Crafts', avatar: 'T', image: '/images/images.jpeg' },
+  { id: 'p6', title: 'Digital Art Print — Abstract Botanicals', price: 499, creator: 'Pixels by Pooja', avatar: 'P', image: '/images/e812c5346c69f143d25ef93ee4411d6b.jpg' },
+  { id: 'p7', title: 'Mini Heart Crochet Keychain (Set of 2)', price: 349, creator: 'Loop & Love Studio', avatar: 'L', image: '/images/80a7c1fdd769cc0d35110a438dfb6503.jpg' },
+  { id: 'p8', title: 'Hirono Panda Designer Figure', price: 2100, creator: 'Vinyl Vault India', avatar: 'V', image: '/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg' }
 ]
 
 const heroImages = [
-  '/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo.jpeg',
+  '/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo (1).jpeg',
   '/images/968355308d40d83a2e1f59daa61c5089.jpg',
   '/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg',
-  '/images/7f69e85a737d75f85a041d457c9be525.jpg',
   '/images/586fa4c05a4543d441ec3c2bf877f807.jpg'
+]
+
+const featuredCreators = [
+  { id: 1, name: 'Sneha Agarwal', specialty: 'Oil & Watercolour Paintings · Pune', bio: 'Capturing monsoons, marigolds, and memories through layered oil and watercolour canvases.', rating: '4.9', reviews: 214, followers: '1.2k', verified: true, avatarInitials: 'SA', avatarBg: 'bg-[var(--color-terracotta-600)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
+  { id: 2, name: 'Vikram Rao', specialty: 'Stone & Clay Sculpture · Jaipur', bio: 'Shaping raw stone and clay into forms that carry the weight of Indian craft traditions.', rating: '4.7', reviews: 98, followers: '876', verified: true, avatarInitials: 'VR', avatarBg: 'bg-[var(--color-slate-700)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
+  { id: 3, name: 'Aisha Malik', specialty: 'Handmade Jewellery · Hyderabad', bio: 'Crafting delicate silver and beadwork pieces rooted in Hyderabadi craft heritage.', rating: '4.8', reviews: 307, followers: '2.1k', verified: true, avatarInitials: 'AM', avatarBg: 'bg-[var(--color-success-600)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' },
+  { id: 4, name: 'Karan Sethi', specialty: 'Rare Collectibles & Vintage Finds · Mumbai', bio: 'Sourcing forgotten treasures — from vintage die-cast cars to first-edition comics — for serious collectors.', rating: '4.6', reviews: 183, followers: '3.4k', verified: false, avatarInitials: 'KS', avatarBg: 'bg-[var(--color-ink-700)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' }
 ]
 
 const revealVariant = {
@@ -52,10 +63,10 @@ const ProductCard = ({ product }: { product: any }) => {
   return (
     <div className="group flex flex-col gap-3">
       <div className="relative aspect-[4/5] bg-[var(--color-cream-deep)] rounded-[var(--radius-md)] overflow-hidden">
-        <CloudinaryImage publicId={product.image} width={400} height={500} alt={product.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-slow ease-default" />
+        <Image src={product.image} fill style={{ objectFit: 'cover' }} alt={product.title} className="transition-transform duration-slow ease-default group-hover:scale-105" />
         <button 
           onClick={() => toggleWishlist(product.id)}
-          className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+          className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:scale-110 transition-transform z-10"
         >
           <Heart className={cn("w-4 h-4 transition-colors duration-fast", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)] scale-110" : "text-[var(--color-ink-700)]")} strokeWidth={1.5} />
         </button>
@@ -143,7 +154,7 @@ export default function Home() {
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={revealVariant} className="py-16 px-[var(--space-5)] xl:px-[var(--space-8)] max-w-[var(--container-max)] mx-auto">
             <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">Recently Viewed</h2>
             <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar">
-              {products.map(p => (
+              {products.slice(0,4).map(p => (
                 <div key={p.id} className="min-w-[200px] md:min-w-[240px] snap-start">
                   <ProductCard product={p} />
                 </div>
@@ -179,7 +190,7 @@ export default function Home() {
                       className="transition-transform duration-[400ms] ease-default group-hover:scale-[1.06]"
                     />
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(43,42,40,0.70) 0%, rgba(43,42,40,0) 55%)' }} />
-                    <div className="absolute bottom-0 left-0 p-[var(--space-4)]">
+                    <div className="absolute bottom-0 left-0 p-[var(--space-4)] z-10">
                       <h3 className="text-heading-lg font-[var(--font-display)] font-semibold text-white">{cat.name}</h3>
                       <div className="w-0 h-[1.5px] bg-white mt-1 transition-all duration-[250ms] ease-out group-hover:w-[24px]" />
                     </div>
@@ -206,9 +217,9 @@ export default function Home() {
                 {activeAuctions.map((auction) => (
                   <motion.div key={auction.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="min-w-[280px] md:min-w-[320px] snap-start hover-card bg-white rounded-[var(--radius-lg)] p-3">
                     <div className="relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden mb-4 bg-[var(--color-cream-deep)]">
-                      <CloudinaryImage publicId={auction.image} width={400} height={500} alt={auction.title} className="w-full h-full object-cover transition-transform duration-slow" />
-                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold text-[var(--color-ink-900)] flex items-center gap-1.5">
-                        <span className="text-[var(--color-urgent-600)]">⏱</span> {auction.end}
+                      <Image src={auction.image} fill style={{ objectFit: 'cover' }} alt={auction.title} className="transition-transform duration-slow" />
+                      <div className={cn("absolute top-3 right-3 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold flex items-center gap-1.5", auction.end.startsWith("00:") ? "bg-[var(--color-urgent-600)] text-white" : "bg-white/90 text-[var(--color-ink-900)]")}>
+                        <span className={cn(auction.end.startsWith("00:") ? "text-white" : "text-[var(--color-urgent-600)]")}>⏱</span> {auction.end}
                       </div>
                     </div>
                     <div className="px-1">
@@ -239,22 +250,26 @@ export default function Home() {
               {user ? 'Creators You Follow' : 'Featured Creators'}
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[1, 2, 3, 4].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white rounded-[var(--radius-lg)] overflow-hidden shadow-sm border border-[var(--color-border-subtle)] text-center pb-6">
+              {featuredCreators.map((creator) => (
+                <motion.div key={creator.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white rounded-[var(--radius-lg)] overflow-hidden shadow-sm border border-[var(--color-border-subtle)] text-center pb-6">
                   <div className="h-28 bg-[var(--color-cream-deep)] relative">
-                    <CloudinaryImage publicId={`creator-cover-${i}`} width={400} height={150} alt="Cover" className="w-full h-full object-cover" />
+                    <Image src={creator.cover} fill style={{ objectFit: 'cover' }} alt="Cover" />
                   </div>
-                  <div className="w-16 h-16 rounded-full border-4 border-white bg-[var(--color-terracotta-100)] mx-auto -mt-8 relative z-10 flex items-center justify-center text-heading-lg text-[var(--color-terracotta-700)] shadow-sm">
-                    C{i}
+                  <div className={`w-16 h-16 rounded-full border-4 border-white ${creator.avatarBg} text-white mx-auto -mt-8 relative z-10 flex items-center justify-center text-heading-lg shadow-sm`}>
+                    {creator.avatarInitials}
                   </div>
-                  <h3 className="text-heading-lg mt-3 mb-1">Creator {i}</h3>
-                  <p className="text-caption text-[var(--color-terracotta-600)] mb-3 uppercase tracking-wider">Handmade Jewelry</p>
-                  <p className="text-body-md text-[var(--color-ink-500)] px-6 line-clamp-2 mb-4">Crafting unique stories through ethically sourced silver and local Indian gems.</p>
-                  <div className="flex justify-center items-center gap-1 text-[var(--color-ink-900)]">
-                    <span className="text-caption font-bold">4.9</span>
+                  <h3 className="text-heading-lg mt-3 mb-1 flex items-center justify-center gap-1">
+                    {creator.name}
+                    {creator.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" strokeWidth={2} />}
+                  </h3>
+                  <p className="text-caption text-[var(--color-terracotta-600)] mb-3 uppercase tracking-wider">{creator.specialty}</p>
+                  <p className="text-body-md text-[var(--color-ink-500)] px-6 line-clamp-3 mb-4 h-[66px]">{creator.bio}</p>
+                  <div className="flex justify-center items-center gap-1 text-[var(--color-ink-900)] mb-2">
+                    <span className="text-caption font-bold">{creator.rating}</span>
                     <span className="text-[var(--color-terracotta-600)] text-sm">★★★★★</span>
-                    <span className="text-caption text-[var(--color-ink-300)]">(120)</span>
+                    <span className="text-caption text-[var(--color-ink-300)]">({creator.reviews})</span>
                   </div>
+                  <p className="text-caption text-[var(--color-ink-500)]">{creator.followers} followers</p>
                 </motion.div>
               ))}
             </div>
@@ -270,9 +285,9 @@ export default function Home() {
             </motion.div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-6 lg:gap-8">
-              {products.concat(products).map((p, i) => (
-                <motion.div key={`${p.id}-${i}`} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
-                  <ProductCard product={{...p, id: `${p.id}-${i}`}} />
+              {products.map((p, i) => (
+                <motion.div key={p.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
+                  <ProductCard product={p} />
                 </motion.div>
               ))}
             </div>
@@ -287,29 +302,29 @@ export default function Home() {
             </motion.h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 h-auto lg:h-[600px]">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="lg:col-span-2 relative rounded-[var(--radius-lg)] overflow-hidden group h-[300px] lg:h-full cursor-pointer">
-                <CloudinaryImage publicId="collection-1" width={800} height={600} alt="Vintage" className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-8 left-8">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="lg:col-span-2 relative rounded-[var(--radius-lg)] overflow-hidden group h-[300px] lg:h-full cursor-pointer bg-[var(--color-cream-deep)]">
+                <Image src="/images/ed2af0776b49fdea863a1ead90dadf19.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage & Retro" className="transition-transform duration-slow group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-8 left-8 z-20">
                   <h3 className="text-display-md text-white mb-2">Vintage & Retro</h3>
                   <p className="text-body-md text-white/80">240 Items</p>
                 </div>
               </motion.div>
               
               <div className="flex flex-col gap-4 lg:gap-6 h-full">
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="relative rounded-[var(--radius-lg)] overflow-hidden group h-[250px] lg:h-[calc(50%-12px)] cursor-pointer">
-                  <CloudinaryImage publicId="collection-2" width={400} height={300} alt="Modern" className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="relative rounded-[var(--radius-lg)] overflow-hidden group h-[250px] lg:h-[calc(50%-12px)] cursor-pointer bg-[var(--color-cream-deep)]">
+                  <Image src="/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg" fill style={{ objectFit: 'cover' }} alt="Modern Minimalist" className="transition-transform duration-slow group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                  <div className="absolute bottom-6 left-6 z-20">
                     <h3 className="text-heading-lg text-white mb-1">Modern Minimalist</h3>
                     <p className="text-caption text-white/80">120 Items</p>
                   </div>
                 </motion.div>
                 
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="relative rounded-[var(--radius-lg)] overflow-hidden group h-[250px] lg:h-[calc(50%-12px)] cursor-pointer">
-                  <CloudinaryImage publicId="collection-3" width={400} height={300} alt="Traditional" className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6">
+                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="relative rounded-[var(--radius-lg)] overflow-hidden group h-[250px] lg:h-[calc(50%-12px)] cursor-pointer bg-[var(--color-cream-deep)]">
+                  <Image src="/images/3599c4c65b94b61ec21a8d070cd401fe.jpg" fill style={{ objectFit: 'cover' }} alt="Traditional Arts" className="transition-transform duration-slow group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                  <div className="absolute bottom-6 left-6 z-20">
                     <h3 className="text-heading-lg text-white mb-1">Traditional Arts</h3>
                     <p className="text-caption text-white/80">85 Items</p>
                   </div>
@@ -321,8 +336,8 @@ export default function Home() {
 
         {/* 8. Collector Spotlight */}
         <section className="w-full min-h-[480px] flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
-            <CloudinaryImage publicId="spotlight-collector" width={800} height={800} alt="Collector" className="w-full h-full object-cover" />
+          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative bg-[var(--color-cream-deep)]">
+            <Image src="/images/3331bf8da919ff1b47c345584f0f91a3.jpg" fill style={{ objectFit: 'cover', objectPosition: 'center' }} alt="Collector" />
           </div>
           <div className="w-full md:w-1/2 bg-[var(--color-slate-900)] p-12 lg:p-24 flex flex-col justify-center items-center text-center">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md">
