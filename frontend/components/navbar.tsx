@@ -207,18 +207,32 @@ export const Navbar = React.memo(function Navbar() {
             
             {/* Left Zone */}
             <div className="flex items-center gap-6 justify-self-start">
-              <Link href="/our-story" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
-                Our Story
-              </Link>
-              <Link href="/contact" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
-                Contact
-              </Link>
-              {user && location && (
-                <div className={cn("flex items-center gap-1.5 text-body-md transition-colors hidden sm:flex", textClass)}>
-                  <MapPin className="w-4 h-4" strokeWidth={1.5} />
-                  <span>{location}</span>
+              {/* Hamburger Menu (Mobile) */}
+              <button 
+                className="md:hidden w-[40px] h-[40px] flex items-center justify-center -ml-2"
+                aria-label="Menu"
+              >
+                <div className="space-y-1.5">
+                  <span className="block w-5 h-0.5 bg-[var(--color-ink-900)]"></span>
+                  <span className="block w-5 h-0.5 bg-[var(--color-ink-900)]"></span>
+                  <span className="block w-5 h-0.5 bg-[var(--color-ink-900)]"></span>
                 </div>
-              )}
+              </button>
+              
+              <div className="hidden md:flex items-center gap-6">
+                <Link href="/our-story" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                  Our Story
+                </Link>
+                <Link href="/contact" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                  Contact
+                </Link>
+                {user && location && (
+                  <div className={cn("flex items-center gap-1.5 text-body-md transition-colors", textClass)}>
+                    <MapPin className="w-4 h-4" strokeWidth={1.5} />
+                    <span>{location}</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Center Zone */}
@@ -327,7 +341,7 @@ export const Navbar = React.memo(function Navbar() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                          router.push(`/explore?q=${searchQuery}`)
+                          router.push(`/explore?search=${searchQuery}`)
                           setIsMobileSearchExpanded(false)
                         }
                       }}
@@ -383,7 +397,7 @@ export const Navbar = React.memo(function Navbar() {
                 className="w-full bg-transparent border-none outline-none ml-2 text-body-md text-[var(--color-ink-900)] placeholder:text-[var(--color-ink-500)]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && router.push(`/explore?q=${searchQuery}`)}
+                onKeyDown={(e) => e.key === 'Enter' && router.push(`/explore?search=${searchQuery}`)}
               />
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { prisma } from './prisma';
+import { redis } from './redis';
 
 export interface Product {
   id: string;
@@ -7,7 +8,7 @@ export interface Product {
   category: string;
   subcategory: string;
   price: number;
-  buyingMethod: 'Buy Now' | 'Auction' | 'Negotiable';
+  buyingMethod: 'Buy Now' | 'Auction' | 'Make Offer';
   image: string;
   description: string;
   verified: boolean;
@@ -17,13 +18,16 @@ export interface Product {
 }
 
 export async function getProducts(options?: { category?: string; subcategory?: string; slug?: string }): Promise<Product[]> {
+  const cacheKey = `products:explore:${JSON.stringify(options || {})}`;
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return JSON.parse(cached);
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
+
   const where: any = {};
   if (options?.category) {
-    // If we map our high level 'Art' category. In the DB we seeded 'Art' in `category` but it could be subcategory.
-    // Let's just find everything for now, or match if exact.
-    // In seed.ts we used: category: product.category (which is 'Art'). Wait, actually in exploreProducts, category="Art" and subcategory="Paintings".
-    // In seed.ts: `category: product.category`. We didn't store subcategory explicitly unless we put it in description or categories table.
-    // Wait, `exploreProducts` has `category` and `subcategory`. In seed.ts, I seeded `category: product.category` which was "Art". I LOST the subcategory!
   }
 
   const listings = await prisma.listings.findMany({
@@ -36,30 +40,45 @@ export async function getProducts(options?: { category?: string; subcategory?: s
   });
 
   return listings.map(listing => {
-    // We can try to infer subcategory from title or something if it's missing, but let's just use what we have.
     const imagePath = Array.isArray(listing.photos) ? (listing.photos as string[])[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : String(listing.photos));
     
     return {
       id: String(listing.id),
       title: listing.title,
-      creator: listing.users.name,
-      category: 'Art', // Fallback or use listing.category
+      creator: listing.users.name || 'Unknown',
+      category: 'Art',
       subcategory: listing.category || 'Other',
       price: Number(listing.price),
-      buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Negotiable'),
+      buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
       image: imagePath || '/images/default.jpg',
       description: listing.description || '',
       verified: listing.users.profiles?.[0]?.is_verified || false,
-      offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
+      offersAllowed: listing.listing_type === 'NEGOTIABLE' || true, // TODO: verify this logic
       bidCount: listing.auctions?.total_bids || 0,
       currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
     };
   });
+  
+  try {
+    await redis.set(cacheKey, JSON.stringify(results), 'EX', 120);
+  } catch (e) {
+    console.warn('Redis cache write error:', e);
+  }
+  
+  return results;
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
   const listingId = parseInt(id, 10);
   if (isNaN(listingId)) return null;
+
+  const cacheKey = `product:detail:${listingId}`;
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return JSON.parse(cached);
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
 
   const listing = await prisma.listings.findUnique({
     where: { id: listingId },
@@ -73,14 +92,14 @@ export async function getProductById(id: string): Promise<Product | null> {
 
   const imagePath = Array.isArray(listing.photos) ? (listing.photos as string[])[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : String(listing.photos));
 
-  return {
+  const result: Product = {
     id: String(listing.id),
     title: listing.title,
-    creator: listing.users.name,
+    creator: listing.users.name || 'Unknown',
     category: 'Art',
     subcategory: listing.category || 'Other',
     price: Number(listing.price),
-    buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Negotiable'),
+    buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
     image: imagePath || '/images/default.jpg',
     description: listing.description || '',
     verified: listing.users.profiles?.[0]?.is_verified || false,
@@ -88,4 +107,12 @@ export async function getProductById(id: string): Promise<Product | null> {
     bidCount: listing.auctions?.total_bids || 0,
     currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
   };
+
+  try {
+    await redis.set(cacheKey, JSON.stringify(result), 'EX', 300);
+  } catch (e) {
+    console.warn('Redis cache write error:', e);
+  }
+
+  return result;
 }

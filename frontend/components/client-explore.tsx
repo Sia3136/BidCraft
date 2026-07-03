@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useState, useMemo, useCallback, Suspense } from 'react'
+import React, { useState, useMemo, useCallback, Suspense, useEffect } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Filter, X } from 'lucide-react'
 import { Product } from '@/lib/dbProducts'
 import { ProductCard } from '@/components/product-card'
 import { SkeletonGrid } from '@/components/skeleton-grid'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 const CATEGORIES = ['Art', 'Handmade & Crafts', 'Collectibles', 'Gaming & Hobby', 'Lifestyle & Gifts']
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
@@ -147,6 +148,10 @@ const SidebarContent = React.memo(function SidebarContent({
 })
 
 function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const searchQuery = searchParams.get('search')
+  const typeQuery = searchParams.get('type')
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
   // Filters State
@@ -156,6 +161,18 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   const [priceMax, setPriceMax] = useState<number>(5000)
   const [selectedRating, setSelectedRating] = useState<number>(0)
   const [sortBy, setSortBy] = useState<string>('Newest')
+
+  useEffect(() => {
+    if (typeQuery === 'auction' && !selectedMethods.includes('Auction')) {
+      setSelectedMethods(prev => [...prev, 'Auction'])
+    }
+  }, [typeQuery])
+
+  const clearSearch = () => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('search')
+    router.push(`/explore?${params.toString()}`)
+  }
 
   const toggleCategory = useCallback((cat: string) => {
     setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
@@ -177,6 +194,12 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 
   const filteredProducts = useMemo(() => {
     return allProducts.filter(p => {
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        if (!p.title.toLowerCase().includes(query) && !(p.description && p.description.toLowerCase().includes(query))) {
+          return false
+        }
+      }
       if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false
       if (selectedMethods.length > 0 && !selectedMethods.includes(p.buyingMethod)) return false
       if (p.price < priceMin || p.price > priceMax) return false
@@ -192,7 +215,16 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 
   return (
     <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
-
+          {searchQuery && (
+            <div className="mb-[var(--space-6)] flex items-center justify-between bg-[var(--color-cream-deep)] p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+              <h2 className="text-heading-md text-[var(--color-ink-900)]">
+                Showing results for "<span className="font-bold">{searchQuery}</span>"
+              </h2>
+              <button onClick={clearSearch} className="flex items-center gap-2 text-body-md font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors">
+                <X className="w-4 h-4" /> Clear Search
+              </button>
+            </div>
+          )}
           
           {/* Mobile Filter Toggle */}
           <div className="lg:hidden mb-[var(--space-5)] flex items-center justify-between">
@@ -308,7 +340,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 
               {/* Product Grid */}
               {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filteredProducts.map(p => (
                     <ProductCard 
                       key={p.id}

@@ -1,23 +1,21 @@
 const { Pool } = require('pg');
 
 let connectionString = process.env.DATABASE_URL || 'postgresql://localhost:5432/bidcraft';
-let sslRequired = false;
 
-if (connectionString.includes('?sslmode=require')) {
-  connectionString = connectionString.replace('?sslmode=require', '');
-  sslRequired = true;
-} else if (connectionString.includes('&sslmode=require')) {
-  connectionString = connectionString.replace('&sslmode=require', '');
-  sslRequired = true;
+// Ensure connection string safely includes sslmode=verify-full for production to avoid SSL warnings
+if (process.env.NODE_ENV === 'production') {
+  if (connectionString.includes('sslmode=')) {
+    connectionString = connectionString.replace(/sslmode=[^&]+/, 'sslmode=verify-full');
+  } else {
+    connectionString += connectionString.includes('?') ? '&sslmode=verify-full' : '?sslmode=verify-full';
+  }
 }
 
 const poolConfig = { connectionString };
 
-// Enable SSL in production via env var or if URL specifies it. For Neon or managed PG, this is required.
-if (process.env.DB_SSL === 'true' || sslRequired) {
+if (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true' || connectionString.includes('sslmode=verify-full')) {
   poolConfig.ssl = {
-    // By default, allow rejecting unauthorized based on env var; set DB_SSL_REJECT=false for self-signed certs
-    rejectUnauthorized: process.env.DB_SSL_REJECT !== 'false'
+    rejectUnauthorized: true
   };
 }
 

@@ -5,16 +5,56 @@ import Image from 'next/image';
 import { Product } from '@/lib/dbProducts';
 import { formatPrice } from '@/lib/formatPrice';
 import { ProductCard } from '@/components/product-card';
-import { Shield, ChevronRight, Share2, Heart, CheckCircle, Info } from 'lucide-react';
+import { Shield, ChevronRight, Heart, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
+import { CountdownTimer } from '@/components/countdown-timer';
+
+const getCloudinaryTransformUrl = (url: string, transform: string) => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  if (url.includes('/upload/')) {
+    return url.replace('/upload/', `/upload/${transform}/`);
+  }
+  return url;
+};
+
+const imageTransforms = [
+  'f_auto,q_auto',
+  'c_crop,g_center,w_0.6,ar_1:1,f_auto,q_auto',
+  'c_crop,g_north,w_0.7,ar_1:1,f_auto,q_auto',
+  'c_crop,g_south,w_0.7,ar_1:1,f_auto,q_auto',
+  'e_grayscale,f_auto,q_auto',
+  'e_contrast:30,f_auto,q_auto'
+];
 
 export default function ProductDetailClient({ product, related }: { product: Product, related: Product[] }) {
   const { toggleWishlist, wishlist, addToCart } = useStore();
   const isWishlisted = wishlist.some(w => w.productId === product.id);
   const [added, setAdded] = useState(false);
+  
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [showOfferForm, setShowOfferForm] = useState(false);
+  const [offerAmount, setOfferAmount] = useState('');
+  const [offerError, setOfferError] = useState('');
+  
+  const sellerDiscountFloor = 30;
+  const minOffer = product.price * (1 - sellerDiscountFloor / 100);
+
+  const isMiscategorized = product.category === 'Digital Art' && 
+    /(crochet|knit|clay|ceramic|wood|embroidery|stitch)/i.test(product.title + ' ' + (product.description || ''));
+
+  const handleMakeOfferSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const amount = Number(offerAmount);
+    if (isNaN(amount) || amount < minOffer) {
+      setOfferError(`Your offer must be at least ₹${minOffer}. The seller has set a minimum offer threshold.`);
+      return;
+    }
+    setOfferError('');
+    alert(`Offer of ₹${amount} submitted!`);
+    setShowOfferForm(false);
+  };
+
   
   const handleAdd = () => {
     addToCart({ id: Math.random().toString(), productId: product.id, title: product.title, price: product.price, quantity: 1, image: product.image });
@@ -41,21 +81,56 @@ export default function ProductDetailClient({ product, related }: { product: Pro
           
           {/* Left: 60% Image Gallery */}
           <div className="w-full lg:w-3/5">
-            <div className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden">
-              <Image src={product.image} fill style={{ objectFit: 'cover' }} alt={product.title} priority />
-              <button 
-                onClick={() => toggleWishlist(product.id)}
-                className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
-              >
-                <Heart className={cn("w-5 h-5 transition-colors", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-              </button>
+            {isMiscategorized && (
+              <div className="mb-4 p-3 bg-[var(--color-warning-50)] border border-[var(--color-warning-200)] text-[var(--color-warning-700)] rounded-[var(--radius-sm)] flex items-start gap-2">
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+                <p className="text-body-sm font-medium">Note: This item may be miscategorized. Suggested category: Handmade & Crafts.</p>
+              </div>
+            )}
+            
+            <div className="flex flex-col md:flex-row-reverse gap-4">
+              <div className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1">
+                <Image 
+                  src={getCloudinaryTransformUrl(product.image, imageTransforms[activeImageIdx])} 
+                  fill 
+                  style={{ objectFit: 'cover' }} 
+                  alt={product.title} 
+                  priority 
+                />
+                <button 
+                  onClick={() => toggleWishlist(product.id)}
+                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm z-10"
+                >
+                  <Heart className={cn("w-5 h-5 transition-colors", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                </button>
+              </div>
+              
+              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-visible pb-2 md:pb-0 w-full md:w-[100px] shrink-0 hide-scrollbar">
+                {imageTransforms.map((transform, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => setActiveImageIdx(idx)}
+                    className={cn(
+                      "relative w-20 h-20 md:w-full md:h-[100px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors",
+                      activeImageIdx === idx ? "border-[var(--color-terracotta-600)]" : "border-transparent hover:border-[var(--color-ink-300)]"
+                    )}
+                  >
+                    <Image 
+                      src={getCloudinaryTransformUrl(product.image, transform)} 
+                      fill 
+                      style={{ objectFit: 'cover' }} 
+                      alt={`Thumbnail ${idx + 1}`} 
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
             
             {/* Specs & Reviews (Desktop) */}
             <div className="hidden lg:block mt-12">
               <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">About this item</h2>
               <p className="text-body-lg text-[var(--color-ink-700)] mb-8 leading-relaxed whitespace-pre-wrap">
-                {product.description}
+                {(product.description && product.description.length >= 50) ? product.description : "The seller hasn't added a description yet."}
               </p>
               
               <div className="grid grid-cols-2 gap-6 border-t border-[var(--color-border-subtle)] pt-8">
@@ -123,7 +198,11 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                       <p className="text-display-xl text-[var(--color-ink-900)] font-display">
                         {formatPrice(product.currentBid ?? product.price)}
                       </p>
-                      <p className="text-body-md text-[var(--color-ink-500)] pb-2">({product.bidCount ?? 0} bids)</p>
+                      <p className="text-body-md text-[var(--color-ink-500)] pb-2">({product.bidCount ?? 0} bids placed)</p>
+                    </div>
+                    <div className="flex items-center gap-2 mb-4 p-3 bg-[var(--color-cream-deep)] rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)] w-fit">
+                      <span className="text-body-sm font-semibold text-[var(--color-ink-700)]">Time left:</span>
+                      <CountdownTimer listingId={product.id} size="md" />
                     </div>
                   </>
                 ) : (
@@ -163,18 +242,40 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                   </>
                 )}
 
-                {((product.buyingMethod === 'Buy Now' && product.offersAllowed) || product.buyingMethod === 'Negotiable') && (
-                  <>
-                    <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
-                      Buy Now
-                    </button>
-                    <button className="flex-1 h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)] transition-colors">
-                      Make an Offer
-                    </button>
-                    <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
-                      <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-                    </button>
-                  </>
+                {((product.buyingMethod === 'Buy Now' && product.offersAllowed) || product.buyingMethod === 'Make Offer') && (
+                  <div className="flex flex-col gap-3 w-full">
+                    <div className="flex gap-3">
+                      <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
+                        Buy Now
+                      </button>
+                      <button onClick={() => setShowOfferForm(!showOfferForm)} className={cn("flex-1 h-14 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] border-2 transition-colors", showOfferForm ? "border-[var(--color-ink-900)]" : "border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)]")}>
+                        Make an Offer
+                      </button>
+                      <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                        <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                      </button>
+                    </div>
+                    
+                    {showOfferForm && (
+                      <form onSubmit={handleMakeOfferSubmit} className="p-4 bg-[var(--color-cream-deep)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] animate-in fade-in slide-in-from-top-2">
+                        <label className="block text-body-sm font-semibold text-[var(--color-ink-900)] mb-2">Your Offer (₹)</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="number" 
+                            value={offerAmount}
+                            onChange={(e) => setOfferAmount(e.target.value)}
+                            placeholder={`Min. ₹${minOffer}`}
+                            className="flex-1 h-10 px-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] bg-white text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+                            required
+                          />
+                          <button type="submit" className="h-10 px-4 bg-[var(--color-ink-900)] text-white font-semibold rounded-[var(--radius-sm)] hover:bg-[var(--color-terracotta-600)] transition-colors">
+                            Submit
+                          </button>
+                        </div>
+                        {offerError && <p className="text-caption text-[var(--color-urgent-600)] mt-2 font-medium">{offerError}</p>}
+                      </form>
+                    )}
+                  </div>
                 )}
               </div>
 
@@ -223,7 +324,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
               <div className="lg:hidden mt-8 border-t border-[var(--color-border-subtle)] pt-8">
                 <h2 className="text-heading-md text-[var(--color-ink-900)] mb-4">About this item</h2>
                 <p className="text-body-md text-[var(--color-ink-700)] mb-6 whitespace-pre-wrap">
-                  {product.description}
+                  {(product.description && product.description.length >= 50) ? product.description : "The seller hasn't added a description yet."}
                 </p>
               </div>
 
@@ -236,7 +337,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
         {related.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
             <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map(p => (
                 <ProductCard key={p.id} product={p as any} />
               ))}
@@ -263,7 +364,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
             </button>
           </>
         )}
-        {product.buyingMethod === 'Negotiable' && (
+        {product.buyingMethod === 'Make Offer' && (
           <>
             <button className="flex-1 h-12 bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)]">
               Buy Now

@@ -91,7 +91,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
                 <Link href="/explore" className="bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast">
                   Explore Collection
                 </Link>
-                <Link href="/auctions" className="border border-white/30 text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-white/10 transition-colors duration-fast">
+                <Link href="/explore?type=auction" className="h-12 px-6 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg">
                   Watch Live Auctions
                 </Link>
               </div>

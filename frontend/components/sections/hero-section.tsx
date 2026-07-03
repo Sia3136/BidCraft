@@ -70,12 +70,9 @@ export function HeroSection() {
             <Button size="large">
               Explore Collection
             </Button>
-            <Button 
-              size="large" 
-              className="bg-transparent border-[1.5px] border-white text-white hover:bg-white/10 hover:underline-none"
-            >
+            <Link href="/explore?type=auction" className="h-14 px-8 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-[var(--color-cream-deep)] transition-colors shadow-sm">
               Watch Live Auctions
-            </Button>
+            </Link>
           </div>
           
         </div>
