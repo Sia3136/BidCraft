@@ -190,7 +190,7 @@ export const Navbar = React.memo(function Navbar() {
               {/* Hamburger Menu (Mobile) */}
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden w-[40px] h-[40px] flex items-center justify-center -ml-2"
+                className="md:hidden w-[44px] h-[44px] flex items-center justify-center -ml-2"
                 aria-label="Menu"
               >
                 <Menu className="w-6 h-6 text-[var(--color-ink-900)]" strokeWidth={1.5} />
@@ -228,7 +228,7 @@ export const Navbar = React.memo(function Navbar() {
               <div className="flex items-center gap-1 xl:gap-2 relative" ref={dropdownRef}>
                 <Link 
                   href="/wishlist"
-                  className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                  className={cn("w-[44px] h-[44px] flex items-center justify-center transition-colors relative", textClass)}
                   aria-label="Wishlist"
                 >
                   <Heart className="w-5 h-5" strokeWidth={1.5} />
@@ -241,7 +241,7 @@ export const Navbar = React.memo(function Navbar() {
 
                 <Link 
                   href="/cart"
-                  className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                  className={cn("w-[44px] h-[44px] flex items-center justify-center transition-colors relative", textClass)}
                   aria-label="Cart"
                 >
                   <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
@@ -255,7 +255,7 @@ export const Navbar = React.memo(function Navbar() {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenDropdown(openDropdown === 'notifications' ? null : 'notifications')}
-                    className={cn("w-[40px] h-[40px] flex items-center justify-center transition-colors relative", textClass)}
+                    className={cn("w-[44px] h-[44px] flex items-center justify-center transition-colors relative", textClass)}
                     aria-label="Notifications"
                   >
                     <Bell className="w-5 h-5" strokeWidth={1.5} />
@@ -270,7 +270,7 @@ export const Navbar = React.memo(function Navbar() {
                   <div className="relative ml-1">
                     <button 
                       onClick={() => setOpenDropdown(openDropdown === 'profile' ? null : 'profile')}
-                      className="w-[36px] h-[36px] rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-heading-sm font-display ring-2 ring-transparent focus:ring-[rgba(200,100,58,0.3)] transition-all"
+                      className="w-[44px] h-[44px] rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-heading-sm font-display ring-2 ring-transparent focus:ring-[rgba(200,100,58,0.3)] transition-all"
                       aria-label="User menu"
                     >
                       {user.name.charAt(0).toUpperCase()}
@@ -384,7 +384,7 @@ export const Navbar = React.memo(function Navbar() {
             >
               <div className="p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between">
                 <span className="text-heading-md font-display text-[var(--color-ink-900)]">BidCraft</span>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 -mr-2 text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)]">
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-3 -mr-3 text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)]">
                   <X className="w-5 h-5" />
                 </button>
               </div>

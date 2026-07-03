@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       if (cached) {
         return NextResponse.json(JSON.parse(cached), {
           headers: {
-            'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=59',
+            'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
           }
         });
       }
@@ -77,7 +77,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     return NextResponse.json(product, {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=59',
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
       }
     });
   } catch (error) {

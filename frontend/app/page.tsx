@@ -1,14 +1,13 @@
-import { getProducts } from '@/lib/dbProducts';
+import { getNewArrivals, getLiveAuctions } from '@/lib/dbProducts';
 import ClientHome from '@/components/client-home';
 
-// Revalidate every hour, or rely on dynamic fetching if needed
-export const revalidate = 3600;
+export const revalidate = 30; // Shorter revalidation for live auctions
 
 export default async function Home() {
-  const products = await getProducts();
+  const [newArrivals, liveAuctions] = await Promise.all([
+    getNewArrivals(),
+    getLiveAuctions()
+  ]);
   
-  // Also pass the new featured listings to the client component.
-  // We can select a few featured products here or inside client-home
-  
-  return <ClientHome allProducts={products} />;
+  return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} />;
 }

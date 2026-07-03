@@ -13,11 +13,9 @@ if (process.env.NODE_ENV === 'production') {
 
 const poolConfig = { connectionString };
 
-if (process.env.NODE_ENV === 'production' || process.env.DB_SSL === 'true' || connectionString.includes('sslmode=verify-full')) {
-  poolConfig.ssl = {
-    rejectUnauthorized: true
-  };
-}
+poolConfig.ssl = {
+  rejectUnauthorized: true
+};
 
 const pool = new Pool(poolConfig);
 

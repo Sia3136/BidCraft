@@ -42,7 +42,11 @@ export async function GET(request: Request) {
       currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
     }));
 
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+      }
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });

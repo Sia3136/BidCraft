@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { redis } from '@/lib/redis';
-
+import { invalidateListingCache } from '@/lib/dbProducts';
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
@@ -81,9 +81,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Invalidate product cache
     try {
-      await redis.del(`product:detail:${id}`);
+      await invalidateListingCache(id);
       if (isNumericId) {
-        await redis.del(`product:detail:${numericId}`);
+        await invalidateListingCache(String(numericId));
       }
     } catch (e) {
       console.warn('Redis cache delete error:', e);

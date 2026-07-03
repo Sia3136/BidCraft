@@ -8,7 +8,7 @@ import { formatPrice } from '@/lib/formatPrice'
 import { Heart } from 'lucide-react'
 import { CountdownTimer } from '@/components/countdown-timer'
 
-export const ProductCard = React.memo(function ProductCard({ product }: { product: Product }) {
+export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Product, priority?: boolean }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
 
   function toggleWishlist(e: React.MouseEvent) {
@@ -40,13 +40,20 @@ export const ProductCard = React.memo(function ProductCard({ product }: { produc
 
   return (
     <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">
-      <Link href={`/product/${product.id}`} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)]">
+      <Link href={`/product/${product.id}`} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
         <Image
           src={imageUrl}
           alt={product.title}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
           style={{ objectFit: 'cover' }}
-          className="group-hover:scale-105 transition-transform duration-500"
+          className="group-hover:scale-105 transition-transform duration-500 bg-[var(--color-cream-deep)]"
+          onLoad={(event) => {
+            const img = event.target as HTMLImageElement;
+            img.classList.remove('bg-[var(--color-cream-deep)]');
+          }}
         />
         
         {/* Top Left Badge */}

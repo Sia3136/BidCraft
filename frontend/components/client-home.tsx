@@ -57,7 +57,7 @@ const LiveTimer = ({ endTime }: { endTime?: string }) => {
   return <span>{timeLeft}</span>
 }
 
-export default function ClientHome({ allProducts }: { allProducts: Product[] }) {
+export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Product[], liveAuctions?: Product[] }) {
   const { user } = useStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 
@@ -67,10 +67,6 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
     }, 4000)
     return () => clearInterval(interval)
   }, [])
-
-  const products = allProducts;
-  const activeAuctions = allProducts.filter((p) => p.buyingMethod === 'Auction').slice(0, 3);
-  const newArrivals = allProducts.slice(0, 4);
 
   return (
     <div className="bg-[var(--color-cream-base)]">
@@ -158,8 +154,8 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
 
         {/* 3. NEW: Editorial Spotlight 1 */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row items-center gap-16">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full md:w-1/2 flex flex-col items-start pr-0 md:pr-8">
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full lg:w-1/2 flex flex-col items-start pr-0 lg:pr-8">
               <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">HANDPICKED FOR YOU</span>
               <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-6 leading-tight">Art that tells a story before you say a word</h2>
               <p className="text-body-lg text-[var(--color-ink-700)] mb-8">
@@ -169,7 +165,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
                 Explore Handmade & Crafts <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </motion.div>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full md:w-1/2 relative h-[500px] md:h-[600px] w-full">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full lg:w-1/2 relative h-[400px] md:h-[500px] lg:h-[600px]">
               <div className="absolute inset-0 bg-[#C4501A]/10 z-10 mix-blend-multiply" />
               <Image src="/images/04809f445775b05edf65772b67c139d9.jpg" fill style={{ objectFit: 'cover' }} alt="Editorial Spotlight" />
             </motion.div>
@@ -177,7 +173,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
         </section>
 
         {/* 4. Live Auctions Rail (Rebuilt) */}
-        {activeAuctions.length > 0 && (
+        {liveAuctions.length > 0 && (
           <section className="py-24 bg-[var(--color-cream-base)] border-y border-[var(--color-border-subtle)] overflow-hidden">
             <div className="max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)]">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex items-center gap-4 mb-10">
@@ -188,12 +184,24 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
                 </div>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                {activeAuctions.map((auction) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                {liveAuctions.map((auction) => (
                   <motion.div key={auction.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="snap-start hover-card bg-white rounded-[var(--radius-lg)] p-3 relative block">
                     <Link href={`/product/${auction.id}`} className="absolute inset-0 z-20" aria-label={`View ${auction.title}`}></Link>
                     <div className="relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden mb-4 bg-[var(--color-cream-deep)]">
-                      <Image src={auction.image} fill style={{ objectFit: 'cover' }} alt={auction.title} className="transition-transform duration-slow" />
+                      <Image 
+                        src={
+                          auction.image.startsWith('http') || auction.image.startsWith('/')
+                            ? auction.image
+                            : `https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto,w_500/${auction.image}`
+                        } 
+                        fill 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        style={{ objectFit: 'cover' }} 
+                        alt={auction.title} 
+                        className="transition-transform duration-slow" 
+                        loading="lazy"
+                      />
                       <div className="absolute top-3 right-3 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold flex items-center gap-1.5 bg-[var(--color-urgent-600)] text-white z-10">
                         <span className="text-white">⏱</span> <LiveTimer endTime={auction.auctionEndTime} />
                       </div>
@@ -226,12 +234,12 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
 
         {/* 5. NEW: Editorial Spotlight 2 */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row items-center gap-16">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full md:w-1/2 relative h-[500px] md:h-[600px] w-full order-2 md:order-1">
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full lg:w-1/2 relative h-[400px] md:h-[500px] lg:h-[600px] order-1">
               <div className="absolute inset-0 bg-[#C4501A]/10 z-10 mix-blend-multiply" />
-              <Image src="/images/1f92888deb74023c26ec86c954a18188.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage Find" />
+              <Image src="/images/1f92888deb74023c26ec86c954a18188.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage Find" loading="lazy" />
             </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full md:w-1/2 flex flex-col items-start pl-0 md:pl-8 order-1 md:order-2">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full lg:w-1/2 flex flex-col items-start pl-0 lg:pl-8 order-2">
               <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">DID YOU KNOW</span>
               <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-6 leading-tight">Vintage finds. Rare pieces. Real stories.</h2>
               <p className="text-body-lg text-[var(--color-ink-700)] mb-8">
@@ -251,10 +259,10 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
               <h2 className="text-display-lg text-[var(--color-ink-900)]">New Arrivals</h2>
             </motion.div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 sm:gap-6 lg:gap-8 mb-10">
-              {newArrivals.map((p) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-6 lg:gap-8 mb-10">
+              {newArrivals.map((p, idx) => (
                 <motion.div key={p.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
-                  <ProductCard product={p} />
+                  <ProductCard product={p} priority={idx < 4} />
                 </motion.div>
               ))}
             </div>
@@ -365,7 +373,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12">
               Gifts With a Story
             </motion.h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
                 { occ: 'For Her', slug: 'for-her', image: '/images/a344e75529581e9f43f2c00dc233dea4.webp' },
                 { occ: 'For Him', slug: 'for-him', image: '/images/d156289ab52040263f59b16d6f3f5f2c.jpg' },
@@ -373,9 +381,9 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
                 { occ: 'Anniversary', slug: 'anniversary', image: '/images/4472fc60307774b77a3457158adcd98c.webp' },
                 { occ: 'All Occasions', slug: 'all-occasions', image: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg', colSpanMobile: true }
               ].map((item, i) => (
-                <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className={cn("relative rounded-[var(--radius-md)] overflow-hidden group cursor-pointer bg-[var(--color-cream-deep)] min-h-[220px]", item.colSpanMobile && "col-span-2 md:col-span-1")}>
+                <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className={cn("relative rounded-[var(--radius-md)] overflow-hidden group cursor-pointer bg-[var(--color-cream-deep)] min-h-[220px]", item.colSpanMobile && "col-span-2 md:col-span-1 lg:col-span-1")}>
                   <Link href={`/explore?gift=${item.slug}`} className="absolute inset-0 z-20"></Link>
-                  <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" />
+                  <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
                   <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20">{item.occ}</h3>
                 </motion.div>
@@ -415,7 +423,7 @@ export default function ClientHome({ allProducts }: { allProducts: Product[] }) 
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
               Community Voices
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
                 <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)]">
                   <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>

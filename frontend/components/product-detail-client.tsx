@@ -132,6 +132,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                 <Image 
                   src={getCloudinaryTransformUrl(product.image, imageTransforms[activeImageIdx])} 
                   fill 
+                  sizes="(max-width: 768px) 100vw, 60vw"
                   style={{ objectFit: 'cover' }} 
                   alt={product.title} 
                   priority 
@@ -157,8 +158,10 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                     <Image 
                       src={getCloudinaryTransformUrl(product.image, transform)} 
                       fill 
+                      sizes="100px"
                       style={{ objectFit: 'cover' }} 
                       alt={`Thumbnail ${idx + 1}`} 
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -198,11 +201,11 @@ export default function ProductDetailClient({ product, related }: { product: Pro
             {/* Seller Section */}
             <div className="hidden lg:block mt-12 pt-8 border-t border-[var(--color-border-subtle)]">
               <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">Meet your seller</h2>
-              <div className="flex gap-6 items-start bg-[var(--color-cream-deep)] p-6 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+              <div className="flex flex-col md:flex-row gap-6 items-start bg-[var(--color-cream-deep)] p-6 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
                 <div className="w-16 h-16 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-xl text-[var(--color-terracotta-700)] shrink-0 shadow-sm border border-[var(--color-border-subtle)]">
                   {product.creator.charAt(0)}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="text-heading-md text-[var(--color-ink-900)]">{product.creator}</h3>
                     {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}

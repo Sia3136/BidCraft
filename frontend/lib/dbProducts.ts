@@ -18,8 +18,50 @@ export interface Product {
   auctionEndTime?: string;
 }
 
-export async function getProducts(options?: { category?: string; subcategory?: string; slug?: string; search?: string }): Promise<Product[]> {
-  const cacheKey = `products:explore:${JSON.stringify(options || {})}`;
+function mapListingToProduct(listing: any): Product {
+  const imagePath = Array.isArray(listing.photos) 
+    ? (listing.photos as string[])[0] 
+    : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : String(listing.photos));
+  
+  return {
+    id: String(listing.id),
+    title: listing.title,
+    creator: listing.users?.name || 'Unknown',
+    category: listing.category || 'Other',
+    subcategory: listing.subcategory || listing.category || 'Other',
+    price: Number(listing.price),
+    buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
+    image: imagePath || '/images/default.jpg',
+    description: listing.description || '',
+    verified: listing.users?.profiles?.[0]?.is_verified || false,
+    offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
+    bidCount: listing.auctions?.total_bids || 0,
+    currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
+    auctionEndTime: listing.auctions?.end_time ? listing.auctions.end_time.toISOString() : undefined,
+  };
+}
+
+export async function invalidateListingCache(id: string) {
+  try {
+    await redis.del(`listing:${id}`);
+    await redis.del('home:live-auctions');
+  } catch (e) {
+    console.warn('Redis cache invalidate error:', e);
+  }
+}
+
+export async function getProducts(options?: { category?: string; subcategory?: string; search?: string; page?: number; sort?: string }): Promise<Product[]> {
+  const category = options?.category || 'all';
+  const subcategory = options?.subcategory || 'all';
+  const page = options?.page || 1;
+  const sort = options?.sort || 'recent';
+  
+  const cacheKey = options?.search 
+    ? `explore:search:${options.search}:${page}`
+    : `explore:${category}:${subcategory}:${page}:${sort}`;
+    
+  const ttl = options?.search ? 60 : 120;
+
   try {
     const cached = await redis.get(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
@@ -28,8 +70,11 @@ export async function getProducts(options?: { category?: string; subcategory?: s
   }
 
   const where: any = {};
-  if (options?.category) {
+  if (options?.category && options.category !== 'all') {
     where.category = options.category;
+  }
+  if (options?.subcategory && options.subcategory !== 'all') {
+    where.subcategory = options.subcategory;
   }
   if (options?.search) {
     where.OR = [
@@ -44,32 +89,74 @@ export async function getProducts(options?: { category?: string; subcategory?: s
       users: { include: { profiles: true } },
       auctions: true,
     },
-    orderBy: { created_at: 'desc' }
+    orderBy: sort === 'newest' ? { created_at: 'desc' } : { created_at: 'desc' },
+    take: 20,
+    skip: (page - 1) * 20
   });
 
-  const results = listings.map(listing => {
-    const imagePath = Array.isArray(listing.photos) ? (listing.photos as string[])[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : String(listing.photos));
-    
-    return {
-      id: String(listing.id),
-      title: listing.title,
-      creator: listing.users.name || 'Unknown',
-      category: 'Art',
-      subcategory: listing.category || 'Other',
-      price: Number(listing.price),
-      buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
-      image: imagePath || '/images/default.jpg',
-      description: listing.description || '',
-      verified: listing.users.profiles?.[0]?.is_verified || false,
-      offersAllowed: listing.listing_type === 'NEGOTIABLE' || true, // TODO: verify this logic
-      bidCount: listing.auctions?.total_bids || 0,
-      currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
-      auctionEndTime: listing.auctions?.end_time ? listing.auctions.end_time.toISOString() : undefined,
-    };
-  });
+  const results = listings.map(mapListingToProduct);
   
   try {
-    await redis.set(cacheKey, JSON.stringify(results), 'EX', 120);
+    await redis.set(cacheKey, JSON.stringify(results), 'EX', ttl);
+  } catch (e) {
+    console.warn('Redis cache write error:', e);
+  }
+  
+  return results;
+}
+
+export async function getNewArrivals(): Promise<Product[]> {
+  const cacheKey = 'home:new-arrivals';
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
+
+  const listings = await prisma.listings.findMany({
+    where: { status: 'active' },
+    include: { users: { include: { profiles: true } }, auctions: true },
+    orderBy: { created_at: 'desc' },
+    take: 8
+  });
+
+  const results = listings.map(mapListingToProduct);
+  
+  try {
+    await redis.set(cacheKey, JSON.stringify(results), 'EX', 180);
+  } catch (e) {
+    console.warn('Redis cache write error:', e);
+  }
+  
+  return results;
+}
+
+export async function getLiveAuctions(): Promise<Product[]> {
+  const cacheKey = 'home:live-auctions';
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
+
+  const listings = await prisma.listings.findMany({
+    where: { 
+      listing_type: 'AUCTION',
+      status: 'active'
+    },
+    include: { users: { include: { profiles: true } }, auctions: true },
+    orderBy: { created_at: 'desc' },
+    take: 6
+  });
+
+  const results = listings.map(mapListingToProduct);
+  
+  try {
+    await redis.set(cacheKey, JSON.stringify(results), 'EX', 30);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }
@@ -78,6 +165,15 @@ export async function getProducts(options?: { category?: string; subcategory?: s
 }
 
 export async function getProductById(idOrSlug: string): Promise<Product | null> {
+  const cacheKey = `listing:${idOrSlug}`;
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
+
   let listing;
   const numericId = parseInt(idOrSlug, 10);
 
@@ -91,7 +187,6 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
     });
   }
 
-  // Fallback to slug lookup if numeric lookup fails or isn't a number
   if (!listing) {
     listing = await prisma.listings.findUnique({
       where: { slug: idOrSlug },
@@ -104,24 +199,7 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
 
   if (!listing) return null;
 
-  const imagePath = Array.isArray(listing.photos) ? (listing.photos as string[])[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : String(listing.photos));
-
-  const result: Product = {
-    id: String(listing.id),
-    title: listing.title,
-    creator: listing.users.name || 'Unknown',
-    category: 'Art',
-    subcategory: listing.category || 'Other',
-    price: Number(listing.price),
-    buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
-    image: imagePath || '/images/default.jpg',
-    description: listing.description || '',
-    verified: listing.users.profiles?.[0]?.is_verified || false,
-    offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
-    bidCount: listing.auctions?.total_bids || 0,
-    currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
-    auctionEndTime: listing.auctions?.end_time ? listing.auctions.end_time.toISOString() : undefined,
-  };
+  const result = mapListingToProduct(listing);
 
   try {
     await redis.set(cacheKey, JSON.stringify(result), 'EX', 300);
@@ -130,4 +208,33 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
   }
 
   return result;
+}
+
+export async function getSellerById(sellerId: string): Promise<any | null> {
+  const cacheKey = `seller:${sellerId}`;
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
+  } catch (e) {
+    console.warn('Redis cache read error:', e);
+  }
+
+  const numericId = parseInt(sellerId, 10);
+  if (isNaN(numericId)) return null;
+
+  const seller = await prisma.users.findUnique({
+    where: { id: numericId, role: 'seller' },
+    include: { profiles: true }
+  });
+
+  if (!seller) return null;
+
+  try {
+    await redis.set(cacheKey, JSON.stringify(seller), 'EX', 600);
+  } catch (e) {
+    console.warn('Redis cache write error:', e);
+  }
+
+  return seller;
 }
