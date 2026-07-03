@@ -63,7 +63,7 @@ export function Footer() {
             <li><Link href="/escrow" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">How Escrow Works</Link></li>
             <li><Link href="/buyer-protection" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Buyer Protection</Link></li>
             <li><Link href="/help" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Help Center</Link></li>
-            <li><Link href="/contact" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Contact Us</Link></li>
+            <li><a href="mailto:hello@bidcraft.in" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Contact Us</a></li>
           </ul>
         </div>
 
@@ -82,6 +82,9 @@ export function Footer() {
       <div className="w-full max-w-[var(--container-max)] mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-caption text-white/50">
           © {new Date().getFullYear()} BidCraft. All rights reserved.
+        </p>
+        <p className="text-caption text-white/70 text-center">
+          Questions? Email us at <a href="mailto:hello@bidcraft.in" className="hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-colors">hello@bidcraft.in</a> · Instagram <a href="#" className="hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-colors">@bidcraft.in</a>
         </p>
         <div className="flex gap-6">
           <Link href="/privacy" className="text-caption text-white/50 hover:text-white transition-colors">Privacy Policy</Link>

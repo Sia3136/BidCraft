@@ -10,21 +10,22 @@ import { useStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { CountdownTimer } from '@/components/countdown-timer';
 
-const getCloudinaryTransformUrl = (url: string, transform: string) => {
-  if (!url || !url.includes('cloudinary.com')) return url;
-  if (url.includes('/upload/')) {
-    return url.replace('/upload/', `/upload/${transform}/`);
+const getCloudinaryTransformUrl = (imageId: string, transform: string) => {
+  if (!imageId) return '';
+  if (imageId.startsWith('http') || imageId.startsWith('/')) {
+    return imageId;
   }
-  return url;
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'duzlsyzwa';
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transform}/${imageId}`;
 };
 
 const imageTransforms = [
-  'f_auto,q_auto',
-  'c_crop,g_center,w_0.6,ar_1:1,f_auto,q_auto',
-  'c_crop,g_north,w_0.7,ar_1:1,f_auto,q_auto',
-  'c_crop,g_south,w_0.7,ar_1:1,f_auto,q_auto',
-  'e_grayscale,f_auto,q_auto',
-  'e_contrast:30,f_auto,q_auto'
+  'f_auto,q_auto,w_800',
+  'c_crop,g_center,zoom_1.4,f_auto,q_auto,w_800',
+  'c_crop,g_north,h_0.6,w_1.0,f_auto,q_auto,w_800',
+  'c_crop,g_south,h_0.6,w_1.0,f_auto,q_auto,w_800',
+  'c_crop,g_west,w_0.55,ar_1:1,f_auto,q_auto,w_800',
+  'e_contrast:25,e_sharpen:60,f_auto,q_auto,w_800'
 ];
 
 export default function ProductDetailClient({ product, related }: { product: Product, related: Product[] }) {
@@ -36,12 +37,50 @@ export default function ProductDetailClient({ product, related }: { product: Pro
   const [showOfferForm, setShowOfferForm] = useState(false);
   const [offerAmount, setOfferAmount] = useState('');
   const [offerError, setOfferError] = useState('');
-  
+  const [bidAmount, setBidAmount] = useState('');
+  const [bidError, setBidError] = useState('');
+  const [bidSuccess, setBidSuccess] = useState('');
+  const [isBidding, setIsBidding] = useState(false);
+
   const sellerDiscountFloor = 30;
   const minOffer = product.price * (1 - sellerDiscountFloor / 100);
 
   const isMiscategorized = product.category === 'Digital Art' && 
     /(crochet|knit|clay|ceramic|wood|embroidery|stitch)/i.test(product.title + ' ' + (product.description || ''));
+
+  const handlePlaceBidSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBidError('');
+    setBidSuccess('');
+    const amount = Number(bidAmount);
+    const currentHigh = product.currentBid ?? product.price;
+    if (isNaN(amount) || amount <= currentHigh) {
+      setBidError(`Your bid must be higher than the current bid of ₹${currentHigh}.`);
+      return;
+    }
+    
+    setIsBidding(true);
+    try {
+      const res = await fetch(`/api/products/${product.id}/bid`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bidAmount: amount })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setBidError(data.error || 'Failed to place bid.');
+      } else {
+        setBidSuccess('Bid placed successfully!');
+        setBidAmount('');
+        product.currentBid = amount;
+        product.bidCount = (product.bidCount || 0) + 1;
+      }
+    } catch (err) {
+      setBidError('Something went wrong.');
+    } finally {
+      setIsBidding(false);
+    }
+  };
 
   const handleMakeOfferSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,37 +169,69 @@ export default function ProductDetailClient({ product, related }: { product: Pro
             <div className="hidden lg:block mt-12">
               <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">About this item</h2>
               <p className="text-body-lg text-[var(--color-ink-700)] mb-8 leading-relaxed whitespace-pre-wrap">
-                {(product.description && product.description.length >= 50) ? product.description : "The seller hasn't added a description yet."}
+                {product.description || "The seller hasn't added this detail yet."}
               </p>
               
-              <div className="grid grid-cols-2 gap-6 border-t border-[var(--color-border-subtle)] pt-8">
-                <div>
-                  <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-4">Specifications</h3>
-                  <ul className="space-y-3 text-body-md text-[var(--color-ink-700)]">
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Condition</span> New</li>
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Category</span> {product.category}</li>
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Dimensions</span> {Math.floor(Math.random() * 20) + 10}" x {Math.floor(Math.random() * 20) + 10}"</li>
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Material</span> {product.category === 'Art' ? 'Canvas & Wood' : 'Handcrafted'}</li>
-                    <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Ships from</span> India</li>
-                  </ul>
+              <div className="mb-8">
+                <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What makes this special</h3>
+                <ul className="list-disc pl-5 space-y-2 text-body-md text-[var(--color-ink-700)]">
+                  <li><strong>Materials:</strong> {product.category === 'Art' ? 'Canvas & Wood' : 'Handcrafted'}</li>
+                  <li><strong>Technique:</strong> Artisanal craftsmanship</li>
+                  <li><strong>Condition:</strong> New</li>
+                  <li><strong>Use case:</strong> Perfect for display or gifting</li>
+                </ul>
+              </div>
+              
+              <div className="border-t border-[var(--color-border-subtle)] pt-8">
+                <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-4">Specifications</h3>
+                <ul className="space-y-3 text-body-md text-[var(--color-ink-700)] grid grid-cols-2 gap-x-6">
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Condition</span> New</li>
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Category</span> {product.category || "The seller hasn't added this detail yet."}</li>
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Subcategory</span> {product.subcategory || "The seller hasn't added this detail yet."}</li>
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Material</span> {product.category === 'Art' ? 'Canvas & Wood' : 'Handcrafted'}</li>
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Dimensions</span> {Math.floor(Math.random() * 20) + 10}" x {Math.floor(Math.random() * 20) + 10}"</li>
+                  <li className="flex gap-2"><span className="font-medium text-[var(--color-ink-900)] w-24">Ships from</span> India</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Seller Section */}
+            <div className="hidden lg:block mt-12 pt-8 border-t border-[var(--color-border-subtle)]">
+              <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-6">Meet your seller</h2>
+              <div className="flex gap-6 items-start bg-[var(--color-cream-deep)] p-6 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+                <div className="w-16 h-16 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-xl text-[var(--color-terracotta-700)] shrink-0 shadow-sm border border-[var(--color-border-subtle)]">
+                  {product.creator.charAt(0)}
                 </div>
-                <div>
-                  <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-4">Creator Info</h3>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-cream-deep)] flex items-center justify-center text-heading-md text-[var(--color-terracotta-700)]">
-                      {product.creator.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-body-md font-medium text-[var(--color-ink-900)] flex items-center gap-1">
-                        {product.creator}
-                        {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
-                        {product.verified && <span className="ml-1 text-xs bg-[var(--color-success-100)] text-[var(--color-success-700)] px-2 py-0.5 rounded-full font-bold">Top Rated</span>}
-                      </p>
-                      <p className="text-caption text-[var(--color-ink-500)] flex items-center gap-1 mt-0.5">
-                        <span className="text-[var(--color-warning-500)]">★</span> 4.8 (128 reviews)
-                      </p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-heading-md text-[var(--color-ink-900)]">{product.creator}</h3>
+                    {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                  </div>
+                  <p className="text-body-md text-[var(--color-ink-700)] mb-3 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[var(--color-terracotta-600)] inline-block"></span> Mumbai, Maharashtra
+                  </p>
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    <span className="text-caption font-bold bg-[var(--color-success-100)] text-[var(--color-success-700)] px-2.5 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
+                      Top Rated
+                    </span>
+                    <span className="text-caption font-bold bg-[var(--color-info-100)] text-[var(--color-info-700)] px-2.5 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
+                      Fast Shipper
+                    </span>
+                    <span className="text-body-sm text-[var(--color-ink-700)] font-medium flex items-center gap-1 ml-1">
+                      <span className="text-[var(--color-warning-500)] text-base leading-none">★</span> 4.8 · 128 reviews
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-3 mb-5">
+                    <div className="bg-white p-4 rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)] shadow-sm">
+                      <p className="text-body-sm text-[var(--color-ink-700)] italic mb-2">"Absolutely stunning piece. The details are much better in person."</p>
+                      <p className="text-caption font-medium text-[var(--color-ink-900)]">— Rajesh K. <span className="text-[var(--color-warning-500)] text-sm ml-1">★★★★★</span></p>
                     </div>
                   </div>
+                  
+                  <Link href={`/seller/${product.creator.toLowerCase().replace(/\s+/g, '-')}`} className="inline-block px-6 py-2.5 bg-[var(--color-ink-900)] rounded-[var(--radius-pill)] text-body-md font-bold text-white hover:bg-[var(--color-terracotta-600)] transition-colors shadow-sm">
+                    View Shop
+                  </Link>
                 </div>
               </div>
             </div>
@@ -202,7 +273,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                     </div>
                     <div className="flex items-center gap-2 mb-4 p-3 bg-[var(--color-cream-deep)] rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)] w-fit">
                       <span className="text-body-sm font-semibold text-[var(--color-ink-700)]">Time left:</span>
-                      <CountdownTimer listingId={product.id} size="md" />
+                      <CountdownTimer listingId={product.id} size="md" endTime={product.auctionEndTime} />
                     </div>
                   </>
                 ) : (
@@ -215,14 +286,26 @@ export default function ProductDetailClient({ product, related }: { product: Pro
               {/* Strict Action Buttons */}
               <div className="flex gap-3 mb-8">
                 {product.buyingMethod === 'Auction' && (
-                  <>
-                    <button className="flex-1 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm">
-                      Place Bid
-                    </button>
-                    <button onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
-                      <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-                    </button>
-                  </>
+                  <div className="flex flex-col gap-3 w-full">
+                    <form onSubmit={handlePlaceBidSubmit} className="flex gap-2">
+                      <input 
+                        type="number" 
+                        value={bidAmount}
+                        onChange={(e) => setBidAmount(e.target.value)}
+                        placeholder={`> ₹${product.currentBid ?? product.price}`}
+                        className="flex-1 h-14 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] bg-white text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)] font-bold text-body-lg"
+                        required
+                      />
+                      <button type="submit" disabled={isBidding} className="px-6 h-14 bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm disabled:opacity-70">
+                        {isBidding ? 'Placing...' : 'Place Bid'}
+                      </button>
+                      <button type="button" onClick={() => toggleWishlist(product.id)} className="w-14 h-14 shrink-0 bg-white border-2 border-[var(--color-ink-200)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                        <Heart className={cn("w-6 h-6", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                      </button>
+                    </form>
+                    {bidError && <p className="text-body-sm text-[var(--color-urgent-600)] font-medium">{bidError}</p>}
+                    {bidSuccess && <p className="text-body-sm text-[var(--color-success-600)] font-medium">{bidSuccess}</p>}
+                  </div>
                 )}
                 
                 {(product.buyingMethod === 'Buy Now' && !product.offersAllowed) && (

@@ -1,9 +1,33 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { EmptyState } from '@/components/empty-state'
 
 export default function NotFound() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isRedirecting, setIsRedirecting] = useState(false)
+
+  useEffect(() => {
+    // If the missing page was a product page, redirect to explore page
+    if (pathname && pathname.startsWith('/product/')) {
+      setIsRedirecting(true)
+      router.replace('/explore?error=not-found')
+    }
+  }, [pathname, router])
+
+  if (isRedirecting) {
+    return (
+      <div className="min-h-screen bg-[var(--color-cream-base)] flex items-center justify-center">
+        <p className="text-body-lg text-[var(--color-ink-700)] animate-pulse">Redirecting...</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col items-center justify-center">
       <EmptyState
         title="This page wandered off"
         description="We couldn't find the page you're looking for. It might have been moved, deleted, or never existed in the first place."
@@ -19,7 +43,7 @@ export default function NotFound() {
         }
       />
       <div className="mt-4">
-        <Link href="/collections" className="text-terracotta-600 hover:text-terracotta-700 font-medium">
+        <Link href="/explore" className="text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] font-medium">
           Browse Collections
         </Link>
       </div>

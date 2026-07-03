@@ -6,12 +6,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
 
   try {
-    const listingId = parseInt(id, 10);
-    if (isNaN(listingId)) {
-      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
-    }
+    const numericId = parseInt(id, 10);
+    let cacheKey = `product:detail:${id}`;
+    let listingId = !isNaN(numericId) ? numericId : null;
 
-    const cacheKey = `product:detail:${listingId}`;
     try {
       const cached = await redis.get(cacheKey);
       if (cached) {
@@ -25,15 +23,31 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       console.warn('Redis cache read error:', e);
     }
 
-    const listing = await prisma.listings.findUnique({
-      where: { id: listingId },
-      include: {
-        users: {
-          include: { profiles: true }
-        },
-        auctions: true,
-      }
-    });
+    let listing;
+    
+    if (listingId !== null) {
+      listing = await prisma.listings.findUnique({
+        where: { id: listingId },
+        include: {
+          users: {
+            include: { profiles: true }
+          },
+          auctions: true,
+        }
+      });
+    }
+
+    if (!listing) {
+      listing = await prisma.listings.findUnique({
+        where: { slug: id },
+        include: {
+          users: {
+            include: { profiles: true }
+          },
+          auctions: true,
+        }
+      });
+    }
 
     if (!listing) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });

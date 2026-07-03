@@ -56,6 +56,7 @@ async function main() {
         title: product.title,
         description: product.description,
         category: product.category,
+        slug: product.id,
         condition: 'new',
         photos: [product.image],
         listing_type: listingType,

@@ -8,11 +8,11 @@ import { CategoryFilters } from '@/components/category-filters';
 export const revalidate = 3600;
 
 const megaMenuData: Record<string, string[]> = {
-  'Art': ['Paintings', 'Sketches & Drawings', 'Digital Art', 'Illustrations', 'Prints & Posters', 'Sculptures'],
-  'Handmade & Crafts': ['Handmade Decor', 'Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'DIY Creations', 'Candles & Soaps', 'Paper Crafts'],
-  'Collectibles': ['Action Figures', 'Trading Cards', 'Coins', 'Stamps', 'Funko Pops', 'LEGO Collectibles', 'Hot Wheels'],
-  'Gaming & Hobby': ['Gaming Merchandise', 'Board Games', 'Model Kits', 'Anime Merchandise', 'Cosplay Props', 'Trading Card Games', 'Puzzle Collections'],
-  'Lifestyle & Gifts': ['Jewelry', 'Home Decor', 'Keychains', 'Accessories', 'Stationery', 'Personalized Gifts', 'Miniatures'],
+  'Art': ['Paintings', 'Prints', 'Digital Art'],
+  'Handmade & Crafts': ['Jewellery', 'Pottery & Ceramics', 'Textiles', 'Home Decor'],
+  'Collectibles': ['Vintage & Antiques', 'Stamps & Coins', 'Memorabilia'],
+  'Gaming & Hobby': ['Board Games', 'TTRPG', 'Miniatures'],
+  'Lifestyle & Gifts': ['Home Decor', 'Apparel'],
 };
 
 export default async function CategoryPage({

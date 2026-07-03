@@ -152,15 +152,34 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   const router = useRouter()
   const searchQuery = searchParams.get('search')
   const typeQuery = searchParams.get('type')
+  const categoryQuery = searchParams.get('category')
+  const subcategoryQuery = searchParams.get('subcategory')
+  const sortQuery = searchParams.get('sort')
+  const collectionQuery = searchParams.get('collection')
+  const giftQuery = searchParams.get('gift')
+  const errorQuery = searchParams.get('error')
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
+  // Format category slugs back to titles for the state if they come from URL
+  const formatCategory = (slug: string) => {
+    if (slug === 'art') return 'Art'
+    if (slug === 'handmade-crafts') return 'Handmade & Crafts'
+    if (slug === 'collectibles') return 'Collectibles'
+    if (slug === 'gaming-hobby') return 'Gaming & Hobby'
+    if (slug === 'lifestyle-gifts') return 'Lifestyle & Gifts'
+    return slug
+  }
+
   // Filters State
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const initialCategory = categoryQuery ? [formatCategory(categoryQuery)] : []
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory)
   const [selectedMethods, setSelectedMethods] = useState<string[]>([])
   const [priceMin, setPriceMin] = useState<number>(0)
   const [priceMax, setPriceMax] = useState<number>(5000)
   const [selectedRating, setSelectedRating] = useState<number>(0)
-  const [sortBy, setSortBy] = useState<string>('Newest')
+  
+  const initialSort = sortQuery === 'newest' ? 'Newest' : 'Newest' // Default to Newest
+  const [sortBy, setSortBy] = useState<string>(initialSort)
 
   useEffect(() => {
     if (typeQuery === 'auction' && !selectedMethods.includes('Auction')) {
@@ -201,9 +220,35 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
         }
       }
       if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false
+      
+      // If a subcategory is provided via URL and matches the selected category, filter by it
+      if (subcategoryQuery && selectedCategories.length === 1 && selectedCategories[0] === formatCategory(categoryQuery || '')) {
+        // Here we just do a loose include match on title/description since we don't have subcategory in exploreProducts properly sometimes
+        const subq = subcategoryQuery.toLowerCase().replace(/-/g, ' ');
+        const text = (p.title + ' ' + (p.description || '')).toLowerCase();
+        if (!text.includes(subq) && (p.subcategory || '').toLowerCase() !== subq) {
+          return false;
+        }
+      }
+      
       if (selectedMethods.length > 0 && !selectedMethods.includes(p.buyingMethod)) return false
       if (p.price < priceMin || p.price > priceMax) return false
       if (selectedRating > 0 && p.rating < selectedRating) return false
+
+      if (collectionQuery) {
+        // Just mock collection logic: filter based on some text matching
+        const q = collectionQuery.toLowerCase().replace(/-/g, ' ');
+        const text = (p.title + ' ' + (p.description || '') + ' ' + p.category).toLowerCase();
+        if (!text.includes(q) && p.category.toLowerCase() !== q) return false;
+      }
+
+      if (giftQuery) {
+        // Mock gift logic: e.g. for-her might match certain subcategories or titles
+        const q = giftQuery.toLowerCase().replace(/-/g, ' ');
+        const text = (p.title + ' ' + (p.description || '') + ' ' + p.category).toLowerCase();
+        if (!text.includes(q) && p.category.toLowerCase() !== 'lifestyle & gifts') return false;
+      }
+
       return true
     }).sort((a, b) => {
       if (sortBy === 'Price: Low to High') return a.price - b.price
@@ -215,6 +260,19 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 
   return (
     <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
+          {errorQuery === 'not-found' && (
+            <div className="mb-[var(--space-6)] bg-[var(--color-urgent-100)] p-4 rounded-[var(--radius-md)] border border-[var(--color-urgent-600)] flex items-center justify-between">
+              <p className="text-body-md text-[var(--color-urgent-700)] font-medium">That listing wasn't found. It may have been removed.</p>
+              <button onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('error');
+                router.replace(`/explore?${params.toString()}`);
+              }} className="text-[var(--color-urgent-700)] hover:text-black">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          
           {searchQuery && (
             <div className="mb-[var(--space-6)] flex items-center justify-between bg-[var(--color-cream-deep)] p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
               <h2 className="text-heading-md text-[var(--color-ink-900)]">
@@ -367,30 +425,32 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 }
 
 export default function ClientExplore({ allProducts = [] }: { allProducts?: Product[] }) {
+  // Use a wrapper component to use searchParams
+  return (
+    <Suspense fallback={<div className="p-8">Loading...</div>}>
+      <ClientExploreInner allProducts={allProducts} />
+    </Suspense>
+  )
+}
+
+function ClientExploreInner({ allProducts = [] }: { allProducts?: Product[] }) {
+  const searchParams = useSearchParams()
+  
   return (
     <div className="bg-[var(--color-cream-base)] flex flex-col">
 
       <main className="flex-1 w-full">
         {/* Page Header */}
         <section className="w-full h-[280px] bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] flex flex-col items-center justify-center text-center px-[var(--space-5)]">
-          <h1 className="text-display-xl font-display text-[var(--color-ink-900)] mb-[var(--space-2)]">
-            Explore All
+          <h1 className="text-display-xl font-display text-[var(--color-ink-900)] mb-[var(--space-2)] capitalize">
+            {searchParams.get('subcategory') ? searchParams.get('subcategory')?.replace(/-/g, ' ') : (searchParams.get('category') ? searchParams.get('category')?.replace(/-/g, ' ') : (searchParams.get('collection') ? searchParams.get('collection')?.replace(/-/g, ' ') : (searchParams.get('gift') ? searchParams.get('gift')?.replace(/-/g, ' ') : 'Explore All')))}
           </h1>
           <p className="text-body-lg text-[var(--color-ink-700)] max-w-[600px]">
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
           </p>
         </section>
 
-        <Suspense fallback={
-          <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
-            <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[var(--space-8)]">
-              <div className="hidden lg:block" />
-              <SkeletonGrid />
-            </div>
-          </div>
-        }>
-          <ExploreContent allProducts={allProducts} />
-        </Suspense>
+        <ExploreContent allProducts={allProducts} />
       </main>
     </div>
   )
