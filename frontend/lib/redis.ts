@@ -1,13 +1,33 @@
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis';
 
-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+const restUrl = process.env.UPSTASH_REDIS_REST_URL;
+const restToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-const globalForRedis = global as unknown as { redis: Redis };
+const globalForRedis = global as unknown as { redis: any };
 
-export const redis =
-  globalForRedis.redis ||
-  new Redis(redisUrl, {
-    maxRetriesPerRequest: null,
-  });
+export let redis: any;
 
-if (process.env.NODE_ENV !== 'production') globalForRedis.redis = redis;
+if (restUrl && restToken) {
+  redis =
+    globalForRedis.redis ||
+    new Redis({
+      url: restUrl,
+      token: restToken,
+    });
+
+  if (process.env.NODE_ENV !== 'production') globalForRedis.redis = redis;
+} else {
+  if (typeof window === 'undefined') {
+    console.log('Upstash Redis variables missing. Falling back to mock Redis client.');
+  }
+  redis = {
+    get: async () => null,
+    set: async () => null,
+    del: async () => null,
+    keys: async () => [],
+    on: () => {},
+  };
+}
+
+
+

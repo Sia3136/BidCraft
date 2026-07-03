@@ -21,7 +21,7 @@ export async function getProducts(options?: { category?: string; subcategory?: s
   const cacheKey = `products:explore:${JSON.stringify(options || {})}`;
   try {
     const cached = await redis.get(cacheKey);
-    if (cached) return JSON.parse(cached);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
   }
@@ -75,7 +75,7 @@ export async function getProductById(id: string): Promise<Product | null> {
   const cacheKey = `product:detail:${listingId}`;
   try {
     const cached = await redis.get(cacheKey);
-    if (cached) return JSON.parse(cached);
+    if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
   }
