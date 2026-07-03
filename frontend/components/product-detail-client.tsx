@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Product } from '@/lib/dbProducts';
 import { formatPrice } from '@/lib/formatPrice';
 import { ProductCard } from '@/components/product-card';
@@ -135,7 +136,8 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                   sizes="(max-width: 768px) 100vw, 60vw"
                   style={{ objectFit: 'cover' }} 
                   alt={product.title} 
-                  priority 
+                  priority
+                  onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
                 />
                 <button 
                   onClick={() => toggleWishlist(product.id)}
@@ -162,6 +164,7 @@ export default function ProductDetailClient({ product, related }: { product: Pro
                       style={{ objectFit: 'cover' }} 
                       alt={`Thumbnail ${idx + 1}`} 
                       loading="lazy"
+                      onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
                     />
                   </button>
                 ))}

@@ -232,23 +232,24 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </section>
         )}
 
-        {/* 5. NEW: Editorial Spotlight 2 */}
+        {/* 5. NEW: Trust & Process */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full lg:w-1/2 relative h-[400px] md:h-[500px] lg:h-[600px] order-1">
-              <div className="absolute inset-0 bg-[#C4501A]/10 z-10 mix-blend-multiply" />
-              <Image src="/images/1f92888deb74023c26ec86c954a18188.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage Find" loading="lazy" />
-            </motion.div>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full lg:w-1/2 flex flex-col items-start pl-0 lg:pl-8 order-2">
-              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">DID YOU KNOW</span>
-              <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-6 leading-tight">Vintage finds. Rare pieces. Real stories.</h2>
-              <p className="text-body-lg text-[var(--color-ink-700)] mb-8">
-                Collectibles on BidCraft range from 1970s Bollywood memorabilia to hand-thrown terracotta from Kutch potters. Each piece arrives with provenance notes from the seller — so you know exactly what you're bringing home.
-              </p>
-              <Link href="/explore?category=collectibles" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
-                Browse Collectibles <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </motion.div>
+          <div className="max-w-[var(--container-max)] mx-auto text-center">
+            <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-16" style={{ fontFamily: 'Playfair Display, serif' }}>Why BidCraft</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left max-w-5xl mx-auto">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Listed by makers, not resellers</h3>
+                <p className="text-body-lg text-[var(--color-ink-700)]">Every seller on BidCraft is verified. We check identity and bank details before anyone can list.</p>
+              </motion.div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Bid with confidence</h3>
+                <p className="text-body-lg text-[var(--color-ink-700)]">Our escrow holds your payment until you receive and approve your order. No release without your confirmation.</p>
+              </motion.div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Rooted in India</h3>
+                <p className="text-body-lg text-[var(--color-ink-700)]">From Jaipur miniaturists to Bengaluru ceramicists — every piece ships from within India, with full tracking.</p>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -375,10 +376,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </motion.h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
-                { occ: 'For Her', slug: 'for-her', image: '/images/a344e75529581e9f43f2c00dc233dea4.webp' },
-                { occ: 'For Him', slug: 'for-him', image: '/images/d156289ab52040263f59b16d6f3f5f2c.jpg' },
+                { occ: 'Birthdays', slug: 'birthdays', image: '/images/a344e75529581e9f43f2c00dc233dea4.webp' },
+                { occ: 'Anniversaries', slug: 'anniversaries', image: '/images/d156289ab52040263f59b16d6f3f5f2c.jpg' },
                 { occ: 'Housewarming', slug: 'housewarming', image: '/images/27c1a7020f1f1ae13757444e6e302582.jpg' },
-                { occ: 'Anniversary', slug: 'anniversary', image: '/images/4472fc60307774b77a3457158adcd98c.webp' },
+                { occ: 'Just Because', slug: 'just-because', image: '/images/4472fc60307774b77a3457158adcd98c.webp' },
                 { occ: 'All Occasions', slug: 'all-occasions', image: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg', colSpanMobile: true }
               ].map((item, i) => (
                 <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className={cn("relative rounded-[var(--radius-md)] overflow-hidden group cursor-pointer bg-[var(--color-cream-deep)] min-h-[220px]", item.colSpanMobile && "col-span-2 md:col-span-1 lg:col-span-1")}>
@@ -401,14 +402,12 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-4xl mx-auto">
               {[
-                { icon: '🔒', title: 'Escrow on Every Order', desc: 'Your payment is held securely until you confirm receipt. The seller is paid only after you approve. No exceptions.' },
-                { icon: '✅', title: 'Verified Sellers', desc: 'Every seller on BidCraft goes through identity and bank verification before listing. Fake listings are flagged and removed within 24 hours.' },
-                { icon: '🚚', title: 'Transparent Shipping', desc: 'Sellers commit to dispatch timelines upfront. Track your order end-to-end. If something goes wrong, our buyer protection kicks in.' }
+                { title: 'Escrow on Every Order', desc: 'Your payment is held securely until you confirm receipt. The seller is paid only after you approve. No exceptions.' },
+                { title: 'Verified Sellers', desc: 'Every seller on BidCraft goes through identity and bank verification before listing. Fake listings are flagged and removed within 24 hours.' },
+                { title: 'Transparent Shipping', desc: 'Sellers commit to dispatch timelines upfront. Track your order end-to-end. If something goes wrong, our buyer protection kicks in.' }
               ].map((item, i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex flex-col items-center text-center">
-                  <div className="text-5xl mb-6">
-                    {item.icon}
-                  </div>
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex flex-col items-center text-center mt-6">
+
                   <h3 className="text-heading-sm text-white mb-3">{item.title}</h3>
                   <p className="text-caption text-white/70 max-w-xs">{item.desc}</p>
                 </motion.div>
@@ -434,15 +433,17 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                   <div className="flex items-center gap-4">
                     <Image 
                       src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
-                      width={64} 
-                      height={64} 
+                      width={80} 
+                      height={80} 
                       style={{ objectFit: 'cover' }}
                       alt={`User ${i}`}
-                      className="rounded-full bg-[var(--color-ink-300)] border-2 border-[var(--color-terracotta-600)] w-16 h-16 min-w-[64px]"
+                      className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[#C4501A] w-[80px] h-[80px] min-w-[80px]"
                     />
                     <div>
                       <p className="text-heading-sm text-[var(--color-ink-900)]">User {i}</p>
-                      <div className="flex gap-1 text-[var(--color-terracotta-600)] text-xs mt-1">★★★★★</div>
+                      <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold">
+                        {i === 1 ? "4.5 ★" : i === 2 ? "4.0 ★" : "5.0 ★"}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -465,31 +466,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-        {/* 13b. NEW: Our Story Strip */}
-        <section id="our-story" className="py-16 bg-[var(--color-terracotta-100)] px-[var(--space-5)] xl:px-[var(--space-8)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
-            <div className="w-full md:w-1/2">
-              <h2 className="text-display-lg font-display text-[var(--color-terracotta-900)] mb-4">The story behind the craft.</h2>
-              <p className="text-body-lg text-[var(--color-terracotta-800)]">
-                We believe that every handcrafted object carries a piece of its maker's soul. BidCraft was founded to connect discerning collectors with India's finest artisans, cutting out the middlemen to ensure creators earn what they deserve.
-              </p>
-            </div>
-            <div className="w-full md:w-1/2 flex flex-col sm:flex-row justify-around gap-8 text-center md:text-left">
-              <div>
-                <p className="text-display-xl font-display text-[var(--color-terracotta-900)]">500+</p>
-                <p className="text-body-md font-semibold text-[var(--color-terracotta-800)]">Creators</p>
-              </div>
-              <div>
-                <p className="text-display-xl font-display text-[var(--color-terracotta-900)]">12k+</p>
-                <p className="text-body-md font-semibold text-[var(--color-terracotta-800)]">Unique Items</p>
-              </div>
-              <div>
-                <p className="text-display-xl font-display text-[var(--color-terracotta-900)]">4.9/5</p>
-                <p className="text-body-md font-semibold text-[var(--color-terracotta-800)]">Average Rating</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* 14. Newsletter (Non-logged-in) */}
         {!user && (

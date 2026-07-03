@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import { redis } from './redis';
+import { redis, cacheGet, cacheSet } from './redis';
 
 export interface Product {
   id: string;
@@ -43,8 +43,10 @@ function mapListingToProduct(listing: any): Product {
 
 export async function invalidateListingCache(id: string) {
   try {
-    await redis.del(`listing:${id}`);
-    await redis.del('home:live-auctions');
+    if (redis) {
+      await redis.del(`listing:${id}`);
+      await redis.del('home:live-auctions');
+    }
   } catch (e) {
     console.warn('Redis cache invalidate error:', e);
   }
@@ -63,13 +65,13 @@ export async function getProducts(options?: { category?: string; subcategory?: s
   const ttl = options?.search ? 60 : 120;
 
   try {
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
   }
 
-  const where: any = {};
+  const where: any = { status: 'active' };
   if (options?.category && options.category !== 'all') {
     where.category = options.category;
   }
@@ -97,7 +99,7 @@ export async function getProducts(options?: { category?: string; subcategory?: s
   const results = listings.map(mapListingToProduct);
   
   try {
-    await redis.set(cacheKey, JSON.stringify(results), 'EX', ttl);
+    await cacheSet(cacheKey, results, ttl);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }
@@ -109,7 +111,7 @@ export async function getNewArrivals(): Promise<Product[]> {
   const cacheKey = 'home:new-arrivals';
   
   try {
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
@@ -125,7 +127,7 @@ export async function getNewArrivals(): Promise<Product[]> {
   const results = listings.map(mapListingToProduct);
   
   try {
-    await redis.set(cacheKey, JSON.stringify(results), 'EX', 180);
+    await cacheSet(cacheKey, results, 180);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }
@@ -137,7 +139,7 @@ export async function getLiveAuctions(): Promise<Product[]> {
   const cacheKey = 'home:live-auctions';
   
   try {
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
@@ -156,7 +158,7 @@ export async function getLiveAuctions(): Promise<Product[]> {
   const results = listings.map(mapListingToProduct);
   
   try {
-    await redis.set(cacheKey, JSON.stringify(results), 'EX', 30);
+    await cacheSet(cacheKey, results, 30);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }
@@ -168,7 +170,7 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
   const cacheKey = `listing:${idOrSlug}`;
   
   try {
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
@@ -202,7 +204,7 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
   const result = mapListingToProduct(listing);
 
   try {
-    await redis.set(cacheKey, JSON.stringify(result), 'EX', 300);
+    await cacheSet(cacheKey, result, 300);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }
@@ -214,7 +216,7 @@ export async function getSellerById(sellerId: string): Promise<any | null> {
   const cacheKey = `seller:${sellerId}`;
   
   try {
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet(cacheKey);
     if (cached) return typeof cached === 'string' ? JSON.parse(cached) : cached;
   } catch (e) {
     console.warn('Redis cache read error:', e);
@@ -231,7 +233,7 @@ export async function getSellerById(sellerId: string): Promise<any | null> {
   if (!seller) return null;
 
   try {
-    await redis.set(cacheKey, JSON.stringify(seller), 'EX', 600);
+    await cacheSet(cacheKey, seller, 600);
   } catch (e) {
     console.warn('Redis cache write error:', e);
   }

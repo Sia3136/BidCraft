@@ -163,10 +163,27 @@ async function getListings(req, res, next) {
     }
 
     if (search) {
-      params.push(search);
-      countParams.push(search);
-      queryText += ` AND to_tsvector('english', title) @@ plainto_tsquery('english', $${params.length})`;
-      countQuery += ` AND to_tsvector('english', title) @@ plainto_tsquery('english', $${countParams.length})`;
+      const searchStr = search.trim().toLowerCase();
+      if (searchStr !== '') {
+        params.push(searchStr);
+        countParams.push(searchStr);
+        const searchClause = ` AND (
+          LOWER(title) LIKE LOWER('%' || $${params.length} || '%')
+          OR LOWER(description) LIKE LOWER('%' || $${params.length} || '%')
+          OR LOWER(category) LIKE LOWER('%' || $${params.length} || '%')
+          OR LOWER(subcategory) LIKE LOWER('%' || $${params.length} || '%')
+          OR LOWER(tags::text) LIKE LOWER('%' || $${params.length} || '%')
+        )`;
+        
+        queryText += searchClause;
+        countQuery += ` AND (
+          LOWER(title) LIKE LOWER('%' || $${countParams.length} || '%')
+          OR LOWER(description) LIKE LOWER('%' || $${countParams.length} || '%')
+          OR LOWER(category) LIKE LOWER('%' || $${countParams.length} || '%')
+          OR LOWER(subcategory) LIKE LOWER('%' || $${countParams.length} || '%')
+          OR LOWER(tags::text) LIKE LOWER('%' || $${countParams.length} || '%')
+        )`;
+      }
     }
 
     // Sorting

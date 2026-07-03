@@ -1,46 +1,14 @@
 import { PrismaClient } from '../lib/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { exploreProducts } from '../lib/exploreProducts';
+import fs from 'fs';
+import path from 'path';
 import 'dotenv/config';
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
-
-function getCloudinaryPublicId(category: string, subcategory: string, imagePath: string) {
-  // Extract filename from /images/filename.ext
-  const filename = imagePath.split('/').pop()?.split('.')[0] || 'default';
-  
-  // Map category and subcategory to folder
-  let folder = 'bidcraft/misc';
-  
-  const cat = category.toLowerCase();
-  const sub = subcategory.toLowerCase();
-  
-  if (cat.includes('art')) {
-    if (sub.includes('painting')) folder = 'bidcraft/art/paintings';
-    else if (sub.includes('digital')) folder = 'bidcraft/art/digital-art';
-    else if (sub.includes('sculpture')) folder = 'bidcraft/art/sculptures';
-    else folder = 'bidcraft/art/prints';
-  } else if (cat.includes('handmade')) {
-    if (sub.includes('textile')) folder = 'bidcraft/handmade/textiles';
-    else if (sub.includes('pottery') || sub.includes('clay')) folder = 'bidcraft/handmade/pottery';
-    else folder = 'bidcraft/handmade/crafts';
-  } else if (cat.includes('collectible')) {
-    if (sub.includes('rare') || sub.includes('hot wheels')) folder = 'bidcraft/collectibles/rare';
-    else folder = 'bidcraft/collectibles/general';
-  } else if (cat.includes('gaming')) {
-    if (sub.includes('board')) folder = 'bidcraft/gaming/board-games';
-    else folder = 'bidcraft/gaming/general';
-  } else if (cat.includes('lifestyle')) {
-    if (sub.includes('decor')) folder = 'bidcraft/lifestyle/home-decor';
-    else folder = 'bidcraft/lifestyle/gifts';
-  }
-  
-  return `${folder}/${filename}`;
-}
 
 async function main() {
   console.log('Starting Cloudinary seed...');
@@ -50,9 +18,18 @@ async function main() {
   await prisma.listings.deleteMany({});
   console.log('Wiped existing listings and auctions.');
 
-  for (const product of exploreProducts) {
+  const dataPath = 'C:/Bidcraft/frontend/scripts/seed_data.json';
+  const listingsData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+
+  let i = 0;
+  for (const item of listingsData) {
+    i++;
+    if (!item.title || !item.public_id) continue;
+    
     // 1. Find or create User (creator)
-    const email = `${product.creator.replace(/\s+/g, '').toLowerCase()}@bidcraft.local`;
+    // Extract a name from seller string: '"Pixels by Priya"' -> 'Pixels by Priya'
+    const sellerName = item.seller ? item.seller.replace(/"/g, '') : 'Unknown Seller';
+    const email = `${sellerName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()}@bidcraft.local`;
     
     let user = await prisma.users.findUnique({
       where: { email },
@@ -62,7 +39,7 @@ async function main() {
       user = await prisma.users.create({
         data: {
           email,
-          name: product.creator,
+          name: sellerName,
           avatar_url: '/creator-1.png',
           role: 'seller',
         },
@@ -70,8 +47,8 @@ async function main() {
       await prisma.profiles.create({
         data: {
           user_id: user.id,
-          is_verified: product.verified || false,
-          trust_score: 4.5,
+          is_verified: true,
+          trust_score: 4.8,
           total_sales: Math.floor(Math.random() * 50),
         },
       });
@@ -79,52 +56,56 @@ async function main() {
     }
 
     // 2. Create Listing
-    const listingType = product.buyingMethod === 'Auction' ? 'AUCTION' : 'BUY_NOW';
+    const listingType = item.listing_type === 'auction' ? 'AUCTION' : 'BUY_NOW';
+    let price = item.price || item.starting_bid || 500;
     
-    // Map image to Cloudinary public_id
-    const publicId = getCloudinaryPublicId(product.category, product.subcategory, product.image);
-    
-    // Generate random price between 50 and 5000 if not set realistically
-    let price = product.price;
-    if (price > 5000) {
-      price = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+    let category = 'Art';
+    if (item.public_id.includes('collectibles')) {
+      category = 'Collectibles';
+    } else if (item.public_id.includes('handmade')) {
+      category = 'Handmade & Crafts';
     }
 
     const listing = await prisma.listings.create({
       data: {
         seller_id: user.id,
-        title: product.title,
-        description: product.description + " Handcrafted with premium materials. This unique piece showcases the rich heritage of Indian craftsmanship.",
-        category: product.category,
-        slug: product.id,
+        title: item.title,
+        description: item.description,
+        category: category,
+        slug: item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + i,
         condition: 'new',
-        photos: [publicId],
+        photos: [item.public_id],
         listing_type: listingType,
         price: price,
-        status: 'active',
+        status: 'active', // Ensure status is active!
       },
     });
 
-    console.log(`Created listing: ${listing.title} (${publicId})`);
+    console.log(`Created listing: ${listing.title} (${item.public_id})`);
 
     // 3. If Auction, create Auction record
     if (listingType === 'AUCTION') {
       const now = new Date();
-      const endTime = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // +7 days
+      // auction_end_offset_days defaults to 7 if not specified
+      const offsetDays = item.auction_end_offset_days || 7;
+      // add [listing_id % 24] hours to ensure unique end times
+      const hoursOffset = listing.id % 24;
+      
+      const endTime = new Date(now.getTime() + (offsetDays * 24 * 60 * 60 * 1000) + (hoursOffset * 60 * 60 * 1000));
       
       await prisma.auctions.create({
         data: {
           listing_id: listing.id,
           seller_id: user.id,
           start_bid: price,
-          current_bid: product.currentBid || price,
+          current_bid: item.current_bid || price,
           start_time: now,
           end_time: endTime,
           status: 'active',
-          total_bids: product.bidCount || 0,
+          total_bids: Math.floor(Math.random() * 10) + 1, // dummy bid count
         },
       });
-      console.log(`Created auction for: ${listing.title}`);
+      console.log(`Created auction for: ${listing.title} ending at ${endTime.toISOString()}`);
     }
   }
 

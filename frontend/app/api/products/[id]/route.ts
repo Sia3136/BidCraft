@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { redis } from '@/lib/redis';
+import { cacheGet, cacheSet } from '@/lib/redis';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -11,9 +11,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     let listingId = !isNaN(numericId) ? numericId : null;
 
     try {
-      const cached = await redis.get(cacheKey);
+      const cached = await cacheGet(cacheKey);
       if (cached) {
-        return NextResponse.json(JSON.parse(cached), {
+        return NextResponse.json(typeof cached === 'string' ? JSON.parse(cached) : cached, {
           headers: {
             'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
           }
@@ -70,7 +70,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     };
 
     try {
-      await redis.set(cacheKey, JSON.stringify(product), 'EX', 300);
+      await cacheSet(cacheKey, product, 300);
     } catch (e) {
       console.warn('Redis cache write error:', e);
     }

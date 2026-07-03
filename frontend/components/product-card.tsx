@@ -54,6 +54,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             const img = event.target as HTMLImageElement;
             img.classList.remove('bg-[var(--color-cream-deep)]');
           }}
+          onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
         />
         
         {/* Top Left Badge */}
