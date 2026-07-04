@@ -1,5 +1,6 @@
 import { prisma } from './prisma';
 import { redis, cacheGet, cacheSet } from './redis';
+import { exploreProducts } from './exploreProducts';
 
 export interface Product {
   id: string;
@@ -175,6 +176,10 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
   } catch (e) {
     console.warn('Redis cache read error:', e);
   }
+
+  // Check exploreProducts first for hardcoded listings
+  const hardcodedProduct = exploreProducts.find(p => p.id === idOrSlug || p.title.toLowerCase().replace(/ /g, '-') === idOrSlug);
+  if (hardcodedProduct) return hardcodedProduct;
 
   let listing;
   const numericId = parseInt(idOrSlug, 10);

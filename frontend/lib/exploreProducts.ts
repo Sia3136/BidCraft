@@ -1,3 +1,5 @@
+import { lifestyleProducts } from "./lifestyleProducts";
+
 export interface Product {
   id: string;
   title: string;
@@ -12,6 +14,13 @@ export interface Product {
   offersAllowed: boolean;
   bidCount?: number;
   currentBid?: number;
+  creatorRating?: number;
+  creatorReviewCount?: number;
+  creatorBadges?: string[];
+  minimumOfferPercent?: number;
+  images?: string[];
+  specifications?: Record<string, string>;
+  auctionEndsAt?: string;
 }
 
 export const exploreProducts: Product[] = [
@@ -636,5 +645,6 @@ export const exploreProducts: Product[] = [
     "description": "Terracotta Figurine\\nOriginal Sculptures piece on high-quality material. Dimensions: 24x36 inches. Excellent condition.\\nShips from Delhi, India.\\nRecommended for gallery display or living room focal points.",
     "verified": false,
     "offersAllowed": true
-  }
+  },
+  ...lifestyleProducts
 ];

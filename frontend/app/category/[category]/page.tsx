@@ -12,7 +12,7 @@ const megaMenuData: Record<string, string[]> = {
   'Handmade & Crafts': ['Jewellery', 'Pottery & Ceramics', 'Textiles', 'Home Decor'],
   'Collectibles': ['Vintage & Antiques', 'Stamps & Coins', 'Memorabilia'],
   'Gaming & Hobby': ['Board Games', 'TTRPG', 'Miniatures'],
-  'Lifestyle & Gifts': ['Home Decor', 'Apparel'],
+  'Lifestyle & Gifts': ['Home Decor', 'Jewellery & Accessories', 'Miniatures', 'Stationery'],
 };
 
 export default async function CategoryPage({
@@ -40,11 +40,13 @@ export default async function CategoryPage({
 
   const subcategories = megaMenuData[dataKey];
 
+  const slugify = (s: string) => s.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+
   const allProducts = await getProducts();
   const filtered = allProducts.filter((p) => {
     // In our DB, dbProducts maps DB category to subcategory, and sets category to 'Art'
     if (subcategory) {
-      return p.subcategory.toLowerCase().replace(/ /g, '-') === subcategory.toLowerCase();
+      return slugify(p.subcategory) === slugify(subcategory);
     }
     // If no subcategory is selected, show all items in this parent category
     return subcategories.some(sub => sub.toLowerCase() === p.subcategory.toLowerCase());

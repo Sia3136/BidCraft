@@ -16,8 +16,12 @@ export const CategoryFilters = React.memo(function CategoryFilters({
 }: CategoryFiltersProps) {
   const router = useRouter();
 
+  function slugify(s: string) {
+    return s.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+  }
+
   function handleSubcategoryClick(sub: string) {
-    const slug = sub.toLowerCase().replace(/ /g, '-');
+    const slug = slugify(sub);
     if (activeSubcategory === slug) {
       router.push(`/category/${categorySlug}`);
     } else {
@@ -45,7 +49,7 @@ export const CategoryFilters = React.memo(function CategoryFilters({
         )}
         <ul className="list-none p-0 m-0 space-y-1">
           {subcategories.map((sub) => {
-            const slug = sub.toLowerCase().replace(/ /g, '-');
+            const slug = slugify(sub);
             const isActive = activeSubcategory === slug;
             return (
               <li key={sub}>
