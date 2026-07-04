@@ -4,14 +4,15 @@ import { SkeletonGrid } from '@/components/skeleton-grid';
 import { getProducts } from '@/lib/dbProducts';
 import { ProductCard } from '@/components/product-card';
 import { CategoryFilters } from '@/components/category-filters';
+import { slugify } from '@/lib/slugify';
 
 export const revalidate = 3600;
 
 const megaMenuData: Record<string, string[]> = {
-  'Art': ['Paintings', 'Prints', 'Digital Art'],
-  'Handmade & Crafts': ['Jewellery', 'Pottery & Ceramics', 'Textiles', 'Home Decor'],
-  'Collectibles': ['Vintage & Antiques', 'Stamps & Coins', 'Memorabilia'],
-  'Gaming & Hobby': ['Board Games', 'TTRPG', 'Miniatures'],
+  'Art': ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'],
+  'Handmade & Crafts': ['Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'Candles & Soaps', 'Paper Crafts'],
+  'Collectibles': ['Action Figures', 'Trading Cards', 'Funko Pops', 'Hot Wheels', 'Rare Collectibles'],
+  'Gaming & Hobby': ['Board Games', 'Anime Merchandise', 'Cosplay Props', 'Puzzle Collections'],
   'Lifestyle & Gifts': ['Home Decor', 'Jewellery & Accessories', 'Miniatures', 'Stationery'],
 };
 
@@ -27,7 +28,15 @@ export default async function CategoryPage({
 
   if (!category) return notFound();
 
-  const categoryName = category
+  const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+    'art': 'Art',
+    'handmade-crafts': 'Handmade & Crafts',
+    'collectibles': 'Collectibles',
+    'gaming-hobby': 'Gaming & Hobby',
+    'lifestyle-gifts': 'Lifestyle & Gifts',
+  };
+
+  const categoryName = CATEGORY_DISPLAY_NAMES[category.toLowerCase()] || category
     .split('-')
     .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
@@ -39,8 +48,6 @@ export default async function CategoryPage({
   if (!dataKey) return notFound();
 
   const subcategories = megaMenuData[dataKey];
-
-  const slugify = (s: string) => s.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
 
   const allProducts = await getProducts();
   const filtered = allProducts.filter((p) => {

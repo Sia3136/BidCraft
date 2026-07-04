@@ -11,11 +11,11 @@ import { CloudinaryImage } from '@/components/CloudinaryImage'
 import Image from 'next/image'
 
 const categories = [
-  { name: 'Art', slug: 'art' },
-  { name: 'Handmade & Crafts', slug: 'handmade-crafts' },
-  { name: 'Collectibles', slug: 'collectibles' },
-  { name: 'Gaming & Hobby', slug: 'gaming-hobby' },
-  { name: 'Lifestyle & Gifts', slug: 'lifestyle-gifts' }
+  { name: 'Art', slug: 'art', subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'] },
+  { name: 'Handmade & Crafts', slug: 'handmade-crafts', subcategories: ['Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'Candles & Soaps', 'Paper Crafts'] },
+  { name: 'Collectibles', slug: 'collectibles', subcategories: ['Action Figures', 'Trading Cards', 'Funko Pops', 'Hot Wheels', 'Rare Collectibles'] },
+  { name: 'Gaming & Hobby', slug: 'gaming-hobby', subcategories: ['Board Games', 'Anime Merchandise', 'Cosplay Props', 'Puzzle Collections'] },
+  { name: 'Lifestyle & Gifts', slug: 'lifestyle-gifts', subcategories: ['Home Decor', 'Jewellery & Accessories', 'Miniatures', 'Stationery'] }
 ]
 
 export const Navbar = React.memo(function Navbar() {
@@ -327,13 +327,22 @@ export const Navbar = React.memo(function Navbar() {
               
               {/* Categories */}
               {categories.map((category) => (
-                <Link 
-                  key={category.slug} 
-                  href={`/explore?category=${category.slug}`}
-                  className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass)}
-                >
-                  {category.name}
-                </Link>
+                <div key={category.slug} className="relative h-full flex items-center">
+                  <button 
+                    onClick={() => {
+                      if (openDropdown === category.slug) {
+                        setOpenDropdown(null);
+                        router.push(`/explore?category=${category.slug}`);
+                      } else {
+                        setOpenDropdown(category.slug);
+                        router.push(`/explore?category=${category.slug}`);
+                      }
+                    }}
+                    className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
+                  >
+                    {category.name}
+                  </button>
+                </div>
               ))}
 
               <div className="h-[16px] w-[1px] bg-[var(--color-border-subtle)]" />
@@ -344,12 +353,12 @@ export const Navbar = React.memo(function Navbar() {
             </div>
 
             {/* Search Bar (Row 2 Desktop) */}
-            <div className="flex items-center lg:w-[200px] xl:w-[260px] h-[36px] bg-[var(--color-cream-deep)] border border-[var(--color-border-subtle)] rounded-[var(--radius-pill)] px-3 transition-all duration-fast focus-within:border-[var(--color-terracotta-600)] focus-within:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] shrink-0">
+            <div className="flex items-center lg:w-[200px] xl:w-[260px] h-[36px] bg-[var(--color-cream-deep)] border border-[var(--color-border-subtle)] rounded-[var(--radius-pill)] px-3 transition-all duration-fast focus-within:border-[var(--color-terracotta-600)] focus-within:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] shrink-0 mr-[48px]">
               <Search className="w-4 h-4 text-[var(--color-ink-500)] shrink-0" strokeWidth={1.5} />
               <input 
                 type="text"
                 placeholder="Search..."
-                className="w-full bg-transparent border-none outline-none ml-2 text-body-md text-[var(--color-ink-900)] placeholder:text-[var(--color-ink-500)]"
+                className="w-full bg-transparent border-none outline-none text-body-sm text-[var(--color-ink-900)] placeholder:text-[var(--color-ink-500)] ml-2"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -361,6 +370,42 @@ export const Navbar = React.memo(function Navbar() {
               />
             </div>
           </div>
+
+          {/* Horizontal Subcategory Panel */}
+          <AnimatePresence>
+            {openDropdown && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
+              >
+                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-3 flex items-center gap-6 overflow-x-auto hide-scrollbar pl-[48px]">
+                  <Link 
+                    href={`/explore?category=${openDropdown}`}
+                    onClick={() => setOpenDropdown(null)}
+                    className="text-body-sm font-bold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors whitespace-nowrap shrink-0"
+                  >
+                    All {categories.find(c => c.slug === openDropdown)?.name}
+                  </Link>
+                  <div className="h-4 w-px bg-[var(--color-border-subtle)] shrink-0" />
+                  {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
+                    const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+                    return (
+                      <Link 
+                        key={sub}
+                        href={`/explore?category=${openDropdown}&subcategory=${subSlug}`}
+                        onClick={() => setOpenDropdown(null)}
+                        className="text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors whitespace-nowrap shrink-0"
+                      >
+                        {sub}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </header>
       

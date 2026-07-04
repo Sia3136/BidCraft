@@ -1,6 +1,7 @@
 import { prisma } from './prisma';
 import { redis, cacheGet, cacheSet } from './redis';
 import { exploreProducts } from './exploreProducts';
+import { slugify } from './slugify';
 
 export interface Product {
   id: string;
@@ -97,7 +98,27 @@ export async function getProducts(options?: { category?: string; subcategory?: s
     skip: (page - 1) * 20
   });
 
-  const results = listings.map(mapListingToProduct);
+  const dbResults = listings.map(mapListingToProduct);
+  
+  // Merge with hardcoded exploreProducts
+  let allResults = [...exploreProducts, ...dbResults];
+  
+  // Apply filters to merged results (since exploreProducts weren't filtered by Prisma)
+  if (options?.category && options.category !== 'all') {
+    allResults = allResults.filter(p => slugify(p.category) === options.category!.toLowerCase() || p.category === options.category);
+  }
+  if (options?.subcategory && options.subcategory !== 'all') {
+    allResults = allResults.filter(p => slugify(p.subcategory) === options.subcategory!.toLowerCase() || p.subcategory === options.subcategory);
+  }
+  if (options?.search) {
+    const q = options.search.toLowerCase();
+    allResults = allResults.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+  }
+
+  // Deduplicate by ID
+  const uniqueResultsMap = new Map();
+  allResults.forEach(p => uniqueResultsMap.set(p.id, p));
+  const results = Array.from(uniqueResultsMap.values());
   
   try {
     await cacheSet(cacheKey, results, ttl);

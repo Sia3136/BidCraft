@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { slugify } from '@/lib/slugify';
 
 interface CategoryFiltersProps {
   subcategories: string[];
@@ -15,10 +16,6 @@ export const CategoryFilters = React.memo(function CategoryFilters({
   categorySlug,
 }: CategoryFiltersProps) {
   const router = useRouter();
-
-  function slugify(s: string) {
-    return s.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
-  }
 
   function handleSubcategoryClick(sub: string) {
     const slug = slugify(sub);

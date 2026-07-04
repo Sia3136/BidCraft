@@ -3,7 +3,7 @@ import { Product } from "./exploreProducts";
 export const lifestyleProducts: Product[] = [
   {
     "id": "ls-hd-0",
-    "title": "Handwoven Macrame Wall Hanging",
+    "title": "Soft Floral Cushion",
     "creator": "Aarav Crafts",
     "creatorRating": 4.1,
     "creatorReviewCount": 20,
@@ -27,7 +27,7 @@ export const lifestyleProducts: Product[] = [
       "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
       "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp"
     ],
-    "description": "This exquisite Handwoven Macrame Wall Hanging brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Soft flower-shaped pillow/cushion. Extremely plush, filled with premium materials, and perfect for adding a cozy touch to a couch or bed. Available in lovely, complementary pastel tones.",
     "specifications": {
       "Dimensions": "30 cm x 20 cm",
       "Material": "Mixed",
@@ -38,46 +38,8 @@ export const lifestyleProducts: Product[] = [
     }
   },
   {
-    "id": "ls-hd-1",
-    "title": "Vintage Brass Table Lamp",
-    "creator": "Diya Designs",
-    "creatorRating": 4.199999999999999,
-    "creatorReviewCount": 45,
-    "creatorBadges": [
-      "Verified Creator"
-    ],
-    "verified": false,
-    "category": "Lifestyle & Gifts",
-    "subcategory": "Home Decor",
-    "price": 3500,
-    "buyingMethod": "Auction",
-    "offersAllowed": false,
-    "minimumOfferPercent": 70,
-    "image": "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-    "images": [
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg"
-    ],
-    "description": "This exquisite Vintage Brass Table Lamp brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
-    "specifications": {
-      "Dimensions": "30 cm x 20 cm",
-      "Material": "Mixed",
-      "Finish": "Matte",
-      "Weight": "500g",
-      "Care Instructions": "Wipe with dry cloth",
-      "Ships From": "Jaipur"
-    },
-    "currentBid": 3600,
-    "bidCount": 4,
-    "auctionEndsAt": "2026-07-07T18:12:14.239Z"
-  },
-  {
     "id": "ls-hd-2",
-    "title": "Hand-painted Ceramic Vase",
+    "title": "Chess Set Wall Storage",
     "creator": "Meera Arts",
     "creatorRating": 4.3,
     "creatorReviewCount": 70,
@@ -100,7 +62,7 @@ export const lifestyleProducts: Product[] = [
       "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
       "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg"
     ],
-    "description": "This exquisite Hand-painted Ceramic Vase brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Chess set repurposed as a hanging wall storage piece. A highly creative, artistic, and functional way to organize small items. Perfect for board game lovers looking for unique decor.",
     "specifications": {
       "Dimensions": "30 cm x 20 cm",
       "Material": "Mixed",
@@ -112,7 +74,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-hd-3",
-    "title": "Boho Cushion Cover Set",
+    "title": "Glass Bottle with Glasswork",
     "creator": "Kavya Studios",
     "creatorRating": 4.3999999999999995,
     "creatorReviewCount": 95,
@@ -136,7 +98,7 @@ export const lifestyleProducts: Product[] = [
       "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
       "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp"
     ],
-    "description": "This exquisite Boho Cushion Cover Set brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Beautiful decorated glass bottle with coloured glass work. The intricate, colorful details catch and reflect the light beautifully. A stunning decorative accent for shelves or windowsills.",
     "specifications": {
       "Dimensions": "30 cm x 20 cm",
       "Material": "Mixed",
@@ -148,7 +110,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-hd-4",
-    "title": "Wooden Minimalist Clock",
+    "title": "Sculptural Home Décor Piece",
     "creator": "Rohan Creations",
     "creatorRating": 4.5,
     "creatorReviewCount": 120,
@@ -171,7 +133,7 @@ export const lifestyleProducts: Product[] = [
       "/images/c3f27a4077f7d8474444c2c129199224.webp",
       "/images/c3f27a4077f7d8474444c2c129199224.webp"
     ],
-    "description": "This exquisite Wooden Minimalist Clock brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Decorative sculpture piece for home. Its modern, fluid design brings a sophisticated and artistic touch to any surface. Carefully crafted from high-quality materials for longevity.",
     "specifications": {
       "Dimensions": "30 cm x 20 cm",
       "Material": "Mixed",
@@ -186,7 +148,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-hd-5",
-    "title": "Terracotta Decorative Bowl",
+    "title": "Custom Sword Wall Hanging",
     "creator": "Sneha Handmades",
     "creatorRating": 4.6,
     "creatorReviewCount": 145,
@@ -209,7 +171,7 @@ export const lifestyleProducts: Product[] = [
       "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
       "/images/e2174f2cb5f931e40766c959c4adc809.jpg"
     ],
-    "description": "This exquisite Terracotta Decorative Bowl brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Decorative sword piece designed for wall display. Intricately detailed and painted to look like an authentic historical artifact. A bold and impressive statement piece for any room.",
     "specifications": {
       "Dimensions": "30 cm x 20 cm",
       "Material": "Mixed",
@@ -221,7 +183,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-ja-0",
-    "title": "Silver Filigree Earrings",
+    "title": "Gold Arm Cuff",
     "creator": "Neha Curations",
     "creatorRating": 4.699999999999999,
     "creatorReviewCount": 170,
@@ -245,7 +207,7 @@ export const lifestyleProducts: Product[] = [
       "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
       "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg"
     ],
-    "description": "This exquisite Silver Filigree Earrings brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Bold gold arm cuff. Its striking, geometric design effortlessly adds a touch of glamour to any outfit. Hand-finished for a premium shine that resists tarnishing.",
     "specifications": {
       "Metal/Material": "Silver/Brass",
       "Stone/Embellishment": "None",
@@ -258,7 +220,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-ja-1",
-    "title": "Oxidized Tribal Necklace",
+    "title": "Crochet Case Cover",
     "creator": "Aditya Collections",
     "creatorRating": 4.8,
     "creatorReviewCount": 195,
@@ -267,7 +229,7 @@ export const lifestyleProducts: Product[] = [
     ],
     "verified": false,
     "category": "Lifestyle & Gifts",
-    "subcategory": "Jewellery & Accessories",
+    "subcategory": "Stationery",
     "price": 1100,
     "buyingMethod": "Auction",
     "offersAllowed": false,
@@ -281,7 +243,7 @@ export const lifestyleProducts: Product[] = [
       "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
       "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg"
     ],
-    "description": "This exquisite Oxidized Tribal Necklace brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Crochet phone/item case cover in green and cream. Carefully handcrafted with soft yarn to provide a snug fit and charming look. Offers gentle protection from scratches for your belongings.",
     "specifications": {
       "Metal/Material": "Silver/Brass",
       "Stone/Embellishment": "None",
@@ -370,7 +332,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-ja-4",
-    "title": "Enamel Floral Pendant",
+    "title": "Shell Jewellery Stand",
     "creator": "Aarav Crafts",
     "creatorRating": 4.1,
     "creatorReviewCount": 270,
@@ -379,7 +341,7 @@ export const lifestyleProducts: Product[] = [
     ],
     "verified": false,
     "category": "Lifestyle & Gifts",
-    "subcategory": "Jewellery & Accessories",
+    "subcategory": "Home Decor",
     "price": 750,
     "buyingMethod": "Buy Now",
     "offersAllowed": false,
@@ -393,7 +355,7 @@ export const lifestyleProducts: Product[] = [
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg"
     ],
-    "description": "This exquisite Enamel Floral Pendant brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Custom shell-themed jewellery display stand. Keep your favorite pieces organized in style with this ocean-inspired design. A beautiful and practical addition to a vanity or dresser.",
     "specifications": {
       "Metal/Material": "Silver/Brass",
       "Stone/Embellishment": "None",
@@ -406,7 +368,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-ja-5",
-    "title": "Kundan Inspired Choker",
+    "title": "Set of 3 Cute Rings",
     "creator": "Diya Designs",
     "creatorRating": 4.199999999999999,
     "creatorReviewCount": 295,
@@ -429,7 +391,7 @@ export const lifestyleProducts: Product[] = [
       "/images/629babcd420c53e76b891e70f45966ee.jpg",
       "/images/629babcd420c53e76b891e70f45966ee.jpg"
     ],
-    "description": "This exquisite Kundan Inspired Choker brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Set of 3 dainty rings. Delicate and beautifully detailed with minimalist designs perfect for everyday wear. Mix, match, and stack them to perfectly suit your personal style.",
     "specifications": {
       "Metal/Material": "Silver/Brass",
       "Stone/Embellishment": "None",
@@ -445,7 +407,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-mn-0",
-    "title": "Miniature Wooden Chai Stall",
+    "title": "Miniature Pottery Set with Florals",
     "creator": "Meera Arts",
     "creatorRating": 4.3,
     "creatorReviewCount": 320,
@@ -469,7 +431,7 @@ export const lifestyleProducts: Product[] = [
       "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
       "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg"
     ],
-    "description": "This exquisite Miniature Wooden Chai Stall brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Miniature pottery pieces with small flowers. Perfectly scaled and delicately crafted for passionate collectors. A charming and intricate addition to any existing miniature display.",
     "specifications": {
       "Scale": "1:12",
       "Dimensions": "5 cm x 5 cm",
@@ -484,7 +446,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-mn-1",
-    "title": "Clay Miniature Pots Set",
+    "title": "Wooden Miniature House",
     "creator": "Kavya Studios",
     "creatorRating": 4.3999999999999995,
     "creatorReviewCount": 345,
@@ -507,7 +469,7 @@ export const lifestyleProducts: Product[] = [
       "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
       "/images/9780ce408b0eeacb2b478b53e49472f3.webp"
     ],
-    "description": "This exquisite Clay Miniature Pots Set brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Rare detailed wooden miniature house interior. Every tiny piece of furniture is crafted with remarkable, lifelike precision. A delightful and highly sought-after collectible for enthusiasts.",
     "specifications": {
       "Scale": "1:12",
       "Dimensions": "5 cm x 5 cm",
@@ -519,7 +481,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-mn-2",
-    "title": "Hand-painted Mini Auto Rickshaw",
+    "title": "Miniature Food Platter Magnet",
     "creator": "Rohan Creations",
     "creatorRating": 4.5,
     "creatorReviewCount": 370,
@@ -542,7 +504,7 @@ export const lifestyleProducts: Product[] = [
       "/images/f8e8c93f83911972060b57d5784893b9.jpg",
       "/images/f8e8c93f83911972060b57d5784893b9.jpg"
     ],
-    "description": "This exquisite Hand-painted Mini Auto Rickshaw brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Miniature food platter designed as a fridge magnet. Incredibly detailed and delightfully realistic, down to the smallest crumb. A fun, whimsical, and unique kitchen accessory.",
     "specifications": {
       "Scale": "1:12",
       "Dimensions": "5 cm x 5 cm",
@@ -554,7 +516,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-st-0",
-    "title": "Handbound Leather Journal",
+    "title": "Set of 25 Posca Markers",
     "creator": "Sneha Handmades",
     "creatorRating": 4.6,
     "creatorReviewCount": 395,
@@ -578,7 +540,7 @@ export const lifestyleProducts: Product[] = [
       "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
       "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg"
     ],
-    "description": "This exquisite Handbound Leather Journal brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Posca marker set, 25 colours. High-quality paint markers perfect for professional illustration, journaling, and crafting. Features a vibrant, opaque finish on almost any surface.",
     "specifications": {
       "Sheet Count / Pages": "100",
       "Paper Weight (gsm)": "120 gsm",
@@ -590,7 +552,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-st-1",
-    "title": "Block Printed Notebook",
+    "title": "Custom Pen, Paper & Sticky Notes Gift Set",
     "creator": "Neha Curations",
     "creatorRating": 4.699999999999999,
     "creatorReviewCount": 420,
@@ -613,7 +575,7 @@ export const lifestyleProducts: Product[] = [
       "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
       "/images/cd653367e75f8af84fb565e77b4fc97f.webp"
     ],
-    "description": "This exquisite Block Printed Notebook brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Curated stationery gift set. Includes high-quality textured paper, a custom ergonomic pen, and matching sticky notes. Perfect for the organized creative or as a thoughtful gift.",
     "specifications": {
       "Sheet Count / Pages": "100",
       "Paper Weight (gsm)": "120 gsm",
@@ -625,7 +587,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-st-2",
-    "title": "Handmade Cotton Paper Set",
+    "title": "Big Sticker Pack",
     "creator": "Aditya Collections",
     "creatorRating": 4.8,
     "creatorReviewCount": 445,
@@ -648,7 +610,7 @@ export const lifestyleProducts: Product[] = [
       "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
       "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp"
     ],
-    "description": "This exquisite Handmade Cotton Paper Set brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Large assorted sticker packet. A fun, diverse collection of artistic designs for customizing laptops, notebooks, and more. Highly durable, water-resistant, and easily adhesive.",
     "specifications": {
       "Sheet Count / Pages": "100",
       "Paper Weight (gsm)": "120 gsm",
@@ -663,7 +625,7 @@ export const lifestyleProducts: Product[] = [
   },
   {
     "id": "ls-st-3",
-    "title": "Brass Vintage Bookmark",
+    "title": "Blue Pen with Pink Bow",
     "creator": "Vanya Boutique",
     "creatorRating": 4.8999999999999995,
     "creatorReviewCount": 470,
@@ -687,7 +649,7 @@ export const lifestyleProducts: Product[] = [
       "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
       "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg"
     ],
-    "description": "This exquisite Brass Vintage Bookmark brings a touch of handcrafted elegance to your life. Carefully sourced and produced with the highest attention to detail, it stands out as a unique lifestyle piece. The materials used are sustainable and locally procured, ensuring a lower carbon footprint. Whether as a gift or a personal treat, its distinct character makes it truly special. We recommend gentle care to maintain its pristine condition for years to come.",
+    "description": "Blue pen in pink with decorative pink bow. A cute, quirky, and stylish writing instrument for your desk. Writes smoothly with rich blue ink for everyday note-taking.",
     "specifications": {
       "Sheet Count / Pages": "100",
       "Paper Weight (gsm)": "120 gsm",

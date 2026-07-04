@@ -8,6 +8,7 @@ import { Product } from '@/lib/dbProducts'
 import { ProductCard } from '@/components/product-card'
 import { SkeletonGrid } from '@/components/skeleton-grid'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { slugify } from '@/lib/slugify'
 
 const CATEGORIES = ['Art', 'Handmade & Crafts', 'Collectibles', 'Gaming & Hobby', 'Lifestyle & Gifts']
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
@@ -90,7 +91,7 @@ const SidebarContent = React.memo(function SidebarContent({
       {/* Price Range */}
       <div>
         <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Price Range</h3>
-        <p className="text-body-md text-[var(--color-ink-700)] mb-3">₹{priceMin} — ₹{priceMax}</p>
+        <p className="text-body-md text-[var(--color-ink-700)] mb-3">₹{priceMin} — ₹{priceMax}{priceMax === 5000 ? '+' : ''}</p>
         <div className="relative h-6 flex items-center">
           <div className="absolute w-full h-1 bg-[var(--color-cream-deep)] rounded-full"></div>
           <div
@@ -147,6 +148,14 @@ const SidebarContent = React.memo(function SidebarContent({
   )
 })
 
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  'art': 'Art',
+  'handmade-crafts': 'Handmade & Crafts',
+  'collectibles': 'Collectibles',
+  'gaming-hobby': 'Gaming & Hobby',
+  'lifestyle-gifts': 'Lifestyle & Gifts',
+};
+
 function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -160,18 +169,8 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   const errorQuery = searchParams.get('error')
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
-  // Format category slugs back to titles for the state if they come from URL
-  const formatCategory = (slug: string) => {
-    if (slug === 'art') return 'Art'
-    if (slug === 'handmade-crafts') return 'Handmade & Crafts'
-    if (slug === 'collectibles') return 'Collectibles'
-    if (slug === 'gaming-hobby') return 'Gaming & Hobby'
-    if (slug === 'lifestyle-gifts') return 'Lifestyle & Gifts'
-    return slug
-  }
-
   // Filters State
-  const initialCategory = categoryQuery ? [formatCategory(categoryQuery)] : []
+  const initialCategory = categoryQuery && CATEGORY_DISPLAY_NAMES[categoryQuery] ? [CATEGORY_DISPLAY_NAMES[categoryQuery]] : []
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategory)
   const [selectedMethods, setSelectedMethods] = useState<string[]>([])
   const [priceMin, setPriceMin] = useState<number>(0)
@@ -219,34 +218,34 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
           return false
         }
       }
-      if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) return false
+      if (selectedCategories.length > 0) {
+        if (!selectedCategories.some(cat => slugify(p.category) === slugify(cat))) return false;
+      }
       
       // If a subcategory is provided via URL and matches the selected category, filter by it
-      if (subcategoryQuery && selectedCategories.length === 1 && selectedCategories[0] === formatCategory(categoryQuery || '')) {
-        // Here we just do a loose include match on title/description since we don't have subcategory in exploreProducts properly sometimes
-        const subq = subcategoryQuery.toLowerCase().replace(/-/g, ' ');
-        const text = (p.title + ' ' + (p.description || '')).toLowerCase();
-        if (!text.includes(subq) && (p.subcategory || '').toLowerCase() !== subq) {
+      if (subcategoryQuery && selectedCategories.length === 1 && slugify(selectedCategories[0]) === categoryQuery) {
+        if (slugify(p.subcategory || '') !== subcategoryQuery) {
           return false;
         }
       }
       
       if (selectedMethods.length > 0 && !selectedMethods.includes(p.buyingMethod)) return false
-      if (p.price < priceMin || p.price > priceMax) return false
+      if (p.price < priceMin) return false
+      if (priceMax < 5000 && p.price > priceMax) return false
       if (selectedRating > 0 && p.rating < selectedRating) return false
 
       if (collectionQuery) {
         // Just mock collection logic: filter based on some text matching
         const q = collectionQuery.toLowerCase().replace(/-/g, ' ');
         const text = (p.title + ' ' + (p.description || '') + ' ' + p.category).toLowerCase();
-        if (!text.includes(q) && p.category.toLowerCase() !== q) return false;
+        if (!text.includes(q) && slugify(p.category) !== slugify(q)) return false;
       }
 
       if (giftQuery) {
         // Mock gift logic: e.g. for-her might match certain subcategories or titles
         const q = giftQuery.toLowerCase().replace(/-/g, ' ');
         const text = (p.title + ' ' + (p.description || '') + ' ' + p.category).toLowerCase();
-        if (!text.includes(q) && p.category.toLowerCase() !== 'lifestyle & gifts') return false;
+        if (!text.includes(q) && slugify(p.category) !== 'lifestyle-gifts') return false;
       }
 
       return true
@@ -364,14 +363,32 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
               </div>
 
               {/* Active Filters Chips */}
-              {activeFiltersCount > 0 && (
+              {(activeFiltersCount > 0 || subcategoryQuery) && (
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {selectedCategories.map(cat => (
                     <div key={cat} className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
                       <span className="text-body-md font-medium">{cat}</span>
-                      <button onClick={() => toggleCategory(cat)} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => {
+                        toggleCategory(cat);
+                        if (categoryQuery && slugify(cat) === categoryQuery) {
+                          const params = new URLSearchParams(searchParams.toString());
+                          params.delete('category');
+                          params.delete('subcategory');
+                          router.push(`/explore?${params.toString()}`);
+                        }
+                      }} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   ))}
+                  {subcategoryQuery && (
+                    <div className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
+                      <span className="text-body-md font-medium capitalize">{subcategoryQuery.replace(/-/g, ' ')}</span>
+                      <button onClick={() => {
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.delete('subcategory');
+                        router.push(`/explore?${params.toString()}`);
+                      }} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                  )}
                   {selectedMethods.map(method => (
                     <div key={method} className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
                       <span className="text-body-md font-medium">{method}</span>
@@ -380,7 +397,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
                   ))}
                   {(priceMin > 0 || priceMax < 5000) && (
                     <div className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
-                      <span className="text-body-md font-medium">₹{priceMin} - ₹{priceMax}</span>
+                      <span className="text-body-md font-medium">₹{priceMin} - ₹{priceMax}{priceMax === 5000 ? '+' : ''}</span>
                       <button onClick={() => { setPriceMin(0); setPriceMax(5000); }} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   )}
@@ -443,7 +460,7 @@ function ClientExploreInner({ allProducts = [] }: { allProducts?: Product[] }) {
         {/* Page Header */}
         <section className="w-full h-[280px] bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] flex flex-col items-center justify-center text-center px-[var(--space-5)]">
           <h1 className="text-display-xl font-display text-[var(--color-ink-900)] mb-[var(--space-2)] capitalize">
-            {searchParams.get('subcategory') ? searchParams.get('subcategory')?.replace(/-/g, ' ') : (searchParams.get('category') ? searchParams.get('category')?.replace(/-/g, ' ') : (searchParams.get('collection') ? searchParams.get('collection')?.replace(/-/g, ' ') : (searchParams.get('gift') ? searchParams.get('gift')?.replace(/-/g, ' ') : 'Explore All')))}
+            {searchParams.get('subcategory') ? searchParams.get('subcategory')?.replace(/-/g, ' ') : (searchParams.get('category') ? (CATEGORY_DISPLAY_NAMES[searchParams.get('category') as string] || searchParams.get('category')?.replace(/-/g, ' ')) : (searchParams.get('collection') ? searchParams.get('collection')?.replace(/-/g, ' ') : (searchParams.get('gift') ? searchParams.get('gift')?.replace(/-/g, ' ') : 'Explore All')))}
           </h1>
           <p className="text-body-lg text-[var(--color-ink-700)] max-w-[600px]">
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
