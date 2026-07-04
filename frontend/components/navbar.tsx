@@ -332,10 +332,8 @@ export const Navbar = React.memo(function Navbar() {
                     onClick={() => {
                       if (openDropdown === category.slug) {
                         setOpenDropdown(null);
-                        router.push(`/explore?category=${category.slug}`);
                       } else {
                         setOpenDropdown(category.slug);
-                        router.push(`/explore?category=${category.slug}`);
                       }
                     }}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
@@ -380,28 +378,29 @@ export const Navbar = React.memo(function Navbar() {
                 exit={{ opacity: 0, height: 0 }}
                 className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
               >
-                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-3 flex items-center gap-6 overflow-x-auto hide-scrollbar pl-[48px]">
+                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
                   <Link 
                     href={`/explore?category=${openDropdown}`}
                     onClick={() => setOpenDropdown(null)}
-                    className="text-body-sm font-bold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors whitespace-nowrap shrink-0"
+                    className="text-body-md font-bold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors mb-4 block"
                   >
-                    All {categories.find(c => c.slug === openDropdown)?.name}
+                    All {categories.find(c => c.slug === openDropdown)?.name} →
                   </Link>
-                  <div className="h-4 w-px bg-[var(--color-border-subtle)] shrink-0" />
-                  {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
-                    const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
-                    return (
-                      <Link 
-                        key={sub}
-                        href={`/explore?category=${openDropdown}&subcategory=${subSlug}`}
-                        onClick={() => setOpenDropdown(null)}
-                        className="text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors whitespace-nowrap shrink-0"
-                      >
-                        {sub}
-                      </Link>
-                    )
-                  })}
+                  <div className="grid grid-cols-3 gap-y-4 gap-x-8">
+                    {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
+                      const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+                      return (
+                        <Link 
+                          key={sub}
+                          href={`/explore?category=${openDropdown}&subcategory=${subSlug}`}
+                          onClick={() => setOpenDropdown(null)}
+                          className="text-body-md font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors"
+                        >
+                          {sub}
+                        </Link>
+                      )
+                    })}
+                  </div>
                 </div>
               </motion.div>
             )}

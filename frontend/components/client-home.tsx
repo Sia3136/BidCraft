@@ -29,30 +29,45 @@ const revealVariant = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
 }
 
-const LiveTimer = ({ endTime }: { endTime?: string }) => {
+const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent: boolean) => void }) => {
   const [timeLeft, setTimeLeft] = useState('')
+  const [isUrgent, setIsUrgent] = useState(false)
 
   useEffect(() => {
     if (!endTime) {
       setTimeLeft('Live')
+      setIsUrgent(false)
+      onUrgent?.(false)
       return
     }
     const update = () => {
       const distance = new Date(endTime).getTime() - new Date().getTime()
       if (distance < 0) {
         setTimeLeft('Ended')
+        setIsUrgent(false)
+        onUrgent?.(false)
         return
       }
       const days = Math.floor(distance / (1000 * 60 * 60 * 24))
       const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+      
+      const urgent = distance < (1000 * 60 * 60 * 24)
+      if (isUrgent !== urgent) {
+        setIsUrgent(urgent)
+        onUrgent?.(urgent)
+      }
+
+      if (urgent) {
+        setTimeLeft(`${hours}h ${minutes}m`)
+      } else {
+        setTimeLeft(`${days}d ${hours}h`)
+      }
     }
     update()
     const interval = setInterval(update, 1000)
     return () => clearInterval(interval)
-  }, [endTime])
+  }, [endTime, isUrgent, onUrgent])
 
   return <span>{timeLeft}</span>
 }
@@ -202,8 +217,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                         className="transition-transform duration-slow" 
                         loading="lazy"
                       />
-                      <div className="absolute top-3 right-3 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold flex items-center gap-1.5 bg-[var(--color-urgent-600)] text-white z-10">
-                        <span className="text-white">⏱</span> <LiveTimer endTime={auction.auctionEndTime} />
+                      <div className={cn("absolute top-3 right-3 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold flex items-center gap-1.5 z-10 transition-colors", 
+                        !auction.auctionEndsAt || new Date(auction.auctionEndsAt).getTime() - Date.now() >= 24 * 60 * 60 * 1000 ? "bg-[rgba(43,42,40,0.85)] text-white" : "bg-[var(--color-urgent-600)] text-white animate-pulse"
+                      )}>
+                        <span>⏱</span> <LiveTimer endTime={auction.auctionEndsAt} />
                       </div>
                     </div>
                     <div className="px-1 relative z-10">
@@ -212,12 +229,28 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                         <span className="text-caption text-[var(--color-ink-500)]">{auction.creator}</span>
                       </div>
                       <h3 className="text-heading-sm text-[var(--color-ink-900)] line-clamp-1 mb-4">{auction.title}</h3>
-                      <div className="flex items-end justify-between pt-3 border-t border-[var(--color-border-subtle)]">
+                      <div className="flex items-end justify-between pt-3 border-t border-[var(--color-border-subtle)] relative z-30">
                         <div>
                           <p className="text-caption text-[var(--color-ink-500)] mb-0.5">Current Bid</p>
                           <p className="text-price text-[var(--color-ink-900)] animate-highlight-flash rounded px-1 -ml-1">₹{(auction.currentBid || auction.price).toLocaleString('en-IN')}</p>
                         </div>
-                        <p className="text-caption text-[var(--color-ink-500)]">{auction.bidCount} Bids</p>
+                        <div className="flex flex-col items-end gap-2">
+                          <p className="text-caption text-[var(--color-ink-500)]">{auction.bidCount} Bids</p>
+                          <button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (!user) {
+                                window.location.href = '/auth';
+                              } else {
+                                window.location.href = `/product/${auction.id}`;
+                              }
+                            }}
+                            className="bg-[var(--color-terracotta-600)] text-white text-caption font-bold px-4 py-1.5 rounded-[var(--radius-sm)] hover:bg-[var(--color-terracotta-700)] transition-colors"
+                          >
+                            Bid Now
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </motion.div>

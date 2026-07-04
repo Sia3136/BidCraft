@@ -631,5 +631,885 @@ export const exploreProducts: Product[] = [
     "verified": false,
     "offersAllowed": true
   },
+  {
+  "id": "hc-cs-0",
+  "title": "Natural Bathing Gift Set",
+  "creator": "Aditi Sharma",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 152,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "Verified Creator"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Candles & Soaps",
+  "price": 1299,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+  "images": [
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
+    "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg"
+  ],
+  "description": "This customised bathing set gift box includes a natural soap and a refreshing body wash. Each product is carefully handcrafted using 100% natural, skin-loving ingredients to nourish and rejuvenate your body. The elegant packaging makes it a perfect, ready-to-gift surprise for your loved ones on any occasion. What makes it truly special is the complete absence of harsh chemicals, ensuring a gentle and soothing bathing experience. For best results, keep the soap in a well-drained dish and use within six months of opening.",
+  "specifications": {
+    "Type": "Set",
+    "Scent/Fragrance": "Lavender & Chamomile",
+    "Dimensions": "10x8x4 inches",
+    "Weight": "500g",
+    "Ingredients/Materials": "Natural oils, Shea Butter, Essential Oils",
+    "Ships From": "Mumbai, India"
+  }
+},
+{
+  "id": "hc-cs-1",
+  "title": "Loofah Soap Bar",
+  "creator": "Vikram Singh",
+  "creatorRating": 4.5,
+  "creatorReviewCount": 89,
+  "creatorBadges": [
+    "Fast Shipper"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Candles & Soaps",
+  "price": 350,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+  "images": [
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
+    "/images/17f76ad92cbb557f64169f141176e7b1.jpg"
+  ],
+  "description": "Experience ultimate exfoliation with this unique soap featuring a built-in loofah. It is meticulously handmade to merge the cleansing power of natural soap with the scrubbing benefits of a natural loofah sponge. Ideal for everyday use, it helps buff away dead skin cells, leaving your skin soft and radiant. Its integrated design saves you the hassle of using a separate scrubber while showering. To prolong the life of this exfoliating bar, allow it to dry completely between uses.",
+  "specifications": {
+    "Type": "Soap",
+    "Scent/Fragrance": "Citrus Burst",
+    "Dimensions": "3x3x1 inches",
+    "Weight": "120g",
+    "Ingredients/Materials": "Glycerin, Natural Loofah, Citrus Essential Oil",
+    "Ships From": "Delhi, India"
+  }
+},
+{
+  "id": "hc-cs-2",
+  "title": "Handcrafted Red Pillar Candle",
+  "creator": "Meera Nair",
+  "creatorRating": 4.9,
+  "creatorReviewCount": 230,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "500+ Sales"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Candles & Soaps",
+  "price": 899,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-07T20:30:35.666Z",
+  "currentBid": 450,
+  "bidCount": 5,
+  "image": "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+  "images": [
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
+    "/images/7575cad0c34ec572e59b53061ab42d5d.webp"
+  ],
+  "description": "A rare and intricately detailed red pillar candle that serves as a stunning centerpiece for any room. Hand-poured using premium paraffin and soy wax blends, the candle showcases ornate traditional patterns carved into its surface. It casts a warm, inviting glow, creating an ambient atmosphere perfect for festive celebrations or romantic dinners. The exceptional craftsmanship ensures a long, clean burn with minimal smoke. Keep the wick trimmed to a quarter-inch and burn on a heat-resistant surface for maximum safety.",
+  "specifications": {
+    "Type": "Candle",
+    "Scent/Fragrance": "Sandalwood Rose",
+    "Dimensions": "6x3 inches",
+    "Weight": "400g",
+    "Burn Time": "45 Hours",
+    "Ingredients/Materials": "Soy Wax Blend, Cotton Wick",
+    "Ships From": "Jaipur, India"
+  }
+},
+{
+  "id": "hc-cs-3",
+  "title": "Rose Petal Natural Soap Set",
+  "creator": "Neha Kapoor",
+  "creatorRating": 4.7,
+  "creatorReviewCount": 312,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Candles & Soaps",
+  "price": 599,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+  "images": [
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
+    "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg"
+  ],
+  "description": "Delight your senses with this set of natural rose-flavoured soaps, adorned with real dried rose petals. These artisanal bars are crafted using the cold-process method, ensuring the retention of hydrating natural glycerin. The rich, floral aroma instantly uplifts your mood while the creamy lather gently cleanses and moisturizes the skin. Each soap is uniquely patterned, making it an excellent addition to your guest bathroom or personal spa routine. Store in a cool, dry place to maintain the vibrant scent and texture.",
+  "specifications": {
+    "Type": "Set",
+    "Scent/Fragrance": "Wild Rose",
+    "Dimensions": "3x2x1 inches (each)",
+    "Weight": "300g (Set)",
+    "Ingredients/Materials": "Olive Oil, Rose Essential Oil, Dried Petals",
+    "Ships From": "Bangalore, India"
+  }
+},
+{
+  "id": "hc-cs-4",
+  "title": "Birthday Celebration Candle",
+  "creator": "Rohit Verma",
+  "creatorRating": 4.4,
+  "creatorReviewCount": 45,
+  "creatorBadges": [
+    "Fast Shipper"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Candles & Soaps",
+  "price": 450,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+  "images": [
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp",
+    "/images/a344e75529581e9f43f2c00dc233dea4.webp"
+  ],
+  "description": "Make birthdays extra special with this beautifully designed birthday celebration candle. Hand-poured with eco-friendly soy wax, it features vibrant embedded sprinkles and a delightful cake-batter fragrance. The candle serves not only as a perfect festive decor piece but also as an aromatic treat for the celebration. The unique design is carefully crafted to mimic the joy and color of a real birthday cake. Always trim the wick before lighting and never leave a burning candle unattended.",
+  "specifications": {
+    "Type": "Candle",
+    "Scent/Fragrance": "Vanilla Cake",
+    "Dimensions": "4x3 inches",
+    "Weight": "250g",
+    "Burn Time": "30 Hours",
+    "Ingredients/Materials": "Soy Wax, Fragrance Oils, Wax Sprinkles",
+    "Ships From": "Pune, India"
+  }
+},
+{
+  "id": "hc-cp-0",
+  "title": "Hand-painted Traditional Vase",
+  "creator": "Sanjay Patel",
+  "creatorRating": 4.9,
+  "creatorReviewCount": 178,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "Trusted Seller"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 1800,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+  "images": [
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp",
+    "/images/5f2ab26c880e06709387b842cdd1feef.webp"
+  ],
+  "description": "This beautiful traditional hand-painted vase brings authentic cultural elegance into your modern living space. Skilfully thrown on a potter's wheel, the vase is adorned with intricate folk art motifs using vibrant, natural pigments. The protective glaze ensures longevity while highlighting the rich details of the brushwork. It acts as a stunning standalone decorative piece or a gorgeous holder for dried floral arrangements. To clean, simply wipe gently with a damp cloth; avoid harsh scrubbing to protect the paint.",
+  "specifications": {
+    "Type": "Vase",
+    "Dimensions": "12x6 inches",
+    "Weight": "1.2kg",
+    "Finish": "Glazed",
+    "Food Safe": "No",
+    "Care Instructions": "Wipe with damp cloth",
+    "Ships From": "Ahmedabad, India"
+  }
+},
+{
+  "id": "hc-cp-1",
+  "title": "Traditional Garba Pots",
+  "creator": "Kiran Desai",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 420,
+  "creatorBadges": [
+    "500+ Sales",
+    "Fast Shipper"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 1500,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-09T20:30:35.667Z",
+  "currentBid": 600,
+  "bidCount": 8,
+  "image": "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+  "images": [
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
+    "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg"
+  ],
+  "description": "Celebrate festivities with this exquisite set of traditional Garba pots, perfect for cultural decor. Each pot is handmade from locally sourced terracotta clay, featuring characteristic perforations to allow light to shine through when a diya is placed inside. The rustic finish is achieved through traditional open-fire baking, giving each piece a distinct, earthy character. They beautifully represent the rich heritage of Gujarat and make a striking visual during Navratri. Handle with care as terracotta is fragile, and keep away from moisture.",
+  "specifications": {
+    "Type": "Decorative Pot",
+    "Dimensions": "8x8 inches",
+    "Weight": "900g",
+    "Finish": "Unglazed",
+    "Food Safe": "No",
+    "Care Instructions": "Keep dry, dust with soft brush",
+    "Ships From": "Surat, India"
+  }
+},
+{
+  "id": "hc-cp-2",
+  "title": "Ceramic Floral Vase",
+  "creator": "Priya Menon",
+  "creatorRating": 4.6,
+  "creatorReviewCount": 95,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 2200,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/04809f445775b05edf65772b67c139d9.jpg",
+  "images": [
+    "/images/04809f445775b05edf65772b67c139d9.jpg",
+    "/images/04809f445775b05edf65772b67c139d9.jpg",
+    "/images/04809f445775b05edf65772b67c139d9.jpg",
+    "/images/04809f445775b05edf65772b67c139d9.jpg",
+    "/images/04809f445775b05edf65772b67c139d9.jpg",
+    "/images/04809f445775b05edf65772b67c139d9.jpg"
+  ],
+  "description": "A unique ceramic vase meticulously sculpted to mimic the delicate folds of blossoming flowers. Crafted from high-quality stoneware clay, it undergoes a high-temperature firing process ensuring durability and water resistance. The elegant, matte pastel finish brings a soft, contemporary feel to any room setup. Its distinctive design makes it a gorgeous statement piece, even when displayed without flowers. It is fully waterproof; you can wash it with mild soap and water when necessary.",
+  "specifications": {
+    "Type": "Vase",
+    "Dimensions": "10x5 inches",
+    "Weight": "1.5kg",
+    "Finish": "Hand-painted",
+    "Food Safe": "Yes",
+    "Care Instructions": "Hand wash recommended",
+    "Ships From": "Kochi, India"
+  }
+},
+{
+  "id": "hc-cp-3",
+  "title": "Abstract Clay Figure Sculpture",
+  "creator": "Ananya Gupta",
+  "creatorRating": 4.9,
+  "creatorReviewCount": 65,
+  "creatorBadges": [
+    "Top Rated Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 4500,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-05T20:30:35.667Z",
+  "currentBid": 1200,
+  "bidCount": 14,
+  "image": "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+  "images": [
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
+    "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg"
+  ],
+  "description": "This half-figured, unique clay sculpture piece is a profound expression of modern abstract art. Hand-built using coarse grogged clay, the texture adds immense depth and raw emotion to the minimalist silhouette. The artist has intentionally left the surface unglazed to highlight the natural, earthy tones of the fired clay. It is an ideal addition to contemporary art collections or as a focal point on a mantlepiece. Dust gently with a dry cloth to maintain the textured surface without damaging the clay.",
+  "specifications": {
+    "Type": "Sculpture",
+    "Dimensions": "14x7 inches",
+    "Weight": "2.2kg",
+    "Finish": "Unglazed",
+    "Food Safe": "No",
+    "Care Instructions": "Dust with dry cloth",
+    "Ships From": "New Delhi, India"
+  }
+},
+{
+  "id": "hc-cp-4",
+  "title": "Floral Clay Teapot Set",
+  "creator": "Arun Bose",
+  "creatorRating": 4.7,
+  "creatorReviewCount": 210,
+  "creatorBadges": [
+    "500+ Sales"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 3200,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+  "images": [
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp",
+    "/images/2371958e0daab9fea35be782cfbcb66c.webp"
+  ],
+  "description": "Enjoy your evening brew with these charming flower-shaped clay teapots, designed to delight guests. The set is carefully molded and hand-painted with intricate botanical details, covered by a high-gloss, food-safe glaze. Each pour is smooth, thanks to the expertly designed spout and perfectly balanced handle. Beyond utility, this set doubles as a beautiful display piece for your kitchen or dining room. To preserve the vibrant painted details, please hand wash only and avoid the microwave.",
+  "specifications": {
+    "Type": "Teapot Set",
+    "Dimensions": "6x8 inches",
+    "Weight": "1.8kg",
+    "Finish": "Glazed",
+    "Food Safe": "Yes",
+    "Care Instructions": "Hand wash only, not microwave safe",
+    "Ships From": "Kolkata, India"
+  }
+},
+{
+  "id": "hc-cp-5",
+  "title": "Terracotta Vase Trio",
+  "creator": "Deepak Kumar",
+  "creatorRating": 4.5,
+  "creatorReviewCount": 134,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Clay & Pottery",
+  "price": 1850,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+  "images": [
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
+    "/images/d497bf30fec759fddc8ce0890f380f18.jpg"
+  ],
+  "description": "A cohesive pair of 3 terracotta vases, featuring varying heights that create a perfect asymmetrical display. They are handcrafted using traditional throwing techniques, offering a rustic charm that complements boho and minimalist interiors alike. The raw, unglazed exterior proudly showcases the authentic, warm terracotta hue. Ideal for displaying dry stems like pampas grass or eucalyptus branches. Keep them away from direct water contact, as the porous terracotta is designed primarily for dry arrangements.",
+  "specifications": {
+    "Type": "Vase Set",
+    "Dimensions": "Various Heights (6, 8, 10 inches)",
+    "Weight": "2.5kg",
+    "Finish": "Unglazed",
+    "Food Safe": "No",
+    "Care Instructions": "Dry wipe, do not fill with water",
+    "Ships From": "Lucknow, India"
+  }
+},
+{
+  "id": "hc-ck-0",
+  "title": "Heart Crochet Keychain Pair",
+  "creator": "Sneha Reddy",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 56,
+  "creatorBadges": [
+    "Fast Shipper"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 299,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+  "images": [
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
+    "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg"
+  ],
+  "description": "A delightful pair of 2 heart-shaped keychains, meticulously crocheted by hand. Made using premium, colorfast cotton yarn, these keychains are soft, durable, and lightweight. They make a perfect matching gift for couples, best friends, or as a sweet personal accessory for your keys and bags. The tight stitching ensures they retain their shape even with daily use. Hand wash gently with mild soap if they get dirty, and air dry flat.",
+  "specifications": {
+    "Type": "Keychain Pair",
+    "Material/Yarn": "100% Cotton Yarn",
+    "Dimensions": "2x2 inches each",
+    "Weight": "30g",
+    "Care Instructions": "Gentle hand wash",
+    "Ships From": "Hyderabad, India"
+  }
+},
+{
+  "id": "hc-ck-1",
+  "title": "Crochet Camera Keychain",
+  "creator": "Manish Tiwari",
+  "creatorRating": 4.9,
+  "creatorReviewCount": 280,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "500+ Sales"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 350,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/4472fc60307774b77a3457158adcd98c.webp",
+  "images": [
+    "/images/4472fc60307774b77a3457158adcd98c.webp",
+    "/images/4472fc60307774b77a3457158adcd98c.webp",
+    "/images/4472fc60307774b77a3457158adcd98c.webp",
+    "/images/4472fc60307774b77a3457158adcd98c.webp",
+    "/images/4472fc60307774b77a3457158adcd98c.webp",
+    "/images/4472fc60307774b77a3457158adcd98c.webp"
+  ],
+  "description": "Capture attention with this adorable, miniature crochet camera keychain. Every tiny detail, from the lens to the shutter button, is carefully stitched using high-quality acrylic yarn for durability and vibrant color. It serves as an incredibly cute accessory for photography enthusiasts to hang on backpacks or camera bags. Despite its tiny size, the craftsmanship makes it a sturdy and long-lasting charm. Keep it away from sharp objects to prevent the yarn from snagging.",
+  "specifications": {
+    "Type": "Keychain",
+    "Material/Yarn": "Acrylic Yarn",
+    "Dimensions": "2.5x1.5 inches",
+    "Weight": "25g",
+    "Care Instructions": "Spot clean only",
+    "Ships From": "Chandigarh, India"
+  }
+},
+{
+  "id": "hc-ck-2",
+  "title": "Crochet Flower Vase",
+  "creator": "Kavita Rao",
+  "creatorRating": 4.6,
+  "creatorReviewCount": 110,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 1200,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-06T20:30:35.667Z",
+  "currentBid": 550,
+  "bidCount": 6,
+  "image": "/images/crochet-flowers-blue-pot.jpeg",
+  "images": [
+    "/images/crochet-flowers-blue-pot.jpeg",
+    "/images/crochet-flowers-blue-pot.jpeg",
+    "/images/crochet-flowers-blue-pot.jpeg",
+    "/images/crochet-flowers-blue-pot.jpeg",
+    "/images/crochet-flowers-blue-pot.jpeg",
+    "/images/crochet-flowers-blue-pot.jpeg"
+  ],
+  "description": "Brighten up your desk or living space with this everlasting crochet vase filled with beautifully crafted colorful crochet flowers. The blue pot and the flowers are all handmade, meaning these blooms will never wilt and require zero watering. Structured with flexible wire stems hidden inside the yarn, you can adjust the flowers to your preferred arrangement. It brings a cozy, cottage-core aesthetic to any environment. Gently dust the petals with a soft brush to keep the colors looking fresh.",
+  "specifications": {
+    "Type": "Decorative Item",
+    "Material/Yarn": "Cotton Blend Yarn, Wire",
+    "Dimensions": "8x5 inches",
+    "Weight": "200g",
+    "Care Instructions": "Dust gently, do not wash",
+    "Ships From": "Chennai, India"
+  }
+},
+{
+  "id": "hc-ck-3",
+  "title": "Anniversary Crochet Bouquet",
+  "creator": "Sunita Das",
+  "creatorRating": 5,
+  "creatorReviewCount": 78,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "Fast Shipper"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 2500,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+  "images": [
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
+    "/images/d156289ab52040263f59b16d6f3f5f2c.jpg"
+  ],
+  "description": "Celebrate milestones with this anniversary special crochet flower bouquet that lasts a lifetime. Handcrafted with incredibly detailed stitches, the bouquet features an assortment of roses, daisies, and lavender mimicking real flora. The arrangement is wrapped beautifully, making it an instantly ready, heartfelt gift for your significant other. It stands as a beautiful, sustainable alternative to fresh flowers that will serve as a constant reminder of your special day. Keep out of prolonged direct sunlight to prevent the yarn colors from fading.",
+  "specifications": {
+    "Type": "Bouquet",
+    "Material/Yarn": "Premium Milk Cotton Yarn",
+    "Dimensions": "15x10 inches",
+    "Weight": "450g",
+    "Care Instructions": "Keep away from direct sunlight",
+    "Ships From": "Pune, India"
+  }
+},
+{
+  "id": "hc-ck-4",
+  "title": "Handmade Crochet Jacket",
+  "creator": "Riya Sen",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 190,
+  "creatorBadges": [
+    "Verified Creator",
+    "500+ Sales"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 3800,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-08T20:30:35.667Z",
+  "currentBid": 1800,
+  "bidCount": 12,
+  "image": "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+  "images": [
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
+    "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg"
+  ],
+  "description": "Make a bold fashion statement with this stunning, wearable art piece — a fully handmade crochet jacket. Constructed from soft, breathable wool blend yarn, it features an intricate granny square pattern that exudes a trendy, vintage vibe. The relaxed fit makes it an ideal layering piece for chilly evenings or stylish outings. Countless hours of careful hand-stitching guarantee warmth and unmatched uniqueness. To maintain its shape, hand wash in cold water and lay it flat to dry.",
+  "specifications": {
+    "Type": "Apparel",
+    "Material/Yarn": "Wool Blend Yarn",
+    "Dimensions": "Free Size (Medium to Large)",
+    "Weight": "800g",
+    "Care Instructions": "Hand wash cold, dry flat",
+    "Ships From": "Darjeeling, India"
+  }
+},
+{
+  "id": "hc-ck-5",
+  "title": "Crochet Sunflower Pot",
+  "creator": "Anita Desai",
+  "creatorRating": 4.7,
+  "creatorReviewCount": 145,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Crochet & Knitting",
+  "price": 850,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/crochet-sunflower-pot.jpeg",
+  "images": [
+    "/images/crochet-sunflower-pot.jpeg",
+    "/images/crochet-sunflower-pot.jpeg",
+    "/images/crochet-sunflower-pot.jpeg",
+    "/images/crochet-sunflower-pot.jpeg",
+    "/images/crochet-sunflower-pot.jpeg",
+    "/images/crochet-sunflower-pot.jpeg"
+  ],
+  "description": "Add a touch of sunshine to your room with this cheerful crochet sunflower pot. Lovingly made using bright yellow and brown cotton yarns, the sunflower stands tall in a neat, crocheted base. It is the perfect maintenance-free desk companion that will bring a smile to your face every day. The internal wire allows you to gently pose the flower head to face any direction. Simply spot clean or use a lint roller to keep it looking pristine and vibrant.",
+  "specifications": {
+    "Type": "Decorative Item",
+    "Material/Yarn": "Cotton Yarn, Wire",
+    "Dimensions": "7x4 inches",
+    "Weight": "150g",
+    "Care Instructions": "Spot clean only",
+    "Ships From": "Ahmedabad, India"
+  }
+},
+{
+  "id": "hc-pc-0",
+  "title": "Handcrafted Paper Bookmark",
+  "creator": "Vikas Joshi",
+  "creatorRating": 4.4,
+  "creatorReviewCount": 34,
+  "creatorBadges": [],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Paper Crafts",
+  "price": 150,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+  "images": [
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
+    "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg"
+  ],
+  "description": "A beautifully paper-crafted bookmark that makes reading an even more delightful experience. Designed using high-quality textured cardstock and detailed quilling techniques, it features elegant floral motifs. It is laminated lightly to ensure durability and prevent the edges from fraying with regular use. This makes an excellent, thoughtful gift for the bookworms in your life. Handle gently and avoid bending to keep the 3D quilled details intact.",
+  "specifications": {
+    "Type": "Bookmark",
+    "Dimensions": "6x2 inches",
+    "Material/Paper Weight": "300gsm Cardstock",
+    "Finish": "Matte Laminated",
+    "Ships From": "Indore, India"
+  }
+},
+{
+  "id": "hc-pc-1",
+  "title": "Paper Craft Flower Pot",
+  "creator": "Pooja Singh",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 220,
+  "creatorBadges": [
+    "Top Rated Seller",
+    "500+ Sales"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Paper Crafts",
+  "price": 950,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+  "images": [
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
+    "/images/2d45e55d6a95ae07c38891e3887618a2.jpg"
+  ],
+  "description": "An incredibly intricate paper-crafted flower pot that showcases the magic of origami and paper folding. Each flower and leaf is meticulously cut, folded, and assembled by hand to create a stunning, lifelike 3D arrangement. Made entirely from premium eco-friendly paper, it serves as a gorgeous centerpiece that requires absolutely no maintenance. It brings a pop of color to spaces where real plants might not thrive. Ensure it is kept strictly away from water and direct, harsh sunlight to prevent damage and fading.",
+  "specifications": {
+    "Type": "Decorative Item",
+    "Dimensions": "9x6 inches",
+    "Material/Paper Weight": "150gsm Craft Paper",
+    "Finish": "Natural Paper",
+    "Ships From": "Jaipur, India"
+  }
+},
+{
+  "id": "hc-pc-2",
+  "title": "Floral Paper Craft Card",
+  "creator": "Nitin Sharma",
+  "creatorRating": 4.6,
+  "creatorReviewCount": 112,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Paper Crafts",
+  "price": 400,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/5d25e6472904da283141b4dc037eda2d.webp",
+  "images": [
+    "/images/5d25e6472904da283141b4dc037eda2d.webp",
+    "/images/5d25e6472904da283141b4dc037eda2d.webp",
+    "/images/5d25e6472904da283141b4dc037eda2d.webp",
+    "/images/5d25e6472904da283141b4dc037eda2d.webp",
+    "/images/5d25e6472904da283141b4dc037eda2d.webp",
+    "/images/5d25e6472904da283141b4dc037eda2d.webp"
+  ],
+  "description": "Send your warmest wishes with this exquisite paper-craft flower designed greeting card. The front of the card features a stunning 3D floral arrangement created using advanced paper quilling techniques. The inside is left blank, providing ample space on premium, smooth cardstock for your personalized handwritten message. It is more than just a card; it is a keepsake piece of art that the recipient will treasure. It comes with a protective custom envelope to ensure the delicate design arrives safely.",
+  "specifications": {
+    "Type": "Greeting Card",
+    "Dimensions": "5x7 inches",
+    "Material/Paper Weight": "250gsm Art Card",
+    "Finish": "Textured",
+    "Ships From": "Noida, India"
+  }
+},
+{
+  "id": "hc-ra-0",
+  "title": "Resin Pendant Necklace",
+  "creator": "Shruti Das",
+  "creatorRating": 4.7,
+  "creatorReviewCount": 165,
+  "creatorBadges": [
+    "Top Rated Seller"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Resin Art",
+  "price": 750,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+  "images": [
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
+    "/images/90340c0fe5f04ef94056bb544a98ad79.jpg"
+  ],
+  "description": "Carry a piece of nature with you with this beautiful resin necklace enclosing real dried flowers. Hand-poured using crystal clear UV resin, the pendant brilliantly magnifies the delicate floral details within. It is strung on a durable, hypoallergenic metal alloy chain, making it perfect for sensitive skin. This piece effortlessly adds a touch of bohemian elegance to any everyday outfit. Store it in a jewelry box away from direct sunlight to prevent the resin from yellowing over time.",
+  "specifications": {
+    "Type": "Jewelry",
+    "Dimensions": "1.5 inch pendant, 18 inch chain",
+    "Weight": "15g",
+    "Resin Type": "UV Resin",
+    "Finish": "Glossy",
+    "Ships From": "Goa, India"
+  }
+},
+{
+  "id": "hc-ra-1",
+  "title": "Resin Wall Art Hanging",
+  "creator": "Karthik Iyer",
+  "creatorRating": 4.9,
+  "creatorReviewCount": 305,
+  "creatorBadges": [
+    "Verified Creator",
+    "500+ Sales"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Resin Art",
+  "price": 4500,
+  "buyingMethod": "Auction",
+  "auctionEndsAt": "2026-07-10T20:30:35.667Z",
+  "currentBid": 2100,
+  "bidCount": 18,
+  "image": "/images/6825197426036f192e947bf86984bbb3.webp",
+  "images": [
+    "/images/6825197426036f192e947bf86984bbb3.webp",
+    "/images/6825197426036f192e947bf86984bbb3.webp",
+    "/images/6825197426036f192e947bf86984bbb3.webp",
+    "/images/6825197426036f192e947bf86984bbb3.webp",
+    "/images/6825197426036f192e947bf86984bbb3.webp",
+    "/images/6825197426036f192e947bf86984bbb3.webp"
+  ],
+  "description": "Transform your wall space with this mesmerizing abstract resin art piece designed for hanging. The artist has masterfully blended oceanic blue pigments, shimmering gold flakes, and crystal-clear epoxy to create a striking geode effect on a sturdy wooden panel. Multiple layers of resin give the artwork a glass-like finish with incredible depth and dimension. It arrives ready to hang, immediately elevating the aesthetic of a modern living room or office. Clean gently with a microfiber cloth to maintain the high-gloss shine.",
+  "specifications": {
+    "Type": "Wall Art",
+    "Dimensions": "24x18 inches",
+    "Weight": "3kg",
+    "Resin Type": "Epoxy Resin",
+    "Finish": "Glossy",
+    "Ships From": "Bangalore, India"
+  }
+},
+{
+  "id": "hc-ra-2",
+  "title": "Beachy Resin Earrings Set",
+  "creator": "Alia Khan",
+  "creatorRating": 4.5,
+  "creatorReviewCount": 88,
+  "creatorBadges": [
+    "Fast Shipper"
+  ],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Resin Art",
+  "price": 600,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+  "images": [
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
+    "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg"
+  ],
+  "description": "Capture the essence of summer with this beachy resin earrings set, featuring miniature seashells and ocean-colored tints. Each earring is meticulously crafted to resemble a tiny slice of the sea, cast in lightweight epoxy resin. The hooks are made from tarnish-resistant sterling silver, ensuring comfortable wear throughout the day. They make the perfect accessory for beach vacations or a fun, vibrant everyday look. Wipe clean with a soft cloth and avoid exposing them to harsh chemicals like perfumes.",
+  "specifications": {
+    "Type": "Jewelry",
+    "Dimensions": "2 inch drop",
+    "Weight": "10g",
+    "Resin Type": "Epoxy Resin",
+    "Finish": "Glossy",
+    "Ships From": "Mumbai, India"
+  }
+},
+{
+  "id": "hc-ra-3",
+  "title": "Resin Blue Mirror",
+  "creator": "Rajeev Menon",
+  "creatorRating": 4.8,
+  "creatorReviewCount": 140,
+  "creatorBadges": [
+    "Trusted Seller"
+  ],
+  "verified": true,
+  "category": "Handmade & Crafts",
+  "subcategory": "Resin Art",
+  "price": 3500,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": true,
+  "minimumOfferPercent": 70,
+  "image": "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+  "images": [
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
+    "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg"
+  ],
+  "description": "Enhance your home decor with this exquisitely designed round mirror, decorated with a flowing blue resin border. The artist has used advanced resin pouring techniques to mimic the crashing waves of the ocean around the mirror's edge. The integration of crushed glass and metallic pigments adds a luxurious sparkle that catches the light beautifully. It serves as both a functional mirror and a captivating piece of contemporary art. Use standard glass cleaner for the center, and a soft cloth for the resin border.",
+  "specifications": {
+    "Type": "Home Decor",
+    "Dimensions": "20 inches diameter",
+    "Weight": "4kg",
+    "Resin Type": "Epoxy Resin",
+    "Finish": "Glossy",
+    "Ships From": "Kochi, India"
+  }
+},
+{
+  "id": "hc-ra-4",
+  "title": "Resin Art Bookmarks Set",
+  "creator": "Sneha Reddy",
+  "creatorRating": 4.6,
+  "creatorReviewCount": 92,
+  "creatorBadges": [],
+  "verified": false,
+  "category": "Handmade & Crafts",
+  "subcategory": "Resin Art",
+  "price": 850,
+  "buyingMethod": "Buy Now",
+  "offersAllowed": false,
+  "image": "/images/f41872e1978e36adfa877aff0029dcad.webp",
+  "images": [
+    "/images/f41872e1978e36adfa877aff0029dcad.webp",
+    "/images/f41872e1978e36adfa877aff0029dcad.webp",
+    "/images/f41872e1978e36adfa877aff0029dcad.webp",
+    "/images/f41872e1978e36adfa877aff0029dcad.webp",
+    "/images/f41872e1978e36adfa877aff0029dcad.webp",
+    "/images/f41872e1978e36adfa877aff0029dcad.webp"
+  ],
+  "description": "Make your reading sessions more magical with this stunning set of resin art bookmarks. Each piece is uniquely cast with swirls of vibrant colors and elegant gold leaf flakes suspended in crystal-clear resin. Finished with a complementing silky tassel, they easily slip between the pages of your favorite book without causing damage. The sturdy resin construction guarantees they will never bend or tear like traditional paper bookmarks. Keep away from extreme heat to ensure the resin maintains its rigid structure.",
+  "specifications": {
+    "Type": "Bookmark Set",
+    "Dimensions": "5.5x1 inches",
+    "Weight": "40g",
+    "Resin Type": "UV Resin",
+    "Finish": "Glossy",
+    "Ships From": "Hyderabad, India"
+  }
+},
   ...lifestyleProducts
 ];

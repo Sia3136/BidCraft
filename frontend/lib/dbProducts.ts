@@ -177,7 +177,15 @@ export async function getLiveAuctions(): Promise<Product[]> {
     take: 6
   });
 
-  const results = listings.map(mapListingToProduct);
+  let results = listings.map(mapListingToProduct);
+  
+  const hardcodedAuctions = exploreProducts.filter(p => p.buyingMethod === 'Auction');
+  
+  // Merge and deduplicate
+  const allAuctions = [...hardcodedAuctions, ...results];
+  const uniqueAuctionsMap = new Map();
+  allAuctions.forEach(p => uniqueAuctionsMap.set(p.id, p));
+  results = Array.from(uniqueAuctionsMap.values()).slice(0, 6);
   
   try {
     await cacheSet(cacheKey, results, 30);
