@@ -1,14 +1,16 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Shield, CheckCircle, Package, ArrowRight } from 'lucide-react'
+import { ShieldCheck, CheckCircle, Package, ArrowRight, Star } from 'lucide-react'
 import { useStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Product } from '@/lib/dbProducts'
+import { exploreProducts } from '@/lib/exploreProducts'
+import { slugify } from '@/lib/slugify'
 
 const heroImages = [
   '/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo (1).jpeg',
@@ -75,6 +77,34 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
 export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Product[], liveAuctions?: Product[] }) {
   const { user } = useStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+
+  // Calculate real counts for Curated Collections
+  const vintageRetroCount = useMemo(() => {
+    const keywords = ['vintage', 'retro', 'antique', 'traditional', 'old', 'classic', 'heritage', 'garba', 'terracotta', 'brass', 'handpainted', 'block print'];
+    return exploreProducts.filter(p => {
+      if (p.collections?.includes('vintage-retro')) return true;
+      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
+      return keywords.some(kw => text.includes(kw));
+    }).length;
+  }, []);
+
+  const modernMinimalistCount = useMemo(() => {
+    const keywords = ['minimalist', 'modern', 'geometric', 'digital', 'abstract', 'ceramic', 'resin', 'contemporary'];
+    return exploreProducts.filter(p => {
+      if (p.collections?.includes('modern-minimalist')) return true;
+      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
+      return keywords.some(kw => text.includes(kw));
+    }).length;
+  }, []);
+
+  const traditionalArtsCount = useMemo(() => {
+    const keywords = ['traditional', 'folk', 'tribal', 'clay', 'pottery', 'mandala', 'ganesha', 'garba', 'handloom', 'block', 'terracotta', 'warli'];
+    return exploreProducts.filter(p => {
+      if (p.collections?.includes('traditional-arts')) return true;
+      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
+      return keywords.some(kw => text.includes(kw));
+    }).length;
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -266,23 +296,43 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         )}
 
         {/* 5. NEW: Trust & Process */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
-          <div className="max-w-[var(--container-max)] mx-auto text-center">
-            <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-16" style={{ fontFamily: 'Playfair Display, serif' }}>Why BidCraft</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left max-w-5xl mx-auto">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Listed by makers, not resellers</h3>
-                <p className="text-body-lg text-[var(--color-ink-700)]">Every seller on BidCraft is verified. We check identity and bank details before anyone can list.</p>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Bid with confidence</h3>
-                <p className="text-body-lg text-[var(--color-ink-700)]">Our escrow holds your payment until you receive and approve your order. No release without your confirmation.</p>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-4">Rooted in India</h3>
-                <p className="text-body-lg text-[var(--color-ink-700)]">From Jaipur miniaturists to Bengaluru ceramicists — every piece ships from within India, with full tracking.</p>
-              </motion.div>
-            </div>
+        <section className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
+          <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
+            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover' }} alt="Hand-painted vase" className="rounded-r-[var(--radius-lg)]" />
+          </div>
+          <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
+              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-4">Your money. Your art. Protected.</h2>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10">
+                Every transaction on BidCraft is held in escrow until you confirm delivery. No release of funds without your approval.
+              </p>
+              
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <ShieldCheck className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
+                  <div>
+                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Escrow on Every Order</h3>
+                    <p className="text-body-md text-[var(--color-cream-base)]/70">Your payment is held securely until you confirm receipt. The seller is paid only after you approve. No exceptions.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <CheckCircle className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
+                  <div>
+                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Verified Sellers</h3>
+                    <p className="text-body-md text-[var(--color-cream-base)]/70">Every seller on BidCraft goes through identity and bank verification before listing. Fake listings are flagged and removed within 24 hours.</p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <Package className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
+                  <div>
+                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Transparent Shipping</h3>
+                    <p className="text-body-md text-[var(--color-cream-base)]/70">Sellers commit to dispatch timelines upfront. Track your order end-to-end. If something goes wrong, our buyer protection kicks in.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -323,7 +373,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                 <div className="absolute bottom-8 left-8 z-20">
                   <h3 className="text-display-md text-white mb-2">Vintage & Retro</h3>
-                  <p className="text-body-md text-white/80">240 Items</p>
+                  <p className="text-body-md text-white/80">{vintageRetroCount} Items</p>
                 </div>
               </motion.div>
               
@@ -334,7 +384,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute bottom-6 left-6 z-20">
                     <h3 className="text-heading-lg text-white mb-1">Modern Minimalist</h3>
-                    <p className="text-caption text-white/80">120 Items</p>
+                    <p className="text-caption text-white/80">{modernMinimalistCount} Items</p>
                   </div>
                 </motion.div>
                 
@@ -344,7 +394,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute bottom-6 left-6 z-20">
                     <h3 className="text-heading-lg text-white mb-1">Traditional Arts</h3>
-                    <p className="text-caption text-white/80">85 Items</p>
+                    <p className="text-caption text-white/80">{traditionalArtsCount} Items</p>
                   </div>
                 </motion.div>
               </div>
@@ -394,9 +444,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
               <p className="text-body-lg text-white/80 mb-8">
                 Discover the story behind Rahul's collection of rare Indian numismatics and antique brasswares sourced directly from village creators.
               </p>
-              <button className="bg-white text-[var(--color-slate-900)] px-8 py-3 rounded-[var(--radius-md)] text-body-md font-semibold hover:bg-[var(--color-cream-raised)] transition-colors">
-                Read Full Story
-              </button>
             </motion.div>
           </div>
         </section>
@@ -426,28 +473,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-        {/* 11. Trust Section (Buy and Sell With Confidence) */}
-        <section className="py-24 bg-[var(--color-slate-900)] text-center px-[var(--space-5)]">
-          <div className="max-w-[var(--container-max)] mx-auto">
-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-white mb-16">
-              Your money. Your art. Protected.
-            </motion.h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-4xl mx-auto">
-              {[
-                { title: 'Escrow on Every Order', desc: 'Your payment is held securely until you confirm receipt. The seller is paid only after you approve. No exceptions.' },
-                { title: 'Verified Sellers', desc: 'Every seller on BidCraft goes through identity and bank verification before listing. Fake listings are flagged and removed within 24 hours.' },
-                { title: 'Transparent Shipping', desc: 'Sellers commit to dispatch timelines upfront. Track your order end-to-end. If something goes wrong, our buyer protection kicks in.' }
-              ].map((item, i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex flex-col items-center text-center mt-6">
 
-                  <h3 className="text-heading-sm text-white mb-3">{item.title}</h3>
-                  <p className="text-caption text-white/70 max-w-xs">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* 12. Community Voices */}
         <section className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)]">
@@ -457,25 +483,31 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)]">
-                  <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>
-                  <p className="text-body-lg font-display italic text-[var(--color-ink-900)] mb-8">
-                    {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
-                  </p>
-                  <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
-                  <div className="flex items-center gap-4">
-                    <Image 
-                      src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
-                      width={80} 
-                      height={80} 
-                      style={{ objectFit: 'cover' }}
-                      alt={`User ${i}`}
-                      className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[#C4501A] w-[80px] h-[80px] min-w-[80px]"
-                    />
-                    <div>
-                      <p className="text-heading-sm text-[var(--color-ink-900)]">User {i}</p>
-                      <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold">
-                        {i === 1 ? "4.5 ★" : i === 2 ? "4.0 ★" : "5.0 ★"}
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)] flex flex-col justify-between">
+                  <div>
+                    <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>
+                    <p className="text-body-lg font-display italic text-[var(--color-ink-900)] mb-8">
+                      {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
+                    <div className="flex items-center gap-4">
+                      <Image 
+                        src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
+                        width={64} 
+                        height={64} 
+                        style={{ objectFit: 'cover' }}
+                        alt={`User ${i}`}
+                        className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[64px] h-[64px] min-w-[64px]"
+                      />
+                      <div>
+                        <p className="text-heading-sm text-[var(--color-ink-900)]">
+                          {i === 1 ? "Priya S." : i === 2 ? "Arjun M." : "Nandita R."}
+                        </p>
+                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold font-ui">
+                          {i === 1 ? "4.5 ★" : i === 2 ? "4.0 ★" : "5.0 ★"}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -499,29 +531,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-
-        {/* 14. Newsletter (Non-logged-in) */}
-        {!user && (
-          <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)]">
-            <div className="max-w-[560px] mx-auto text-center">
-              <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] mb-6">
-                Never miss a masterpiece
-              </motion.h2>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-body-md text-[var(--color-ink-700)] mb-8">
-                Join our newsletter for weekly curated drops, upcoming auctions, and exclusive creator interviews.
-              </motion.p>
-              <motion.form initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex gap-2 max-w-md mx-auto mb-4">
-                <input type="email" placeholder="Email address" className="flex-1 h-12 rounded-[var(--radius-md)] px-4 bg-white border border-[var(--color-border-subtle)] text-body-md outline-none focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] transition-all" required />
-                <button type="submit" className="h-12 px-6 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors whitespace-nowrap">
-                  Subscribe
-                </button>
-              </motion.form>
-              <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-caption text-[var(--color-ink-500)]">
-                By subscribing, you agree to our Privacy Policy and consent to receive updates.
-              </motion.p>
-            </div>
-          </section>
-        )}
       </main>
     </div>
   )

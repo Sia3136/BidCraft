@@ -2,7 +2,27 @@ import Link from 'next/link'
 
 export function Footer() {
   return (
-    <footer className="bg-[var(--color-slate-900)] text-[var(--color-white)] pt-16 pb-8 px-[var(--space-5)] xl:px-[var(--space-8)] mt-24">
+    <footer className="bg-[var(--color-slate-900)] text-[var(--color-white)] pt-24 pb-8 px-[var(--space-5)] xl:px-[var(--space-8)] mt-24">
+      
+      {/* Newsletter Section */}
+      <div className="w-full max-w-[560px] mx-auto text-center border-b border-white/10 pb-16 mb-16">
+        <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6">
+          Never miss a masterpiece
+        </h2>
+        <p className="text-body-md text-white/70 mb-8">
+          Join our newsletter for weekly curated drops, upcoming auctions, and exclusive creator interviews.
+        </p>
+        <form className="flex gap-2 max-w-md mx-auto mb-4">
+          <input type="email" placeholder="Email address" className="flex-1 h-12 rounded-[var(--radius-md)] px-4 bg-white/10 border border-white/20 text-[var(--color-cream-base)] placeholder:text-white/40 outline-none focus:border-[var(--color-terracotta-600)] focus:bg-white/15 transition-all" required />
+          <button type="submit" className="h-12 px-6 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors whitespace-nowrap">
+            Subscribe
+          </button>
+        </form>
+        <p className="text-caption text-white/50">
+          By subscribing, you agree to our Privacy Policy and consent to receive updates.
+        </p>
+      </div>
+
       <div className="w-full max-w-[var(--container-max)] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 mb-16">
         
         {/* Brand Column */}

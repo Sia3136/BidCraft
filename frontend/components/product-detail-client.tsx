@@ -8,7 +8,54 @@ import { ProductCard } from '@/components/product-card';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
-import { CountdownTimer } from '@/components/countdown-timer';
+
+const DetailAuctionTimer = ({ endTime }: { endTime: string }) => {
+  const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
+  const [isUrgent, setIsUrgent] = useState(false);
+
+  useEffect(() => {
+    const target = new Date(endTime).getTime();
+    const update = () => {
+      const remaining = target - Date.now();
+      if (remaining <= 0) {
+        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
+        setIsUrgent(false);
+        return;
+      }
+      
+      setIsUrgent(remaining < 60 * 60 * 1000); // under 1 hour
+
+      setTimeLeft({
+        d: Math.floor(remaining / (1000 * 60 * 60 * 24)),
+        h: Math.floor((remaining / (1000 * 60 * 60)) % 24),
+        m: Math.floor((remaining / 1000 / 60) % 60),
+        s: Math.floor((remaining / 1000) % 60)
+      });
+    };
+    
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, [endTime]);
+
+  if (!timeLeft) return null;
+
+  return (
+    <div className="flex gap-3 my-4">
+      {[
+        { label: 'Days', value: timeLeft.d },
+        { label: 'Hours', value: timeLeft.h },
+        { label: 'Minutes', value: timeLeft.m },
+        { label: 'Seconds', value: timeLeft.s }
+      ].map((item, idx) => (
+        <div key={idx} className={cn("flex flex-col items-center justify-center bg-white border rounded-[var(--radius-md)] p-3 min-w-[70px] shadow-sm", isUrgent ? "border-[var(--color-urgent-600)] text-[var(--color-urgent-600)] bg-[var(--color-urgent-100)]" : "border-[var(--color-border-subtle)] text-[var(--color-ink-900)]")}>
+          <span className="text-display-md font-display font-bold leading-none mb-1">{String(item.value).padStart(2, '0')}</span>
+          <span className="text-caption font-semibold uppercase tracking-wider opacity-70">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const GALLERY_VIEWS = [
   { transform: 'scale(1)', objectPosition: 'center' },
@@ -232,11 +279,9 @@ export default function ProductDetailClient({ product, related }: { product: any
 
             {/* Countdown for Auctions */}
             {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
-              <div className="flex items-center gap-2 p-3 bg-[var(--color-cream-deep)] rounded-[var(--radius-sm)] border border-[var(--color-border-subtle)]">
-                <span className="text-body-sm font-semibold text-[var(--color-ink-700)]">Ends in:</span>
-                <span className="text-body-md font-bold text-[var(--color-urgent-600)]">
-                  {new Date(product.auctionEndsAt).toLocaleDateString()} {/* Simple fallback, can be timer */}
-                </span>
+              <div className="flex flex-col gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+                <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time Remaining</span>
+                <DetailAuctionTimer endTime={product.auctionEndsAt} />
               </div>
             )}
 

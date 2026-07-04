@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Search, Heart, ShoppingBag, Bell, MapPin, X, User, Store, Package, LogOut, Menu } from 'lucide-react'
 import { useStore } from '@/lib/store'
+import { slugify } from '@/lib/slugify'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
@@ -388,7 +389,7 @@ export const Navbar = React.memo(function Navbar() {
                   </Link>
                   <div className="grid grid-cols-3 gap-y-4 gap-x-8">
                     {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
-                      const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+                      const subSlug = slugify(sub);
                       return (
                         <Link 
                           key={sub}

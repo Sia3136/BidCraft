@@ -181,8 +181,8 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   const [sortBy, setSortBy] = useState<string>(initialSort)
 
   useEffect(() => {
-    if (typeQuery === 'auction' && !selectedMethods.includes('Auction')) {
-      setSelectedMethods(prev => [...prev, 'Auction'])
+    if (typeQuery === 'auction') {
+      setSelectedMethods(prev => Array.from(new Set([...prev, 'Auction'])))
     }
   }, [typeQuery])
 
@@ -197,7 +197,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   }, [])
 
   const toggleMethod = useCallback((method: string) => {
-    setSelectedMethods(prev => prev.includes(method) ? prev.filter(m => m !== method) : [...prev, method])
+    setSelectedMethods(prev => prev.includes(method) ? prev.filter(m => m !== method) : Array.from(new Set([...prev, method])))
   }, [])
 
   const clearAllFilters = useCallback(() => {
@@ -235,10 +235,27 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
       if (selectedRating > 0 && p.rating < selectedRating) return false
 
       if (collectionQuery) {
-        // Just mock collection logic: filter based on some text matching
-        const q = collectionQuery.toLowerCase().replace(/-/g, ' ');
-        const text = (p.title + ' ' + (p.description || '') + ' ' + p.category).toLowerCase();
-        if (!text.includes(q) && slugify(p.category) !== slugify(q)) return false;
+        const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
+        let matches = false;
+        
+        if (p.collections?.includes(collectionQuery)) {
+          matches = true;
+        } else if (collectionQuery === 'vintage-retro') {
+          const keywords = ['vintage', 'retro', 'antique', 'traditional', 'old', 'classic', 'heritage', 'garba', 'terracotta', 'brass', 'handpainted', 'block print'];
+          matches = keywords.some(kw => text.includes(kw));
+        } else if (collectionQuery === 'modern-minimalist') {
+          const keywords = ['minimalist', 'modern', 'geometric', 'digital', 'abstract', 'ceramic', 'resin', 'contemporary'];
+          matches = keywords.some(kw => text.includes(kw));
+        } else if (collectionQuery === 'traditional-arts') {
+          const keywords = ['traditional', 'folk', 'tribal', 'clay', 'pottery', 'mandala', 'ganesha', 'garba', 'handloom', 'block', 'terracotta', 'warli'];
+          matches = keywords.some(kw => text.includes(kw));
+        } else {
+          // fallback
+          const q = collectionQuery.toLowerCase().replace(/-/g, ' ');
+          if (text.includes(q) || slugify(p.category) === slugify(q)) matches = true;
+        }
+        
+        if (!matches) return false;
       }
 
       if (giftQuery) {
@@ -389,7 +406,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
                       }} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   )}
-                  {selectedMethods.map(method => (
+                  {Array.from(new Set(selectedMethods)).map(method => (
                     <div key={method} className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
                       <span className="text-body-md font-medium">{method}</span>
                       <button onClick={() => toggleMethod(method)} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>

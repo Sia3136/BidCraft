@@ -2,11 +2,57 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Product } from '@/lib/dbProducts'
 import { formatPrice } from '@/lib/formatPrice'
 import { Heart } from 'lucide-react'
-import { CountdownTimer } from '@/components/countdown-timer'
+import { cn } from '@/lib/utils'
+
+const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
+  const [timeLeft, setTimeLeft] = useState('');
+  const [isUrgent, setIsUrgent] = useState(false);
+
+  useEffect(() => {
+    const target = new Date(endTime).getTime();
+    const update = () => {
+      const remaining = target - Date.now();
+      if (remaining <= 0) {
+        setTimeLeft('Ended');
+        setIsUrgent(false);
+        return;
+      }
+      
+      setIsUrgent(remaining < 60 * 60 * 1000); // under 1 hour
+
+      const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((remaining / 1000 / 60) % 60);
+      const s = Math.floor((remaining / 1000) % 60);
+      
+      if (remaining >= 60 * 60 * 1000) {
+        setTimeLeft(`${d}d ${h}h ${m}m`);
+      } else {
+        setTimeLeft(`${m}m ${s}s`);
+      }
+    };
+    
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, [endTime]);
+
+  if (!timeLeft) return null;
+
+  return (
+    <div className={cn(
+      "absolute bottom-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-bold shadow-sm backdrop-blur-md z-10 flex items-center gap-1.5 transition-colors",
+      isUrgent ? "bg-[var(--color-urgent-600)] text-white animate-pulse" : "bg-[rgba(43,42,40,0.85)] text-white"
+    )}>
+      <span>⏱</span>
+      <span>{timeLeft}</span>
+    </div>
+  );
+};
 
 export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Product, priority?: boolean }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
@@ -100,6 +146,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
           <Heart fill={isWishlisted ? 'currentColor' : 'none'} size={18} />
         </button>
 
+        {/* Bottom Left Timer Badge overlaid on Image */}
+        {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
+           <CardAuctionTimer endTime={product.auctionEndsAt} />
+        )}
+
       </Link>
 
       <div className="p-4 flex flex-col flex-1 bg-white z-10 relative">
@@ -130,13 +181,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
                   <p className="text-[18px] font-bold text-[var(--color-ink-900)]">
                     {formatPrice(product.currentBid ?? product.price)}
                   </p>
+                </div>
+                <div className="text-right">
                   <p className="text-[11px] font-medium text-[var(--color-ink-500)] mt-0.5">
                     {product.bidCount ? `${product.bidCount} bids` : '0 bids'}
                   </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-semibold text-[var(--color-urgent-600)] uppercase tracking-wider mb-0.5">Ending in</p>
-                  <CountdownTimer listingId={product.id} size="sm" />
                 </div>
               </div>
             </div>
