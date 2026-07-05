@@ -1,0 +1,646 @@
+BidCraft Blueprint 2.0
+
+Trust-First Creator Marketplace
+
+
+
+Vision
+
+BidCraft is a creator-focused marketplace where artists, students, collectors, crafters, and hobby sellers can sell products through:
+
+Auctions
+
+Buy Now
+
+Make Offer
+
+while providing buyers with stronger trust mechanisms than traditional social-media-based selling.
+
+The core philosophy of BidCraft is:
+
+"Trust the product, not just the seller."
+
+
+
+FEATURE PRIORITIZATION
+
+P0 - MUST HAVE (Launch Blocking)
+
+These features are required before public launch.
+
+
+
+1. Authentication & Verification
+
+Purpose
+
+Prevent fake accounts, reduce fraud, and establish trust.
+
+Features
+
+Email OTP Verification
+
+User must verify email before account activation.
+
+Mobile OTP Verification
+
+User must verify mobile number.
+
+Unique Identity Rules
+
+One email per account
+
+One mobile number per account
+
+Technical Implementation
+
+Frontend:
+
+OTP UI
+
+Resend timer
+
+Verification status
+
+Backend:
+
+JWT Authentication
+
+Refresh Tokens
+
+OTP Service
+
+Suggested Stack:
+
+Node.js
+
+JWT
+
+Redis (OTP caching)
+
+
+
+2. Seller KYC
+
+Purpose
+
+Ensure sellers are real individuals.
+
+Features
+
+PAN Verification
+
+Required before receiving payments.
+
+Bank Verification
+
+Penny-drop verification.
+
+Technical Implementation
+
+Database:
+
+Seller KYC table
+
+Verification status
+
+Integrations:
+
+PAN Verification Provider
+
+Razorpay Fund Accounts
+
+
+
+3. Product Listings
+
+Purpose
+
+Core marketplace functionality.
+
+Features
+
+Create Listing
+
+Seller uploads:
+
+Title
+
+Description
+
+Category
+
+Images
+
+Price
+
+Categories
+
+Art
+
+Crafts
+
+Collectibles
+
+Hot Wheels
+
+Books
+
+Electronics
+
+Technical Implementation
+
+Storage:
+
+Cloudinary
+
+Database:
+
+Listings table
+
+Images table
+
+
+
+4. Guided 6-Photo Upload System
+
+Purpose
+
+Increase listing quality and discourage fraudulent listings.
+
+Features
+
+Required Photos:
+
+Front View
+
+Left Side
+
+Right Side
+
+Back Side
+
+Detail Close-Up
+
+Scale Reference
+
+Similarity Detection
+
+System checks:
+
+Angle similarity
+
+Lighting similarity
+
+Background similarity
+
+If photos are nearly identical:
+
+Listing cannot be submitted until additional varied photos are uploaded.
+
+Technical Implementation
+
+Image Processing:
+
+OpenCV
+
+Perceptual Hashing (pHash)
+
+Image Similarity Detection
+
+This is cheaper and more reliable than AI-image detection.
+
+
+
+5. Buy Now System
+
+Purpose
+
+Fast purchases.
+
+Features
+
+Fixed Price Listings
+
+Direct Checkout
+
+Technical Implementation
+
+Database:
+
+Orders
+
+Payments
+
+Payment Gateway:
+
+Razorpay
+
+
+
+6. Escrow System
+
+Purpose
+
+Protect both buyer and seller.
+
+Workflow
+
+Buyer Pays↓Funds Held↓Seller Ships↓Delivered↓24-Hour Inspection Window↓Funds Released
+
+Technical Implementation
+
+Tables:
+
+Orders
+
+Escrow Transactions
+
+Payment Ledger
+
+State Machine:
+
+PendingPaidShippedDeliveredInspectionReleased
+
+
+
+7. Shipping Integration
+
+Purpose
+
+Provide tracking and proof of delivery.
+
+Features
+
+Tracking Number
+
+Delivery Status
+
+Delivery Confirmation
+
+Technical Implementation
+
+Possible Providers:
+
+Porter
+
+Shiprocket
+
+Delhivery
+
+Webhooks update order status.
+
+
+
+8. 24-Hour Inspection Window
+
+Purpose
+
+Prevent immediate payout after delivery.
+
+Workflow
+
+Delivered↓24 Hours↓Complaint or Release
+
+Technical Implementation
+
+BullMQ Delayed Jobs
+
+Automatic escrow release after timeout.
+
+
+
+9. Dispute Resolution System
+
+Purpose
+
+Resolve product mismatch issues.
+
+Workflow
+
+Complaint Raised↓Dispute Created↓Photo Review↓Decision
+
+Outcomes:
+
+Full Refund
+
+Partial Refund
+
+Rejected Claim
+
+Technical Implementation
+
+Database:
+
+Disputes
+
+Evidence Images
+
+Admin Decisions
+
+
+
+10. Product Q&A
+
+Purpose
+
+Allow buyers to ask questions publicly.
+
+Features
+
+Questions remain visible to all buyers.
+
+Seller must answer publicly.
+
+Technical Implementation
+
+Tables:
+
+Questions
+
+Answers
+
+
+
+P1 - SHOULD HAVE
+
+Strong differentiators that significantly improve trust and marketplace quality.
+
+
+
+11. Auctions
+
+Purpose
+
+Price discovery for unique items.
+
+Features
+
+Starting Bid
+
+Reserve Price
+
+Duration
+
+Technical Implementation
+
+Database:
+
+Auctions
+
+Bids
+
+Real-time Updates:
+
+Socket.IO
+
+Caching:
+
+Redis
+
+
+
+12. Anti-Sniping
+
+Purpose
+
+Prevent last-second auction manipulation.
+
+Rule
+
+Bid in final minute↓Auction extended by 3 minutes
+
+Technical Implementation
+
+Auction ServiceRedis CacheBullMQ Jobs
+
+
+
+13. Bid Deposit System
+
+Purpose
+
+Reduce fake bidding.
+
+Rule
+
+Bidder deposits 7%.
+
+Winner:
+
+Deposit applied
+
+Losers:
+
+Deposit refunded
+
+Technical Implementation
+
+Razorpay Payment CaptureRefund APIs
+
+
+
+14. Fallback Bidder System
+
+Purpose
+
+Handle auction winners who refuse payment.
+
+Workflow
+
+Winner Declines↓Offer to Second Bidder↓Accept or Reject↓Relist
+
+Seller chooses fallback behavior.
+
+Technical Implementation
+
+Auction Queue Service
+
+
+
+15. Make Offer System
+
+Purpose
+
+Negotiated sales.
+
+Features
+
+Seller sets threshold.
+
+Example:
+
+Listing Price: ₹5000Minimum Offer: ₹3500
+
+Offers below threshold automatically rejected.
+
+Technical Implementation
+
+Offer State Machine:
+
+PendingAcceptedRejectedExpired
+
+
+
+16. Seller Trust Badges
+
+Purpose
+
+Reward reliability.
+
+Examples
+
+✓ Verified Seller✓ Original Creation✓ 5 Successful Orders✓ 25 Successful Orders✓ 100 Successful Orders
+
+Technical Implementation
+
+Background Jobs calculate milestones.
+
+
+
+17. Social Profile Integration
+
+Purpose
+
+Increase trust and transparency.
+
+Supported Links
+
+Instagram
+
+Facebook
+
+Portfolio Website
+
+
+
+18. Ratings & Reviews
+
+Features
+
+Buyer RatingBuyer ReviewReview Photos
+
+Technical Implementation
+
+Tables:
+
+Reviews
+
+Ratings
+
+Aggregate scores cached.
+
+
+
+P2 - FUTURE ENHANCEMENTS
+
+Build only after marketplace validation.
+
+
+
+19. Commitment Credit System
+
+Purpose
+
+Reduce frustration from deposit penalties.
+
+Example:
+
+Deposit: ₹1000
+
+Penalty: ₹700Credit: ₹300
+
+Reusable later.
+
+
+
+20. Original Creation Badge
+
+Purpose
+
+Highlight genuine creators.
+
+Evidence:
+
+Process Photos
+
+Creation Videos
+
+
+
+21. AI Risk Scoring
+
+Purpose
+
+Detect suspicious listings.
+
+NOT used as a blocker.
+
+Only a risk signal.
+
+Technical Implementation
+
+Possible APIs:
+
+Hive
+
+Google Vision
+
+Other Moderation APIs
+
+
+
+22. Reverse Image Search
+
+Purpose
+
+Detect stolen listing images.
+
+Technical Implementation
+
+Google Vision APITinEye API
+
+Flag for review only.
+
+
+
+Recommended MVP Launch Scope
+
+Build First:
+
+Authentication
+
+Seller KYC
+
+Listings
+
+Guided 6-Photo Upload
+
+Buy Now
+
+Escrow
+
+Shipping Integration
+
+Inspection Window
+
+Dispute Resolution
+
+Product Q&A
+
+Then Add:
+
+Auctions
+
+Anti-Sniping
+
+Bid Deposit
+
+Fallback Bidder
+
+Make Offer
+
+Everything else comes later.
+
+
+
