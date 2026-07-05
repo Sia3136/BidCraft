@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/formatPrice';
@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/product-card';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import { productReviews } from '@/lib/exploreProducts';
 
 const DetailAuctionTimer = ({ endTime }: { endTime: string }) => {
   const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
@@ -328,15 +329,22 @@ export default function ProductDetailClient({ product, related }: { product: any
 
             {/* I. Seller reviews section */}
             <div className="mt-4 pt-6 border-t border-[var(--color-border-subtle)]">
-              <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">Seller Reviews ({product.creatorReviewCount || '3'})</h2>
+              <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
               <div className="space-y-4">
-                <div className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium text-[var(--color-ink-900)]">Verified Buyer</span>
-                    <span className="text-[var(--color-warning-500)] text-sm">★★★★★</span>
+                {(productReviews[product.id] || []).map((review: any, idx: number) => (
+                  <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-medium text-[var(--color-ink-900)]">{review.buyer}</span>
+                      <span className="text-[var(--color-warning-500)] text-sm">
+                        {'★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)}
+                      </span>
+                      <span className="text-caption text-[var(--color-ink-500)] ml-auto">
+                        {new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+                    <p className="text-body-sm text-[var(--color-ink-700)]">{review.text}</p>
                   </div>
-                  <p className="text-body-sm text-[var(--color-ink-700)]">"Great quality and exactly as described. The shipping was very fast and securely packaged."</p>
-                </div>
+                ))}
               </div>
             </div>
             

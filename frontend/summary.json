@@ -1,0 +1,23 @@
+{
+  "deleted": [
+    {
+      "id": "col-tc-2",
+      "title": "Dragon Cards — Set of 6",
+      "reason": "Excess over 109 limit"
+    },
+    {
+      "id": "col-tc-3",
+      "title": "Rare Pokémon Cards — Set of 12",
+      "reason": "Excess over 109 limit"
+    }
+  ],
+  "verifiedDemoted": [
+    "hc-ra-1",
+    "hc-ra-3",
+    "ls-hd-0",
+    "ls-hd-5",
+    "gh-am-2",
+    "col-af-1"
+  ],
+  "finalCount": 109
+}
