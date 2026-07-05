@@ -1,18 +1,23 @@
 import ClientHome from '@/components/client-home';
-import { exploreProducts } from '@/lib/exploreProducts';
-import { NEW_ARRIVAL_IDS } from '@/lib/newArrivals';
+import { fetchLiveAuctions, fetchNewArrivals } from '@/lib/api';
 
 export const revalidate = 30;
 
 export default async function Home() {
-  const liveAuctions = exploreProducts
-    .filter(p => p.buyingMethod === 'Auction' && p.auctionEndsAt)
-    .sort((a, b) => new Date(a.auctionEndsAt).getTime() - new Date(b.auctionEndsAt).getTime())
-    .slice(0, 4);
-    
-  const newArrivals = exploreProducts
-    .filter(p => NEW_ARRIVAL_IDS.includes(p.id))
-    .slice(0, 4);
-  
+  let liveAuctions = [];
+  let newArrivals = [];
+
+  try {
+    const [auctionsData, newArrivalsData] = await Promise.all([
+      fetchLiveAuctions(4),
+      fetchNewArrivals(),
+    ]);
+    liveAuctions = auctionsData.auctions || [];
+    newArrivals = newArrivalsData.listings ? newArrivalsData.listings.slice(0, 4) : [];
+  } catch (err) {
+    console.error('Failed to fetch homepage data', err);
+    // fallback to empty arrays or handle gracefully
+  }
+
   return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} />;
 }

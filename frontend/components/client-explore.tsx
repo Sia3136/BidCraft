@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback, Suspense, useEffect } from 'react'
 import { Filter, X } from 'lucide-react'
-import { Product } from '@/lib/dbProducts'
+import { Listing } from '@/lib/api'
 import { ProductCard } from '@/components/product-card'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { slugify } from '@/lib/slugify'
@@ -22,7 +22,7 @@ const TYPES = [{ label: 'New Arrivals', value: 'new-arrivals' }, { label: 'Live 
 
 const SORT_OPTIONS = ['Newest', 'Price: Low to High', 'Price: High to Low']
 
-function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
+function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -148,7 +148,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
 
   // Filtering Logic
   const filteredProducts = useMemo(() => {
-    return allProducts.filter(p => {
+    return initialListings.filter(p => {
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         if (!p.title.toLowerCase().includes(query) && !(p.description && p.description.toLowerCase().includes(query))) {
@@ -191,7 +191,7 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
       if (sortQuery === 'Price: High to Low') return b.price - a.price
       return 0 
     })
-  }, [allProducts, searchQuery, categoriesParam, subcategoriesParam, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
+  }, [initialListings, searchQuery, categoriesParam, subcategoriesParam, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
 
   const Sidebar = () => (
     <div className="space-y-6">
@@ -491,15 +491,15 @@ function ExploreContent({ allProducts = [] }: { allProducts?: Product[] }) {
   )
 }
 
-export default function ClientExplore({ allProducts = [] }: { allProducts?: Product[] }) {
+export default function ClientExplore({ initialListings = [], total, initialParams }: { initialListings?: Listing[], total?: number, initialParams?: any }) {
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
-      <ClientExploreInner allProducts={allProducts} />
+      <ClientExploreInner initialListings={initialListings} />
     </Suspense>
   )
 }
 
-function ClientExploreInner({ allProducts = [] }: { allProducts?: Product[] }) {
+function ClientExploreInner({ initialListings = [] }: { initialListings?: Listing[] }) {
   const searchParams = useSearchParams()
   const title = searchParams.get('subcategory') || searchParams.get('category') || searchParams.get('collection') || searchParams.get('occasion') || 'Explore All'
   
@@ -514,7 +514,7 @@ function ClientExploreInner({ allProducts = [] }: { allProducts?: Product[] }) {
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
           </p>
         </section>
-        <ExploreContent allProducts={allProducts} />
+        <ExploreContent initialListings={initialListings} />
       </main>
     </div>
   )

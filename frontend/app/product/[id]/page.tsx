@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
-import { getProductById, getProducts } from '@/lib/dbProducts';
+import { fetchListingById, fetchListings } from '@/lib/api';
 import ProductDetailClient from '@/components/product-detail-client';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export default async function ProductPage({
   params,
@@ -11,15 +11,18 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
   
-  const product = await getProductById(id);
-  if (!product) return notFound();
+  let listing;
+  try {
+    listing = await fetchListingById(id);
+  } catch {
+    return notFound();
+  }
 
   // Fetch all products to find related ones from the same creator
-  // In a real large app, you'd have a specific DB query for this
-  const allProducts = await getProducts();
-  const related = allProducts
-    .filter((p) => p.creator === product.creator && p.id !== product.id)
+  const moreData = await fetchListings({ limit: 50 });
+  const related = moreData.listings
+    .filter((l) => l.creator === listing.creator && l.id !== listing.id)
     .slice(0, 4);
 
-  return <ProductDetailClient product={product} related={related} />;
+  return <ProductDetailClient product={listing} related={related} />;
 }

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/formatPrice';
+import { Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
@@ -67,7 +68,7 @@ const GALLERY_VIEWS = [
   { transform: 'scale(1.2)', objectPosition: 'center' }
 ];
 
-export default function ProductDetailClient({ product, related }: { product: any, related: any[] }) {
+export default function ProductDetailClient({ product, related }: { product: Listing, related: Listing[] }) {
   const { toggleWishlist, wishlist, addToCart } = useStore();
   const isWishlisted = wishlist.some(w => w.productId === product.id);
   const [added, setAdded] = useState(false);

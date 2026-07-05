@@ -8,7 +8,7 @@ import { ShieldCheck, CheckCircle, Package, ArrowRight, Star } from 'lucide-reac
 import { useStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
-import { Product } from '@/lib/dbProducts'
+import { Listing } from '@/lib/api'
 import { exploreProducts } from '@/lib/exploreProducts'
 import { slugify } from '@/lib/slugify'
 
@@ -74,7 +74,7 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
   return <span>{timeLeft}</span>
 }
 
-export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Product[], liveAuctions?: Product[] }) {
+export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[] }) {
   const { user } = useStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 

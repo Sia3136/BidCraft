@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { SkeletonGrid } from '@/components/skeleton-grid';
-import { getProducts } from '@/lib/dbProducts';
+import { fetchListings, Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { CategoryFilters } from '@/components/category-filters';
 import { slugify } from '@/lib/slugify';
@@ -49,15 +49,13 @@ export default async function CategoryPage({
 
   const subcategories = megaMenuData[dataKey];
 
-  const allProducts = await getProducts();
-  const filtered = allProducts.filter((p) => {
-    // In our DB, dbProducts maps DB category to subcategory, and sets category to 'Art'
-    if (subcategory) {
-      return slugify(p.subcategory) === slugify(subcategory);
-    }
-    // If no subcategory is selected, show all items in this parent category
-    return subcategories.some(sub => sub.toLowerCase() === p.subcategory.toLowerCase());
+  const data = await fetchListings({
+    category,
+    ...(subcategory ? { subcategory } : {}),
+    limit: 100
   });
+  
+  const filtered = data.listings;
 
   return (
     <div className="w-full">

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
-import { Product } from '@/lib/dbProducts'
+import { Listing } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
 import { Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -50,7 +50,7 @@ const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
   );
 };
 
-export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Product, priority?: boolean }) {
+export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Listing, priority?: boolean }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
 
   function toggleWishlist(e: React.MouseEvent) {

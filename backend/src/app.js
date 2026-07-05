@@ -48,7 +48,10 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000' }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+  credentials: true
+}));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
 app.get('/', (req, res) => {
