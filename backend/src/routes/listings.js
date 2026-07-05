@@ -5,11 +5,15 @@ const {
   getListings,
   getListingById,
   updateListing,
-  deleteListing
+  deleteListing,
+  getLiveAuctions,
+  getNewArrivals
 } = require('../controllers/listingsController');
 const authMiddleware = require('../middleware/auth');
 
 router.post('/', authMiddleware, createListing);
+router.get('/auctions/live', getLiveAuctions);
+router.get('/new-arrivals', getNewArrivals);
 router.get('/', getListings);
 router.get('/:id', getListingById);
 router.put('/:id', authMiddleware, updateListing);

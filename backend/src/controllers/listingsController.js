@@ -88,195 +88,197 @@ async function createListing(req, res, next) {
   }
 }
 
-async function getListings(req, res, next) {
+const getListings = async (req, res) => {
   try {
-    const { category_id, listing_type, status, search, seller_id, min_price, max_price, condition, sort_by, sort_dir, page = 1, limit = 20 } = req.query;
+    const {
+      category, subcategory, method, collection,
+      occasion, type, minPrice, maxPrice,
+      sort = 'newest', limit = 50, offset = 0
+    } = req.query
 
-    const cacheKey = `cache:listings:${JSON.stringify(req.query)}`;
-    
-    if (redis) {
-      try {
-        const cachedData = await redis.get(cacheKey);
-        if (cachedData) {
-          return res.json(typeof cachedData === 'string' ? JSON.parse(cachedData) : cachedData);
-        }
-      } catch (e) {
-        console.error('Redis cache get error:', e);
-      }
+    const conditions = ["status = 'active'"]
+    const values = []
+    let idx = 1
+
+    const slugifySQL = (col) =>
+      `regexp_replace(regexp_replace(lower(${col}), '[&]', '', 'g'), '\\s+', '-', 'g')`
+
+    if (category) {
+      conditions.push(`${slugifySQL('category')} = $${idx++}`)
+      values.push(category)
+    }
+    if (subcategory) {
+      conditions.push(`${slugifySQL('subcategory')} = $${idx++}`)
+      values.push(subcategory)
+    }
+    if (method) {
+      const methodMap = { 'buy-now': 'Buy Now', 'auction': 'Auction', 'negotiable': 'Negotiable' }
+      conditions.push(`buying_method = $${idx++}`)
+      values.push(methodMap[method] || method)
+    }
+    if (collection) {
+      conditions.push(`$${idx++} = ANY(collections)`)
+      values.push(collection)
+    }
+    if (occasion) {
+      conditions.push(`$${idx++} = ANY(occasions)`)
+      values.push(occasion)
+    }
+    if (type === 'new-arrivals') {
+      conditions.push(`new_arrival = true`)
+    }
+    if (type === 'auction') {
+      conditions.push(`buying_method = 'Auction'`)
+    }
+    if (minPrice) {
+      conditions.push(`price >= $${idx++}`)
+      values.push(parseInt(minPrice))
+    }
+    if (maxPrice) {
+      conditions.push(`price <= $${idx++}`)
+      values.push(parseInt(maxPrice))
     }
 
-    let queryText = 'SELECT * FROM listings WHERE 1=1';
-    let countQuery = 'SELECT COUNT(*) FROM listings WHERE 1=1';
-    const params = [];
-    const countParams = [];
-
-    if (category_id) {
-      params.push(category_id);
-      countParams.push(category_id);
-      queryText += ` AND category_id = $${params.length}`;
-      countQuery += ` AND category_id = $${countParams.length}`;
+    const sortMap = {
+      'newest': 'created_at DESC',
+      'price-asc': 'price ASC',
+      'price-desc': 'price DESC'
     }
+    const orderBy = sortMap[sort] || 'created_at DESC'
 
-    if (listing_type) {
-      params.push(listing_type);
-      countParams.push(listing_type);
-      queryText += ` AND listing_type = $${params.length}`;
-      countQuery += ` AND listing_type = $${countParams.length}`;
-    }
+    const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
-    if (seller_id) {
-      params.push(seller_id);
-      countParams.push(seller_id);
-      queryText += ` AND seller_id = $${params.length}`;
-      countQuery += ` AND seller_id = $${countParams.length}`;
-    }
+    // Count query (for pagination UI)
+    const countResult = await db.query(
+      `SELECT COUNT(*) FROM listings ${where}`, values
+    )
+    const total = parseInt(countResult.rows[0].count)
 
-    if (status) {
-      params.push(status);
-      countParams.push(status);
-      queryText += ` AND status = $${params.length}`;
-      countQuery += ` AND status = $${countParams.length}`;
-    } else {
-      queryText += " AND status != 'archived'";
-      countQuery += " AND status != 'archived'";
-    }
+    // Data query
+    values.push(parseInt(limit), parseInt(offset))
+    const result = await db.query(`
+      SELECT
+        slug AS id, id AS "numericId", title, description, price, category, subcategory,
+        buying_method AS "buyingMethod",
+        image_urls AS "images",
+        image_urls[1] AS image,
+        creator_name AS creator,
+        creator_rating AS "creatorRating",
+        creator_review_count AS "creatorReviewCount",
+        creator_badges AS "creatorBadges",
+        is_verified AS verified,
+        offers_allowed AS "offersAllowed",
+        minimum_offer_percent AS "minimumOfferPercent",
+        new_arrival AS "newArrival",
+        collections, occasions,
+        auction_ends_at AS "auctionEndsAt",
+        current_bid AS "currentBid",
+        bid_count AS "bidCount",
+        specifications, reviews,
+        status, created_at AS "createdAt"
+      FROM listings
+      ${where}
+      ORDER BY ${orderBy}
+      LIMIT $${idx++} OFFSET $${idx++}
+    `, values)
 
-    if (condition) {
-      params.push(condition);
-      countParams.push(condition);
-      queryText += ` AND condition = $${params.length}`;
-      countQuery += ` AND condition = $${countParams.length}`;
-    }
-
-    if (min_price) {
-      params.push(min_price);
-      countParams.push(min_price);
-      queryText += ` AND COALESCE(price, 0) >= $${params.length}`;
-      countQuery += ` AND COALESCE(price, 0) >= $${countParams.length}`;
-    }
-
-    if (max_price) {
-      params.push(max_price);
-      countParams.push(max_price);
-      queryText += ` AND COALESCE(price, 0) <= $${params.length}`;
-      countQuery += ` AND COALESCE(price, 0) <= $${countParams.length}`;
-    }
-
-    if (search) {
-      const searchStr = search.trim().toLowerCase();
-      if (searchStr !== '') {
-        params.push(searchStr);
-        countParams.push(searchStr);
-        const searchClause = ` AND (
-          LOWER(title) LIKE LOWER('%' || $${params.length} || '%')
-          OR LOWER(description) LIKE LOWER('%' || $${params.length} || '%')
-          OR LOWER(category) LIKE LOWER('%' || $${params.length} || '%')
-          OR LOWER(subcategory) LIKE LOWER('%' || $${params.length} || '%')
-          OR LOWER(tags::text) LIKE LOWER('%' || $${params.length} || '%')
-        )`;
-        
-        queryText += searchClause;
-        countQuery += ` AND (
-          LOWER(title) LIKE LOWER('%' || $${countParams.length} || '%')
-          OR LOWER(description) LIKE LOWER('%' || $${countParams.length} || '%')
-          OR LOWER(category) LIKE LOWER('%' || $${countParams.length} || '%')
-          OR LOWER(subcategory) LIKE LOWER('%' || $${countParams.length} || '%')
-          OR LOWER(tags::text) LIKE LOWER('%' || $${countParams.length} || '%')
-        )`;
-      }
-    }
-
-    // Sorting
-    const validSortFields = ['created_at', 'price', 'end_time'];
-    const validSortDirs = ['asc', 'desc'];
-    
-    const sortField = validSortFields.includes(sort_by) ? sort_by : 'created_at';
-    const sortDirection = validSortDirs.includes(sort_dir?.toLowerCase()) ? sort_dir.toUpperCase() : 'DESC';
-    
-    // Sort by COALESCE(price, start_bid) if sorting by price
-    if (sortField === 'price') {
-       queryText += ` ORDER BY COALESCE(price, 0) ${sortDirection}`;
-    } else {
-       queryText += ` ORDER BY ${sortField} ${sortDirection}`;
-    }
-
-    // Pagination
-    const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 20;
-    const offset = (pageNum - 1) * limitNum;
-
-    params.push(limitNum);
-    queryText += ` LIMIT $${params.length}`;
-    
-    params.push(offset);
-    queryText += ` OFFSET $${params.length}`;
-
-    const [result, countResult] = await Promise.all([
-      db.query(queryText, params),
-      db.query(countQuery, countParams)
-    ]);
-    
-    const totalItems = parseInt(countResult.rows[0].count);
-    const totalPages = Math.ceil(totalItems / limitNum);
-
-    const responseData = { 
+    res.json({
       listings: result.rows,
-      pagination: {
-        total: totalItems,
-        page: pageNum,
-        limit: limitNum,
-        totalPages
-      }
-    };
-
-    if (redis) {
-      try {
-        // Cache for 5 minutes (300 seconds)
-        await redis.set(cacheKey, JSON.stringify(responseData), { ex: 300 });
-      } catch (e) {
-        console.error('Redis cache set error:', e);
-      }
-    }
-
-    res.json(responseData);
+      total,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      hasMore: parseInt(offset) + result.rows.length < total
+    })
   } catch (err) {
-    next(err);
+    console.error('[listings] Error:', err.message)
+    res.status(500).json({ error: 'Internal server error', detail: err.message })
   }
 }
 
-async function getListingById(req, res, next) {
+const getListingById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const cacheKey = `cache:listing:${id}`;
+    const { id } = req.params
+    const result = await db.query(`
+      SELECT
+        slug AS id, id AS "numericId", title, description, price, category, subcategory,
+        buying_method AS "buyingMethod",
+        image_urls AS "images",
+        image_urls[1] AS image,
+        creator_name AS creator,
+        creator_rating AS "creatorRating",
+        creator_review_count AS "creatorReviewCount",
+        creator_badges AS "creatorBadges",
+        is_verified AS verified,
+        offers_allowed AS "offersAllowed",
+        minimum_offer_percent AS "minimumOfferPercent",
+        auction_ends_at AS "auctionEndsAt",
+        current_bid AS "currentBid",
+        bid_count AS "bidCount",
+        specifications, reviews,
+        status, created_at AS "createdAt"
+      FROM listings
+      WHERE (slug = $1 OR id::text = $1) AND status::text != 'deleted'
+    `, [id])
 
-    if (redis) {
-      try {
-        const cachedData = await redis.get(cacheKey);
-        if (cachedData) {
-          return res.json({ listing: typeof cachedData === 'string' ? JSON.parse(cachedData) : cachedData });
-        }
-      } catch (e) {
-        console.error('Redis cache get error:', e);
-      }
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Listing not found' })
     }
-
-    const result = await db.query('SELECT * FROM listings WHERE id = $1', [id]);
-    const listing = result.rows[0];
-    if (!listing) return res.status(404).json({ error: 'listing_not_found' });
-
-    if (redis) {
-      try {
-        await redis.set(cacheKey, JSON.stringify(listing), { ex: 300 });
-      } catch (e) {
-        console.error('Redis cache set error:', e);
-      }
-    }
-
-    res.json({ listing });
+    res.json(result.rows[0])
   } catch (err) {
-    next(err);
+    console.error('[listings] Error:', err.message)
+    res.status(500).json({ error: 'Internal server error', detail: err.message })
   }
 }
+
+const getLiveAuctions = async (req, res) => {
+  try {
+    const { limit = 10 } = req.query
+    const result = await db.query(`
+      SELECT
+        slug AS id, id AS "numericId", title, image_urls[1] AS image,
+        creator_name AS creator,
+        price, current_bid AS "currentBid",
+        bid_count AS "bidCount",
+        auction_ends_at AS "auctionEndsAt",
+        is_verified AS verified
+      FROM listings
+      WHERE buying_method = 'Auction'
+        AND status = 'active'
+        AND auction_ends_at > NOW()
+      ORDER BY auction_ends_at ASC
+      LIMIT $1
+    `, [parseInt(limit)])
+    res.json({ auctions: result.rows })
+  } catch (err) {
+    console.error('[listings] Error:', err.message)
+    res.status(500).json({ error: 'Internal server error', detail: err.message })
+  }
+}
+
+const getNewArrivals = async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        slug AS id, id AS "numericId", title, image_urls[1] AS image,
+        creator_name AS creator,
+        price, buying_method AS "buyingMethod",
+        is_verified AS verified,
+        offers_allowed AS "offersAllowed",
+        auction_ends_at AS "auctionEndsAt",
+        current_bid AS "currentBid",
+        bid_count AS "bidCount"
+      FROM listings
+      WHERE new_arrival = true AND status = 'active'
+      ORDER BY created_at DESC
+      LIMIT 15
+    `)
+    res.json({ listings: result.rows })
+  } catch (err) {
+    console.error('[listings] Error:', err.message)
+    res.status(500).json({ error: 'Internal server error', detail: err.message })
+  }
+}
+
 
 async function updateListing(req, res, next) {
   try {
@@ -371,5 +373,7 @@ module.exports = {
   getListings,
   getListingById,
   updateListing,
-  deleteListing
+  deleteListing,
+  getLiveAuctions,
+  getNewArrivals
 };
