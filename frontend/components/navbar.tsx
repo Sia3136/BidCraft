@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
 import { CloudinaryImage } from '@/components/CloudinaryImage'
 import Image from 'next/image'
+import { slugify } from '@/lib/slugify'
 
 const categories = [
   { name: 'Art', slug: 'art', subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'] },
@@ -86,6 +87,19 @@ export const Navbar = React.memo(function Navbar() {
 
   const textClass = "text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
 
+  const formatTime = (isoString: string) => {
+    const date = new Date(isoString);
+    const now = new Date('2026-09-01T00:00:00Z');
+    const diff = Math.max(0, now.getTime() - date.getTime());
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  };
+
+  const { notifications, markAllNotificationsRead, markNotificationRead } = useStore();
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   const NotificationsDropdown = () => (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -94,50 +108,45 @@ export const Navbar = React.memo(function Navbar() {
       className="absolute top-full right-0 mt-2 w-[320px] max-h-[420px] overflow-y-auto bg-[var(--color-white)] rounded-[var(--radius-md)] shadow-[var(--shadow-modal)] z-50 flex flex-col border border-[var(--color-border-subtle)] hide-scrollbar"
     >
       <div className="p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between sticky top-0 bg-[var(--color-white)] z-10">
-        <h3 className="text-heading-sm text-[var(--color-ink-900)]">What's Happening</h3>
-        <button className="text-caption text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)]">Mark all read</button>
+        <h3 className="text-heading-sm text-[var(--color-ink-900)]">Notifications</h3>
+        {unreadCount > 0 && (
+          <button 
+            onClick={() => markAllNotificationsRead()}
+            className="text-caption font-bold text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)] transition-colors"
+          >
+            Mark all read
+          </button>
+        )}
       </div>
-
       <div className="flex flex-col">
-        {/* Mock Notification 1 */}
-        <Link href="/product/art-018" className="p-4 flex gap-3 hover:bg-[var(--color-cream-raised)] transition-colors border-b border-[var(--color-border-subtle)] cursor-pointer relative bg-[var(--color-cream-raised)]">
-          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[var(--color-terracotta-600)]" />
-          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-cream-deep)] overflow-hidden shrink-0">
-            <CloudinaryImage publicId="bidcraft/art/digital-art/cyberpunk_cityscape" width={40} height={40} alt="Cyberpunk Cityscape" className="w-full h-full object-cover" />
+        {notifications.map((n) => (
+          <Link
+            key={n.id}
+            href={n.productUrl}
+            onClick={() => {
+              if (!n.read) markNotificationRead(n.id);
+              setOpenDropdown(null);
+            }}
+            className={cn(
+              "flex gap-3 p-4 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-cream-base)] transition-colors",
+              !n.read && "bg-[var(--color-terracotta-100)]"
+            )}
+          >
+            <div className="shrink-0 w-12 h-12 relative rounded-[var(--radius-sm)] overflow-hidden">
+              <Image src={n.productImage} alt={n.title} fill className="object-cover" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-body-sm font-bold font-ui text-[var(--color-ink-900)] leading-tight">{n.title}</span>
+              <span className="text-caption text-[var(--color-ink-700)] leading-snug">{n.body}</span>
+              <span className="text-[11px] text-[var(--color-ink-500)] mt-1">{formatTime(n.timestamp)}</span>
+            </div>
+          </Link>
+        ))}
+        {notifications.length === 0 && (
+          <div className="p-8 text-center text-body-md text-[var(--color-ink-500)]">
+            No notifications yet
           </div>
-          <div className="flex-1">
-            <p className="text-body-md text-[var(--color-ink-900)] leading-snug">Someone outbid you on Cyberpunk Cityscape</p>
-            <p className="text-caption text-[var(--color-ink-500)] mt-1">Current bid: ₹4,400 · 2 hours ago</p>
-          </div>
-        </Link>
-
-        {/* Mock Notification 2 */}
-        <Link href="/product/art-020" className="p-4 flex gap-3 hover:bg-[var(--color-cream-raised)] transition-colors border-b border-[var(--color-border-subtle)] cursor-pointer relative bg-[var(--color-cream-raised)]">
-          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[var(--color-terracotta-600)]" />
-          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-cream-deep)] overflow-hidden shrink-0">
-            <CloudinaryImage publicId="bidcraft/art/digital-art/geometric_abstraction" width={40} height={40} alt="Geometric Abstraction" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex-1">
-            <p className="text-body-md text-[var(--color-ink-900)] leading-snug">Your wishlist item is on sale</p>
-            <p className="text-caption text-[var(--color-ink-500)] mt-1">Geometric Abstraction — now ₹1,260 (10% off) · 5 hours ago</p>
-          </div>
-        </Link>
-
-        {/* Mock Notification 3 */}
-        <Link href="/product/art-027" className="p-4 flex gap-3 hover:bg-[var(--color-cream-raised)] transition-colors border-b border-[var(--color-border-subtle)] cursor-pointer relative">
-          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-cream-deep)] overflow-hidden shrink-0">
-            <CloudinaryImage publicId="bidcraft/art/sculptures/modern_abstract_sculpture" width={40} height={40} alt="Serenity in Stone" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex-1">
-            <p className="text-body-md text-[var(--color-ink-900)] leading-snug">New arrival in Art you might like</p>
-            <p className="text-caption text-[var(--color-ink-500)] mt-1">Serenity in Stone by Vikram Rao · Just listed</p>
-          </div>
-        </Link>
-      </div>
-      <div className="p-3 text-center border-t border-[var(--color-border-subtle)]">
-        <button onClick={() => setOpenDropdown(null)} className="text-caption font-medium text-[var(--color-terracotta-600)] hover:underline">
-          View all notifications
-        </button>
+        )}
       </div>
     </motion.div>
   )
@@ -184,6 +193,7 @@ export const Navbar = React.memo(function Navbar() {
       <div className="h-[128px] md:h-[136px]" /> {/* Spacer for fixed header (80px + 56px approx) */}
       <header
         ref={navRef}
+        style={{ fontFamily: 'var(--font-display)' }}
         className={cn(
           "w-full fixed top-0 z-50 transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] border-b",
           (isHomepage && !isScrolled)
@@ -207,12 +217,12 @@ export const Navbar = React.memo(function Navbar() {
               </button>
 
               <div className="hidden md:flex items-center gap-6">
-                <Link href="/#our-story" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                <Link href={isHomepage ? "#our-story" : "/our-story"} className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
                   Our Story
                 </Link>
-                <a href="mailto:hello@bidcraft.in" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                <Link href="/contact" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
                   Contact
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -269,7 +279,7 @@ export const Navbar = React.memo(function Navbar() {
                     aria-label="Notifications"
                   >
                     <Bell className="w-5 h-5" strokeWidth={1.5} />
-                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-[var(--color-urgent-600)] rounded-full border-[1.5px] border-transparent" />
+                    {unreadCount > 0 && <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-[var(--color-urgent-600)] rounded-full border-[1.5px] border-transparent" />}
                   </button>
                   <AnimatePresence>
                     {openDropdown === 'notifications' && <NotificationsDropdown />}
@@ -342,10 +352,8 @@ export const Navbar = React.memo(function Navbar() {
                     onClick={() => {
                       if (openDropdown === category.slug) {
                         setOpenDropdown(null);
-                        router.push(`/explore?category=${category.slug}`);
                       } else {
                         setOpenDropdown(category.slug);
-                        router.push(`/explore?category=${category.slug}`);
                       }
                     }}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
@@ -393,7 +401,7 @@ export const Navbar = React.memo(function Navbar() {
                 <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
                   <div className="grid grid-cols-3 gap-y-4 gap-x-8">
                     {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
-                      const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+                      const subSlug = slugify(sub);
                       return (
                         <Link
                           key={sub}
@@ -431,6 +439,7 @@ export const Navbar = React.memo(function Navbar() {
         exit={{ x: '-100%' }}
         transition={{ type: 'tween', duration: 0.3 }}
         className="absolute left-0 top-0 bottom-0 w-[80%] max-w-[320px] bg-[var(--color-white)] shadow-xl overflow-y-auto"
+        style={{ fontFamily: 'var(--font-display)' }}
         onClick={e => e.stopPropagation()}
       >
         <div className="p-4 border-b border-[var(--color-border-subtle)] flex items-center justify-between">
@@ -443,14 +452,42 @@ export const Navbar = React.memo(function Navbar() {
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">Shop</h3>
             {categories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/explore?category=${category.slug}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium"
-              >
-                {category.name}
-              </Link>
+              <div key={category.slug} className="flex flex-col">
+                <button
+                  onClick={() => setOpenDropdown(openDropdown === category.slug ? null : category.slug)}
+                  className="flex items-center justify-between text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
+                >
+                  {category.name}
+                  <span className="text-xl leading-none">{openDropdown === category.slug ? '−' : '+'}</span>
+                </button>
+                <AnimatePresence>
+                  {openDropdown === category.slug && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
+                    >
+                      {category.subcategories.map(sub => {
+                        const subSlug = slugify(sub);
+                        return (
+                          <Link
+                            key={subSlug}
+                            href={`/explore?category=${category.slug}&subcategory=${subSlug}`}
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              setOpenDropdown(null);
+                            }}
+                            className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
+                          >
+                            {sub}
+                          </Link>
+                        )
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
             <Link
               href="/explore"
@@ -466,19 +503,19 @@ export const Navbar = React.memo(function Navbar() {
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">About</h3>
             <Link
-              href="/#our-story"
+              href={isHomepage ? "#our-story" : "/our-story"}
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium"
             >
               Our Story
             </Link>
-            <a
-              href="mailto:hello@bidcraft.in"
+            <Link
+              href="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium"
             >
               Contact
-            </a>
+            </Link>
           </div>
         </div>
       </motion.div>

@@ -17,7 +17,7 @@ const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
     const update = () => {
       const remaining = target - Date.now();
       if (remaining <= 0) {
-        setTimeLeft('Ended');
+        setTimeLeft('Auction Ended');
         setIsUrgent(false);
         return;
       }
@@ -29,11 +29,7 @@ const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
       const m = Math.floor((remaining / 1000 / 60) % 60);
       const s = Math.floor((remaining / 1000) % 60);
       
-      if (remaining >= 60 * 60 * 1000) {
-        setTimeLeft(`${d}d ${h}h ${m}m`);
-      } else {
-        setTimeLeft(`${m}m ${s}s`);
-      }
+      setTimeLeft(`${d}d ${h}h ${m}m ${s}s`);
     };
     
     update();

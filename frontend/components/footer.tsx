@@ -2,114 +2,97 @@ import Link from 'next/link'
 
 export function Footer() {
   return (
-    <footer className="bg-[var(--color-slate-900)] text-[var(--color-white)] pt-24 pb-8 px-[var(--space-5)] xl:px-[var(--space-8)] mt-24">
+    <footer className="bg-[var(--color-slate-900)] text-[var(--color-cream-base)] pt-16 pb-8 px-[var(--space-5)] xl:px-[var(--space-8)] mt-24">
       
-      {/* Newsletter Section */}
-      <div className="w-full max-w-[560px] mx-auto text-center border-b border-white/10 pb-16 mb-16">
-        <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6">
-          Never miss a masterpiece
-        </h2>
-        <p className="text-body-md text-white/70 mb-8">
-          Join our newsletter for weekly curated drops, upcoming auctions, and exclusive creator interviews.
-        </p>
-        <form className="flex gap-2 max-w-md mx-auto mb-4">
-          <input type="email" placeholder="Email address" className="flex-1 h-12 rounded-[var(--radius-md)] px-4 bg-white/10 border border-white/20 text-[var(--color-cream-base)] placeholder:text-white/40 outline-none focus:border-[var(--color-terracotta-600)] focus:bg-white/15 transition-all" required />
-          <button type="submit" className="h-12 px-6 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors whitespace-nowrap">
-            Subscribe
-          </button>
-        </form>
-        <p className="text-caption text-white/50">
-          By subscribing, you agree to our Privacy Policy and consent to receive updates.
-        </p>
-      </div>
-
-      <div className="w-full max-w-[var(--container-max)] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 mb-16">
-        
-        {/* Brand Column */}
-        <div className="lg:col-span-1">
-          <Link href="/" className="text-display-md font-display text-white mb-4 block">
-            BidCraft
-          </Link>
-          <p className="text-body-md text-white/70 mb-6">
-            The premium creator-first marketplace for handmade goods, art, collectibles, auctions, and trades.
+      {/* Contact Block */}
+      <div className="w-full max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[var(--color-slate-700)] pb-16 mb-16 gap-8">
+        <div>
+          <h2 className="text-display-lg font-display mb-4 text-white">
+            We're here to help
+          </h2>
+          <p className="text-body-lg text-white/70 mb-4 max-w-xl">
+            For general support, business enquiries, or creator assistance, reach out to us at our single point of contact.
           </p>
-          <div className="flex gap-4">
-            <Link href="#" className="text-white/70 hover:text-white transition-colors" aria-label="Instagram">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01" />
-              </svg>
-            </Link>
-            <Link href="#" className="text-white/70 hover:text-white transition-colors" aria-label="Twitter">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-              </svg>
-            </Link>
-            <Link href="#" className="text-white/70 hover:text-white transition-colors" aria-label="Facebook">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </svg>
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-body-lg text-white/80">
+            <span>Email: <a href="mailto:support@bidcraft.in" className="text-white font-semibold hover:text-[var(--color-terracotta-600)] transition-colors">support@bidcraft.in</a></span>
+            <span>Instagram: <a href="#" className="text-white font-semibold hover:text-[var(--color-terracotta-600)] transition-colors">@bidcraft.in</a></span>
           </div>
         </div>
+        <Link href="/contact" className="h-14 px-8 flex items-center justify-center bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors whitespace-nowrap">
+          Open Contact Form
+        </Link>
+      </div>
 
-        {/* Marketplace */}
-        <div>
-          <h4 className="text-heading-sm font-semibold mb-4">Marketplace</h4>
-          <ul className="space-y-3">
-            <li><Link href="/category/art" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Art</Link></li>
-            <li><Link href="/category/crafts" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Crafts</Link></li>
-            <li><Link href="/category/collectibles" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Collectibles</Link></li>
-            <li><Link href="/category/hot-wheels" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Hot Wheels</Link></li>
-            <li><Link href="/auctions" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Live Auctions</Link></li>
-          </ul>
+      <div className="w-full max-w-[var(--container-max)] mx-auto mb-16 border-b border-[var(--color-slate-700)] pb-16">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+          <Link href="/" className="text-display-xl font-display text-white">
+            BidCraft
+          </Link>
+          <p className="text-body-lg text-[var(--color-ink-300)] max-w-md md:text-right">
+            The premium creator-first marketplace for handmade goods, art, collectibles, auctions, and trades.
+          </p>
         </div>
 
-        {/* Sell */}
-        <div>
-          <h4 className="text-heading-sm font-semibold mb-4">Sell</h4>
-          <ul className="space-y-3">
-            <li><Link href="/sell" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Start Selling</Link></li>
-            <li><Link href="/creator-tools" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Creator Tools</Link></li>
-            <li><Link href="/fees" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Fees & Pricing</Link></li>
-            <li><Link href="/community" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Seller Community</Link></li>
-          </ul>
-        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+          
+          {/* Marketplace */}
+          <div>
+            <h4 className="text-heading-sm font-semibold mb-6 text-white">Marketplace</h4>
+            <ul className="space-y-4">
+              <li><Link href="/category/art" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Art</Link></li>
+              <li><Link href="/category/crafts" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Crafts</Link></li>
+              <li><Link href="/category/collectibles" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Collectibles</Link></li>
+              <li><Link href="/category/hot-wheels" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Hot Wheels</Link></li>
+              <li><Link href="/explore?type=auction" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Live Auctions</Link></li>
+            </ul>
+          </div>
 
-        {/* Trust & Support */}
-        <div>
-          <h4 className="text-heading-sm font-semibold mb-4">Trust & Support</h4>
-          <ul className="space-y-3">
-            <li><Link href="/escrow" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">How Escrow Works</Link></li>
-            <li><Link href="/buyer-protection" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Buyer Protection</Link></li>
-            <li><Link href="/help" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Help Center</Link></li>
-            <li><a href="mailto:hello@bidcraft.in" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Contact Us</a></li>
-          </ul>
-        </div>
+          {/* Sell */}
+          <div>
+            <h4 className="text-heading-sm font-semibold mb-6 text-white">Sell</h4>
+            <ul className="space-y-4">
+              <li><Link href="/sell" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Start Selling</Link></li>
+              <li><Link href="/creator-tools" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Creator Tools</Link></li>
+              <li><Link href="/fees" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Fees & Pricing</Link></li>
+              <li><Link href="/community" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Seller Community</Link></li>
+            </ul>
+          </div>
 
-        {/* Company */}
-        <div>
-          <h4 className="text-heading-sm font-semibold mb-4">Company</h4>
-          <ul className="space-y-3">
-            <li><Link href="/about" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">About Us</Link></li>
-            <li><Link href="/careers" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Careers</Link></li>
-            <li><Link href="/press" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Press</Link></li>
-            <li><Link href="/blog" className="text-body-md text-white/70 hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-all">Blog</Link></li>
-          </ul>
+          {/* Trust & Support */}
+          <div>
+            <h4 className="text-heading-sm font-semibold mb-6 text-white">Trust & Support</h4>
+            <ul className="space-y-4">
+              <li><Link href="/escrow" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">How Escrow Works</Link></li>
+              <li><Link href="/buyer-protection" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Buyer Protection</Link></li>
+              <li><Link href="/help" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link href="/contact" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Contact Us</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-heading-sm font-semibold mb-6 text-white">Company</h4>
+            <ul className="space-y-4">
+              <li><Link href="/about" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/careers" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Careers</Link></li>
+              <li><Link href="/press" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Press</Link></li>
+              <li><Link href="/blog" className="text-body-md text-[var(--color-ink-300)] hover:text-white transition-colors">Blog</Link></li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <div className="w-full max-w-[var(--container-max)] mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-caption text-white/50">
-          © {new Date().getFullYear()} BidCraft. All rights reserved.
+      <div className="w-full max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-caption text-[var(--color-ink-300)]">
+          © 2026 BidCraft. All rights reserved.
         </p>
-        <p className="text-caption text-white/70 text-center">
-          Questions? Email us at <a href="mailto:hello@bidcraft.in" className="hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-colors">hello@bidcraft.in</a> · Instagram <a href="#" className="hover:text-white hover:underline decoration-[var(--color-terracotta-600)] transition-colors">@bidcraft.in</a>
+        <p className="text-caption text-[var(--color-ink-300)] text-center">
+          Questions? Email <a href="mailto:support@bidcraft.in" className="hover:text-white transition-colors">support@bidcraft.in</a> · Instagram <a href="#" className="hover:text-white transition-colors">@bidcraft.in</a>
         </p>
         <div className="flex gap-6">
-          <Link href="/privacy" className="text-caption text-white/50 hover:text-white transition-colors">Privacy Policy</Link>
-          <Link href="/terms" className="text-caption text-white/50 hover:text-white transition-colors">Terms of Service</Link>
-          <Link href="/cookies" className="text-caption text-white/50 hover:text-white transition-colors">Cookie Settings</Link>
+          <Link href="/privacy" className="text-caption text-[var(--color-ink-300)] hover:text-white transition-colors">Privacy Policy</Link>
+          <Link href="/terms" className="text-caption text-[var(--color-ink-300)] hover:text-white transition-colors">Terms of Service</Link>
+          <Link href="/cookies" className="text-caption text-[var(--color-ink-300)] hover:text-white transition-colors">Cookie Settings</Link>
         </div>
       </div>
     </footer>

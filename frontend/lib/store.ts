@@ -22,12 +22,9 @@ interface WishlistItem {
   productId: string;
 }
 
-interface Notification {
-  id: string;
-  message: string;
-  read: boolean;
-  type: 'info' | 'urgent' | 'success';
-}
+import { notifications as staticNotifications, Notification as NotificationType } from './notifications';
+
+type Notification = NotificationType;
 
 interface StoreState {
   user: User | null;
@@ -53,6 +50,7 @@ interface StoreState {
   
   // Notification Actions
   addNotification: (notification: Omit<Notification, 'id' | 'read'>) => void;
+  markAllNotificationsRead: () => void;
   markNotificationRead: (id: string) => void;
   
   // Merge Anonymous data to user
@@ -67,13 +65,13 @@ export const useStore = create<StoreState>()(
       location: null,
       cart: [],
       wishlist: [],
-      notifications: [],
+      notifications: staticNotifications,
       
       login: (user, token) => {
         set({ user, token });
         get().mergeAnonymousData();
       },
-      logout: () => set({ user: null, token: null, location: null, cart: [], wishlist: [], notifications: [] }),
+      logout: () => set({ user: null, token: null, location: null, cart: [], wishlist: [], notifications: staticNotifications }),
       setLocation: (location) => set({ location }),
       
       addToCart: (item) => set((state) => {
@@ -106,6 +104,9 @@ export const useStore = create<StoreState>()(
       })),
       markNotificationRead: (id) => set((state) => ({
         notifications: state.notifications.map(n => n.id === id ? { ...n, read: true } : n)
+      })),
+      markAllNotificationsRead: () => set((state) => ({
+        notifications: state.notifications.map(n => ({ ...n, read: true }))
       })),
       
       mergeAnonymousData: () => {

@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import React, {  useState, useEffect  } from 'react'
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'

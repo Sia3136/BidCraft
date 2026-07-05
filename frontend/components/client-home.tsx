@@ -13,17 +13,17 @@ import { exploreProducts } from '@/lib/exploreProducts'
 import { slugify } from '@/lib/slugify'
 
 const heroImages = [
-  '/images/beautifully-crafted-colorful-crochet-flowers-in-a-blue-pot-on-a-dark-background-free-photo (1).jpeg',
+  '/images/crochet-flowers-blue-pot.jpeg',
   '/images/968355308d40d83a2e1f59daa61c5089.jpg',
   '/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg',
   '/images/586fa4c05a4543d441ec3c2bf877f807.jpg'
 ]
 
 const featuredCreators = [
-  { id: 1, name: 'Sneha Agarwal', specialty: 'Oil & Watercolour Paintings · Pune', bio: 'Capturing monsoons, marigolds, and memories through layered oil and watercolour canvases.', rating: '4.8', reviews: 91, followers: '634', verified: true, avatarInitials: 'SA', avatarBg: 'bg-[var(--color-terracotta-600)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
-  { id: 2, name: 'Vikram Rao', specialty: 'Stone & Clay Sculpture · Jaipur', bio: 'Shaping raw stone and clay into forms that carry the weight of Indian craft traditions.', rating: '4.6', reviews: 43, followers: '312', verified: true, avatarInitials: 'VR', avatarBg: 'bg-[var(--color-slate-700)]', cover: '/images/8891723f370ddd55a88b322a622406a2.jpg' },
-  { id: 3, name: 'Aisha Malik', specialty: 'Handmade Jewellery · Hyderabad', bio: 'Crafting delicate silver and beadwork pieces rooted in Hyderabadi craft heritage.', rating: '4.7', reviews: 118, followers: '827', verified: true, avatarInitials: 'AM', avatarBg: 'bg-[var(--color-success-600)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' },
-  { id: 4, name: 'Karan Sethi', specialty: 'Rare Collectibles & Vintage Finds · Mumbai', bio: 'Sourcing forgotten treasures — from vintage die-cast cars to first-edition comics — for serious collectors.', rating: '4.5', reviews: 67, followers: '489', verified: false, avatarInitials: 'KS', avatarBg: 'bg-[var(--color-ink-700)]', cover: '/images/1f92888deb74023c26ec86c954a18188.jpg' }
+  { id: 1, name: 'Sneha Agarwal', specialty: 'Oil & Watercolour Paintings · Pune', bio: 'Capturing monsoons, marigolds, and memories through layered oil and watercolour canvases.', rating: '4.9', reviews: 91, followers: '142', verified: true, avatarInitials: 'SA', avatarBg: 'bg-[var(--color-terracotta-600)]', cover: '/images/dd5d9d9aaf49d3fac48af9d1b80001bb.jpg' },
+  { id: 2, name: 'Vikram Rao', specialty: 'Stone & Clay Sculpture · Jaipur', bio: 'Shaping raw stone and clay into forms that carry the weight of Indian craft traditions.', rating: '4.8', reviews: 43, followers: '89', verified: true, avatarInitials: 'VR', avatarBg: 'bg-[var(--color-slate-700)]', cover: '/images/8891723f370ddd55a88b322a622406a2.jpg' },
+  { id: 3, name: 'Aisha Malik', specialty: 'Handmade Jewellery · Hyderabad', bio: 'Crafting delicate silver and beadwork pieces rooted in Hyderabadi craft heritage.', rating: '5.0', reviews: 118, followers: '175', verified: true, avatarInitials: 'AM', avatarBg: 'bg-[var(--color-success-600)]', cover: '/images/d00d6edd9a33d14ce95b39d402b4e865.jpg' },
+  { id: 4, name: 'Karan Sethi', specialty: 'Rare Collectibles & Vintage Finds · Mumbai', bio: 'Sourcing forgotten treasures — from vintage die-cast cars to first-edition comics — for serious collectors.', rating: '4.7', reviews: 67, followers: '112', verified: false, avatarInitials: 'KS', avatarBg: 'bg-[var(--color-ink-700)]', cover: '/images/1f92888deb74023c26ec86c954a18188.jpg' }
 ]
 
 const revealVariant = {
@@ -229,7 +229,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 </div>
               </motion.div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {liveAuctions.map((auction) => (
                   <motion.div key={auction.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="snap-start hover-card bg-white rounded-[var(--radius-lg)] p-3 relative block">
                     <Link href={`/product/${auction.id}`} className="absolute inset-0 z-20" aria-label={`View ${auction.title}`}></Link>
@@ -295,43 +295,29 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </section>
         )}
 
-        {/* 5. NEW: Trust & Process */}
-        <section className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
+                {/* 5. Our Story */}
+        <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover' }} alt="Hand-painted vase" className="rounded-r-[var(--radius-lg)]" />
+            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
           </div>
           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
-              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-4">Your money. Your art. Protected.</h2>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10">
-                Every transaction on BidCraft is held in escrow until you confirm delivery. No release of funds without your approval.
+              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6">Our Story</h2>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
+                Every creation has a story. Every creator deserves a platform that values it.
               </p>
-              
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <ShieldCheck className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
-                  <div>
-                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Escrow on Every Order</h3>
-                    <p className="text-body-md text-[var(--color-cream-base)]/70">Your payment is held securely until you confirm receipt. The seller is paid only after you approve. No exceptions.</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4">
-                  <CheckCircle className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
-                  <div>
-                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Verified Sellers</h3>
-                    <p className="text-body-md text-[var(--color-cream-base)]/70">Every seller on BidCraft goes through identity and bank verification before listing. Fake listings are flagged and removed within 24 hours.</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4">
-                  <Package className="w-6 h-6 text-[var(--color-terracotta-600)] shrink-0" />
-                  <div>
-                    <h3 className="text-heading-sm text-[var(--color-cream-base)] mb-1">Transparent Shipping</h3>
-                    <p className="text-body-md text-[var(--color-cream-base)]/70">Sellers commit to dispatch timelines upfront. Track your order end-to-end. If something goes wrong, our buyer protection kicks in.</p>
-                  </div>
-                </div>
-              </div>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
+                BidCraft was built to bridge the gap between talented creators and people who truly appreciate their work. In a world where selling online often means uncertainty, we envisioned a marketplace where creativity is backed by trust, transparency, and opportunity—not risk.
+              </p>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
+                Whether it's an artist's first handmade piece, a student's passion project, or a collector searching for something rare, BidCraft brings them together in one secure ecosystem. With verified creators, protected transactions, and a marketplace designed for discovery, we make buying, selling, and auctioning unique creations simple and reliable.
+              </p>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10">
+                Our vision is to become the home of India's creative economy—where every creator, regardless of size or experience, has the confidence to showcase their talent, build their identity, and turn passion into lasting opportunity.
+              </p>
+              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast">
+                Read Our Full Story
+              </Link>
             </motion.div>
           </div>
         </section>
@@ -343,17 +329,17 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
               <h2 className="text-display-lg text-[var(--color-ink-900)]">New Arrivals</h2>
             </motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-6 lg:gap-8 mb-10">
+            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 lg:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
               {newArrivals.map((p, idx) => (
-                <motion.div key={p.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant}>
+                <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[calc(25%-24px)] min-w-[280px]">
                   <ProductCard product={p} priority={idx < 4} />
-                </motion.div>
+                </div>
               ))}
             </div>
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
-              <Link href="/explore?sort=newest" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
-                Explore more new arrivals <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <Link href="/explore?type=new-arrivals" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
+                Explore More Live Auctions
               </Link>
             </motion.div>
           </div>
@@ -432,23 +418,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-        {/* 9. Collector Spotlight */}
-        <section className="w-full min-h-[480px] flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/3331bf8da919ff1b47c345584f0f91a3.jpg" fill style={{ objectFit: 'cover', objectPosition: 'center' }} alt="Collector" />
-          </div>
-          <div className="w-full md:w-1/2 bg-[var(--color-slate-900)] p-12 lg:p-24 flex flex-col justify-center items-center text-center">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md">
-              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">Collector Spotlight</span>
-              <h2 className="text-display-lg text-white mb-6">"BidCraft connected me with artisans I couldn't find anywhere else."</h2>
-              <p className="text-body-lg text-white/80 mb-8">
-                Discover the story behind Rahul's collection of rare Indian numismatics and antique brasswares sourced directly from village creators.
-              </p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* 10. Gifts With a Story */}
+                {/* 10. Gifts With a Story */}
         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12">
@@ -495,11 +465,11 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                     <div className="flex items-center gap-4">
                       <Image 
                         src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
-                        width={64} 
-                        height={64} 
+                        width={96} 
+                        height={96} 
                         style={{ objectFit: 'cover' }}
                         alt={`User ${i}`}
-                        className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[64px] h-[64px] min-w-[64px]"
+                        className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[96px] h-[96px] min-w-[96px]"
                       />
                       <div>
                         <p className="text-heading-sm text-[var(--color-ink-900)]">
@@ -525,13 +495,14 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             <p className="text-body-lg text-gray-300 mb-10">
               Join 2,000+ Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
             </p>
-            <Link href="/seller/register" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
+            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
               Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </section>
 
-      </main>
+      
+        </main>
     </div>
   )
 }
