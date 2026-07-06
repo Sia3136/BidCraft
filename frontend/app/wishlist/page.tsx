@@ -5,9 +5,12 @@ import Link from 'next/link'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { useStore } from '@/lib/store'
+import { useAuthStore } from '@/store/authStore'
+import { Store, ShoppingBag, Heart, Trash2 } from 'lucide-react'
 
 export default function WishlistPage() {
-  const { user } = useStore()
+  const { wishlist, removeFromCart, addToCart } = useStore()
+  const { user } = useAuthStore()
   
   return (
     <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">

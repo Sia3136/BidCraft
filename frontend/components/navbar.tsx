@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Search, Heart, ShoppingBag, Bell, MapPin, X, User, Store, Package, LogOut, Menu } from 'lucide-react'
+import { Heart, ShoppingBag, Bell, MapPin, X, User, Store, Package, LogOut, Menu, Search } from 'lucide-react'
 import { useStore } from '@/lib/store'
+import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter, usePathname } from 'next/navigation'
@@ -24,7 +25,8 @@ export const Navbar = React.memo(function Navbar() {
   const pathname = usePathname()
   const isHomepage = pathname === '/'
 
-  const { user, location, cart, wishlist, logout } = useStore()
+  const { location, cart, wishlist } = useStore()
+  const { user, isAuthenticated, clearAuth } = useAuthStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [openDropdown, setOpenDropdown] = useState<'notifications' | 'profile' | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -181,7 +183,7 @@ export const Navbar = React.memo(function Navbar() {
 
       <div className="h-px bg-[var(--color-border-subtle)] my-2" />
 
-      <button onClick={() => { logout(); setOpenDropdown(null); router.push('/') }} className="flex items-center gap-3 w-full text-left px-4 h-[44px] text-body-md text-[var(--color-urgent-700)] hover:bg-[var(--color-urgent-100)] transition-colors">
+      <button onClick={() => { clearAuth(); setOpenDropdown(null); router.push('/'); router.refresh() }} className="flex items-center gap-3 w-full text-left px-4 h-[44px] text-body-md text-[var(--color-urgent-700)] hover:bg-[var(--color-urgent-100)] transition-colors">
         <LogOut className="w-5 h-5" strokeWidth={1.5} />
         Sign Out
       </button>
@@ -286,14 +288,14 @@ export const Navbar = React.memo(function Navbar() {
                   </AnimatePresence>
                 </div>
 
-                {user ? (
+                {isAuthenticated && user ? (
                   <div className="relative ml-1">
                     <button
                       onClick={() => setOpenDropdown(openDropdown === 'profile' ? null : 'profile')}
                       className="w-[44px] h-[44px] rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-heading-sm font-display ring-2 ring-transparent focus:ring-[rgba(200,100,58,0.3)] transition-all"
                       aria-label="User menu"
                     >
-                      {user.name.charAt(0).toUpperCase()}
+                      {user.name?.charAt(0).toUpperCase()}
                     </button>
                     <AnimatePresence>
                       {openDropdown === 'profile' && <ProfileDropdown />}

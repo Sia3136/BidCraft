@@ -7,6 +7,8 @@ import { Listing } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
 import { Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
 
 const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
   const [timeLeft, setTimeLeft] = useState('');
@@ -52,10 +54,18 @@ const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
 
 export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Listing, priority?: boolean }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
+  const { isAuthenticated } = useAuthStore()
+  const router = useRouter()
 
   function toggleWishlist(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
+    
+    if (!isAuthenticated) {
+      router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
+      return
+    }
+    
     setIsWishlisted(!isWishlisted)
   }
 

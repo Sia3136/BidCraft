@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ShieldCheck, CheckCircle, Package, ArrowRight, Star } from 'lucide-react'
-import { useStore } from '@/lib/store'
+import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
@@ -75,7 +75,7 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
 }
 
 export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[] }) {
-  const { user } = useStore()
+  const { user } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 
   // Calculate real counts for Curated Collections

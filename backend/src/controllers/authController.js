@@ -209,11 +209,11 @@ async function verifyEmail(req, res, next) {
       return res.status(400).json({ error: 'code_expired' });
     }
 
-    // Mark as verified
+    // Mark email as checked, but do not set is_verified=TRUE yet (must do phone next)
     await db.query(`
       INSERT INTO profiles (user_id, is_verified, created_at, updated_at) 
-      VALUES ($1, TRUE, NOW(), NOW()) 
-      ON CONFLICT (user_id) DO UPDATE SET is_verified = TRUE, updated_at = NOW()
+      VALUES ($1, FALSE, NOW(), NOW()) 
+      ON CONFLICT (user_id) DO UPDATE SET updated_at = NOW()
     `, [userId]);
 
     // Delete used codes

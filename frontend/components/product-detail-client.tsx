@@ -8,6 +8,8 @@ import { Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
+import { useAuthStore } from '@/store/authStore';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { productReviews } from '@/lib/exploreProducts';
 
@@ -69,7 +71,10 @@ const GALLERY_VIEWS = [
 ];
 
 export default function ProductDetailClient({ product, related }: { product: Listing, related: Listing[] }) {
-  const { toggleWishlist, wishlist, addToCart } = useStore();
+  const { toggleWishlist: storeToggleWishlist, wishlist, addToCart } = useStore();
+  const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
+  
   const isWishlisted = wishlist.some(w => w.productId === product.id);
   const [added, setAdded] = useState(false);
   
@@ -83,37 +88,57 @@ export default function ProductDetailClient({ product, related }: { product: Lis
   const sellerDiscountFloor = product.minimumOfferPercent || 30;
   const minOffer = product.price * (sellerDiscountFloor / 100);
 
+  const handleAuthCheck = (action: () => void) => {
+    if (!isAuthenticated) {
+      router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`);
+    } else {
+      action();
+    }
+  };
+
   const handlePlaceBidSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = Number(bidAmount);
-    const currentHigh = product.currentBid ?? product.price;
-    if (isNaN(amount) || amount <= currentHigh) {
-      alert(`Your bid must be higher than the current bid of ₹${currentHigh}.`);
-      return;
-    }
-    setIsBidding(true);
-    setTimeout(() => {
-      alert('Bid placed successfully!');
-      setIsBidding(false);
-      setBidAmount('');
-    }, 1000);
+    handleAuthCheck(() => {
+      const amount = Number(bidAmount);
+      const currentHigh = product.currentBid ?? product.price;
+      if (isNaN(amount) || amount <= currentHigh) {
+        alert(`Your bid must be higher than the current bid of ₹${currentHigh}.`);
+        return;
+      }
+      setIsBidding(true);
+      setTimeout(() => {
+        alert('Bid placed successfully!');
+        setIsBidding(false);
+        setBidAmount('');
+      }, 1000);
+    });
   };
 
   const handleMakeOfferSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = Number(offerAmount);
-    if (isNaN(amount) || amount < minOffer) {
-      alert(`Your offer must be at least ₹${minOffer}. The seller has set a minimum offer threshold.`);
-      return;
-    }
-    alert(`Offer of ₹${amount} submitted!`);
-    setShowOfferForm(false);
+    handleAuthCheck(() => {
+      const amount = Number(offerAmount);
+      if (isNaN(amount) || amount < minOffer) {
+        alert(`Your offer must be at least ₹${minOffer}. The seller has set a minimum offer threshold.`);
+        return;
+      }
+      alert(`Offer of ₹${amount} submitted!`);
+      setShowOfferForm(false);
+    });
   };
   
   const handleAdd = () => {
-    addToCart({ id: Math.random().toString(), productId: product.id, title: product.title, price: product.price, quantity: 1, image: product.image });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1200);
+    handleAuthCheck(() => {
+      addToCart({ id: Math.random().toString(), productId: product.id, title: product.title, price: product.price, quantity: 1, image: product.image });
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1200);
+    });
+  };
+
+  const toggleWishlist = (id: string) => {
+    handleAuthCheck(() => {
+      storeToggleWishlist(id);
+    });
   };
 
   return (
@@ -249,7 +274,7 @@ export default function ProductDetailClient({ product, related }: { product: Lis
                     {added ? 'Added to Cart ✓' : 'Add to Cart'}
                   </button>
                   {product.offersAllowed && (
-                    <button onClick={(e) => { e.stopPropagation(); setShowOfferForm(!showOfferForm); }} className={cn("flex-1 h-12 bg-white text-[var(--color-ink-900)] font-bold rounded-[var(--radius-md)] border-2 transition-colors", showOfferForm ? "border-[var(--color-ink-900)]" : "border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)]")}>
+                    <button onClick={(e) => { e.stopPropagation(); handleAuthCheck(() => setShowOfferForm(!showOfferForm)); }} className={cn("flex-1 h-12 bg-white text-[var(--color-ink-900)] font-bold rounded-[var(--radius-md)] border-2 transition-colors", showOfferForm ? "border-[var(--color-ink-900)]" : "border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)]")}>
                       Make Offer
                     </button>
                   )}

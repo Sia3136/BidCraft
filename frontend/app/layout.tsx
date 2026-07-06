@@ -40,6 +40,7 @@ import { AuthProvider } from '@/lib/auth-context'
 import { PrefetchRoutes } from '@/components/prefetch-routes'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
+import { AuthRehydrator } from '@/components/AuthRehydrator'
 import { Suspense } from 'react'
 import { SkeletonGrid } from '@/components/skeleton-grid'
 
@@ -53,6 +54,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <AuthProvider>
           <PrefetchRoutes />
+          <AuthRehydrator />
           <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
             <Navbar />
             <main className="flex-1 w-full">

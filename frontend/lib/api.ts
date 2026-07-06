@@ -1,5 +1,19 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
+export type User = {
+  id: string
+  name: string
+  email: string
+  mobile?: string
+  role: 'buyer' | 'seller' | 'admin'
+  avatar?: string
+  createdAt: string
+}
+
+export type AuthResponse = {
+  user: User
+  token: string
+}
 export type Listing = {
   id: string
   title: string
@@ -72,4 +86,48 @@ export async function fetchNewArrivals(): Promise<{ listings: Listing[] }> {
   })
   if (!res.ok) throw new Error(`fetchNewArrivals failed: ${res.status}`)
   return res.json()
+}
+
+// Register
+export async function register(data: {
+  name: string
+  email: string
+  mobile?: string
+  password: string
+}): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || json.error || 'Registration failed')
+  return { user: json.user, token: json.accessToken }
+}
+
+// Login
+export async function login(data: {
+  emailOrMobile: string
+  password: string
+}): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    // Map emailOrMobile to email since backend expects email
+    body: JSON.stringify({ email: data.emailOrMobile, password: data.password }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || json.error || 'Login failed')
+  return { user: json.user, token: json.accessToken }
+}
+
+// Get current user (requires token)
+export async function getMe(token: string): Promise<User> {
+  const res = await fetch(`${API_BASE}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || json.error || 'Session expired')
+  return json.user || json
 }

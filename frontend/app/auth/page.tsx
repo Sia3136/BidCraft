@@ -4,12 +4,18 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useStore } from '@/lib/store'
-import { useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/store/authStore'
+import { login as apiLogin, register as apiRegister } from '@/lib/api'
+import { mergeAnonymousData } from '@/lib/mergeAnonymousData'
 
-export default function AuthPage() {
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
+function AuthPageContent() {
+  const searchParams = useSearchParams()
+  const defaultTab = searchParams.get('tab') === 'register' ? 'signup' : 'signin'
+  
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>(defaultTab)
   const [signInMethod, setSignInMethod] = useState<'email' | 'mobile'>('email')
   
   // Sign In State
@@ -36,27 +42,22 @@ export default function AuthPage() {
   const [signUpError, setSignUpError] = useState('')
 
   const router = useRouter()
-  const { login } = useStore()
+  const { setAuth } = useAuthStore()
   
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSigningIn(true)
     setSignInError('')
     try {
-      // Use email for login if mobile is selected, we map mobile to email in a real app or use mobile auth, 
-      // but the backend login only takes email/password. For this demo, we'll assume the email is the identifier.
       const identifier = signInMethod === 'email' ? signInEmail : `${signInMobile}@bidcraft.in`
       
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: identifier, password: signInPassword })
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Login failed')
+      const { user, token } = await apiLogin({ emailOrMobile: identifier, password: signInPassword })
       
-      login(data.user, data.accessToken)
-      router.push('/')
+      setAuth(user, token)
+      mergeAnonymousData()
+      
+      const returnTo = searchParams.get('returnTo')
+      router.push(returnTo || '/')
     } catch (err: any) {
       setSignInError(err.message === 'invalid_credentials' ? 'Invalid credentials provided' : err.message)
     } finally {
@@ -70,21 +71,20 @@ export default function AuthPage() {
     setSignUpError('')
     try {
       // 1. Register User
-      const regRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: signUpEmail, password: signUpPassword, name: signUpName })
+      const { user: regUser, token: regToken } = await apiRegister({ 
+        name: signUpName, 
+        email: signUpEmail, 
+        mobile: signUpMobile, 
+        password: signUpPassword 
       })
-      const regData = await regRes.json()
-      if (!regRes.ok) throw new Error(regData.error === 'email_taken' ? 'Email already in use' : regData.error)
       
-      setTempToken(regData.accessToken)
-      setTempUser(regData.user)
+      setTempToken(regToken)
+      setTempUser(regUser)
 
       // 2. Send Email OTP
-      const emailVerifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/send-verification`, {
+      const emailVerifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-verification`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${regData.accessToken}` }
+        headers: { 'Authorization': `Bearer ${regToken}` }
       })
       if (!emailVerifyRes.ok) throw new Error('Failed to send email verification')
 
@@ -102,7 +102,7 @@ export default function AuthPage() {
     setSignUpError('')
     try {
       // Verify Email
-      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email`, {
+      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export default function AuthPage() {
       if (!verifyRes.ok) throw new Error(verifyData.error === 'invalid_code' ? 'Invalid code' : 'Verification failed')
 
       // Send Mobile OTP
-      const phoneVerifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/send-phone-verification`, {
+      const phoneVerifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-phone-verification`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ export default function AuthPage() {
     setSignUpError('')
     try {
       // Verify Mobile
-      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-phone`, {
+      const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-phone`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -151,7 +151,8 @@ export default function AuthPage() {
 
       setSignUpStep(4)
       setTimeout(() => {
-        login(tempUser, tempToken)
+        setAuth(tempUser, tempToken)
+        mergeAnonymousData()
         router.push('/')
       }, 1500)
     } catch (err: any) {
@@ -522,5 +523,19 @@ export default function AuthPage() {
         Back to Home
       </Link>
     </div>
+  )
+}
+
+import { Suspense } from 'react'
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[var(--color-cream-base)] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--color-terracotta-600)]" />
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   )
 }
