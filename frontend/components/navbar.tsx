@@ -7,7 +7,7 @@ import { useStore } from '@/lib/store'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { CloudinaryImage } from '@/components/CloudinaryImage'
 import Image from 'next/image'
 import { slugify } from '@/lib/slugify'
@@ -28,7 +28,7 @@ export const Navbar = React.memo(function Navbar() {
   const { location, cart, wishlist } = useStore()
   const { user, isAuthenticated, clearAuth } = useAuthStore()
   const [searchQuery, setSearchQuery] = useState('')
-  const [openDropdown, setOpenDropdown] = useState<'notifications' | 'profile' | null>(null)
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileSearchExpanded, setIsMobileSearchExpanded] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -80,12 +80,14 @@ export const Navbar = React.memo(function Navbar() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
+  const searchParams = useSearchParams()
+
   useEffect(() => {
     // Close dropdowns on route change
     setOpenDropdown(null)
     setIsMobileSearchExpanded(false)
     setIsMobileMenuOpen(false)
-  }, [pathname])
+  }, [pathname, searchParams])
 
   const textClass = "text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
 

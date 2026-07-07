@@ -237,9 +237,6 @@ export default function ProductDetailClient({ product, related }: { product: Lis
             {/* E. Action buttons */}
             <div className="flex flex-col gap-3">
               {product.buyingMethod === 'Auction' && (
-                <form onSubmit={handlePlaceBidSubmit} className="flex gap-2">
-                  <input 
-                    type="number" 
                 <div className="flex flex-col gap-2 w-full">
                   <div className="flex items-center gap-2 mb-2">
                     <button type="button" onClick={() => toggleWishlist(product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">

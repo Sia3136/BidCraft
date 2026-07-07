@@ -56,7 +56,9 @@ export default function RootLayout({
           <PrefetchRoutes />
           <AuthRehydrator />
           <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
-            <Navbar />
+            <Suspense fallback={<div className="h-[64px] bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)]" />}>
+              <Navbar />
+            </Suspense>
             <main className="flex-1 w-full">
               <Suspense fallback={
                 <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
