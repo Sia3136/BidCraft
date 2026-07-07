@@ -198,8 +198,7 @@ async function updateOrderStatus(req, res, next) {
 }
 
 const createOrderSchema = Joi.object({
-  listing_id: Joi.number().integer().required(),
-  shipping_address: Joi.object().optional()
+  listing_id: Joi.number().integer().required()
 });
 
 async function createOrder(req, res, next) {
@@ -207,7 +206,7 @@ async function createOrder(req, res, next) {
     const { error, value } = createOrderSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { listing_id, shipping_address } = value;
+    const { listing_id } = value;
     const buyerId = req.userId;
 
     // 1. Fetch listing details
@@ -228,10 +227,10 @@ async function createOrder(req, res, next) {
 
     // 3. Create the order
     const orderRes = await db.query(
-      `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, shipping_address, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, 'awaiting_payment', $5, NOW(), NOW())
+      `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, 'awaiting_payment', NOW(), NOW())
        RETURNING *`,
-      [buyerId, listing.seller_id, listing_id, listing.price, shipping_address || null]
+      [buyerId, listing.seller_id, listing_id, listing.price]
     );
 
     res.status(201).json({ order: orderRes.rows[0] });

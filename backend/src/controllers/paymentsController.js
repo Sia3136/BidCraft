@@ -160,6 +160,12 @@ async function verifyPayment(req, res, next) {
     // Notify seller
     await notifySellerOfPayment(order_id);
 
+    // Update listing status to sold
+    await db.query(
+      `UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`,
+      [order.listing_id]
+    );
+
     res.json({ success: true, order_id, status: 'paid' });
   } catch (err) {
     next(err);
@@ -219,6 +225,14 @@ async function handleWebhook(req, res, next) {
 
           // Notify seller
           await notifySellerOfPayment(orderId);
+
+          if (order) {
+            // Update listing status to sold
+            await db.query(
+              `UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`,
+              [order.listing_id]
+            );
+          }
         }
       }
     } else if (eventType === 'payment.failed') {

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { formatPrice } from '@/lib/formatPrice';
 import { Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
+import { BuyNowButton } from '@/components/BuyNowButton';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
@@ -270,9 +271,9 @@ export default function ProductDetailClient({ product, related }: { product: Lis
               
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
                 <div className="flex gap-2">
-                  <button onClick={(e) => { e.stopPropagation(); handleAdd(); }} className="flex-1 h-12 bg-[var(--color-ink-900)] hover:bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] transition-colors">
-                    {added ? 'Added to Cart ✓' : 'Add to Cart'}
-                  </button>
+                  <div className="flex-1">
+                    <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
+                  </div>
                   {product.offersAllowed && (
                     <button onClick={(e) => { e.stopPropagation(); handleAuthCheck(() => setShowOfferForm(!showOfferForm)); }} className={cn("flex-1 h-12 bg-white text-[var(--color-ink-900)] font-bold rounded-[var(--radius-md)] border-2 transition-colors", showOfferForm ? "border-[var(--color-ink-900)]" : "border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)]")}>
                       Make Offer

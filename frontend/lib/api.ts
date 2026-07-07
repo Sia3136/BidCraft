@@ -131,3 +131,71 @@ export async function getMe(token: string): Promise<User> {
   if (!res.ok) throw new Error(json.message || json.error || 'Session expired')
   return json.user || json
 }
+
+export type CreateOrderResponse = {
+  payment_id: string
+  provider_order_id: string
+  amount: number
+  currency: string
+  key_id: string
+}
+
+export async function createOrder(listingId: string, token: string): Promise<{ order: { id: string } }> {
+  const res = await fetch(`${API_BASE}/api/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ listing_id: listingId })
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to create order')
+  return json
+}
+
+export async function createPaymentOrder(
+  orderId: string,
+  token: string
+): Promise<CreateOrderResponse> {
+  const res = await fetch(`${API_BASE}/api/payments/create-order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ order_id: parseInt(orderId, 10) })
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to create payment order')
+  return json
+}
+
+export async function verifyPayment(data: {
+  razorpay_order_id: string
+  razorpay_payment_id: string
+  razorpay_signature: string
+  order_id: number
+}, token: string): Promise<{ success: boolean; order_id: string; status: string }> {
+  const res = await fetch(`${API_BASE}/api/payments/verify`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Payment verification failed')
+  return json
+}
+
+export async function fetchOrderById(id: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/orders/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Order not found')
+  return json.order || json
+}
