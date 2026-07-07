@@ -1,68 +1,118 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { useStore } from '@/lib/store'
 import { useAuthStore } from '@/store/authStore'
-import { Store, ShoppingBag, Heart, Trash2, ArrowRight } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
+
+type CartItem = {
+  cart_item_id: number;
+  quantity: number;
+  id: number;
+  title: string;
+  price: string;
+  photos: string | string[];
+  seller_name: string;
+}
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateCartQuantity } = useStore()
-  const { user } = useAuthStore()
-  
+  const { user, token } = useAuthStore()
+  const [items, setItems] = useState<CartItem[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!token) {
+      setLoading(false)
+      return
+    }
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.cart) setItems(data.cart)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [token])
+
+  const removeItem = async (listingId: number) => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart/${listingId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      setItems(items.filter(i => i.id !== listingId))
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const formatPrice = (p: string | number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(p))
+
+  const total = items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
+
   return (
     <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
       <Navbar />
       
-      <main className="flex-1 flex flex-col items-center justify-center p-[var(--space-5)]">
-        <div className="w-full max-w-[400px] flex flex-col items-center text-center">
-          
-          <div className="mb-[var(--space-5)] relative text-[var(--color-slate-900)]">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--color-slate-900)]">
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-              <path d="M3 6h18" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-            <div className="absolute -top-1 -right-2 text-[var(--color-terracotta-600)] bg-[var(--color-cream-base)] rounded-full border-[2px] border-[var(--color-cream-base)]">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14" />
-                <path d="M5 12h14" />
-              </svg>
+      <main className="flex-1 max-w-[var(--container-max)] mx-auto w-full px-[var(--space-4)] py-[var(--space-6)]">
+        <h1 className="text-display-md font-display text-[var(--color-ink-900)] mb-[var(--space-6)]">Your Cart</h1>
+        
+        {loading ? (
+          <p>Loading cart...</p>
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-10 text-center">
+            <h2 className="text-heading-lg mb-2">Your Cart is empty</h2>
+            <p className="text-[var(--color-ink-500)] mb-6">
+              {user ? "Nothing here yet" : "Sign in to save your favourite items"}
+            </p>
+            <Link href={user ? "/explore" : "/auth"} className="px-6 py-3 bg-[var(--color-terracotta-600)] text-white rounded-[var(--radius-md)] font-bold">
+              {user ? "Start Exploring" : "Sign In"}
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 flex flex-col gap-4">
+              {items.map(item => {
+                const imageUrl = Array.isArray(item.photos) ? item.photos[0] : (typeof item.photos === 'string' ? JSON.parse(item.photos)[0] : '');
+                return (
+                  <div key={item.cart_item_id} className="flex gap-4 bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+                    <img src={imageUrl} alt={item.title} className="w-24 h-24 object-cover rounded-[var(--radius-sm)]" />
+                    <div className="flex-1">
+                      <h3 className="text-heading-sm font-display text-[var(--color-ink-900)]"><Link href={`/product/${item.id}`}>{item.title}</Link></h3>
+                      <p className="text-sm text-[var(--color-ink-500)]">by {item.seller_name}</p>
+                      <p className="font-bold text-[var(--color-terracotta-600)] mt-2">{formatPrice(item.price)}</p>
+                    </div>
+                    <div className="flex flex-col items-end justify-between">
+                      <button onClick={() => removeItem(item.id)} className="text-[var(--color-urgent-600)] hover:text-[var(--color-urgent-700)]"><Trash2 className="w-5 h-5" /></button>
+                      <span className="text-sm font-medium">Qty: {item.quantity}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="w-full lg:w-[320px] bg-white p-6 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] h-fit">
+              <h3 className="text-heading-sm font-display mb-4 border-b border-[var(--color-border-subtle)] pb-4">Order Summary</h3>
+              <div className="flex justify-between mb-2">
+                <span>Subtotal</span>
+                <span>{formatPrice(total)}</span>
+              </div>
+              <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-[var(--color-border-subtle)]">
+                <span>Total</span>
+                <span>{formatPrice(total)}</span>
+              </div>
+              <button className="w-full mt-6 h-12 bg-[var(--color-terracotta-600)] text-white rounded-[var(--radius-pill)] font-bold hover:bg-[var(--color-terracotta-700)]">
+                Proceed to Checkout
+              </button>
             </div>
           </div>
-          
-          <h1 className="text-heading-lg text-[var(--color-ink-900)] mb-[var(--space-2)]">Your Cart is empty</h1>
-          
-          <p className="text-body-md text-[var(--color-ink-500)] mb-[var(--space-5)]">
-            {user ? "Nothing here yet" : "Sign in to save your favourite items and pick up where you left off"}
-          </p>
-          
-          {!user ? (
-            <Link 
-              href="/auth"
-              className="w-full mb-[var(--space-3)] flex items-center justify-center bg-[rgba(200,100,58,0.15)] backdrop-blur-[8px] border-[1.5px] border-[rgba(200,100,58,0.6)] text-[var(--color-terracotta-600)] text-body-md font-semibold py-[12px] rounded-[var(--radius-md)] hover:bg-[rgba(200,100,58,0.25)] hover:border-[rgba(200,100,58,1)] transition-all duration-fast"
-            >
-              Sign In
-            </Link>
-          ) : (
-            <Link 
-              href="/explore"
-              className="w-full mb-[var(--space-3)] flex items-center justify-center bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold py-[12px] rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast"
-            >
-              Start Exploring
-            </Link>
-          )}
-          
-          <Link 
-            href="/"
-            className="w-full flex items-center justify-center text-body-md font-semibold text-[var(--color-ink-700)] py-[12px] rounded-[var(--radius-md)] hover:bg-[var(--color-cream-raised)] transition-colors duration-fast"
-          >
-            Continue Browsing
-          </Link>
-          
-        </div>
+        )}
       </main>
       
       <Footer />

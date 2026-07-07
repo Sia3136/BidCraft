@@ -17,7 +17,7 @@ export function MakeOfferPanel({ listingId, price, minimumOfferPercent }: Props)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
-  const minimumOffer = Math.ceil(price * ((minimumOfferPercent || 70) / 100))
+  const minimumOffer = Math.ceil(price * (1 - ((minimumOfferPercent || 30) / 100)))
 
   const handleSubmit = async () => {
     const parsed = parseInt(amount)

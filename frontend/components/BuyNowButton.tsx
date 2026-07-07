@@ -30,70 +30,7 @@ export function BuyNowButton({ listingId, price, listingTitle }: Props) {
       router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
       return
     }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      // Step 1: Create order on backend
-      const { order } = await createOrder(listingId, token)
-
-      // Step 2: Create Razorpay payment order
-      const paymentData = await createPaymentOrder(order.id, token)
-
-      // Step 3: Load Razorpay script if not already loaded
-      if (!window.Razorpay) {
-        await new Promise<void>((resolve, reject) => {
-          const script = document.createElement('script')
-          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-          script.onload = () => resolve()
-          script.onerror = () => reject(new Error('Failed to load Razorpay'))
-          document.body.appendChild(script)
-        })
-      }
-
-      // Step 4: Open Razorpay checkout
-      const rzp = new window.Razorpay({
-        key: paymentData.key_id,
-        amount: paymentData.amount * 100, // convert INR to paise
-        currency: paymentData.currency,
-        order_id: paymentData.provider_order_id,
-        name: 'BidCraft',
-        description: listingTitle,
-        handler: async (response: {
-          razorpay_order_id: string
-          razorpay_payment_id: string
-          razorpay_signature: string
-        }) => {
-          // Step 5: Verify payment on backend
-          try {
-            const result = await verifyPayment({
-              ...response,
-              order_id: parseInt(order.id, 10)
-            }, token)
-
-            if (result.success) {
-              router.push(`/orders/${order.id}?status=success`)
-            }
-          } catch (err: any) {
-            setError('Payment verification failed. Contact support@bidcraft.in')
-          }
-        },
-        prefill: {
-          name: user?.name || '',
-          email: user?.email || '',
-        },
-        theme: { color: '#C8643A' },
-        modal: {
-          ondismiss: () => setLoading(false)
-        }
-      })
-
-      rzp.open()
-    } catch (err: any) {
-      setError(err.message)
-      setLoading(false)
-    }
+    router.push(`/checkout/review?listing_id=${listingId}`)
   }
 
   return (

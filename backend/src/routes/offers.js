@@ -22,10 +22,11 @@ router.post('/', auth, async (req, res) => {
     if (listing.status !== 'active') return res.status(400).json({ error: 'Listing is no longer available' })
     if (listing.seller_id === buyerId) return res.status(400).json({ error: 'Cannot make offer on your own listing' })
 
-    const minimumOffer = Math.ceil(listing.price * (listing.minimum_offer_percent / 100))
+    const floorPercent = listing.minimum_offer_percent ?? 30;
+    const minimumOffer = Math.ceil(listing.price * (1 - floorPercent / 100));
     if (offerAmount < minimumOffer) {
       return res.status(400).json({
-        error: `Minimum offer is ₹${minimumOffer} (${listing.minimum_offer_percent}% of listing price)`
+        error: `Minimum offer is ₹${minimumOffer}`
       })
     }
 
@@ -43,8 +44,15 @@ router.post('/', auth, async (req, res) => {
       VALUES ($1, $2, $3, 'pending', NOW())
       RETURNING id
     `, [listingId, buyerId, offerAmount])
+    const offerId = result.rows[0].id;
 
-    res.status(201).json({ offerId: result.rows[0].id, success: true })
+    // Notify seller
+    await db.query(`
+      INSERT INTO notifications (user_id, type, message, link)
+      VALUES ($1, 'new_offer', $2, $3)
+    `, [listing.seller_id, `You received an offer of ₹${offerAmount} on ${listing.title}`, `/seller/offers/${offerId}`]);
+
+    res.status(201).json({ offerId, success: true })
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to submit offer' })

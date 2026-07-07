@@ -263,10 +263,29 @@ export default function ProductDetailClient({ product, related }: { product: Lis
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
-                    <div className="flex-1">
+                    <div className="flex-1 flex flex-col gap-2">
                       <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
+                      <button onClick={async (e) => {
+                        e.stopPropagation()
+                        if (!useAuthStore.getState().isAuthenticated) {
+                          alert('Please sign in to add to cart')
+                          return
+                        }
+                        try {
+                          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart/${product.id}`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${useAuthStore.getState().token}` }
+                          })
+                          alert('Added to cart!')
+                        } catch (err) {
+                          console.error(err)
+                          alert('Failed to add to cart')
+                        }
+                      }} className="w-full h-12 bg-transparent border-2 border-[var(--color-ink-900)] text-[var(--color-ink-900)] rounded-[var(--radius-pill)] text-[16px] font-semibold cursor-pointer font-ui transition-colors hover:bg-[var(--color-ink-900)] hover:text-white">
+                        Add to Cart
+                      </button>
                     </div>
-                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
                       <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
                     </button>
                   </div>

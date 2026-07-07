@@ -6,7 +6,7 @@ const db = require('../utils/db');
  */
 async function addToWishlist(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = parseInt(req.userId, 10);
     const { listingId } = req.params;
 
     // Check if listing exists
@@ -42,7 +42,7 @@ async function addToWishlist(req, res, next) {
  */
 async function removeFromWishlist(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = parseInt(req.userId, 10);
     const { listingId } = req.params;
 
     const result = await db.query(
@@ -66,7 +66,7 @@ async function removeFromWishlist(req, res, next) {
  */
 async function getWishlist(req, res, next) {
   try {
-    const userId = req.userId;
+    const userId = parseInt(req.userId, 10);
 
     const result = await db.query(
       `SELECT w.id as wishlist_id, w.created_at as wishlisted_at,

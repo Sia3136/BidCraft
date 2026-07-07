@@ -134,12 +134,20 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            await fetch(`${API_BASE}/api/wishlist/${productId}`, {
+            const res = await fetch(`${API_BASE}/api/wishlist/${productId}`, {
               method: isAdding ? 'POST' : 'DELETE',
               headers: { Authorization: `Bearer ${token}` }
             });
+            if (!res.ok) throw new Error('API Error');
           } catch (err) {
             console.error('[wishlist] Failed to persist:', err);
+            // Revert on error
+            set((state) => {
+              if (isAdding) {
+                return { wishlist: state.wishlist.filter(i => i.productId !== productId) };
+              }
+              return { wishlist: [...state.wishlist, { productId }] };
+            });
           }
         }
       },

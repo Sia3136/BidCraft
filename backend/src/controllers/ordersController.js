@@ -207,10 +207,14 @@ async function createOrder(req, res, next) {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     const { listing_id } = value;
+    const listingIdInt = parseInt(listing_id, 10);
+    if (isNaN(listingIdInt)) {
+      return res.status(400).json({ error: 'Invalid listing ID' });
+    }
     const buyerId = req.userId;
 
     // 1. Fetch listing details
-    const listingRes = await db.query('SELECT * FROM listings WHERE id = $1', [listing_id]);
+    const listingRes = await db.query('SELECT * FROM listings WHERE id = $1', [listingIdInt]);
     const listing = listingRes.rows[0];
     if (!listing) return res.status(404).json({ error: 'listing_not_found' });
 
@@ -230,7 +234,7 @@ async function createOrder(req, res, next) {
       `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, 'awaiting_payment', NOW(), NOW())
        RETURNING *`,
-      [buyerId, listing.seller_id, listing_id, listing.price]
+      [buyerId, listing.seller_id, listingIdInt, listing.price]
     );
 
     res.status(201).json({ order: orderRes.rows[0] });
