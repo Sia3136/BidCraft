@@ -23,13 +23,13 @@ async function createBid(req, res, next) {
       return res.status(400).json({ error: 'seller_cannot_bid_on_own_auction' });
     }
 
-    await placeBid({
+    const result = await placeBid({
       auctionId,
       bidderId,
       bidAmount
     });
 
-    res.status(201).json({ success: true, bidAmount });
+    res.status(201).json(result);
   } catch (err) {
     if (
       err.message === 'auction_not_found' ||

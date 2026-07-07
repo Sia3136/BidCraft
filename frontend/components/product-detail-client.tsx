@@ -7,6 +7,7 @@ import { formatPrice } from '@/lib/formatPrice';
 import { Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { BuyNowButton } from '@/components/BuyNowButton';
+import { PlaceBidPanel } from '@/components/PlaceBidPanel';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
@@ -254,19 +255,27 @@ export default function ProductDetailClient({ product, related }: { product: Lis
                 <form onSubmit={handlePlaceBidSubmit} className="flex gap-2">
                   <input 
                     type="number" 
-                    value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    placeholder={`> ${formatPrice(product.currentBid ?? product.price)}`}
-                    className="flex-1 h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] text-[var(--color-ink-900)] font-bold outline-none focus:border-[var(--color-terracotta-600)]"
-                    required
-                  />
-                  <button type="submit" disabled={isBidding} className="px-6 h-12 bg-[var(--color-ink-900)] hover:bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] transition-colors">
-                    Place Bid
-                  </button>
-                  <button type="button" onClick={() => toggleWishlist(product.id)} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
-                    <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-                  </button>
-                </form>
+                <div className="flex flex-col gap-2 w-full">
+                  <div className="flex items-center gap-2 mb-2">
+                    <button type="button" onClick={() => toggleWishlist(product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                      <Heart className={cn("w-5 h-5 mr-2", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                      <span className="font-semibold">{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
+                    </button>
+                  </div>
+                  {product.auctionId ? (
+                    <PlaceBidPanel 
+                      auctionId={product.auctionId}
+                      initialCurrentBid={product.currentBid}
+                      initialBidCount={product.bidCount || 0}
+                      auctionEndsAt={product.auctionEndsAt!}
+                      listingPrice={product.price}
+                    />
+                  ) : (
+                    <div className="p-4 bg-[var(--color-urgent-100)] rounded-[var(--radius-md)] text-[var(--color-urgent-600)] font-ui font-medium border border-[var(--color-urgent-300)]">
+                      Auction details not available.
+                    </div>
+                  )}
+                </div>
               )}
               
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (

@@ -41,6 +41,7 @@ export type Listing = {
   reviews: Array<{ name: string; rating: number; date: string; text: string }>
   status: string
   createdAt: string
+  auctionId?: string
 }
 
 export type ListingsResponse = {
@@ -198,4 +199,30 @@ export async function fetchOrderById(id: string, token: string) {
   const json = await res.json()
   if (!res.ok) throw new Error(json.error || 'Order not found')
   return json.order || json
+}
+
+export type BidResponse = {
+  success: boolean
+  bidAmount: number
+  newEndTime: string
+  totalBids: number
+  antiSnipingExtended: boolean
+}
+
+export async function placeBid(
+  auctionId: string,
+  amount: number,
+  token: string
+): Promise<BidResponse> {
+  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/bids`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ bid_amount: amount }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to place bid')
+  return json
 }

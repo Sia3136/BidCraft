@@ -200,24 +200,26 @@ const getListingById = async (req, res) => {
     const { id } = req.params
     const result = await db.query(`
       SELECT
-        slug AS id, id AS "numericId", title, description, price, category, subcategory,
-        buying_method AS "buyingMethod",
-        image_urls AS "images",
-        image_urls[1] AS image,
-        creator_name AS creator,
-        creator_rating AS "creatorRating",
-        creator_review_count AS "creatorReviewCount",
-        creator_badges AS "creatorBadges",
-        is_verified AS verified,
-        offers_allowed AS "offersAllowed",
-        minimum_offer_percent AS "minimumOfferPercent",
-        auction_ends_at AS "auctionEndsAt",
-        current_bid AS "currentBid",
-        bid_count AS "bidCount",
-        specifications, reviews,
-        status, created_at AS "createdAt"
-      FROM listings
-      WHERE (slug = $1 OR id::text = $1) AND status::text != 'deleted'
+        l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
+        l.buying_method AS "buyingMethod",
+        l.image_urls AS "images",
+        l.image_urls[1] AS image,
+        l.creator_name AS creator,
+        l.creator_rating AS "creatorRating",
+        l.creator_review_count AS "creatorReviewCount",
+        l.creator_badges AS "creatorBadges",
+        l.is_verified AS verified,
+        l.offers_allowed AS "offersAllowed",
+        l.minimum_offer_percent AS "minimumOfferPercent",
+        l.auction_ends_at AS "auctionEndsAt",
+        l.current_bid AS "currentBid",
+        l.bid_count AS "bidCount",
+        l.specifications, l.reviews,
+        l.status, l.created_at AS "createdAt",
+        a.id AS "auctionId"
+      FROM listings l
+      LEFT JOIN auctions a ON a.listing_id = l.id
+      WHERE (l.slug = $1 OR l.id::text = $1) AND l.status::text != 'deleted'
     `, [id])
 
     if (result.rows.length === 0) {

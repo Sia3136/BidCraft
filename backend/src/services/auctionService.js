@@ -42,6 +42,22 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
 
     if (Number(bidAmount) < minRequired) throw new Error('bid_too_low');
 
+    // Anti-sniping: if bid placed within 5 minutes of auction end, extend by 5 minutes
+    const endsAt = new Date(auction.end_time);
+    const now = new Date();
+    const minutesLeft = (endsAt.getTime() - now.getTime()) / 60000;
+    let newEndsAt = auction.end_time;
+    let antiSnipingExtended = false;
+
+    if (minutesLeft < 5) {
+      newEndsAt = new Date(now.getTime() + 5 * 60000).toISOString();
+      antiSnipingExtended = true;
+      await client.query(
+        'UPDATE auctions SET end_time = $1 WHERE id = $2',
+        [newEndsAt, auctionId]
+      );
+    }
+
     // Get previous highest bidder
     const prevBidRes = await client.query(
       `SELECT bidder_id, bid_amount FROM bids WHERE auction_id = $1 ORDER BY bid_amount DESC, created_at ASC LIMIT 1`,
@@ -62,10 +78,11 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
       [auctionId, bidderId, bidAmount]
     );
 
-    await client.query(
-      'UPDATE auctions SET current_bid = $1, total_bids = total_bids + 1, updated_at = NOW() WHERE id = $2',
+    const updateRes = await client.query(
+      'UPDATE auctions SET current_bid = $1, total_bids = total_bids + 1, updated_at = NOW() WHERE id = $2 RETURNING total_bids',
       [bidAmount, auctionId]
     );
+    const newTotalBids = updateRes.rows[0].total_bids;
 
     // Emit real-time bid_placed event
     try {
@@ -74,6 +91,8 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
         auction_id: auctionId,
         bidder_id: bidderId,
         bid_amount: bidAmount,
+        total_bids: newTotalBids,
+        auction_ends_at: newEndsAt,
         created_at: new Date().toISOString()
       });
     } catch (ioErr) {
@@ -121,7 +140,7 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
     }
 
     await client.query('COMMIT');
-    return { success: true };
+    return { success: true, bidAmount, newEndTime: newEndsAt, totalBids: newTotalBids, antiSnipingExtended };
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
