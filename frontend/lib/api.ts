@@ -226,3 +226,98 @@ export async function placeBid(
   if (!res.ok) throw new Error(json.error || 'Failed to place bid')
   return json
 }
+
+export async function uploadListingImage(file: File, token: string): Promise<{ url: string; publicId: string }> {
+  const form = new FormData()
+  form.append('image', file)
+  const res = await fetch(`${API_BASE}/api/listings/upload-image`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Upload failed')
+  return json
+}
+
+export async function createListing(data: {
+  title: string; description: string; price: number;
+  category: string; subcategory: string; buyingMethod: string;
+  offersAllowed: boolean; minimumOfferPercent: number;
+  imageUrls: string[]; specifications: Record<string, string>;
+  auctionEndsAt?: string; collections?: string[]; occasions?: string[];
+}, token: string): Promise<{ listingId: string }> {
+  const res = await fetch(`${API_BASE}/api/listings`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to create listing')
+  return json
+}
+
+export async function fetchSellerListings(token: string) {
+  const res = await fetch(`${API_BASE}/api/seller/listings`, {
+    headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
+  })
+  return res.json()
+}
+
+export async function fetchSellerOrders(token: string) {
+  const res = await fetch(`${API_BASE}/api/seller/orders`, {
+    headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
+  })
+  return res.json()
+}
+
+export async function deleteListing(listingId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/seller/listings/${listingId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  return res.json()
+}
+
+export async function submitOffer(listingId: string, offerAmount: number, token: string) {
+  const res = await fetch(`${API_BASE}/api/offers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ listingId, offerAmount }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to submit offer')
+  return json
+}
+
+export async function shipOrder(orderId: string, data: { trackingNumber: string; carrier: string }, token: string) {
+  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/ship`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to update shipment')
+  return json
+}
+
+export async function confirmDelivery(orderId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/confirm-delivery`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to confirm delivery')
+  return json
+}
+
+export async function disputeOrder(orderId: string, reason: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/dispute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ reason }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to raise dispute')
+  return json
+}

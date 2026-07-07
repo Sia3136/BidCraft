@@ -4,89 +4,178 @@ const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 
 const createListingSchema = Joi.object({
-  title: Joi.string().max(250).required(),
-  description: Joi.string().allow('', null),
-  category_id: Joi.number().integer().required(),
-  condition: Joi.string().max(40).required(),
-  photos: Joi.array().items(Joi.string()).length(6).required(), // Enforce exactly 6 photos
-  listing_type: Joi.string().valid('fixed', 'auction').required(),
-  price: Joi.number().precision(2).positive().allow(null),
-  status: Joi.string().valid('active', 'paused', 'sold', 'archived').default('active')
-});
-
-const updateListingSchema = Joi.object({
-  title: Joi.string().max(250),
-  description: Joi.string().allow('', null),
-  category_id: Joi.number().integer(),
-  condition: Joi.string().max(40),
-  photos: Joi.array().items(Joi.string()).min(1),
-  price: Joi.number().precision(2).positive().allow(null),
-  status: Joi.string().valid('active', 'paused', 'sold', 'archived')
+  title: Joi.string().min(5).max(250).required(),
+  description: Joi.string().min(200).required(),
+  price: Joi.number().min(50).max(50000).required(),
+  category: Joi.string().required(),
+  subcategory: Joi.string().required(),
+  buyingMethod: Joi.string().valid('Buy Now', 'Auction', 'Negotiable').required(),
+  offersAllowed: Joi.boolean().optional(),
+  minimumOfferPercent: Joi.number().min(50).max(100).optional(),
+  specifications: Joi.object().optional(),
+  imageUrls: Joi.array().items(Joi.string()).min(1).max(6).required(),
+  auctionEndsAt: Joi.date().optional(),
+  collections: Joi.array().items(Joi.string()).optional(),
+  occasions: Joi.array().items(Joi.string()).optional()
 });
 
 async function createListing(req, res, next) {
   try {
+    const sellerId = req.userId;
+
+    // Verify user is email or mobile verified (or profile verified)
+    const userResult = await db.query(
+      `SELECT email_verified, mobile_verified, name FROM users WHERE id = $1`,
+      [sellerId]
+    )
+    const user = userResult.rows[0];
+    const profileRes = await db.query(`SELECT is_verified FROM profiles WHERE user_id = $1`, [sellerId]);
+    const isVerified = profileRes.rows[0]?.is_verified || (user && (user.email_verified || user.mobile_verified));
+
+    if (!isVerified) {
+      return res.status(403).json({
+        error: 'Verify your email or mobile before creating listings.',
+        code: 'VERIFICATION_REQUIRED'
+      });
+    }
+
     const { error, value } = createListingSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const sellerId = req.userId;
-    const { title, description, category_id, condition, photos, listing_type, price, status } = value;
+    const {
+      title, description, price, category, subcategory,
+      buyingMethod, offersAllowed, minimumOfferPercent,
+      specifications, imageUrls,
+      auctionEndsAt, collections, occasions
+    } = value;
 
-    // Check category exists
-    const categoryCheck = await db.query('SELECT id FROM categories WHERE id = $1', [category_id]);
-    if (categoryCheck.rows.length === 0) {
-      return res.status(400).json({ error: 'invalid_category_id' });
+    if (buyingMethod === 'Auction' && !auctionEndsAt) {
+      return res.status(400).json({ error: 'Auction end date is required for auction listings' });
+    }
+    if (buyingMethod === 'Auction' && new Date(auctionEndsAt) <= new Date()) {
+      return res.status(400).json({ error: 'Auction end date must be in the future' });
     }
 
-    const photosJson = JSON.stringify(photos);
-
-    const result = await db.query(
-      `INSERT INTO listings (seller_id, title, description, category_id, condition, photos, listing_type, price, status, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-       RETURNING *`,
-      [sellerId, title, description || null, category_id, condition, photosJson, listing_type, price || null, status || 'active']
-    );
-
-    const listing = result.rows[0];
-    
-    // Invalidate listings cache
-    if (redis) {
-      try {
-        const keys = await redis.keys('cache:listings:*');
-        for (const key of keys) {
-          await redis.del(key);
-        }
-      } catch (e) {
-        console.error('Redis cache invalidation error:', e);
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      const result = await client.query(`
+        INSERT INTO listings (
+          title, description, price, category, subcategory,
+          buying_method, offers_allowed, minimum_offer_percent,
+          image_urls, seller_id, creator_name,
+          specifications, collections, occasions,
+          auction_ends_at, status, listing_type, photos, created_at, updated_at
+        ) VALUES (
+          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,'active', $16, $17, NOW(),NOW()
+        )
+        RETURNING id
+      `, [
+        title.trim(), description?.trim(), parseInt(price),
+        category, subcategory, buyingMethod,
+        offersAllowed || false,
+        minimumOfferPercent || 70,
+        imageUrls,
+        sellerId, user ? user.name : 'Unknown',
+        specifications || {},
+        collections || [],
+        occasions || [],
+        auctionEndsAt || null,
+        buyingMethod === 'Auction' ? 'auction' : 'fixed',
+        JSON.stringify(imageUrls)
+      ]);
+      
+      const listingId = result.rows[0].id;
+      
+      if (buyingMethod === 'Auction') {
+        await client.query(`
+          INSERT INTO auctions (
+            listing_id, seller_id, start_bid, current_bid, min_bid_increment, start_time, end_time, status, created_at, updated_at
+          ) VALUES ($1, $2, $3, $4, 10.00, NOW(), $5, 'active', NOW(), NOW())
+        `, [listingId, sellerId, price, price, auctionEndsAt]);
       }
+
+      await client.query('COMMIT');
+      
+      if (redis) {
+        try {
+          const keys = await redis.keys('cache:listings:*');
+          for (const key of keys) { await redis.del(key); }
+        } catch (e) {}
+      }
+
+      res.status(201).json({ listingId, success: true });
+      
+      // Async: notify all followers of this seller about the new listing
+      setImmediate(async () => {
+        try {
+          const followersRes = await db.query(
+            'SELECT follower_id FROM follows WHERE seller_id = $1',
+            [sellerId]
+          );
+          for (const { follower_id } of followersRes.rows) {
+            await notificationService.createNotification(null, {
+              userId: follower_id,
+              type: 'new_listing',
+              title: 'New Listing from a seller you follow',
+              message: `A seller you follow just listed "${title}".`,
+              data: { listing_id: listingId, seller_id: sellerId }
+            });
+          }
+        } catch (err) {
+          console.error('[createListing] Failed to notify followers:', err.message);
+        }
+      });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
     }
-
-    res.status(201).json({ listing });
-
-    // Async: notify all followers of this seller about the new listing
-    setImmediate(async () => {
-      try {
-        const followersRes = await db.query(
-          'SELECT follower_id FROM follows WHERE seller_id = $1',
-          [sellerId]
-        );
-        for (const { follower_id } of followersRes.rows) {
-          await notificationService.createNotification(null, {
-            userId: follower_id,
-            type: 'new_listing',
-            title: 'New Listing from a seller you follow',
-            message: `A seller you follow just listed "${listing.title}".`,
-            data: { listing_id: listing.id, seller_id: sellerId }
-          });
-        }
-      } catch (err) {
-        console.error('[createListing] Failed to notify followers:', err.message);
-      }
-    });
   } catch (err) {
-    next(err);
+    console.error('[listings] createListing error:', err);
+    res.status(500).json({ error: 'Failed to create listing' });
   }
 }
+
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadImage = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided' });
+
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'bidcraft/listings',
+          transformation: [
+            { width: 1200, height: 1200, crop: 'limit' },
+            { quality: 'auto', fetch_format: 'auto' }
+          ]
+        },
+        (err, result) => err ? reject(err) : resolve(result)
+      );
+      stream.end(req.file.buffer);
+    });
+
+    res.json({
+      url: result.secure_url,
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+    });
+  } catch (err) {
+    console.error('[listings] uploadImage error:', err);
+    res.status(500).json({ error: 'Image upload failed' });
+  }
+};
 
 const getListings = async (req, res) => {
   try {
@@ -377,5 +466,6 @@ module.exports = {
   updateListing,
   deleteListing,
   getLiveAuctions,
-  getNewArrivals
+  getNewArrivals,
+  uploadImage
 };

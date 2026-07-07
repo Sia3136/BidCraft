@@ -8,6 +8,7 @@ import { Listing } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { BuyNowButton } from '@/components/BuyNowButton';
 import { PlaceBidPanel } from '@/components/PlaceBidPanel';
+import { MakeOfferPanel } from '@/components/MakeOfferPanel';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
@@ -81,14 +82,9 @@ export default function ProductDetailClient({ product, related }: { product: Lis
   const [added, setAdded] = useState(false);
   
   const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [showOfferForm, setShowOfferForm] = useState(false);
-  const [offerAmount, setOfferAmount] = useState('');
   const [bidAmount, setBidAmount] = useState('');
   const [isBidding, setIsBidding] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(true);
-
-  const sellerDiscountFloor = product.minimumOfferPercent || 30;
-  const minOffer = product.price * (sellerDiscountFloor / 100);
 
   const handleAuthCheck = (action: () => void) => {
     if (!isAuthenticated) {
@@ -116,18 +112,7 @@ export default function ProductDetailClient({ product, related }: { product: Lis
     });
   };
 
-  const handleMakeOfferSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleAuthCheck(() => {
-      const amount = Number(offerAmount);
-      if (isNaN(amount) || amount < minOffer) {
-        alert(`Your offer must be at least ₹${minOffer}. The seller has set a minimum offer threshold.`);
-        return;
-      }
-      alert(`Offer of ₹${amount} submitted!`);
-      setShowOfferForm(false);
-    });
-  };
+
   
   const handleAdd = () => {
     handleAuthCheck(() => {
@@ -279,38 +264,19 @@ export default function ProductDetailClient({ product, related }: { product: Lis
               )}
               
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
+                    </div>
+                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                      <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                    </button>
                   </div>
                   {product.offersAllowed && (
-                    <button onClick={(e) => { e.stopPropagation(); handleAuthCheck(() => setShowOfferForm(!showOfferForm)); }} className={cn("flex-1 h-12 bg-white text-[var(--color-ink-900)] font-bold rounded-[var(--radius-md)] border-2 transition-colors", showOfferForm ? "border-[var(--color-ink-900)]" : "border-[var(--color-ink-200)] hover:border-[var(--color-ink-900)]")}>
-                      Make Offer
-                    </button>
+                    <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
                   )}
-                  <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
-                    <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-                  </button>
                 </div>
-              )}
-
-              {showOfferForm && product.offersAllowed && (
-                <form onSubmit={handleMakeOfferSubmit} className="p-4 mt-2 bg-[var(--color-cream-deep)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] animate-in fade-in slide-in-from-top-2">
-                  <label className="block text-body-sm font-semibold text-[var(--color-ink-900)] mb-2">Your Offer</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="number" 
-                      value={offerAmount}
-                      onChange={(e) => setOfferAmount(e.target.value)}
-                      placeholder={`Min. ${formatPrice(minOffer)}`}
-                      className="flex-1 h-10 px-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] bg-white text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
-                      required
-                    />
-                    <button type="submit" className="h-10 px-4 bg-[var(--color-ink-900)] text-white font-semibold rounded-[var(--radius-sm)] hover:bg-[var(--color-terracotta-600)] transition-colors">
-                      Submit
-                    </button>
-                  </div>
-                </form>
               )}
             </div>
 

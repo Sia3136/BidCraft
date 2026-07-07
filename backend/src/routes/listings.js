@@ -7,11 +7,25 @@ const {
   updateListing,
   deleteListing,
   getLiveAuctions,
-  getNewArrivals
+  getNewArrivals,
+  uploadImage
 } = require('../controllers/listingsController');
 const authMiddleware = require('../middleware/auth');
+const multer = require('multer');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 },  // 8MB max per image
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Only image files are allowed'))
+    }
+    cb(null, true)
+  }
+});
 
 router.post('/', authMiddleware, createListing);
+router.post('/upload-image', authMiddleware, upload.single('image'), uploadImage);
 router.get('/auctions/live', getLiveAuctions);
 router.get('/new-arrivals', getNewArrivals);
 router.get('/', getListings);
