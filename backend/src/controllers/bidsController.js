@@ -37,10 +37,14 @@ async function createBid(req, res, next) {
       err.message === 'auction_ended' ||
       err.message === 'auction_not_started' ||
       err.message === 'bid_too_low' ||
-      err.message === 'pre_authorization_required'
+      err.message === 'pre_authorization_required' ||
+      err.message === 'VERIFICATION_REQUIRED'
     ) {
-      const statusCode = err.message === 'auction_not_found' ? 404 : 400;
-      return res.status(statusCode).json({ error: err.message });
+      const statusCode = err.message === 'auction_not_found' ? 404 : (err.message === 'VERIFICATION_REQUIRED' ? 403 : 400);
+      return res.status(statusCode).json({ 
+        error: err.message === 'VERIFICATION_REQUIRED' ? 'Please verify your email or mobile number before placing bids.' : err.message,
+        code: err.message === 'VERIFICATION_REQUIRED' ? 'VERIFICATION_REQUIRED' : undefined
+      });
     }
     next(err);
   }

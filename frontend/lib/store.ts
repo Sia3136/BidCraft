@@ -1,5 +1,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { useAuthStore } from '@/store/authStore'
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 interface User {
   id: string;
@@ -55,6 +58,7 @@ interface StoreState {
   
   // Merge Anonymous data to user
   mergeAnonymousData: () => void;
+  mergeWithServer: (serverCart: any[], serverWishlist: any[]) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -74,30 +78,71 @@ export const useStore = create<StoreState>()(
       logout: () => set({ user: null, token: null, location: null, cart: [], wishlist: [], notifications: staticNotifications }),
       setLocation: (location) => set({ location }),
       
-      addToCart: (item) => set((state) => {
-        const existing = state.cart.find(i => i.productId === item.productId);
-        if (existing) {
-          return {
-            cart: state.cart.map(i => i.productId === item.productId ? { ...i, quantity: i.quantity + item.quantity } : i)
-          };
+      addToCart: async (item) => {
+        const { token, isAuthenticated } = useAuthStore.getState();
+        set((state) => {
+          const existing = state.cart.find(i => i.productId === item.productId);
+          if (existing) {
+            return {
+              cart: state.cart.map(i => i.productId === item.productId ? { ...i, quantity: i.quantity + item.quantity } : i)
+            };
+          }
+          return { cart: [...state.cart, item] };
+        });
+
+        if (isAuthenticated && token) {
+          try {
+            await fetch(`${API_BASE}/api/cart/${item.productId}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          } catch (err) {
+            console.error('[cart] Failed to persist:', err);
+          }
         }
-        return { cart: [...state.cart, item] };
-      }),
-      removeFromCart: (productId) => set((state) => ({
-        cart: state.cart.filter(i => i.productId !== productId)
-      })),
+      },
+      removeFromCart: async (productId) => {
+        const { token, isAuthenticated } = useAuthStore.getState();
+        set((state) => ({ cart: state.cart.filter(i => i.productId !== productId) }));
+
+        if (isAuthenticated && token) {
+          try {
+            await fetch(`${API_BASE}/api/cart/${productId}`, {
+              method: 'DELETE',
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          } catch (err) {
+            console.error('[cart] Failed to persist:', err);
+          }
+        }
+      },
       updateCartQuantity: (productId, quantity) => set((state) => ({
         cart: state.cart.map(i => i.productId === productId ? { ...i, quantity } : i)
       })),
       clearCart: () => set({ cart: [] }),
       
-      toggleWishlist: (productId) => set((state) => {
-        const exists = state.wishlist.find(i => i.productId === productId);
-        if (exists) {
-          return { wishlist: state.wishlist.filter(i => i.productId !== productId) };
+      toggleWishlist: async (productId) => {
+        const { token, isAuthenticated } = useAuthStore.getState();
+        const isAdding = !get().wishlist.find(i => i.productId === productId);
+        
+        set((state) => {
+          if (!isAdding) {
+            return { wishlist: state.wishlist.filter(i => i.productId !== productId) };
+          }
+          return { wishlist: [...state.wishlist, { productId }] };
+        });
+
+        if (isAuthenticated && token) {
+          try {
+            await fetch(`${API_BASE}/api/wishlist/${productId}`, {
+              method: isAdding ? 'POST' : 'DELETE',
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          } catch (err) {
+            console.error('[wishlist] Failed to persist:', err);
+          }
         }
-        return { wishlist: [...state.wishlist, { productId }] };
-      }),
+      },
       
       addNotification: (notification) => set((state) => ({
         notifications: [{ ...notification, id: Math.random().toString(36).substr(2, 9), read: false }, ...state.notifications]
@@ -110,10 +155,34 @@ export const useStore = create<StoreState>()(
       })),
       
       mergeAnonymousData: () => {
-        // Since we are persisting the whole store, cart and wishlist are already in state.
-        // On login, we would typically sync this to the backend.
-        // For now, we just keep the state as is.
-      }
+        // Left intact
+      },
+      mergeWithServer: (serverCart, serverWishlist) => set(state => {
+        const serverCartIds = new Set(serverCart.map((i: any) => (i.listing_id || i.listingId)?.toString()));
+        const localCartOnly = state.cart.filter(i => !serverCartIds.has(i.productId));
+        
+        const mergedCart = [
+          ...serverCart.map((i: any) => ({
+            id: i.id?.toString() || Math.random().toString(),
+            productId: (i.listing_id || i.listingId)?.toString(),
+            title: i.title,
+            price: Number(i.price),
+            quantity: 1,
+            image: i.photos?.[0] || i.image || ''
+          })),
+          ...localCartOnly
+        ];
+        
+        const serverWishIds = new Set(serverWishlist.map((i: any) => (i.listing_id || i.id)?.toString()));
+        const localWishOnly = state.wishlist.filter(i => !serverWishIds.has(i.productId));
+        
+        const mergedWishlist = [
+          ...serverWishlist.map((i: any) => ({ productId: (i.listing_id || i.id)?.toString() })),
+          ...localWishOnly
+        ];
+
+        return { cart: mergedCart, wishlist: mergedWishlist };
+      })
     }),
     {
       name: 'bidcraft-storage',

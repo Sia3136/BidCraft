@@ -172,7 +172,7 @@ export const Navbar = React.memo(function Navbar() {
         <Package className="w-5 h-5" strokeWidth={1.5} />
         Previous Orders
       </Link>
-      <Link href="/settings" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+      <Link href="/account" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
         <User className="w-5 h-5" strokeWidth={1.5} />
         Account Info
       </Link>

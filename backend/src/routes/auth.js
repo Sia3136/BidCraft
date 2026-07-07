@@ -6,7 +6,9 @@ const { register, login, googleLogin, me,
   sendVerification,
   verifyEmail,
   sendPhoneVerification,
-  verifyPhone
+  verifyPhone,
+  updateMe,
+  updatePassword
 } = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 const { authLimiter } = require('../middleware/rateLimiter');
@@ -20,6 +22,8 @@ router.post('/verify-email', authMiddleware, verifyEmail);
 router.post('/send-phone-verification', authMiddleware, sendPhoneVerification);
 router.post('/verify-phone', authMiddleware, verifyPhone);
 router.get('/me', authMiddleware, me);
+router.put('/me', authMiddleware, updateMe);
+router.put('/password', authMiddleware, updatePassword);
 router.post('/logout', logout);
 
 module.exports = router;

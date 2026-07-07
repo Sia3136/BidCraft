@@ -155,8 +155,8 @@ async function refreshToken(req, res, next) {
   }
 }
 
-const emailService = require('../services/emailService');
-const otpService = require('../services/otpService');
+const { sendOTPEmail } = require('../utils/mailer');
+const { sendOTPSMS } = require('../utils/sms');
 
 async function sendVerification(req, res, next) {
   try {
@@ -180,11 +180,7 @@ async function sendVerification(req, res, next) {
       [userId, otp, expiresAt, 'email_verification']
     );
 
-    await emailService.sendEmail({
-      to: user.email,
-      subject: 'BidCraft Account Verification',
-      text: `Your verification code is: ${otp}. It will expire in 15 minutes.`
-    });
+    await sendOTPEmail(user.email, otp);
 
     res.json({ success: true, message: 'verification_sent' });
   } catch (err) {
@@ -254,7 +250,7 @@ async function sendPhoneVerification(req, res, next) {
       [userId, phone]
     );
 
-    await otpService.sendPhoneOtp({ phone, code: otp });
+    await sendOTPSMS(phone, otp);
 
     res.json({ success: true, message: 'verification_sent' });
   } catch (err) {
@@ -295,4 +291,42 @@ async function verifyPhone(req, res, next) {
   }
 }
 
-module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail, sendPhoneVerification, verifyPhone };
+async function updateMe(req, res, next) {
+  try {
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({ error: 'Name must be at least 2 characters' });
+    }
+    const result = await db.query(
+      `UPDATE users SET name = $1, updated_at = NOW() WHERE id = $2 RETURNING id, name, email`,
+      [name.trim(), req.userId]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function updatePassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: 'Invalid passwords provided. Minimum 6 characters.' });
+    }
+    const userRes = await db.query('SELECT password_hash FROM users WHERE id=$1', [req.userId]);
+    const user = userRes.rows[0];
+    if (!user) return res.status(404).json({ error: 'user_not_found' });
+    
+    const match = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!match) return res.status(400).json({ error: 'Incorrect current password' });
+    
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await db.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [hashed, req.userId]);
+    
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail, sendPhoneVerification, verifyPhone, updateMe, updatePassword };

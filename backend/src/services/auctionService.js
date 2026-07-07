@@ -7,14 +7,15 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
   try {
     await client.query('BEGIN');
 
-    // Verify bidder has a pre-authorized payment method
+    // Relaxed gate for MVP — require only email or mobile verification
+    // Since profiles are created on email OR phone verify, existing profile means verified
     const profileRes = await client.query(
-      `SELECT razorpay_card_token FROM profiles WHERE user_id = $1`,
+      `SELECT is_verified FROM profiles WHERE user_id = $1`,
       [bidderId]
     );
     const profile = profileRes.rows[0];
-    if (!profile || !profile.razorpay_card_token) {
-      throw new Error('pre_authorization_required');
+    if (!profile) {
+      throw new Error('VERIFICATION_REQUIRED');
     }
 
     const res = await client.query(
