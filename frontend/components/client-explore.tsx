@@ -189,14 +189,6 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
         if (!methodsParam.includes(slugify(p.buyingMethod))) return false;
       }
 
-      if (collectionParam) {
-        if (!p.collections?.map((c: string) => slugify(c)).includes(collectionParam)) return false;
-      }
-
-      if (occasionParam) {
-        if (!p.occasions?.map((o: string) => slugify(o)).includes(occasionParam)) return false;
-      }
-
       if (typeParam === 'new-arrivals') {
         if (!(p as any).newArrival) return false;
       } else if (typeParam === 'auction') {

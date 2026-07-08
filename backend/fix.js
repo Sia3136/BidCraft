@@ -1,4 +1,5 @@
 const db = require('./src/utils/db');
+const redis = require('./src/utils/redis');
 
 async function run() {
   try {
@@ -63,6 +64,30 @@ async function run() {
       WHERE price BETWEEN 100 AND 1500
         AND NOT 'gift' = ANY(COALESCE(tags, ARRAY[]::text[]));
     `);
+
+    // Fix 12: Clear Redis Cache
+    if (redis) {
+      try {
+        console.log('Clearing Redis cache...');
+        const patterns = ['explore:*', 'home:*', 'listing:*', 'seller:*'];
+        for (const pattern of patterns) {
+          const keys = await redis.keys(pattern);
+          if (keys && keys.length > 0) {
+            await redis.del(...keys);
+          }
+        }
+        await redis.del('home:new-arrivals');
+        await redis.del('home:live-auctions');
+      } catch (e) {
+        console.log('Redis KEYS failed or Upstash restricted. Deleting known keys directly.');
+        await redis.del('home:new-arrivals');
+        await redis.del('home:live-auctions');
+      }
+    }
+    
+    // Invalidate listings by bumping updated_at
+    await client.query(`UPDATE listings SET updated_at = NOW();`);
+    console.log('Bumped updated_at on all listings');
 
     client.release();
     console.log('Done DB updates');
