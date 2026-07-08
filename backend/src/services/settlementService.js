@@ -184,7 +184,9 @@ async function closeAuction(auctionId) {
         await emailService.sendEmail({
           to: winnerUser.email,
           subject: `Congratulations! You won the auction for "${listingTitle}"`,
-          text: `Hello ${winnerUser.name || 'Collector'},\n\nGreat news! You won the auction for "${listingTitle}" with a final bid of $${winningBid.bid_amount}.\n\nTo secure your purchase, please visit BidCraft and complete your escrow-protected payment.\n\nBest,\nThe BidCraft Team`
+          text: `Hello ${winnerUser.name || 'Collector'},\n\nGreat news! You won the auction for "${listingTitle}" with a final bid of $${winningBid.bid_amount}.\n\nTo secure your purchase, please visit BidCraft and complete your escrow-protected payment within 12 hours.\n\nBest,\nThe BidCraft Team`,
+          ctaLink: `/auction/confirm/${auctionId}`,
+          ctaText: `Confirm Your Win`
         });
       }
 
@@ -192,7 +194,9 @@ async function closeAuction(auctionId) {
         await emailService.sendEmail({
           to: sellerUser.email,
           subject: `Your BidCraft auction for "${listingTitle}" has settled!`,
-          text: `Hello ${sellerUser.name || 'Creator'},\n\nYour auction for "${listingTitle}" has successfully ended and settled. The final winning bid is $${winningBid.bid_amount} by ${winnerUser ? winnerUser.name : 'a buyer'}.\n\nOnce the buyer completes their secure payment, we will notify you to ship the item.\n\nBest,\nThe BidCraft Team`
+          text: `Hello ${sellerUser.name || 'Creator'},\n\nYour auction for "${listingTitle}" has successfully ended and settled. The final winning bid is $${winningBid.bid_amount} by ${winnerUser ? winnerUser.name : 'a buyer'}.\n\nOnce the buyer completes their secure payment, we will notify you to ship the item.\n\nBest,\nThe BidCraft Team`,
+          ctaLink: `/seller/listings`,
+          ctaText: `View Your Listings`
         });
       }
     } catch (emailErr) {

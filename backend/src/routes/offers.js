@@ -52,6 +52,22 @@ router.post('/', auth, async (req, res) => {
       VALUES ($1, 'new_offer', $2, $3)
     `, [listing.seller_id, `You received an offer of ₹${offerAmount} on ${listing.title}`, `/seller/offers/${offerId}`]);
 
+    try {
+      const sellerRes = await db.query('SELECT email FROM users WHERE id = $1', [listing.seller_id]);
+      if (sellerRes.rows.length > 0) {
+        const emailService = require('../services/emailService');
+        await emailService.sendEmail({
+          to: sellerRes.rows[0].email,
+          subject: `New Offer Received: ${listing.title}`,
+          text: `You have received a new offer of ₹${offerAmount} on your listing "${listing.title}".\n\nPlease visit your dashboard to review and accept or decline the offer.`,
+          ctaLink: `/seller/offers/${offerId}`,
+          ctaText: `Review Offer`
+        });
+      }
+    } catch (emailErr) {
+      console.error('Failed to send offer email:', emailErr);
+    }
+
     res.status(201).json({ offerId, success: true })
   } catch (err) {
     console.error(err);

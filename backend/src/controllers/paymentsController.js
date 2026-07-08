@@ -107,19 +107,8 @@ async function verifyCheckout(req, res, next) {
       [order.id, order.buyer_id, order.seller_id, order.total_amount]
     );
 
-    // Notify seller
-    await db.query(
-      `INSERT INTO notifications (user_id, type, message, link, created_at)
-       VALUES ($1, 'order_confirmed', $2, $3, NOW())`,
-      [order.seller_id, `Your item "${listing.title}" has been sold.`, `/orders/${order.id}`]
-    );
-    
-    // Notify buyer
-    await db.query(
-      `INSERT INTO notifications (user_id, type, message, link, created_at)
-       VALUES ($1, 'order_confirmed', $2, $3, NOW())`,
-      [buyerId, `Your order for "${listing.title}" is confirmed.`, `/orders/${order.id}`]
-    );
+    // Notify users
+    await notifyUsersOfPayment(order.id);
 
     // Update listing status
     await db.query(`UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`, [listing_id]);
@@ -274,8 +263,8 @@ async function verifyPayment(req, res, next) {
       [order.id, order.buyer_id, order.seller_id, order.total_amount]
     );
 
-    // Notify seller
-    await notifySellerOfPayment(order_id);
+    // Notify users
+    await notifyUsersOfPayment(order_id);
 
     // Update listing status to sold
     await db.query(
@@ -340,8 +329,8 @@ async function handleWebhook(req, res, next) {
             );
           }
 
-          // Notify seller
-          await notifySellerOfPayment(orderId);
+          // Notify users
+          await notifyUsersOfPayment(orderId);
 
           if (order) {
             // Update listing status to sold
@@ -398,20 +387,25 @@ async function getPaymentByOrder(req, res, next) {
 }
 
 /**
- * Helper: Notify seller of payment received
+ * Helper: Notify users of payment received
  */
-async function notifySellerOfPayment(orderId) {
+async function notifyUsersOfPayment(orderId) {
   try {
     const orderRes = await db.query(
-      `SELECT o.seller_id, o.total_amount, l.title
+      `SELECT o.buyer_id, o.seller_id, o.total_amount, l.title, b.email as buyer_email, b.name as buyer_name, s.email as seller_email
        FROM orders o
        LEFT JOIN listings l ON l.id = o.listing_id
+       LEFT JOIN users b ON b.id = o.buyer_id
+       LEFT JOIN users s ON s.id = o.seller_id
        WHERE o.id = $1`,
       [orderId]
     );
     const order = orderRes.rows[0];
     if (order) {
       const notificationService = require('../services/notificationService');
+      const emailService = require('../services/emailService');
+
+      // Notify seller
       await notificationService.createNotification(null, {
         userId: order.seller_id,
         type: 'payment_received',
@@ -419,9 +413,32 @@ async function notifySellerOfPayment(orderId) {
         message: `Payment of ${order.total_amount} has been received for "${order.title || 'item'}".`,
         data: { order_id: orderId, amount: order.total_amount }
       });
+      await emailService.sendEmail({
+        to: order.seller_email,
+        subject: `Payment Received: Order #${orderId}`,
+        text: `You have received a payment of ₹${order.total_amount} for your item "${order.title || 'item'}".\n\nPlease visit your dashboard to view the order and ship the item.`,
+        ctaLink: `/seller/dashboard`,
+        ctaText: `View Dashboard`
+      });
+
+      // Notify buyer
+      await notificationService.createNotification(null, {
+        userId: order.buyer_id,
+        type: 'order_confirmed',
+        title: 'Order Confirmed!',
+        message: `Your payment of ${order.total_amount} for "${order.title || 'item'}" was successful.`,
+        data: { order_id: orderId, amount: order.total_amount }
+      });
+      await emailService.sendEmail({
+        to: order.buyer_email,
+        subject: `Order Confirmed: #${orderId}`,
+        text: `Hi ${order.buyer_name || 'Buyer'},\n\nYour payment of ₹${order.total_amount} for "${order.title || 'item'}" was successful. The funds are securely held in escrow until you receive your item.\n\nThank you for shopping on BidCraft!`,
+        ctaLink: `/orders/${orderId}`,
+        ctaText: `View Order`
+      });
     }
   } catch (err) {
-    console.error('Failed to notify seller of payment:', err);
+    console.error('Failed to notify users of payment:', err);
   }
 }
 

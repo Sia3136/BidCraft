@@ -259,6 +259,17 @@ CREATE TABLE IF NOT EXISTS follows (
   UNIQUE (follower_id, seller_id)
 );
 
+-- Notifications
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  type TEXT NOT NULL,
+  message TEXT NOT NULL,
+  link TEXT,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_auctions_end_time ON auctions(end_time);
 CREATE INDEX IF NOT EXISTS idx_bids_auction_id_amount ON bids(auction_id, bid_amount DESC);

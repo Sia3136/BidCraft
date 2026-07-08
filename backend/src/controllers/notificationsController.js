@@ -9,11 +9,16 @@ async function getNotifications(req, res, next) {
     const userId = req.userId;
 
     const result = await db.query(
-      'SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 20',
       [userId]
     );
 
-    res.json({ notifications: result.rows });
+    const countResult = await db.query(
+      'SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND is_read = false',
+      [userId]
+    );
+
+    res.json({ notifications: result.rows, unreadCount: parseInt(countResult.rows[0].count, 10) });
   } catch (err) {
     next(err);
   }
