@@ -92,9 +92,11 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            await fetch(`${API_BASE}/api/cart/${item.productId}`, {
+            await fetch('/api/cart', {
               method: 'POST',
-              headers: { Authorization: `Bearer ${token}` }
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ listing_id: item.productId })
             });
           } catch (err) {
             console.error('[cart] Failed to persist:', err);
@@ -107,9 +109,9 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            await fetch(`${API_BASE}/api/cart/${productId}`, {
+            await fetch(`/api/cart?listing_id=${productId}`, {
               method: 'DELETE',
-              headers: { Authorization: `Bearer ${token}` }
+              credentials: 'include'
             });
           } catch (err) {
             console.error('[cart] Failed to persist:', err);
@@ -134,9 +136,11 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            const res = await fetch(`${API_BASE}/api/wishlist/${productId}`, {
-              method: isAdding ? 'POST' : 'DELETE',
-              headers: { Authorization: `Bearer ${token}` }
+            const res = await fetch('/api/wishlist', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ listing_id: productId })
             });
             if (!res.ok) throw new Error('API Error');
           } catch (err) {

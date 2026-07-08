@@ -272,9 +272,11 @@ export default function ProductDetailClient({ product, related }: { product: Lis
                           return
                         }
                         try {
-                          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart/${product.id}`, {
+                          await fetch(`/api/cart`, {
                             method: 'POST',
-                            headers: { 'Authorization': `Bearer ${useAuthStore.getState().token}` }
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ listing_id: product.id })
                           })
                           alert('Added to cart!')
                         } catch (err) {

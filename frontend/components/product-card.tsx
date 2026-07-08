@@ -5,7 +5,7 @@ import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import { Listing } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
-import { Heart } from 'lucide-react'
+import { Heart, ShoppingCart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
@@ -69,7 +69,26 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
     setIsWishlisted(!isWishlisted)
   }
 
-  const bidText = product.bidCount ? `Place Bid · ${product.bidCount} bids` : 'Place Bid · Be first'
+  async function handleAddToCart(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    const { isAuthenticated } = useAuthStore.getState()
+    if (!isAuthenticated) {
+      router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
+      return
+    }
+    try {
+      await fetch('/api/cart', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listing_id: product.id })
+      })
+      alert('Added to cart!')
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   let badgeColor = 'var(--color-terracotta-600)';
   let badgeText = product.buyingMethod;
@@ -151,6 +170,33 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         >
           <Heart fill={isWishlisted ? 'currentColor' : 'none'} size={18} />
         </button>
+
+        {/* Bottom Right Cart Button */}
+        {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
+          <button 
+            onClick={handleAddToCart}
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              height: '36px', 
+              width: '36px',
+              background: 'rgba(255, 255, 255, 0.9)', 
+              color: 'var(--color-ink-900)',
+              border: 'none', 
+              borderRadius: '50%',
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              zIndex: 10
+            }}
+            className="hover:scale-110 hover:bg-[var(--color-ink-900)] hover:text-white transition-all"
+          >
+            <ShoppingCart size={18} />
+          </button>
+        )}
 
         {/* Bottom Left Timer Badge overlaid on Image */}
         {product.buyingMethod === 'Auction' && product.auctionEndsAt && (

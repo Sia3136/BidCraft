@@ -29,8 +29,8 @@ export default function WishlistPage() {
       setLoading(false)
       return
     }
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/wishlist`, {
-      headers: { Authorization: `Bearer ${token}` }
+    fetch(`/api/wishlist`, {
+      credentials: 'include'
     })
       .then(res => res.json())
       .then(data => {

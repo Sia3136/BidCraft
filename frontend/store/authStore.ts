@@ -20,11 +20,12 @@ export const useAuthStore = create<AuthStore>()(
       token: null,
       isAuthenticated: false,
       setAuth: async (user, token) => {
+        document.cookie = `session_token=${token}; path=/; max-age=86400`;
         set({ user, token, isAuthenticated: true });
         try {
           const [cartRes, wishRes] = await Promise.all([
-            fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } }),
-            fetch(`${API_BASE}/api/wishlist`, { headers: { Authorization: `Bearer ${token}` } })
+            fetch(`/api/cart`, { credentials: 'include' }),
+            fetch(`/api/wishlist`, { credentials: 'include' })
           ]);
           
           let serverCart = { cart: [] };
@@ -38,7 +39,10 @@ export const useAuthStore = create<AuthStore>()(
           console.error("Failed to merge with server", e);
         }
       },
-      clearAuth: () => set({ user: null, token: null, isAuthenticated: false }),
+      clearAuth: () => {
+        document.cookie = `session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        set({ user: null, token: null, isAuthenticated: false });
+      },
     }),
     {
       name: 'bidcraft-auth',

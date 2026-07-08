@@ -27,8 +27,8 @@ export default function CartPage() {
       setLoading(false)
       return
     }
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart`, {
-      headers: { Authorization: `Bearer ${token}` }
+    fetch(`/api/cart`, {
+      credentials: 'include'
     })
       .then(res => res.json())
       .then(data => {
@@ -43,9 +43,9 @@ export default function CartPage() {
 
   const removeItem = async (listingId: number) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart/${listingId}`, {
+      await fetch(`/api/cart?listing_id=${listingId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        credentials: 'include'
       })
       setItems(items.filter(i => i.id !== listingId))
     } catch (err) {
