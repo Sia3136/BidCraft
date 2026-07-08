@@ -13,11 +13,39 @@ import Image from 'next/image'
 import { slugify } from '@/lib/slugify'
 
 const categories = [
-  { name: 'Art', slug: 'art', subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'] },
-  { name: 'Handmade & Crafts', slug: 'handmade-crafts', subcategories: ['Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'Candles & Soaps', 'Paper Crafts'] },
-  { name: 'Collectibles', slug: 'collectibles', subcategories: ['Action Figures', 'Trading Cards', 'Funko Pops', 'Hot Wheels', 'Rare Collectibles'] },
-  { name: 'Gaming & Hobby', slug: 'gaming-hobby', subcategories: ['Board Games', 'Anime Merchandise', 'Cosplay Props', 'Puzzle Collections'] },
-  { name: 'Lifestyle & Gifts', slug: 'lifestyle-gifts', subcategories: ['Home Decor', 'Jewellery & Accessories', 'Miniatures', 'Stationery'] }
+  { name: 'Art', slug: 'art', subcategories: [
+    { name: 'Paintings', slug: 'paintings' },
+    { name: 'Sketches & Drawings', slug: 'sketches-and-drawings' },
+    { name: 'Digital Art & Illustrations', slug: 'digital-art-and-illustrations' },
+    { name: 'Prints & Posters', slug: 'prints-and-posters' },
+    { name: 'Sculptures', slug: 'sculptures' }
+  ] },
+  { name: 'Handmade & Crafts', slug: 'handmade-and-crafts', subcategories: [
+    { name: 'Pottery & Ceramics', slug: 'pottery-and-ceramics' },
+    { name: 'Textile Art', slug: 'textile-art' },
+    { name: 'Jewellery Making', slug: 'jewellery-making' },
+    { name: 'Candles & Soaps', slug: 'candles-and-soaps' },
+    { name: 'Woodwork', slug: 'woodwork' }
+  ] },
+  { name: 'Collectibles', slug: 'collectibles', subcategories: [
+    { name: 'Action Figures', slug: 'action-figures' },
+    { name: 'Funko Pops', slug: 'funko-pops' },
+    { name: 'Hot Wheels', slug: 'hot-wheels' },
+    { name: 'Rare Collectibles', slug: 'rare-collectibles' },
+    { name: 'Trading Cards', slug: 'trading-cards' }
+  ] },
+  { name: 'Gaming & Hobby', slug: 'gaming-and-hobby', subcategories: [
+    { name: 'Board Games', slug: 'board-games' },
+    { name: 'Puzzles', slug: 'puzzles' },
+    { name: 'Outdoor & Sports Hobbies', slug: 'outdoor-and-sports-hobbies' }
+  ] },
+  { name: 'Lifestyle & Gifts', slug: 'lifestyle-and-gifts', subcategories: [
+    { name: 'Home Decor', slug: 'home-decor' },
+    { name: 'Books & Stationery', slug: 'books-and-stationery' },
+    { name: 'Plants & Botanicals', slug: 'plants-and-botanicals' },
+    { name: 'Wellness & Self Care', slug: 'wellness-and-self-care' },
+    { name: 'Jewellery & Accessories', slug: 'jewellery-and-accessories' }
+  ] }
 ]
 
 export const Navbar = React.memo(function Navbar() {
@@ -351,19 +379,13 @@ export const Navbar = React.memo(function Navbar() {
 
               {/* Categories */}
               {categories.map((category) => (
-                <div key={category.slug} className="relative h-full flex items-center">
-                  <button
-                    onClick={() => {
-                      if (openDropdown === category.slug) {
-                        setOpenDropdown(null);
-                      } else {
-                        setOpenDropdown(category.slug);
-                      }
-                    }}
+                <div key={category.slug} className="relative h-full flex items-center" onMouseEnter={() => setOpenDropdown(category.slug)}>
+                  <Link
+                    href={`/explore?category=${category.slug}`}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
                   >
                     {category.name}
-                  </button>
+                  </Link>
                 </div>
               ))}
 
@@ -401,22 +423,20 @@ export const Navbar = React.memo(function Navbar() {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
+                onMouseLeave={() => setOpenDropdown(null)}
               >
                 <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
                   <div className="grid grid-cols-3 gap-y-4 gap-x-8">
-                    {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => {
-                      const subSlug = slugify(sub);
-                      return (
+                    {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => (
                         <Link
-                          key={sub}
-                          href={`/explore?category=${openDropdown}&subcategory=${subSlug}`}
+                          key={sub.slug}
+                          href={`/explore?category=${openDropdown}&subcategory=${sub.slug}`}
                           onClick={() => setOpenDropdown(null)}
                           className="text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block"
                         >
-                          {sub}
+                          {sub.name}
                         </Link>
-                      )
-                    })}
+                    ))}
                   </div>
                 </div>
               </motion.div>

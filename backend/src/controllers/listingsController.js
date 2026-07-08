@@ -189,15 +189,12 @@ const getListings = async (req, res) => {
     const values = []
     let idx = 1
 
-    const slugifySQL = (col) =>
-      `regexp_replace(regexp_replace(lower(${col}), '[&]', '', 'g'), '\\s+', '-', 'g')`
-
     if (category) {
-      conditions.push(`${slugifySQL('category')} = $${idx++}`)
+      conditions.push(`category = $${idx++}`)
       values.push(category)
     }
     if (subcategory) {
-      conditions.push(`${slugifySQL('subcategory')} = $${idx++}`)
+      conditions.push(`subcategory = $${idx++}`)
       values.push(subcategory)
     }
     if (method) {
@@ -205,20 +202,44 @@ const getListings = async (req, res) => {
       conditions.push(`buying_method = $${idx++}`)
       values.push(methodMap[method] || method)
     }
-    if (collection) {
+    const search = req.query.search;
+    if (search) {
+      conditions.push(`(LOWER(title) LIKE LOWER($${idx}) OR LOWER(description) LIKE LOWER($${idx}) OR LOWER(tags::text) LIKE LOWER($${idx}))`)
+      values.push(`%${search}%`)
+      idx++
+    }
+    if (collection === 'vintage-retro') {
+      conditions.push(`(tags::text ILIKE '%vintage%' OR tags::text ILIKE '%retro%')`)
+    } else if (collection === 'modern-minimalist') {
+      conditions.push(`(tags::text ILIKE '%minimalist%' OR tags::text ILIKE '%modern%')`)
+    } else if (collection === 'traditional-arts') {
+      conditions.push(`(tags::text ILIKE '%traditional%' OR tags::text ILIKE '%folk%')`)
+    } else if (collection) {
       conditions.push(`$${idx++} = ANY(collections)`)
       values.push(collection)
     }
-    if (occasion) {
+    
+    const gift = req.query.gift;
+    if (gift === 'birthdays') {
+      conditions.push(`tags::text ILIKE '%birthday%'`)
+    } else if (gift === 'anniversaries') {
+      conditions.push(`tags::text ILIKE '%anniversary%'`)
+    } else if (gift === 'housewarming') {
+      conditions.push(`tags::text ILIKE '%housewarming%'`)
+    } else if (gift === 'just-because') {
+      conditions.push(`tags::text ILIKE '%gift%'`)
+    } else if (occasion) {
       conditions.push(`$${idx++} = ANY(occasions)`)
       values.push(occasion)
     }
+
     if (type === 'new-arrivals') {
       conditions.push(`new_arrival = true`)
+    } else if (type) {
+      conditions.push(`listing_type = $${idx++}`)
+      values.push(type)
     }
-    if (type === 'auction') {
-      conditions.push(`buying_method = 'Auction'`)
-    }
+    
     if (minPrice) {
       conditions.push(`price >= $${idx++}`)
       values.push(parseInt(minPrice))

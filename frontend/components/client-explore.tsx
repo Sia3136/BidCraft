@@ -51,6 +51,34 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
     setPriceMax(priceMaxParam)
   }, [priceMinParam, priceMaxParam])
 
+  // Debounced URL update for price
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (priceMin === priceMinParam && priceMax === priceMaxParam) return;
+      const updates: Record<string, string | null> = {}
+      if (priceMin > 50) updates.priceMin = String(priceMin)
+      else updates.priceMin = null
+      
+      if (priceMax < 5000) updates.priceMax = String(priceMax)
+      else updates.priceMax = null
+      
+      const params = new URLSearchParams(searchParams.toString())
+      let changed = false;
+      Object.entries(updates).forEach(([key, value]) => {
+        const oldVal = params.get(key);
+        if (value !== null) {
+          if (oldVal !== value) { params.set(key, value); changed = true; }
+        } else {
+          if (oldVal !== null) { params.delete(key); changed = true; }
+        }
+      })
+      if (changed) {
+        router.push(`${pathname}?${params.toString()}`)
+      }
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [priceMin, priceMax, priceMinParam, priceMaxParam, searchParams, pathname, router])
+
   // Helper to update URL
   const updateUrl = useCallback((updates: Record<string, string | string[] | null>) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -92,14 +120,7 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
   }
 
   const handlePriceUpdate = () => {
-    const updates: Record<string, string | null> = {}
-    if (priceMin > 50) updates.priceMin = String(priceMin)
-    else updates.priceMin = null
-    
-    if (priceMax < 5000) updates.priceMax = String(priceMax)
-    else updates.priceMax = null
-    
-    updateUrl(updates)
+    // Legacy function, replaced by debounce
   }
 
   // Active Filters for Pills
@@ -287,8 +308,6 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
               const val = Number(e.target.value)
               if (val <= priceMax - 50) setPriceMin(val)
             }}
-            onMouseUp={handlePriceUpdate}
-            onTouchEnd={handlePriceUpdate}
             className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:rounded-full"
           />
           <input
@@ -299,8 +318,6 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
               const val = Number(e.target.value)
               if (val >= priceMin + 50) setPriceMax(val)
             }}
-            onMouseUp={handlePriceUpdate}
-            onTouchEnd={handlePriceUpdate}
             className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:rounded-full"
           />
         </div>

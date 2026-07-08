@@ -1,7 +1,6 @@
 'use client'
 
-import React, {  useState, useEffect  } from 'react'
-import * as SliderPrimitive from '@radix-ui/react-slider'
+import React, { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 
@@ -45,6 +44,14 @@ export function PriceSlider({ min, max, step = 1, value, onValueChange, classNam
     onValueChange(typedVal)
   }
 
+  // Debounce external update when using slider
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onValueChange(localValue)
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [localValue, onValueChange])
+
   return (
     <div className={cn("flex flex-col gap-[var(--space-4)]", className)}>
       {/* Inputs */}
@@ -77,24 +84,34 @@ export function PriceSlider({ min, max, step = 1, value, onValueChange, classNam
       </div>
 
       {/* Slider */}
-      <SliderPrimitive.Root
-        className="relative flex w-full touch-none select-none items-center mt-2"
-        min={min}
-        max={max}
-        step={step}
-        value={localValue}
-        onValueChange={handleSliderChange}
-      >
-        <SliderPrimitive.Track className="relative h-[4px] w-full grow overflow-hidden rounded-full bg-[var(--color-cream-deep)]">
-          <SliderPrimitive.Range className="absolute h-full bg-[var(--color-terracotta-600)]" />
-        </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb 
-          className="block h-[20px] w-[20px] rounded-full border border-[var(--color-border-strong)] bg-white transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 active:shadow-[var(--shadow-card)] cursor-grab active:cursor-grabbing" 
+      <div className="relative h-6 w-full mt-4 flex items-center">
+        <div className="absolute w-full h-1 bg-[var(--color-cream-deep)] rounded-full"></div>
+        <div
+          className="absolute h-1 bg-[var(--color-terracotta-600)] rounded-full"
+          style={{
+            left: `${((localValue[0] - min) / (max - min)) * 100}%`,
+            right: `${100 - ((localValue[1] - min) / (max - min)) * 100}%`
+          }}
+        ></div>
+        <input
+          type="range" min={min} max={max} step={step}
+          value={localValue[0]}
+          onChange={(e) => {
+            const newVal = Math.min(Number(e.target.value), localValue[1] - step);
+            setLocalValue([newVal, localValue[1]]);
+          }}
+          className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer"
         />
-        <SliderPrimitive.Thumb 
-          className="block h-[20px] w-[20px] rounded-full border border-[var(--color-border-strong)] bg-white transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 active:shadow-[var(--shadow-card)] cursor-grab active:cursor-grabbing" 
+        <input
+          type="range" min={min} max={max} step={step}
+          value={localValue[1]}
+          onChange={(e) => {
+            const newVal = Math.max(Number(e.target.value), localValue[0] + step);
+            setLocalValue([localValue[0], newVal]);
+          }}
+          className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:cursor-pointer"
         />
-      </SliderPrimitive.Root>
+      </div>
     </div>
   )
 }

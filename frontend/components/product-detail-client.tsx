@@ -73,10 +73,44 @@ const GALLERY_VIEWS = [
   { transform: 'scale(1.2)', objectPosition: 'center' }
 ];
 
-export default function ProductDetailClient({ product, related }: { product: Listing, related: Listing[] }) {
+export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
+  return (
+    <ErrorBoundary>
+      <ProductDetailClient {...props} />
+    </ErrorBoundary>
+  )
+}
+
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error('ProductDetailClient error:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div className="p-10 text-center">Something went wrong loading this product.</div>;
+    }
+    return this.props.children;
+  }
+}
+
+function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
+  const router = useRouter();
+  
+  if (!product) {
+    return <div className="p-10 text-center">Product not found.</div>;
+  }
+  const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
+  const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
+  
   const { toggleWishlist: storeToggleWishlist, wishlist, addToCart } = useStore();
   const { isAuthenticated } = useAuthStore();
-  const router = useRouter();
   
   const isWishlisted = wishlist.some(w => w.productId === product.id);
   const [added, setAdded] = useState(false);
@@ -189,17 +223,19 @@ export default function ProductDetailClient({ product, related }: { product: Lis
             {/* A. Creator block */}
             <div className="flex items-center gap-3 bg-white p-3 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
               <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-md text-[var(--color-terracotta-700)] shrink-0 font-display">
-                {product.creator.charAt(0)}
+                {sellerName.charAt(0)}
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">{product.creator}</h3>
-                  {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
+                    <Link href={`/seller/${sellerSlug}`} className="hover:underline">{sellerName}</Link>
+                  </h3>
+                  {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
                 </div>
                 <div className="flex items-center gap-2 text-caption text-[var(--color-ink-700)]">
-                  <span>★ {product.creatorRating || '4.8'}</span>
-                  <span>({product.creatorReviewCount || '128'} reviews)</span>
-                  {product.creatorBadges && product.creatorBadges.length > 0 && (
+                  <span>★ {product?.creatorRating || '4.8'}</span>
+                  <span>({product?.creatorReviewCount || '128'} reviews)</span>
+                  {product?.creatorBadges && product.creatorBadges.length > 0 && (
                     <>
                       <span>•</span>
                       <span className="font-medium text-[var(--color-terracotta-600)]">{product.creatorBadges[0]}</span>
