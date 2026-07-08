@@ -16,53 +16,7 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { productReviews } from '@/lib/exploreProducts';
 
-const DetailAuctionTimer = ({ endTime }: { endTime: string }) => {
-  const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
-  const [isUrgent, setIsUrgent] = useState(false);
-
-  useEffect(() => {
-    const target = new Date(endTime).getTime();
-    const update = () => {
-      const remaining = target - Date.now();
-      if (remaining <= 0) {
-        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
-        setIsUrgent(false);
-        return;
-      }
-      
-      setIsUrgent(remaining < 60 * 60 * 1000); // under 1 hour
-
-      setTimeLeft({
-        d: Math.floor(remaining / (1000 * 60 * 60 * 24)),
-        h: Math.floor((remaining / (1000 * 60 * 60)) % 24),
-        m: Math.floor((remaining / 1000 / 60) % 60),
-        s: Math.floor((remaining / 1000) % 60)
-      });
-    };
-    
-    update();
-    const timer = setInterval(update, 1000);
-    return () => clearInterval(timer);
-  }, [endTime]);
-
-  if (!timeLeft) return null;
-
-  return (
-    <div className="flex gap-3 my-4">
-      {[
-        { label: 'Days', value: timeLeft.d },
-        { label: 'Hours', value: timeLeft.h },
-        { label: 'Minutes', value: timeLeft.m },
-        { label: 'Seconds', value: timeLeft.s }
-      ].map((item, idx) => (
-        <div key={idx} className={cn("flex flex-col items-center justify-center bg-white border rounded-[var(--radius-md)] p-3 min-w-[70px] shadow-sm", isUrgent ? "border-[var(--color-urgent-600)] text-[var(--color-urgent-600)] bg-[var(--color-urgent-100)]" : "border-[var(--color-border-subtle)] text-[var(--color-ink-900)]")}>
-          <span className="text-display-md font-display font-bold leading-none mb-1">{String(item.value).padStart(2, '0')}</span>
-          <span className="text-caption font-semibold uppercase tracking-wider opacity-70">{item.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
+import { AuctionTimer } from '@/components/AuctionTimer';
 
 const GALLERY_VIEWS = [
   { transform: 'scale(1)', objectPosition: 'center' },
@@ -336,10 +290,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
 
             {/* Countdown for Auctions */}
             {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
-              <div className="flex flex-col gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
-                <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time Remaining</span>
-                <DetailAuctionTimer endTime={product.auctionEndsAt} />
-              </div>
+                <div className="flex items-center gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+                  <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time left:</span>
+                  <AuctionTimer endTime={product.auctionEndsAt} />
+                </div>
             )}
 
             {/* F. Escrow trust strip */}

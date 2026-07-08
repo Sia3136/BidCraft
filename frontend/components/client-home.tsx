@@ -217,80 +217,32 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-        {/* 4. Live Auctions Rail (Rebuilt) */}
+        {/* 4. Live Auctions Rail */}
         {liveAuctions.length > 0 && (
-          <section className="py-24 bg-[var(--color-cream-base)] border-y border-[var(--color-border-subtle)] overflow-hidden">
-            <div className="max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)]">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex items-center gap-4 mb-10">
-                <h2 className="text-display-lg text-[var(--color-ink-900)]">Live Auctions</h2>
-                <div className="flex items-center gap-2 bg-[var(--color-urgent-100)] border border-[var(--color-urgent-600)] px-3 py-1 rounded-full">
-                  <span className="w-2 h-2 rounded-full bg-[var(--color-urgent-600)] animate-pulse" />
-                  <span className="text-caption text-[var(--color-urgent-700)] uppercase font-bold tracking-wider">Live Now</span>
-                </div>
-              </motion.div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                {liveAuctions.map((auction) => (
-                  <motion.div key={auction.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="snap-start hover-card bg-white rounded-[var(--radius-lg)] p-3 relative block">
-                    <Link href={`/product/${auction.id}`} className="absolute inset-0 z-20" aria-label={`View ${auction.title}`}></Link>
-                    <div className="relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden mb-4 bg-[var(--color-cream-deep)]">
-                      <Image 
-                        src={
-                          auction.image.startsWith('http') || auction.image.startsWith('/')
-                            ? auction.image
-                            : `https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto,w_500/${auction.image}`
-                        } 
-                        fill 
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        style={{ objectFit: 'cover' }} 
-                        alt={auction.title} 
-                        className="transition-transform duration-slow" 
-                        loading="lazy"
-                      />
-                      <div className={cn("absolute top-3 right-3 backdrop-blur-sm px-2.5 py-1 rounded-md shadow-sm text-caption font-bold flex items-center gap-1.5 z-10 transition-colors", 
-                        !auction.auctionEndsAt || new Date(auction.auctionEndsAt).getTime() - Date.now() >= 24 * 60 * 60 * 1000 ? "bg-[rgba(43,42,40,0.85)] text-white" : "bg-[var(--color-urgent-600)] text-white animate-pulse"
-                      )}>
-                        <span>⏱</span> <LiveTimer endTime={auction.auctionEndsAt} />
-                      </div>
-                    </div>
-                    <div className="px-1 relative z-10">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-6 h-6 bg-[var(--color-terracotta-100)] rounded-full flex items-center justify-center text-[10px] font-bold text-[var(--color-terracotta-700)]">{auction.creator?.charAt(0)}</div>
-                        <span className="text-caption text-[var(--color-ink-500)]">{auction.creator}</span>
-                      </div>
-                      <h3 className="text-heading-sm text-[var(--color-ink-900)] line-clamp-1 mb-4">{auction.title}</h3>
-                      <div className="flex items-end justify-between pt-3 border-t border-[var(--color-border-subtle)] relative z-30">
-                        <div>
-                          <p className="text-caption text-[var(--color-ink-500)] mb-0.5">Current Bid</p>
-                          <p className="text-price text-[var(--color-ink-900)] animate-highlight-flash rounded px-1 -ml-1">₹{(auction.currentBid || auction.price).toLocaleString('en-IN')}</p>
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <p className="text-caption text-[var(--color-ink-500)]">{auction.bidCount} Bids</p>
-                          <button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              if (!user) {
-                                window.location.href = '/auth';
-                              } else {
-                                window.location.href = `/product/${auction.id}`;
-                              }
-                            }}
-                            className="bg-[var(--color-terracotta-600)] text-white text-caption font-bold px-4 py-1.5 rounded-[var(--radius-sm)] hover:bg-[var(--color-terracotta-700)] transition-colors"
-                          >
-                            Bid Now
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
-                <Link href="/explore?type=auction" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
-                  Explore more live auctions <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </motion.div>
+          <section className="px-6 lg:px-16 py-14">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold font-playfair text-[#1C1C1C]">Live Auctions</h2>
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                Live Now
+              </span>
+            </div>
+
+            {/* 4 auction cards in one row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {liveAuctions.map(listing => (
+                <ProductCard key={listing.id} product={listing} />
+              ))}
+            </div>
+
+            {/* Explore more button */}
+            <div className="mt-8 text-center">
+              <Link
+                href="/explore?type=auction"
+                className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all"
+              >
+                Explore More Live Auctions <span>→</span>
+              </Link>
             </div>
           </section>
         )}
@@ -338,8 +290,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </div>
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
-              <Link href="/explore?type=new-arrivals" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
-                Explore More Live Auctions
+              <Link href="/explore?sort=newest" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
+                Explore More New Arrivals <span>→</span>
               </Link>
             </motion.div>
           </div>
@@ -433,7 +385,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 { occ: 'All Occasions', slug: 'all-occasions', image: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg', colSpanMobile: true }
               ].map((item, i) => (
                 <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className={cn("relative rounded-[var(--radius-md)] overflow-hidden group cursor-pointer bg-[var(--color-cream-deep)] min-h-[220px]", item.colSpanMobile && "col-span-2 md:col-span-1 lg:col-span-1")}>
-                  <Link href={`/explore?gift=${item.slug}`} className="absolute inset-0 z-20"></Link>
+                  <Link href={item.occ === 'All Occasions' ? '/explore' : `/explore?gift=${item.slug}`} className="absolute inset-0 z-20"></Link>
                   <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
                   <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20">{item.occ}</h3>

@@ -185,67 +185,67 @@ const getListings = async (req, res) => {
       sort = 'newest', limit = 50, offset = 0
     } = req.query
 
-    const conditions = ["status = 'active'", "(buying_method != 'Auction' OR auction_ends_at > NOW())"]
+    const conditions = ["l.status = 'active'", "(l.buying_method != 'Auction' OR COALESCE(a.end_time, l.auction_ends_at) > NOW())"]
     const values = []
     let idx = 1
 
     if (category) {
-      conditions.push(`category = $${idx++}`)
+      conditions.push(`l.category = $${idx++}`)
       values.push(category)
     }
     if (subcategory) {
-      conditions.push(`subcategory = $${idx++}`)
+      conditions.push(`l.subcategory = $${idx++}`)
       values.push(subcategory)
     }
     if (method) {
       const methodMap = { 'buy-now': 'Buy Now', 'auction': 'Auction', 'negotiable': 'Negotiable' }
-      conditions.push(`buying_method = $${idx++}`)
+      conditions.push(`l.buying_method = $${idx++}`)
       values.push(methodMap[method] || method)
     }
     const search = req.query.search;
     if (search) {
-      conditions.push(`(LOWER(title) LIKE LOWER($${idx}) OR LOWER(description) LIKE LOWER($${idx}) OR LOWER(tags::text) LIKE LOWER($${idx}))`)
+      conditions.push(`(LOWER(l.title) LIKE LOWER($${idx}) OR LOWER(l.description) LIKE LOWER($${idx}) OR LOWER(l.tags::text) LIKE LOWER($${idx}))`)
       values.push(`%${search}%`)
       idx++
     }
     if (collection === 'vintage-retro') {
-      conditions.push(`(tags::text ILIKE '%vintage%' OR tags::text ILIKE '%retro%')`)
+      conditions.push(`(l.tags::text ILIKE '%vintage%' OR l.tags::text ILIKE '%retro%')`)
     } else if (collection === 'modern-minimalist') {
-      conditions.push(`(tags::text ILIKE '%minimalist%' OR tags::text ILIKE '%modern%')`)
+      conditions.push(`(l.tags::text ILIKE '%minimalist%' OR l.tags::text ILIKE '%modern%')`)
     } else if (collection === 'traditional-arts') {
-      conditions.push(`(tags::text ILIKE '%traditional%' OR tags::text ILIKE '%folk%')`)
+      conditions.push(`(l.tags::text ILIKE '%traditional%' OR l.tags::text ILIKE '%folk%')`)
     } else if (collection) {
-      conditions.push(`$${idx++} = ANY(collections)`)
+      conditions.push(`$${idx++} = ANY(l.collections)`)
       values.push(collection)
     }
     
     const gift = req.query.gift;
     if (gift === 'birthdays') {
-      conditions.push(`tags::text ILIKE '%birthday%'`)
+      conditions.push(`l.tags::text ILIKE '%birthday%'`)
     } else if (gift === 'anniversaries') {
-      conditions.push(`tags::text ILIKE '%anniversary%'`)
+      conditions.push(`l.tags::text ILIKE '%anniversary%'`)
     } else if (gift === 'housewarming') {
-      conditions.push(`tags::text ILIKE '%housewarming%'`)
+      conditions.push(`l.tags::text ILIKE '%housewarming%'`)
     } else if (gift === 'just-because') {
-      conditions.push(`tags::text ILIKE '%gift%'`)
+      conditions.push(`l.tags::text ILIKE '%gift%'`)
     } else if (occasion) {
-      conditions.push(`$${idx++} = ANY(occasions)`)
+      conditions.push(`$${idx++} = ANY(l.occasions)`)
       values.push(occasion)
     }
 
     if (type === 'new-arrivals') {
-      conditions.push(`new_arrival = true`)
+      conditions.push(`l.new_arrival = true`)
     } else if (type) {
-      conditions.push(`listing_type = $${idx++}`)
+      conditions.push(`l.listing_type = $${idx++}`)
       values.push(type)
     }
     
     if (minPrice) {
-      conditions.push(`price >= $${idx++}`)
+      conditions.push(`l.price >= $${idx++}`)
       values.push(parseInt(minPrice))
     }
     if (maxPrice) {
-      conditions.push(`price <= $${idx++}`)
+      conditions.push(`l.price <= $${idx++}`)
       values.push(parseInt(maxPrice))
     }
 
@@ -260,7 +260,7 @@ const getListings = async (req, res) => {
 
     // Count query (for pagination UI)
     const countResult = await db.query(
-      `SELECT COUNT(*) FROM listings ${where}`, values
+      `SELECT COUNT(*) FROM listings l LEFT JOIN auctions a ON a.listing_id = l.id ${where}`, values
     )
     const total = parseInt(countResult.rows[0].count)
 
@@ -268,27 +268,28 @@ const getListings = async (req, res) => {
     values.push(parseInt(limit), parseInt(offset))
     const result = await db.query(`
       SELECT
-        slug AS id, id AS "numericId", title, description, price, category, subcategory,
-        buying_method AS "buyingMethod",
-        image_urls AS "images",
-        image_urls[1] AS image,
-        creator_name AS creator,
-        creator_rating AS "creatorRating",
-        creator_review_count AS "creatorReviewCount",
-        creator_badges AS "creatorBadges",
-        is_verified AS verified,
-        offers_allowed AS "offersAllowed",
-        minimum_offer_percent AS "minimumOfferPercent",
-        new_arrival AS "newArrival",
-        collections, occasions,
-        auction_ends_at AS "auctionEndsAt",
-        current_bid AS "currentBid",
-        bid_count AS "bidCount",
-        specifications, reviews,
-        status, created_at AS "createdAt"
-      FROM listings
+        l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
+        l.buying_method AS "buyingMethod",
+        l.image_urls AS "images",
+        l.image_urls[1] AS image,
+        l.creator_name AS creator,
+        l.creator_rating AS "creatorRating",
+        l.creator_review_count AS "creatorReviewCount",
+        l.creator_badges AS "creatorBadges",
+        l.is_verified AS verified,
+        l.offers_allowed AS "offersAllowed",
+        l.minimum_offer_percent AS "minimumOfferPercent",
+        l.new_arrival AS "newArrival",
+        l.collections, l.occasions,
+        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
+        COALESCE(a.current_bid, l.current_bid) AS "currentBid",
+        l.bid_count AS "bidCount",
+        l.specifications, l.reviews,
+        l.status, l.created_at AS "createdAt"
+      FROM listings l
+      LEFT JOIN auctions a ON a.listing_id = l.id
       ${where}
-      ORDER BY ${orderBy}
+      ORDER BY ${orderBy.includes('price') ? 'l.' + orderBy : 'l.' + orderBy}
       LIMIT $${idx++} OFFSET $${idx++}
     `, values)
 
@@ -350,17 +351,18 @@ const getLiveAuctions = async (req, res) => {
     const { limit = 10 } = req.query
     const result = await db.query(`
       SELECT
-        slug AS id, id AS "numericId", title, image_urls[1] AS image,
-        creator_name AS creator,
-        price, current_bid AS "currentBid",
-        bid_count AS "bidCount",
-        auction_ends_at AS "auctionEndsAt",
-        is_verified AS verified
-      FROM listings
-      WHERE buying_method = 'Auction'
-        AND status = 'active'
-        AND auction_ends_at > NOW()
-      ORDER BY auction_ends_at ASC
+        l.slug AS id, l.id AS "numericId", l.title, l.image_urls[1] AS image,
+        l.creator_name AS creator,
+        l.price, COALESCE(a.current_bid, l.current_bid) AS "currentBid",
+        l.bid_count AS "bidCount",
+        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
+        l.is_verified AS verified, l.buying_method AS "buyingMethod"
+      FROM listings l
+      JOIN auctions a ON a.listing_id = l.id
+      WHERE l.listing_type = 'auction'
+        AND l.status = 'active'
+        AND a.end_time > NOW()
+      ORDER BY a.end_time ASC
       LIMIT $1
     `, [parseInt(limit)])
     res.json({ auctions: result.rows })
@@ -383,7 +385,9 @@ const getNewArrivals = async (req, res) => {
         current_bid AS "currentBid",
         bid_count AS "bidCount"
       FROM listings
-      WHERE new_arrival = true AND status = 'active' AND (buying_method != 'Auction' OR auction_ends_at > NOW())
+      WHERE status = 'active'
+        AND is_published = true
+        AND listing_type != 'auction'
       ORDER BY created_at DESC
       LIMIT 15
     `)

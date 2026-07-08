@@ -10,48 +10,7 @@ import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
 
-const CardAuctionTimer = ({ endTime }: { endTime: string }) => {
-  const [timeLeft, setTimeLeft] = useState('');
-  const [isUrgent, setIsUrgent] = useState(false);
-
-  useEffect(() => {
-    const target = new Date(endTime).getTime();
-    const update = () => {
-      const remaining = target - Date.now();
-      if (remaining <= 0) {
-        setTimeLeft('Auction Ended');
-        setIsUrgent(false);
-        return;
-      }
-      
-      setIsUrgent(remaining < 60 * 60 * 1000); // under 1 hour
-
-      const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
-      const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((remaining / 1000 / 60) % 60);
-      const s = Math.floor((remaining / 1000) % 60);
-      
-      setTimeLeft(`${d}d ${h}h ${m}m ${s}s`);
-    };
-    
-    update();
-    const timer = setInterval(update, 1000);
-    return () => clearInterval(timer);
-  }, [endTime]);
-
-  if (!timeLeft) return null;
-
-  return (
-    <div className={cn(
-      "absolute bottom-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-bold shadow-sm backdrop-blur-md z-10 flex items-center gap-1.5 transition-colors",
-      isUrgent ? "bg-[var(--color-urgent-600)] text-white animate-pulse" : "bg-[rgba(43,42,40,0.85)] text-white"
-    )}>
-      <span>⏱</span>
-      <span>{timeLeft}</span>
-    </div>
-  );
-};
-
+import { AuctionTimer } from '@/components/AuctionTimer'
 export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Listing, priority?: boolean }) {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const { isAuthenticated } = useAuthStore()
@@ -198,10 +157,6 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
           </button>
         )}
 
-        {/* Bottom Left Timer Badge overlaid on Image */}
-        {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
-           <CardAuctionTimer endTime={product.auctionEndsAt} />
-        )}
 
       </Link>
 
@@ -240,6 +195,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
                   </p>
                 </div>
               </div>
+              {product.auctionEndsAt && (
+                <div className="mt-2">
+                  <AuctionTimer endTime={product.auctionEndsAt} />
+                </div>
+              )}
             </div>
           ) : (
             <div>
