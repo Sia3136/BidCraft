@@ -40,6 +40,7 @@ export default function SellerDashboard() {
         }
       } catch (err) {
         console.error('Failed to load seller data', err)
+        if (tab === 'orders') setOrders([])
       } finally {
         setLoading(false)
       }
@@ -174,7 +175,7 @@ export default function SellerDashboard() {
 
       {tab === 'orders' && (
         <div>
-          {orders.length === 0 && !loading ? (
+          {(orders ?? []).length === 0 && !loading ? (
             <div className="text-center py-24 bg-[var(--color-cream-raised)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
               <Tag className="w-16 h-16 text-[var(--color-ink-300)] mx-auto mb-4" />
               <p className="text-xl font-bold text-[var(--color-ink-900)] mb-2">You haven't made any sales yet.</p>
@@ -182,7 +183,7 @@ export default function SellerDashboard() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              {orders.map(order => (
+              {(orders ?? []).map(order => (
                 <div key={order.id} className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6">
                   <div className="flex justify-between items-start mb-4 pb-4 border-b border-[var(--color-border-subtle)]">
                     <div>

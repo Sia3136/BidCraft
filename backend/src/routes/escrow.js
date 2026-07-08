@@ -19,6 +19,8 @@ router.post('/:orderId/ship', auth, async (req, res) => {
       return res.status(403).json({ error: 'Order not found or not authorised' })
     }
 
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit OTP
+
     await db.query(`
       UPDATE escrow
       SET state = 'shipped', tracking_number = $1, carrier = $2,
@@ -27,8 +29,30 @@ router.post('/:orderId/ship', auth, async (req, res) => {
     `, [trackingNumber, carrier || 'Other', req.params.orderId])
 
     await db.query(`
-      UPDATE orders SET status = 'shipped', updated_at = NOW() WHERE id = $1
-    `, [req.params.orderId])
+      UPDATE orders SET status = 'shipped', delivery_otp = $1, delivery_otp_expires_at = NOW() + INTERVAL '14 days', updated_at = NOW() WHERE id = $2
+    `, [otp, req.params.orderId])
+
+    // Fetch buyer email to send the OTP
+    const orderQuery = await db.query(`
+      SELECT o.buyer_id, u.email, l.title FROM orders o 
+      JOIN users u ON o.buyer_id = u.id 
+      JOIN listings l ON o.listing_id = l.id
+      WHERE o.id = $1
+    `, [req.params.orderId]);
+    
+    if (orderQuery.rows.length > 0) {
+      const { email, title } = orderQuery.rows[0];
+      const emailService = require('../services/emailService');
+      try {
+        await emailService.sendEmail({
+          to: email,
+          subject: `Your order for "${title}" has shipped!`,
+          text: `Good news! Your order has shipped.\n\nYour Delivery OTP is: ${otp}\n\nPlease provide this OTP to the delivery partner when your package arrives.`
+        });
+      } catch (e) {
+        console.error('Failed to send OTP email', e);
+      }
+    }
 
     res.json({ success: true, escrowState: 'shipped' })
   } catch (err) {
@@ -36,6 +60,63 @@ router.post('/:orderId/ship', auth, async (req, res) => {
     res.status(500).json({ error: 'Failed to update shipment' })
   }
 })
+
+// POST /api/escrow/:orderId/verify-otp — delivery partner verifies OTP
+router.post('/:orderId/verify-otp', auth, async (req, res) => {
+  try {
+    const { otp } = req.body;
+    if (!otp) return res.status(400).json({ error: 'OTP is required' });
+
+    const orderQuery = await db.query(`
+      SELECT o.id, o.delivery_otp, o.delivery_otp_expires_at, o.total_amount, l.seller_id
+      FROM orders o
+      JOIN listings l ON l.id = o.listing_id
+      WHERE o.id = $1
+    `, [req.params.orderId]);
+
+    if (orderQuery.rows.length === 0) return res.status(404).json({ error: 'Order not found' });
+    
+    const order = orderQuery.rows[0];
+
+    if (order.delivery_otp !== otp) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+
+    if (new Date(order.delivery_otp_expires_at) < new Date()) {
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Release escrow
+      await client.query(`
+        UPDATE escrow
+        SET state = 'released', released_at = NOW(), updated_at = NOW()
+        WHERE order_id = $1
+      `, [req.params.orderId]);
+
+      // Update order status to delivered, start 48-72h dispute window (here we can just use delivered status and check timestamp in a cron or just allow disputes within 72h of updated_at)
+      await client.query(`
+        UPDATE orders SET status = 'delivered', updated_at = NOW() WHERE id = $1
+      `, [req.params.orderId]);
+
+      console.log(`[escrow] Payout due: ₹${order.total_amount} to seller ${order.seller_id} for order ${req.params.orderId}`);
+
+      await client.query('COMMIT');
+      res.json({ success: true, message: 'Delivery confirmed via OTP. Escrow released to seller.' });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to verify OTP' });
+  }
+});
 
 // POST /api/escrow/:orderId/confirm-delivery — buyer confirms received
 router.post('/:orderId/confirm-delivery', auth, async (req, res) => {
@@ -96,10 +177,21 @@ router.post('/:orderId/dispute', auth, async (req, res) => {
     }
 
     const check = await db.query(`
-      SELECT id FROM orders WHERE id = $1 AND buyer_id = $2
+      SELECT o.id, e.released_at 
+      FROM orders o
+      LEFT JOIN escrow e ON e.order_id = o.id
+      WHERE o.id = $1 AND o.buyer_id = $2
     `, [req.params.orderId, req.userId])
     if (check.rows.length === 0) {
       return res.status(403).json({ error: 'Order not found' })
+    }
+
+    const { released_at } = check.rows[0];
+    if (released_at) {
+      const hoursSinceRelease = (new Date() - new Date(released_at)) / (1000 * 60 * 60);
+      if (hoursSinceRelease > 72) {
+        return res.status(400).json({ error: 'The 72-hour dispute window has expired.' });
+      }
     }
 
     const client = await db.pool.connect()

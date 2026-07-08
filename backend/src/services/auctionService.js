@@ -18,6 +18,15 @@ async function placeBid({ auctionId, bidderId, bidAmount }) {
       throw new Error('VERIFICATION_REQUIRED');
     }
 
+    // Verify bid deposit exists
+    const depositRes = await client.query(
+      `SELECT id FROM bid_deposits WHERE auction_id = $1 AND user_id = $2 AND status = 'held'`,
+      [auctionId, bidderId]
+    );
+    if (depositRes.rows.length === 0) {
+      throw new Error('deposit_required');
+    }
+
     const res = await client.query(
       `SELECT id, start_bid, current_bid, min_bid_increment, reserve_price, start_time, end_time, status
        FROM auctions

@@ -38,12 +38,17 @@ async function createBid(req, res, next) {
       err.message === 'auction_not_started' ||
       err.message === 'bid_too_low' ||
       err.message === 'pre_authorization_required' ||
-      err.message === 'VERIFICATION_REQUIRED'
+      err.message === 'VERIFICATION_REQUIRED' ||
+      err.message === 'deposit_required'
     ) {
-      const statusCode = err.message === 'auction_not_found' ? 404 : (err.message === 'VERIFICATION_REQUIRED' ? 403 : 400);
+      const statusCode = err.message === 'auction_not_found' ? 404 : 
+                         (err.message === 'VERIFICATION_REQUIRED' ? 403 : 
+                         (err.message === 'deposit_required' ? 402 : 400));
       return res.status(statusCode).json({ 
-        error: err.message === 'VERIFICATION_REQUIRED' ? 'Please verify your email or mobile number before placing bids.' : err.message,
-        code: err.message === 'VERIFICATION_REQUIRED' ? 'VERIFICATION_REQUIRED' : undefined
+        error: err.message === 'VERIFICATION_REQUIRED' ? 'Please verify your email or mobile number before placing bids.' : 
+               err.message === 'deposit_required' ? 'A deposit is required to place a bid on this auction.' : err.message,
+        code: err.message === 'VERIFICATION_REQUIRED' ? 'VERIFICATION_REQUIRED' : 
+              err.message === 'deposit_required' ? 'DEPOSIT_REQUIRED' : undefined
       });
     }
     next(err);

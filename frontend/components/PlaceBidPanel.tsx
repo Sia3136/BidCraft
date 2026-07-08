@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import { useAuction } from '@/hooks/useAuction'
-import { placeBid } from '@/lib/api'
+import { placeBid, createBidDeposit, verifyBidDeposit } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
+import Script from 'next/script'
 
 type Props = {
   auctionId: string
@@ -53,6 +54,68 @@ export function PlaceBidPanel({
     }
   }, [minimumNextBid])
 
+  const handleDepositPayment = async () => {
+    try {
+      setLoading(true)
+      const depositAmount = Math.min(Math.max(bidAmount * 0.1, 99), 2000)
+      const orderData = await createBidDeposit(auctionId, depositAmount, token!)
+      
+      const options = {
+        key: orderData.key_id,
+        amount: orderData.amount * 100, // paise
+        currency: 'INR',
+        name: 'BidCraft',
+        description: 'Bid Deposit',
+        order_id: orderData.provider_order_id,
+        handler: async function (response: any) {
+          try {
+            await verifyBidDeposit(auctionId, {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: depositAmount
+            }, token!)
+            
+            // Retry placing bid
+            await handlePlaceBidInternal()
+          } catch (e: any) {
+            setError('Payment verification failed')
+          }
+        },
+        theme: { color: '#000000' }
+      }
+      const rzp = new (window as any).Razorpay(options)
+      rzp.on('payment.failed', function () {
+        setError('Payment failed')
+      })
+      rzp.open()
+    } catch (err: any) {
+      setError(err.message || 'Failed to initiate deposit payment')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePlaceBidInternal = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      await placeBid(auctionId, bidAmount, token!)
+      setSuccess(true)
+      setPanelOpen(false)
+      // Socket will update the UI via useAuction hook
+      setTimeout(() => setSuccess(false), 3000)
+    } catch (err: any) {
+      if (err.cause === 'DEPOSIT_REQUIRED') {
+        handleDepositPayment()
+      } else {
+        setError(err.message)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handlePlaceBid = async () => {
     if (!isAuthenticated || !token) {
       router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
@@ -63,19 +126,7 @@ export function PlaceBidPanel({
       return
     }
 
-    setLoading(true)
-    setError('')
-    try {
-      await placeBid(auctionId, bidAmount, token)
-      setSuccess(true)
-      setPanelOpen(false)
-      // Socket will update the UI via useAuction hook
-      setTimeout(() => setSuccess(false), 3000)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+    await handlePlaceBidInternal()
   }
 
   if (isEnded) {
@@ -88,6 +139,7 @@ export function PlaceBidPanel({
 
   return (
     <div className="font-ui w-full">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       {/* Live bid counter */}
       <div className="mb-4">
         <p className="text-[var(--color-ink-500)] text-[14px] uppercase font-semibold">Current Bid</p>

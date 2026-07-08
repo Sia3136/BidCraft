@@ -1,7 +1,6 @@
 const db = require('../utils/db');
 const Joi = require('joi');
 const paymentService = require('../services/paymentService');
-const { notifySellerOfPayment } = require('./ordersController'); // Wait, is notifySellerOfPayment exported? Let's check. Actually I can just inline it if not, or check if it's exported. Wait, I will just inline a simple notification.
 
 const createOrderSchema = Joi.object({
   order_id: Joi.number().integer().required()

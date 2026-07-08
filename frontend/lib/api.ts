@@ -223,7 +223,35 @@ export async function placeBid(
     body: JSON.stringify({ bid_amount: amount }),
   })
   const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Failed to place bid')
+  if (!res.ok) throw new Error(json.error || 'Failed to place bid', { cause: json.code })
+  return json
+}
+
+export async function createBidDeposit(auctionId: string, amount: number, token: string) {
+  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/deposit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ amount }),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to initiate deposit')
+  return json
+}
+
+export async function verifyBidDeposit(auctionId: string, data: any, token: string) {
+  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/deposit/verify`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to verify deposit')
   return json
 }
 

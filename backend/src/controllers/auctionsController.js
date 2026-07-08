@@ -142,9 +142,92 @@ async function cancelAuction(req, res, next) {
   }
 }
 
+const paymentService = require('../services/paymentService');
+
+const createDepositSchema = Joi.object({
+  amount: Joi.number().precision(2).required()
+});
+
+async function createDeposit(req, res, next) {
+  try {
+    const { id: auctionId } = req.params;
+    const { error, value } = createDepositSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+    
+    // Check if deposit already exists
+    const existing = await db.query('SELECT id FROM bid_deposits WHERE auction_id = $1 AND user_id = $2 AND status = $3', [auctionId, req.userId, 'held']);
+    if (existing.rows.length > 0) return res.status(400).json({ error: 'Deposit already paid' });
+
+    const rpOrder = await paymentService.createOrder({
+      amount: value.amount,
+      currency: 'INR',
+      receipt: `deposit_${auctionId}_${req.userId}`
+    });
+
+    res.json({
+      provider_order_id: rpOrder.id,
+      amount: value.amount,
+      currency: 'INR',
+      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+    });
+  } catch(err) { next(err); }
+}
+
+const verifyDepositSchema = Joi.object({
+  razorpay_order_id:  Joi.string().required(),
+  razorpay_payment_id: Joi.string().required(),
+  razorpay_signature: Joi.string().required(),
+  amount: Joi.number().precision(2).required()
+});
+
+async function verifyDeposit(req, res, next) {
+  try {
+    const { id: auctionId } = req.params;
+    const { error, value } = verifyDepositSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const valid = paymentService.verifySignature(value.razorpay_order_id, value.razorpay_payment_id, value.razorpay_signature);
+    if (!valid && !paymentService.MOCK_MODE) return res.status(400).json({ error: 'invalid_signature' });
+
+    await db.query(
+      `INSERT INTO bid_deposits (auction_id, user_id, amount, razorpay_payment_id, status) VALUES ($1, $2, $3, $4, 'held')
+       ON CONFLICT (auction_id, user_id) DO UPDATE SET amount = EXCLUDED.amount, razorpay_payment_id = EXCLUDED.razorpay_payment_id, status = 'held'`, 
+      [auctionId, req.userId, value.amount, value.razorpay_payment_id]
+    );
+
+    res.json({ success: true });
+  } catch(err) { next(err); }
+}
+
+const submitDecisionSchema = Joi.object({
+  decision: Joi.string().valid('confirm', 'decline').required()
+});
+
+async function submitDecision(req, res, next) {
+  try {
+    const { id: auctionId } = req.params;
+    const { error, value } = submitDecisionSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    if (value.decision === 'confirm') {
+      // Just mark as success, user proceeds to checkout
+      return res.json({ success: true });
+    } else {
+      const settlementService = require('../services/settlementService');
+      await settlementService.processDecline(auctionId, req.userId);
+      return res.json({ success: true });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createAuction,
   getAuctions,
   getAuctionById,
-  cancelAuction
+  cancelAuction,
+  createDeposit,
+  verifyDeposit,
+  submitDecision
 };

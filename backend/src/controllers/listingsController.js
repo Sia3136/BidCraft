@@ -185,7 +185,7 @@ const getListings = async (req, res) => {
       sort = 'newest', limit = 50, offset = 0
     } = req.query
 
-    const conditions = ["status = 'active'"]
+    const conditions = ["status = 'active'", "(buying_method != 'Auction' OR auction_ends_at > NOW())"]
     const values = []
     let idx = 1
 
@@ -300,12 +300,15 @@ const getListingById = async (req, res) => {
         l.is_verified AS verified,
         l.offers_allowed AS "offersAllowed",
         l.minimum_offer_percent AS "minimumOfferPercent",
-        l.auction_ends_at AS "auctionEndsAt",
-        l.current_bid AS "currentBid",
+        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
+        COALESCE(a.current_bid, l.current_bid) AS "currentBid",
         l.bid_count AS "bidCount",
         l.specifications, l.reviews,
         l.status, l.created_at AS "createdAt",
-        a.id AS "auctionId"
+        a.id AS "auctionId",
+        a.status AS auction_status,
+        a.start_bid AS starting_bid,
+        (SELECT MAX(amount) FROM bids WHERE auction_id = a.id) as highest_bid
       FROM listings l
       LEFT JOIN auctions a ON a.listing_id = l.id
       WHERE (l.slug = $1 OR l.id::text = $1) AND l.status::text != 'deleted'
@@ -359,7 +362,7 @@ const getNewArrivals = async (req, res) => {
         current_bid AS "currentBid",
         bid_count AS "bidCount"
       FROM listings
-      WHERE new_arrival = true AND status = 'active'
+      WHERE new_arrival = true AND status = 'active' AND (buying_method != 'Auction' OR auction_ends_at > NOW())
       ORDER BY created_at DESC
       LIMIT 15
     `)

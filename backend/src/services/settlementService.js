@@ -220,4 +220,100 @@ async function closeAuction(auctionId) {
   }
 }
 
-module.exports = { closeAuction };
+async function processDecline(auctionId, userId) {
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Cancel order
+    const orderRes = await client.query(
+      `UPDATE orders SET status = 'cancelled', updated_at = NOW()
+       WHERE auction_id = $1 AND buyer_id = $2 AND status = 'pending'
+       RETURNING id, listing_id`,
+      [auctionId, userId]
+    );
+
+    if (orderRes.rows.length === 0) {
+      throw new Error('No pending order found for this user and auction');
+    }
+
+    const { listing_id } = orderRes.rows[0];
+
+    // Forfeit deposit
+    await client.query(
+      `UPDATE bid_deposits SET status = 'forfeited', updated_at = NOW()
+       WHERE auction_id = $1 AND user_id = $2`,
+      [auctionId, userId]
+    );
+
+    // Find the second highest bidder
+    const nextBidRes = await client.query(
+      `SELECT id, bidder_id, bid_amount
+       FROM bids
+       WHERE auction_id = $1 AND bidder_id != $2
+       ORDER BY bid_amount DESC, created_at ASC
+       LIMIT 1`,
+      [auctionId, userId]
+    );
+
+    const nextBid = nextBidRes.rows[0];
+    const auctionRes = await client.query('SELECT seller_id, reserve_price FROM auctions WHERE id = $1', [auctionId]);
+    const auction = auctionRes.rows[0];
+
+    if (nextBid && (auction.reserve_price === null || Number(nextBid.bid_amount) >= Number(auction.reserve_price))) {
+      // Create order for next bidder
+      const newOrderRes = await client.query(
+        `INSERT INTO orders
+           (buyer_id, seller_id, listing_id, auction_id, winner_bid_id, total_amount, status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, 'pending', NOW(), NOW())
+         RETURNING id`,
+        [
+          nextBid.bidder_id,
+          auction.seller_id,
+          listing_id,
+          auctionId,
+          nextBid.id,
+          nextBid.bid_amount
+        ]
+      );
+      
+      const newOrder = newOrderRes.rows[0];
+
+      // Notify next bidder
+      const listingQuery = await client.query('SELECT title FROM listings WHERE id = $1', [listing_id]);
+      const listingTitle = listingQuery.rows[0]?.title || 'item';
+      
+      const notificationService = require('./notificationService');
+      await notificationService.createNotification(client, {
+        userId: nextBid.bidder_id,
+        type: 'auction_won',
+        title: 'You are the new winner!',
+        message: `The previous winner declined. You won the auction for "${listingTitle}" with a bid of ${nextBid.bid_amount}.`,
+        data: { auction_id: auctionId, order_id: newOrder.id, bid_amount: nextBid.bid_amount }
+      });
+
+      const emailService = require('./emailService');
+      const nextUserRes = await client.query('SELECT email, name FROM users WHERE id = $1', [nextBid.bidder_id]);
+      if (nextUserRes.rows[0] && nextUserRes.rows[0].email) {
+        await emailService.sendEmail({
+          to: nextUserRes.rows[0].email,
+          subject: `Good News! You are the new winner for "${listingTitle}"`,
+          text: `Hello ${nextUserRes.rows[0].name || 'Collector'},\n\nThe previous winner could not complete the purchase. You are now the winner for "${listingTitle}" with a bid of $${nextBid.bid_amount}.\n\nTo secure your purchase, please visit BidCraft and complete your escrow-protected payment.\n\nBest,\nThe BidCraft Team`
+        });
+      }
+    } else {
+      // No other valid bidders, auction failed. Mark listing as active or paused? Let's say paused.
+      await client.query(`UPDATE listings SET status = 'paused', updated_at = NOW() WHERE id = $1`, [listing_id]);
+    }
+
+    await client.query('COMMIT');
+    return { success: true };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+module.exports = { closeAuction, processDecline };

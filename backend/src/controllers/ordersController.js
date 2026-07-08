@@ -198,7 +198,8 @@ async function updateOrderStatus(req, res, next) {
 }
 
 const createOrderSchema = Joi.object({
-  listing_id: Joi.number().integer().required()
+  listing_id: Joi.number().integer().required(),
+  offer_id: Joi.number().integer().optional()
 });
 
 async function createOrder(req, res, next) {
@@ -206,7 +207,7 @@ async function createOrder(req, res, next) {
     const { error, value } = createOrderSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { listing_id } = value;
+    const { listing_id, offer_id } = value;
     const listingIdInt = parseInt(listing_id, 10);
     if (isNaN(listingIdInt)) {
       return res.status(400).json({ error: 'Invalid listing ID' });
@@ -222,11 +223,20 @@ async function createOrder(req, res, next) {
     if (listing.status !== 'active') {
       return res.status(400).json({ error: 'listing_not_active' });
     }
-    if (listing.listing_type !== 'fixed') {
-      return res.status(400).json({ error: 'listing_is_not_fixed_price' });
-    }
     if (listing.seller_id === buyerId) {
       return res.status(400).json({ error: 'cannot_buy_own_listing' });
+    }
+
+    let orderPrice = listing.price;
+
+    if (offer_id) {
+      const offerRes = await db.query('SELECT * FROM offers WHERE id = $1 AND buyer_id = $2 AND status = $3', [offer_id, buyerId, 'accepted']);
+      const offer = offerRes.rows[0];
+      if (!offer) return res.status(400).json({ error: 'valid_accepted_offer_not_found' });
+      if (offer.listing_id !== listingIdInt) return res.status(400).json({ error: 'offer_listing_mismatch' });
+      orderPrice = offer.amount;
+    } else if (listing.listing_type !== 'fixed') {
+      return res.status(400).json({ error: 'listing_is_not_fixed_price' });
     }
 
     // 3. Create the order
@@ -234,7 +244,7 @@ async function createOrder(req, res, next) {
       `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, 'awaiting_payment', NOW(), NOW())
        RETURNING *`,
-      [buyerId, listing.seller_id, listingIdInt, listing.price]
+      [buyerId, listing.seller_id, listingIdInt, orderPrice]
     );
 
     res.status(201).json({ order: orderRes.rows[0] });

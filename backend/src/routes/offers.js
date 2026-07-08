@@ -10,7 +10,7 @@ router.post('/', auth, async (req, res) => {
     const buyerId = req.userId
 
     const listingResult = await db.query(
-      `SELECT id, price, offers_allowed, minimum_offer_percent, status, buying_method, seller_id
+      `SELECT id, title, price, offers_allowed, minimum_offer_percent, status, buying_method, seller_id
        FROM listings WHERE id = $1`,
       [listingId]
     )

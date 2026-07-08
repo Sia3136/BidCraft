@@ -253,9 +253,9 @@ export default function ProductDetailClient({ product, related }: { product: Lis
                       listingPrice={product.price}
                     />
                   ) : (
-                    <div className="p-4 bg-[var(--color-urgent-100)] rounded-[var(--radius-md)] text-[var(--color-urgent-600)] font-ui font-medium border border-[var(--color-urgent-300)]">
-                      Auction details not available.
-                    </div>
+                    <p className="text-[var(--color-ink-500)] text-sm">
+                      Auction information is being loaded. Please refresh.
+                    </p>
                   )}
                 </div>
               )}

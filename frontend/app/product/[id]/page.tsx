@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { fetchListingById, fetchListings } from '@/lib/api';
 import ProductDetailClient from '@/components/product-detail-client';
 
@@ -16,6 +16,10 @@ export default async function ProductPage({
     listing = await fetchListingById(id);
   } catch {
     return notFound();
+  }
+
+  if (listing.buyingMethod === 'Auction' && listing.auctionEndsAt && new Date(listing.auctionEndsAt) < new Date()) {
+    redirect(`/auction/ended/${id}`);
   }
 
   // Fetch all products to find related ones from the same creator
