@@ -1,11 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { ordersApi } from '@/lib/api'
+import { confirmDelivery } from '@/lib/api'
+import { useAuthStore } from '@/store/authStore'
 
 export function BuyerOrders() {
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const { token } = useAuthStore()
 
   useEffect(() => {
     loadOrders()
@@ -15,7 +17,7 @@ export function BuyerOrders() {
     try {
       setLoading(true)
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=buyer`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
         const data = await res.json()
@@ -29,8 +31,9 @@ export function BuyerOrders() {
   }
 
   const handleConfirmDelivery = async (orderId: number) => {
+    if (!token) return;
     try {
-      await ordersApi.updateStatus(orderId, 'delivered')
+      await confirmDelivery(orderId.toString(), token)
       alert('Delivery confirmed! Payment will be released to the seller.')
       loadOrders()
     } catch (err: any) {

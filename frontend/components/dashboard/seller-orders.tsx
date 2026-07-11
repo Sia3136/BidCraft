@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { ordersApi } from '@/lib/api'
+import { useAuthStore } from '@/store/authStore'
 
 export function SellerOrders() {
   const [orders, setOrders] = useState<any[]>([])
@@ -10,6 +10,7 @@ export function SellerOrders() {
   const [carrier, setCarrier] = useState('')
   const [shippingOrderId, setShippingOrderId] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const { token } = useAuthStore()
 
   useEffect(() => {
     loadOrders()
@@ -19,7 +20,7 @@ export function SellerOrders() {
     try {
       setLoading(true)
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=seller`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
         const data = await res.json()
@@ -34,7 +35,7 @@ export function SellerOrders() {
 
   const handleAddTracking = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!shippingOrderId) return
+    if (!shippingOrderId || !token) return
 
     try {
       setSubmitting(true)
@@ -42,7 +43,7 @@ export function SellerOrders() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ tracking_number: trackingNumber, carrier })
       })

@@ -50,7 +50,7 @@ function SearchPageContent() {
   
   // Simulate an empty state if query is "empty"
   const isEmpty = query.toLowerCase() === 'empty'
-  const resultCount = isEmpty ? 0 : 2
+  const resultCount: number = isEmpty ? 0 : 2
   
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000])

@@ -350,3 +350,12 @@ export async function disputeOrder(orderId: string, reason: string, token: strin
   if (!res.ok) throw new Error(json.error || 'Failed to raise dispute')
   return json
 }
+
+export async function fetchCreators(sort: string = 'followers', limit: number = 20, offset: number = 0) {
+  const qs = new URLSearchParams({ sort, limit: String(limit), offset: String(offset) }).toString();
+  const res = await fetch(`${API_BASE}/api/creators?${qs}`, {
+    next: { revalidate: 60 }
+  })
+  if (!res.ok) throw new Error(`fetchCreators failed: ${res.status}`)
+  return res.json()
+}

@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
       image: Array.isArray(listing.photos) ? listing.photos[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : listing.photos),
       description: listing.description || '',
-      verified: listing.users.profiles?.[0]?.is_verified || false,
+      verified: listing.users.profiles?.is_verified || false,
       offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
       bidCount: listing.auctions?.total_bids || 0,
       currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),

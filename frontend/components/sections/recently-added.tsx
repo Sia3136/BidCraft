@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { ProductCard } from '../product-card'
-import { listingsApi } from '@/lib/api'
+import { fetchListings, Listing } from '@/lib/api'
 
 export function RecentlyAddedSection() {
   const [listings, setListings] = useState<any[]>([])
@@ -11,7 +11,7 @@ export function RecentlyAddedSection() {
   useEffect(() => {
     async function loadListings() {
       try {
-        const data = await listingsApi.list('status=active')
+        const data = await fetchListings({ status: 'active' })
         // In a real app, this would be sorted by created_at DESC from the backend
         // For now, we'll just reverse the array to simulate newest first
         setListings((data.listings || []).reverse())
@@ -59,23 +59,18 @@ export function RecentlyAddedSection() {
             }
             const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
             
-            const methods = []
-            if (product.listing_type === 'auction') methods.push('AUCTION')
-            if (product.listing_type === 'fixed') methods.push('BUY_NOW')
+            const mappedProduct = {
+              ...product,
+              id: String(product.id),
+              image: image,
+              creator: "Verified Creator",
+              price: Number(product.price || product.start_bid || 0),
+              buyingMethod: product.listing_type === 'auction' ? 'Auction' : 'Buy Now',
+            }
 
             return (
               <div key={product.id} className="snap-start shrink-0 w-[280px] md:w-[320px]">
-                <ProductCard 
-                  id={String(product.id)}
-                  title={product.title}
-                  image={image}
-                  creator="Verified Creator"
-                  creatorImage="/creator-2.png"
-                  price={Number(product.price || product.start_bid || 0)}
-                  rating={5.0}
-                  reviews={4}
-                  methods={methods.length > 0 ? methods : ['BUY_NOW']}
-                />
+                <ProductCard product={mappedProduct as unknown as Listing} />
               </div>
             )
           })}

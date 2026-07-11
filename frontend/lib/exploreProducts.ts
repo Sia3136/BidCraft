@@ -2,7 +2,7 @@ import { Product } from './dbProducts';
 
 export const exploreProducts: any[] = [
   {
-    "id": "exp-003", "occasions": ["birthdays"], "collections": ["vintage-retro"],
+    "id": "exp-003",
     "title": "Resin Art Mirror",
     "creator": "Divya Sharma",
     "category": "Art",
@@ -35,16 +35,10 @@ export const exploreProducts: any[] = [
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-008", "occasions": ["birthdays"], "collections": ["traditional-arts"],
+    "id": "exp-008",
     "title": "Handcrafted Shell Jewellery Stand",
     "creator": "Meera Pillai",
     "category": "Handmade & Crafts",
@@ -79,16 +73,10 @@ export const exploreProducts: any[] = [
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-010", "occasions": ["birthdays"],
+    "id": "exp-010",
     "title": "Limited Edition Comic #1",
     "creator": "Rohan Illustrations",
     "category": "Collectibles",
@@ -120,16 +108,10 @@ export const exploreProducts: any[] = [
       "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
       "/images/80891aa6bb34af3854d903c9a40bde21.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-011", "occasions": ["birthdays"], "collections": ["vintage-retro"],
+    "id": "exp-011",
     "title": "Vintage Hand-carved Chess Set",
     "creator": "Arjun Mehta",
     "category": "Collectibles",
@@ -165,16 +147,10 @@ export const exploreProducts: any[] = [
       "/images/p452729_2.jpg",
       "/images/p452729_2.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-013", "occasions": ["birthdays"],
+    "id": "exp-013",
     "title": "Custom Mechanical Keyboard",
     "creator": "Divya Deshmukh",
     "category": "Gaming & Hobby",
@@ -207,16 +183,10 @@ export const exploreProducts: any[] = [
       "/images/da73bc9b03ca4657978e673c794395f8.jpg",
       "/images/da73bc9b03ca4657978e673c794395f8.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-014", "occasions": ["birthdays"], "collections": ["modern-minimalist"],
+    "id": "exp-014",
     "title": "Customised Birthday Candle",
     "creator": "Arjun Menon",
     "category": "Lifestyle & Gifts",
@@ -247,16 +217,10 @@ export const exploreProducts: any[] = [
       "/images/a344e75529581e9f43f2c00dc233dea4.webp",
       "/images/a344e75529581e9f43f2c00dc233dea4.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-016", "occasions": ["birthdays"], "collections": ["modern-minimalist"],
+    "id": "exp-016",
     "title": "Designer Wall Clock",
     "creator": "Neha Kapoor",
     "category": "Lifestyle & Gifts",
@@ -288,16 +252,10 @@ export const exploreProducts: any[] = [
       "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
       "/images/27c1a7020f1f1ae13757444e6e302582.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "newArrival": true
   },
   {
-    "id": "exp-017", "occasions": ["birthdays"], "collections": ["modern-minimalist"],
+    "id": "exp-017",
     "title": "Crochet Camera Keychain",
     "creator": "The Thoughtful Box",
     "category": "Lifestyle & Gifts",
@@ -327,16 +285,10 @@ export const exploreProducts: any[] = [
       "/images/4472fc60307774b77a3457158adcd98c.webp",
       "/images/4472fc60307774b77a3457158adcd98c.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-001", "occasions": ["birthdays"], "collections": ["vintage-retro"],
+    "id": "art-001",
     "title": "Lord Ganesha — Intricate Ink Study",
     "creator": "Sneha Agarwal",
     "category": "Art",
@@ -372,16 +324,10 @@ export const exploreProducts: any[] = [
       "/images/5ad309e5bf37d2a19670076e986021fd.webp",
       "/images/5ad309e5bf37d2a19670076e986021fd.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-002", "occasions": ["birthdays"], "collections": ["vintage-retro"],
+    "id": "art-002",
     "title": "Pink & White Florals",
     "creator": "Sneha Agarwal",
     "category": "Art",
@@ -414,16 +360,10 @@ export const exploreProducts: any[] = [
       "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
       "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-003", "occasions": ["birthdays","anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-003", "occasions": ["birthdays","anniversaries"],
     "title": "The Eye — Abstract Portrait",
     "creator": "Kavita Singh",
     "category": "Art",
@@ -455,16 +395,10 @@ export const exploreProducts: any[] = [
       "/images/31e38d210b5e219cf5831d51863aff83.webp",
       "/images/31e38d210b5e219cf5831d51863aff83.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-004", "occasions": ["birthdays","anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-004", "occasions": ["birthdays","anniversaries"],
     "title": "Hibiscus in Bloom",
     "creator": "Amit Patel",
     "category": "Art",
@@ -495,16 +429,10 @@ export const exploreProducts: any[] = [
       "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
       "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg"
     ],
-    "newArrival": true,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-005", "occasions": ["birthdays","anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-005", "occasions": ["birthdays","anniversaries"],
     "title": "Candlelight",
     "creator": "Priya Nair",
     "category": "Art",
@@ -539,16 +467,10 @@ export const exploreProducts: any[] = [
       "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
       "/images/1289afe396aec8a3225851a4f68bf9ed.webp"
     ],
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "newArrival": true
   },
   {
-    "id": "art-006", "occasions": ["birthdays","anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-006", "occasions": ["birthdays","anniversaries"],
     "title": "En Pointe & Fighting Back",
     "creator": "Rohit Verma",
     "category": "Art",
@@ -580,16 +502,10 @@ export const exploreProducts: any[] = [
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
     ]
   },
   {
-    "id": "art-007", "occasions": ["birthdays","anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-007", "occasions": ["birthdays","anniversaries"],
     "title": "Floral Reverie",
     "creator": "Anjali Gupta",
     "category": "Art",
@@ -620,16 +536,10 @@ export const exploreProducts: any[] = [
       "/images/ae02a7936a96a8d1302dc65047499be9.webp",
       "/images/ae02a7936a96a8d1302dc65047499be9.webp",
       "/images/ae02a7936a96a8d1302dc65047499be9.webp"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
     ]
   },
   {
-    "id": "art-008", "occasions": ["anniversaries"], "collections": ["vintage-retro"],
+    "id": "art-008",
     "title": "Noir Cinema",
     "creator": "Priya Nair",
     "category": "Art",
@@ -664,16 +574,10 @@ export const exploreProducts: any[] = [
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
     ]
   },
   {
-    "id": "art-009", "occasions": ["anniversaries"],
+    "id": "art-009",
     "title": "The Tiger",
     "creator": "Sunil Joshi",
     "category": "Art",
@@ -705,16 +609,10 @@ export const exploreProducts: any[] = [
       "/images/968355308d40d83a2e1f59daa61c5089.jpg",
       "/images/968355308d40d83a2e1f59daa61c5089.jpg",
       "/images/968355308d40d83a2e1f59daa61c5089.jpg"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
     ]
   },
   {
-    "id": "art-010", "occasions": ["anniversaries"],
+    "id": "art-010",
     "title": "Vibrant Chaos",
     "creator": "Meera Pillai",
     "category": "Art",
@@ -746,16 +644,10 @@ export const exploreProducts: any[] = [
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
     ]
   },
   {
-    "id": "art-011", "occasions": ["anniversaries"],
+    "id": "art-011",
     "title": "Vintage Retro Poster",
     "creator": "Karan Sethi",
     "category": "Art",
@@ -786,16 +678,10 @@ export const exploreProducts: any[] = [
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
     ]
   },
   {
-    "id": "art-012", "occasions": ["anniversaries"],
+    "id": "art-012",
     "title": "Charcoal Portrait Sketch",
     "creator": "Vikram Rao",
     "category": "Art",
@@ -829,12 +715,6 @@ export const exploreProducts: any[] = [
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
     ]
   },
   {
@@ -868,12 +748,6 @@ export const exploreProducts: any[] = [
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
     ]
   },
   {
@@ -908,12 +782,6 @@ export const exploreProducts: any[] = [
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
     ]
   },
   {
@@ -948,12 +816,6 @@ export const exploreProducts: any[] = [
       "/images/44baf8c7320670cef2659e68cb492255.webp",
       "/images/44baf8c7320670cef2659e68cb492255.webp",
       "/images/44baf8c7320670cef2659e68cb492255.webp"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
     ]
   },
   {
@@ -988,12 +850,6 @@ export const exploreProducts: any[] = [
       "/images/e28037264502713adb183f8523837b47.webp",
       "/images/e28037264502713adb183f8523837b47.webp",
       "/images/e28037264502713adb183f8523837b47.webp"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
     ]
   },
   {
@@ -1026,16 +882,10 @@ export const exploreProducts: any[] = [
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
     ]
   },
   {
-    "id": "art-018", "occasions": ["housewarming"],
+    "id": "art-018",
     "title": "Cyberpunk Cityscape",
     "creator": "Neo Canvas",
     "category": "Art",
@@ -1068,16 +918,10 @@ export const exploreProducts: any[] = [
       "/images/013d7240408456110f7fbb438010ac91.webp",
       "/images/013d7240408456110f7fbb438010ac91.webp",
       "/images/013d7240408456110f7fbb438010ac91.webp"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
     ]
   },
   {
-    "id": "art-019", "occasions": ["housewarming"],
+    "id": "art-019",
     "title": "Surreal Dreamscape",
     "creator": "Pixels by Pooja",
     "category": "Art",
@@ -1107,16 +951,10 @@ export const exploreProducts: any[] = [
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
     ]
   },
   {
-    "id": "art-020", "occasions": ["housewarming"],
+    "id": "art-020",
     "title": "City Life",
     "creator": "Rohan Illustrations",
     "category": "Art",
@@ -1145,16 +983,10 @@ export const exploreProducts: any[] = [
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
     ]
   },
   {
-    "id": "art-021", "occasions": ["housewarming"],
+    "id": "art-021",
     "title": "Whimsical Character Illustration",
     "creator": "Rohan Illustrations",
     "category": "Art",
@@ -1183,16 +1015,10 @@ export const exploreProducts: any[] = [
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
     ]
   },
   {
-    "id": "art-022", "occasions": ["housewarming"],
+    "id": "art-022",
     "title": "Spider-Man — Illustrated",
     "creator": "Nandini Das",
     "category": "Art",
@@ -1221,12 +1047,6 @@ export const exploreProducts: any[] = [
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
     ]
   },
   {
@@ -1264,12 +1084,6 @@ export const exploreProducts: any[] = [
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
     ]
   },
   {
@@ -1303,12 +1117,6 @@ export const exploreProducts: any[] = [
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
     ]
   },
   {
@@ -1342,12 +1150,6 @@ export const exploreProducts: any[] = [
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
     ]
   },
   {
@@ -1381,16 +1183,10 @@ export const exploreProducts: any[] = [
       "/images/470b571670ccddef91176aaaee01b23c.webp",
       "/images/470b571670ccddef91176aaaee01b23c.webp",
       "/images/470b571670ccddef91176aaaee01b23c.webp"
-    ],
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
     ]
   },
   {
-    "id": "art-027", "occasions": ["housewarming","just-because"], "collections": ["modern-minimalist"],
+    "id": "art-027", "occasions": ["housewarming","just-because"],
     "title": "Modern Abstract Sculpture",
     "creator": "Vikram Rao",
     "category": "Art",
@@ -1425,16 +1221,10 @@ export const exploreProducts: any[] = [
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg"
-    ],
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
     ]
   },
   {
-    "id": "art-028", "occasions": ["just-because"],
+    "id": "art-028",
     "title": "Terracotta Figurine",
     "creator": "Aakash Verma",
     "category": "Art",
@@ -1464,16 +1254,10 @@ export const exploreProducts: any[] = [
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg"
-    ],
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
     ]
   },
   {
-    "id": "hc-cs-0", "occasions": ["just-because"], "collections": ["traditional-arts"],
+    "id": "hc-cs-0",
     "title": "Natural Bathing Gift Set",
     "creator": "Aditi Sharma",
     "creatorRating": 4.8,
@@ -1507,16 +1291,10 @@ export const exploreProducts: any[] = [
       "Ingredients/Materials": "Natural oils, Shea Butter, Essential Oils",
       "Ships From": "Mumbai, India"
     },
-    "newArrival": true,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "newArrival": true
   },
   {
-    "id": "hc-cs-1", "occasions": ["just-because"], "collections": ["traditional-arts"],
+    "id": "hc-cs-1",
     "title": "Loofah Soap Bar",
     "creator": "Vikram Singh",
     "creatorRating": 4.5,
@@ -1547,16 +1325,10 @@ export const exploreProducts: any[] = [
       "Weight": "120g",
       "Ingredients/Materials": "Glycerin, Natural Loofah, Citrus Essential Oil",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
-    "id": "hc-cs-2", "occasions": ["just-because"], "collections": ["traditional-arts"],
+    "id": "hc-cs-2",
     "title": "Handcrafted Red Pillar Candle",
     "creator": "Meera Nair",
     "creatorRating": 4.9,
@@ -1591,16 +1363,10 @@ export const exploreProducts: any[] = [
       "Burn Time": "45 Hours",
       "Ingredients/Materials": "Soy Wax Blend, Cotton Wick",
       "Ships From": "Jaipur, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
-    "id": "hc-cs-3", "occasions": ["just-because"], "collections": ["traditional-arts"],
+    "id": "hc-cs-3",
     "title": "Rose Petal Natural Soap Set",
     "creator": "Neha Kapoor",
     "creatorRating": 4.7,
@@ -1631,16 +1397,10 @@ export const exploreProducts: any[] = [
       "Weight": "300g (Set)",
       "Ingredients/Materials": "Olive Oil, Rose Essential Oil, Dried Petals",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
-    "id": "hc-cs-4", "occasions": ["just-because","all-occasions"], "collections": ["traditional-arts"],
+    "id": "hc-cs-4", "occasions": ["just-because","all-occasions"],
     "title": "Birthday Celebration Candle",
     "creator": "Rohit Verma",
     "creatorRating": 4.4,
@@ -1673,16 +1433,10 @@ export const exploreProducts: any[] = [
       "Burn Time": "30 Hours",
       "Ingredients/Materials": "Soy Wax, Fragrance Oils, Wax Sprinkles",
       "Ships From": "Pune, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
-    "id": "hc-cp-0", "occasions": ["just-because","all-occasions"], "collections": ["traditional-arts"],
+    "id": "hc-cp-0", "occasions": ["just-because","all-occasions"],
     "title": "Hand-painted Traditional Vase",
     "creator": "Sanjay Patel",
     "creatorRating": 4.9,
@@ -1716,16 +1470,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Wipe with damp cloth",
       "Ships From": "Ahmedabad, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
-    "id": "hc-cp-1", "occasions": ["just-because","all-occasions"], "collections": ["traditional-arts"],
+    "id": "hc-cp-1", "occasions": ["just-because","all-occasions"],
     "title": "Traditional Garba Pots",
     "creator": "Kiran Desai",
     "creatorRating": 4.8,
@@ -1760,16 +1508,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Keep dry, dust with soft brush",
       "Ships From": "Surat, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
-    "id": "hc-cp-2", "occasions": ["just-because","all-occasions"], "collections": ["traditional-arts"],
+    "id": "hc-cp-2", "occasions": ["just-because","all-occasions"],
     "title": "Ceramic Floral Vase",
     "creator": "Priya Menon",
     "creatorRating": 4.6,
@@ -1801,16 +1543,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "Yes",
       "Care Instructions": "Hand wash recommended",
       "Ships From": "Kochi, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
-    "id": "hc-cp-3", "occasions": ["just-because","all-occasions"], "collections": ["traditional-arts"],
+    "id": "hc-cp-3", "occasions": ["just-because","all-occasions"],
     "title": "Abstract Clay Figure Sculpture",
     "creator": "Ananya Gupta",
     "creatorRating": 4.9,
@@ -1844,16 +1580,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Dust with dry cloth",
       "Ships From": "New Delhi, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
-    "id": "hc-cp-4", "occasions": ["all-occasions"],
+    "id": "hc-cp-4",
     "title": "Floral Clay Teapot Set",
     "creator": "Arun Bose",
     "creatorRating": 4.7,
@@ -1886,16 +1616,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "Yes",
       "Care Instructions": "Hand wash only, not microwave safe",
       "Ships From": "Kolkata, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
-    "id": "hc-cp-5", "occasions": ["all-occasions"],
+    "id": "hc-cp-5",
     "title": "Terracotta Vase Trio",
     "creator": "Deepak Kumar",
     "creatorRating": 4.5,
@@ -1927,16 +1651,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Dry wipe, do not fill with water",
       "Ships From": "Lucknow, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
-    "id": "hc-ck-0", "occasions": ["all-occasions"],
+    "id": "hc-ck-0",
     "title": "Heart Crochet Keychain Pair",
     "creator": "Sneha Reddy",
     "creatorRating": 4.8,
@@ -1967,16 +1685,10 @@ export const exploreProducts: any[] = [
       "Weight": "30g",
       "Care Instructions": "Gentle hand wash",
       "Ships From": "Hyderabad, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
-    "id": "hc-ck-1", "occasions": ["all-occasions"],
+    "id": "hc-ck-1",
     "title": "Crochet Camera Keychain",
     "creator": "Manish Tiwari",
     "creatorRating": 4.9,
@@ -2008,16 +1720,10 @@ export const exploreProducts: any[] = [
       "Weight": "25g",
       "Care Instructions": "Spot clean only",
       "Ships From": "Chandigarh, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
-    "id": "hc-ck-2", "occasions": ["all-occasions"],
+    "id": "hc-ck-2",
     "title": "Crochet Flower Vase",
     "creator": "Kavita Rao",
     "creatorRating": 4.6,
@@ -2050,16 +1756,10 @@ export const exploreProducts: any[] = [
       "Weight": "200g",
       "Care Instructions": "Dust gently, do not wash",
       "Ships From": "Chennai, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
-    "id": "hc-ck-3", "occasions": ["all-occasions"],
+    "id": "hc-ck-3",
     "title": "Anniversary Crochet Bouquet",
     "creator": "Sunita Das",
     "creatorRating": 5,
@@ -2092,16 +1792,10 @@ export const exploreProducts: any[] = [
       "Weight": "450g",
       "Care Instructions": "Keep away from direct sunlight",
       "Ships From": "Pune, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
-    "id": "hc-ck-4", "occasions": ["all-occasions"],
+    "id": "hc-ck-4",
     "title": "Handmade Crochet Jacket",
     "creator": "Riya Sen",
     "creatorRating": 4.8,
@@ -2135,16 +1829,10 @@ export const exploreProducts: any[] = [
       "Weight": "800g",
       "Care Instructions": "Hand wash cold, dry flat",
       "Ships From": "Darjeeling, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
-    "id": "hc-ck-5", "occasions": ["all-occasions"],
+    "id": "hc-ck-5",
     "title": "Crochet Sunflower Pot",
     "creator": "Anita Desai",
     "creatorRating": 4.7,
@@ -2175,16 +1863,10 @@ export const exploreProducts: any[] = [
       "Weight": "150g",
       "Care Instructions": "Spot clean only",
       "Ships From": "Ahmedabad, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
-    "id": "hc-pc-0", "occasions": ["all-occasions"],
+    "id": "hc-pc-0",
     "title": "Handcrafted Paper Bookmark",
     "creator": "Vikas Joshi",
     "creatorRating": 4.4,
@@ -2215,16 +1897,10 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "300gsm Cardstock",
       "Finish": "Matte Laminated",
       "Ships From": "Indore, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
-    "id": "hc-pc-1", "occasions": ["all-occasions"],
+    "id": "hc-pc-1",
     "title": "Paper Craft Flower Pot",
     "creator": "Pooja Singh",
     "creatorRating": 4.8,
@@ -2256,13 +1932,7 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "150gsm Craft Paper",
       "Finish": "Natural Paper",
       "Ships From": "Jaipur, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "hc-pc-2",
@@ -2295,13 +1965,7 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "250gsm Art Card",
       "Finish": "Textured",
       "Ships From": "Noida, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "hc-ra-0",
@@ -2336,13 +2000,7 @@ export const exploreProducts: any[] = [
       "Resin Type": "UV Resin",
       "Finish": "Glossy",
       "Ships From": "Goa, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
     "id": "hc-ra-1",
@@ -2379,13 +2037,7 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "hc-ra-2",
@@ -2419,13 +2071,7 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Mumbai, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "hc-ra-3",
@@ -2460,13 +2106,7 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Kochi, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "hc-ra-4",
@@ -2500,16 +2140,10 @@ export const exploreProducts: any[] = [
       "Resin Type": "UV Resin",
       "Finish": "Glossy",
       "Ships From": "Hyderabad, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
-    "id": "ls-hd-0", "collections": ["modern-minimalist"],
+    "id": "ls-hd-0",
     "title": "Soft Floral Cushion",
     "creator": "Vivek Shetty",
     "creatorRating": 4.1,
@@ -2542,16 +2176,10 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
-    "id": "ls-hd-2", "collections": ["modern-minimalist"],
+    "id": "ls-hd-2",
     "title": "Chess Set Wall Storage",
     "creator": "Karthik Nair",
     "creatorRating": 4.3,
@@ -2583,16 +2211,10 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
-    "id": "ls-hd-3", "collections": ["modern-minimalist"],
+    "id": "ls-hd-3",
     "title": "Glass Bottle with Glasswork",
     "creator": "Rahul Chawla",
     "creatorRating": 4.4,
@@ -2625,16 +2247,10 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
-    "id": "ls-hd-4", "collections": ["modern-minimalist"],
+    "id": "ls-hd-4",
     "title": "Sculptural Home Décor Piece",
     "creator": "Priya Patel",
     "creatorRating": 4.5,
@@ -2669,16 +2285,10 @@ export const exploreProducts: any[] = [
       "Ships From": "Jaipur"
     },
     "currentBid": 1850,
-    "bidCount": 2,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "bidCount": 2
   },
   {
-    "id": "ls-hd-5", "collections": ["modern-minimalist"],
+    "id": "ls-hd-5",
     "title": "Custom Sword Wall Hanging",
     "creator": "Sneha Handmades",
     "creatorRating": 4.6,
@@ -2710,16 +2320,10 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
-    "id": "ls-ja-0", "collections": ["modern-minimalist"],
+    "id": "ls-ja-0",
     "title": "Gold Arm Cuff",
     "creator": "Neha Curations",
     "creatorRating": 4.7,
@@ -2753,13 +2357,7 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
     "id": "ls-ja-1",
@@ -2798,13 +2396,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi"
     },
     "currentBid": 1200,
-    "bidCount": 3,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "bidCount": 3
   },
   {
     "id": "ls-ja-2",
@@ -2840,13 +2432,7 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "ls-ja-3",
@@ -2883,13 +2469,7 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "ls-ja-4",
@@ -2925,13 +2505,7 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "ls-ja-5",
@@ -2970,13 +2544,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi"
     },
     "currentBid": 2800,
-    "bidCount": 6,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "bidCount": 6
   },
   {
     "id": "ls-mn-0",
@@ -3015,13 +2583,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune"
     },
     "currentBid": 1600,
-    "bidCount": 5,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "bidCount": 5
   },
   {
     "id": "ls-mn-1",
@@ -3056,13 +2618,7 @@ export const exploreProducts: any[] = [
       "Finish": "Painted",
       "Display Base": "Yes",
       "Ships From": "Pune"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "ls-mn-2",
@@ -3097,13 +2653,7 @@ export const exploreProducts: any[] = [
       "Finish": "Painted",
       "Display Base": "Yes",
       "Ships From": "Pune"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "ls-st-0",
@@ -3139,13 +2689,7 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "ls-st-1",
@@ -3180,13 +2724,7 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
     "id": "ls-st-2",
@@ -3224,13 +2762,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai"
     },
     "currentBid": 650,
-    "bidCount": 2,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "bidCount": 2
   },
   {
     "id": "ls-st-3",
@@ -3266,13 +2798,7 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "gh-am-0",
@@ -3311,13 +2837,7 @@ export const exploreProducts: any[] = [
       "Limited Edition": "Yes",
       "Ships From": "Mumbai, India"
     },
-    "newArrival": true,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "newArrival": true
   },
   {
     "id": "gh-am-1",
@@ -3354,13 +2874,7 @@ export const exploreProducts: any[] = [
       "Weight": "200g",
       "Limited Edition": "Yes",
       "Ships From": "Mumbai, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "gh-am-2",
@@ -3400,13 +2914,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai, India"
     },
     "currentBid": 2800,
-    "bidCount": 7,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "bidCount": 7
   },
   {
     "id": "gh-bg-0",
@@ -3442,13 +2950,7 @@ export const exploreProducts: any[] = [
       "Dimensions": "Standard Box",
       "Weight": "1.2kg",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "gh-bg-1",
@@ -3484,13 +2986,7 @@ export const exploreProducts: any[] = [
       "Dimensions": "Standard Box",
       "Weight": "1.2kg",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "gh-bg-2",
@@ -3531,13 +3027,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 3360,
-    "bidCount": 1,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "bidCount": 1
   },
   {
     "id": "gh-bg-3",
@@ -3576,13 +3066,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 3840,
-    "bidCount": 15,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "bidCount": 15
   },
   {
     "id": "gh-cp-0",
@@ -3623,13 +3107,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Bangalore, India"
     },
     "currentBid": 4000,
-    "bidCount": 7,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "bidCount": 7
   },
   {
     "id": "gh-cp-1",
@@ -3666,13 +3144,7 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "gh-cp-2",
@@ -3709,13 +3181,7 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "gh-cp-3",
@@ -3751,13 +3217,7 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "gh-pc-0",
@@ -3792,13 +3252,7 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "gh-pc-1",
@@ -3833,13 +3287,7 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
     "id": "gh-pc-2",
@@ -3875,13 +3323,7 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "col-af-0",
@@ -3918,13 +3360,7 @@ export const exploreProducts: any[] = [
       "Articulation Points": "24",
       "Includes Accessories": "Alternate hands, base",
       "Ships From": "Pune, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "col-af-1",
@@ -3963,13 +3399,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune, India"
     },
     "currentBid": 2720,
-    "bidCount": 4,
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "bidCount": 4
   },
   {
     "id": "col-af-2",
@@ -4008,13 +3438,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune, India"
     },
     "currentBid": 3280,
-    "bidCount": 1,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "bidCount": 1
   },
   {
     "id": "col-fp-0",
@@ -4055,13 +3479,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Kolkata, India"
     },
     "currentBid": 3600,
-    "bidCount": 7,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "bidCount": 7
   },
   {
     "id": "col-fp-1",
@@ -4097,13 +3515,7 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "col-fp-2",
@@ -4140,13 +3552,7 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    },
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "col-fp-3",
@@ -4182,13 +3588,7 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    }
   },
   {
     "id": "col-hw-0",
@@ -4226,13 +3626,7 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    }
   },
   {
     "id": "col-hw-1",
@@ -4272,13 +3666,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 1680,
-    "bidCount": 13,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    "bidCount": 13
   },
   {
     "id": "col-hw-2",
@@ -4314,13 +3702,7 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    }
   },
   {
     "id": "col-hw-3",
@@ -4357,13 +3739,7 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   },
   {
     "id": "col-hw-4",
@@ -4402,13 +3778,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 2560,
-    "bidCount": 4,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "All Occasions"
-    ]
+    "bidCount": 4
   },
   {
     "id": "col-rc-0",
@@ -4448,13 +3818,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai, India"
     },
     "currentBid": 3920,
-    "bidCount": 7,
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Birthdays"
-    ]
+    "bidCount": 7
   },
   {
     "id": "col-rc-1",
@@ -4490,13 +3854,7 @@ export const exploreProducts: any[] = [
       "Condition": "Excellent",
       "Rarity": "Rare",
       "Ships From": "Mumbai, India"
-    },
-    "collections": [
-      "Modern Minimalist"
-    ],
-    "occasions": [
-      "Anniversaries"
-    ]
+    }
   },
   {
     "id": "col-tc-0",
@@ -4535,13 +3893,7 @@ export const exploreProducts: any[] = [
       "Ships From": "Bangalore, India"
     },
     "currentBid": 3040,
-    "bidCount": 4,
-    "collections": [
-      "Traditional Arts"
-    ],
-    "occasions": [
-      "Housewarming"
-    ]
+    "bidCount": 4
   },
   {
     "id": "col-tc-1",
@@ -4575,13 +3927,7 @@ export const exploreProducts: any[] = [
       "Condition": "Near Mint",
       "Holographic": "Yes",
       "Ships From": "Bangalore, India"
-    },
-    "collections": [
-      "Vintage & Retro"
-    ],
-    "occasions": [
-      "Just Because"
-    ]
+    }
   }
 ];
 

@@ -41,15 +41,13 @@ export async function GET(req: NextRequest) {
         l.slug,
         l.price,
         l.listing_type,
-        l.cloudinary_public_id,
+        (l.photos->0)::text as image,
         l.category,
-        l.subcategory,
         l.seller_id
-       FROM wishlists w
+       FROM wishlist w
        JOIN listings l ON l.id = w.listing_id
        WHERE w.user_id = $1
          AND l.status = 'active'
-         AND l.is_published = true
        ORDER BY w.created_at DESC`,
       [userId]
     )
@@ -80,7 +78,7 @@ export async function POST(req: NextRequest) {
   try {
     // Check if listing exists and is active
     const listing = await db.query(
-      `SELECT id FROM listings WHERE id = $1 AND status = 'active' AND is_published = true`,
+      `SELECT id FROM listings WHERE id = $1 AND status = 'active'`,
       [listingId]
     )
     if (listing.rows.length === 0) {
@@ -89,21 +87,21 @@ export async function POST(req: NextRequest) {
 
     // Check if already wishlisted
     const existing = await db.query(
-      `SELECT id FROM wishlists WHERE user_id = $1 AND listing_id = $2`,
+      `SELECT id FROM wishlist WHERE user_id = $1 AND listing_id = $2`,
       [userId, listingId]
     )
 
     if (existing.rows.length > 0) {
       // Toggle OFF — remove
       await db.query(
-        `DELETE FROM wishlists WHERE user_id = $1 AND listing_id = $2`,
+        `DELETE FROM wishlist WHERE user_id = $1 AND listing_id = $2`,
         [userId, listingId]
       )
       return NextResponse.json({ action: 'removed', listing_id: listingId })
     } else {
       // Toggle ON — add
       await db.query(
-        `INSERT INTO wishlists (user_id, listing_id, created_at) VALUES ($1, $2, NOW())`,
+        `INSERT INTO wishlist (user_id, listing_id, created_at) VALUES ($1, $2, NOW())`,
         [userId, listingId]
       )
       return NextResponse.json({ action: 'added', listing_id: listingId })

@@ -1,11 +1,12 @@
+import { Suspense } from 'react';
 import ClientHome from '@/components/client-home';
-import { fetchLiveAuctions, fetchNewArrivals } from '@/lib/api';
+import { fetchLiveAuctions, fetchNewArrivals, Listing } from '@/lib/api';
 
 export const revalidate = 30;
 
 export default async function Home() {
-  let liveAuctions = [];
-  let newArrivals = [];
+  let liveAuctions: Listing[] = [];
+  let newArrivals: Listing[] = [];
 
   try {
     const [auctionsData, newArrivalsData] = await Promise.all([

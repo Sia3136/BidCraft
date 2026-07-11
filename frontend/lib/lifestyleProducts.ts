@@ -1,4 +1,4 @@
-import { Product } from "./exploreProducts";
+import { Product } from "./dbProducts";
 
 export const lifestyleProducts: Product[] = [
   {

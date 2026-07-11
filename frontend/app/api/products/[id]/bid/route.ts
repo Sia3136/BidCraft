@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getServerSession, authOptions } from '@/lib/auth';
 
 import { invalidateListingCache } from '@/lib/dbProducts';
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const userId = parseInt(String(session.user.id), 10);
+
   const { id } = await params;
   
   try {
@@ -56,22 +63,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }
       });
 
-      // Dummy bidder ID for demo purposes
-      let demoUser = await tx.users.findFirst({ where: { role: 'buyer' } });
-      if (!demoUser) {
-        demoUser = await tx.users.create({
-          data: {
-            email: 'demobidder@example.com',
-            name: 'Demo Bidder',
-            role: 'buyer'
-          }
-        });
-      }
-
       await tx.bids.create({
         data: {
           auction_id: listing.auctions.id,
-          bidder_id: demoUser.id,
+          bidder_id: userId,
           bid_amount: bidAmount
         }
       });

@@ -15,15 +15,14 @@ export async function GET(req: NextRequest) {
       l.id,
       l.title,
       l.price,
-      l.cloudinary_public_id,
+      (l.photos->0)::text as image,
       l.listing_type,
       l.category
      FROM cart_items c
      JOIN listings l ON l.id = c.listing_id
      WHERE c.user_id = $1
        AND l.status = 'active'
-       AND l.is_published = true
-       AND l.listing_type != 'auction'
+       AND l.listing_type != 'AUCTION'
      ORDER BY c.created_at DESC`,
     [userId]
   )
@@ -44,7 +43,7 @@ export async function POST(req: NextRequest) {
     [listingId]
   )
   if (!listing.rows[0]) return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
-  if (listing.rows[0].listing_type === 'auction') {
+  if (listing.rows[0].listing_type === 'AUCTION') {
     return NextResponse.json({ error: 'Auction items cannot be added to cart' }, { status: 400 })
   }
 

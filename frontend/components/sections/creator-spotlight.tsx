@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
-import { creatorsApi } from '@/lib/api'
+import { fetchCreators } from '@/lib/api'
 
 export function CreatorSpotlightSection() {
   const [creators, setCreators] = useState<any[]>([])
@@ -11,7 +12,7 @@ export function CreatorSpotlightSection() {
   useEffect(() => {
     async function loadCreators() {
       try {
-        const data = await creatorsApi.discover('followers', 1, 0)
+        const data = await fetchCreators('followers', 1, 0)
         setCreators(data.creators || [])
       } catch (e) {
         console.error('Failed to load creators', e)

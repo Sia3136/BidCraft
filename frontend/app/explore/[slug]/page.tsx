@@ -1,3 +1,4 @@
+import { db } from "@/lib/db";
 import { exploreProducts } from '@/lib/exploreProducts';
 import ClientExplore from '@/components/client-explore';
 
@@ -27,5 +28,5 @@ export default async function ExploreSlugPage({ params }: { params: Promise<{ sl
   
   const shuffledProducts = seededShuffle(exploreProducts, slug);
 
-  return <ClientExplore allProducts={shuffledProducts} />;
+  return <ClientExplore initialListings={shuffledProducts} />;
 }

@@ -18,6 +18,15 @@ export interface Product {
   bidCount?: number;
   currentBid?: number;
   auctionEndTime?: string;
+  creatorRating?: number;
+  creatorReviewCount?: number;
+  creatorBadges?: string[];
+  images?: string[];
+  minimumOfferPercent?: number;
+  specifications?: Record<string, string>;
+  collections?: string[];
+  occasions?: string[];
+  auctionEndsAt?: string;
 }
 
 function mapListingToProduct(listing: any): Product {

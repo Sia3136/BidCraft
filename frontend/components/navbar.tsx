@@ -493,7 +493,7 @@ export const Navbar = React.memo(function Navbar() {
                       className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
                     >
                       {category.subcategories.map(sub => {
-                        const subSlug = slugify(sub);
+                        const subSlug = sub.slug;
                         return (
                           <Link
                             key={subSlug}
@@ -504,7 +504,7 @@ export const Navbar = React.memo(function Navbar() {
                             }}
                             className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
                           >
-                            {sub}
+                            {sub.name}
                           </Link>
                         )
                       })}

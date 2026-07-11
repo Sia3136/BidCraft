@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { ProductCard } from '../product-card'
-import { listingsApi } from '@/lib/api'
+import { fetchListings, Listing } from '@/lib/api'
 
 export function TrendingProductsSection() {
   const [listings, setListings] = useState<any[]>([])
@@ -11,7 +11,7 @@ export function TrendingProductsSection() {
   useEffect(() => {
     async function loadListings() {
       try {
-        const data = await listingsApi.list('listing_type=fixed&status=active')
+        const data = await fetchListings({ listing_type: 'fixed', status: 'active' })
         setListings(data.listings || [])
       } catch (err) {
         console.error('Failed to load trending products:', err)
@@ -56,19 +56,18 @@ export function TrendingProductsSection() {
               photos = product.photos || []
             }
             const image = (photos && photos.length > 0) ? photos[0] : '/placeholder.png'
+            const mappedProduct = {
+              ...product,
+              id: String(product.id),
+              image: image,
+              creator: "Verified Creator",
+              price: Number(product.price || product.start_bid || 0),
+              buyingMethod: product.listing_type === 'auction' ? 'Auction' : 'Buy Now',
+            }
+
             return (
               <div key={product.id} className="snap-start shrink-0 w-[280px] md:w-[320px]">
-                <ProductCard 
-                  id={String(product.id)}
-                  title={product.title}
-                  image={image}
-                  creator="Verified Creator"
-                  creatorImage="/creator-2.png"
-                  price={Number(product.price)}
-                  rating={4.8}
-                  reviews={10}
-                  methods={['BUY_NOW']}
-                />
+                <ProductCard product={mappedProduct as unknown as Listing} />
               </div>
             )
           })}
