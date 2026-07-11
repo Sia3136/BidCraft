@@ -34,7 +34,8 @@ interface StoreState {
   token: string | null;
   location: string | null;
   cart: CartItem[];
-  wishlist: WishlistItem[];
+  wishlistIds: number[];
+  wishlistCount: number;
   notifications: Notification[];
   
   // Auth Actions
@@ -49,7 +50,11 @@ interface StoreState {
   clearCart: () => void;
   
   // Wishlist Actions
-  toggleWishlist: (productId: string) => void;
+  toggleWishlist: (listingId: number) => Promise<void>;
+  loadWishlist: () => Promise<void>;
+  
+  // Cart load
+  loadCart: () => Promise<void>;
   
   // Notification Actions
   addNotification: (notification: Omit<Notification, 'id' | 'read'>) => void;
@@ -68,14 +73,15 @@ export const useStore = create<StoreState>()(
       token: null,
       location: null,
       cart: [],
-      wishlist: [],
+      wishlistIds: [],
+      wishlistCount: 0,
       notifications: staticNotifications,
       
       login: (user, token) => {
         set({ user, token });
         get().mergeAnonymousData();
       },
-      logout: () => set({ user: null, token: null, location: null, cart: [], wishlist: [], notifications: staticNotifications }),
+      logout: () => set({ user: null, token: null, location: null, cart: [], wishlistIds: [], wishlistCount: 0, notifications: staticNotifications }),
       setLocation: (location) => set({ location }),
       
       addToCart: async (item) => {
@@ -123,36 +129,87 @@ export const useStore = create<StoreState>()(
       })),
       clearCart: () => set({ cart: [] }),
       
-      toggleWishlist: async (productId) => {
-        const { token, isAuthenticated } = useAuthStore.getState();
-        const isAdding = !get().wishlist.find(i => i.productId === productId);
-        
-        set((state) => {
-          if (!isAdding) {
-            return { wishlist: state.wishlist.filter(i => i.productId !== productId) };
+      toggleWishlist: async (listingId: number) => {
+        const { wishlistIds } = get()
+      
+        // Optimistic update
+        const isCurrentlyWishlisted = wishlistIds.includes(listingId)
+        set({
+          wishlistIds: isCurrentlyWishlisted
+            ? wishlistIds.filter(id => id !== listingId)
+            : [...wishlistIds, listingId]
+        })
+      
+        try {
+          const res = await fetch('/api/wishlist', {
+            method: 'POST',
+            credentials: 'include',        // CRITICAL — sends session cookie
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ listing_id: listingId }),
+          })
+      
+          if (!res.ok) {
+            const error = await res.json()
+             console.error('[wishlist toggle] API error:', error?.error || error?.message || error)
+            // Revert optimistic update on failure
+            set({
+              wishlistIds: isCurrentlyWishlisted
+                ? [...wishlistIds, listingId]
+                : wishlistIds.filter(id => id !== listingId)
+            })
+            return
           }
-          return { wishlist: [...state.wishlist, { productId }] };
-        });
+      
+          const data = await res.json()
+          console.log('[wishlist toggle] success:', data.action, listingId)
+        } catch (err) {
+          console.error('[wishlist toggle] Network error:', err)
+          // Revert
+          set({
+            wishlistIds: isCurrentlyWishlisted
+              ? [...wishlistIds, listingId]
+              : wishlistIds.filter(id => id !== listingId)
+          })
+        }
+      },
 
-        if (isAuthenticated && token) {
-          try {
-            const res = await fetch('/api/wishlist', {
-              method: 'POST',
-              credentials: 'include',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ listing_id: productId })
-            });
-            if (!res.ok) throw new Error('API Error');
-          } catch (err) {
-            console.error('[wishlist] Failed to persist:', err);
-            // Revert on error
-            set((state) => {
-              if (isAdding) {
-                return { wishlist: state.wishlist.filter(i => i.productId !== productId) };
-              }
-              return { wishlist: [...state.wishlist, { productId }] };
-            });
-          }
+      loadWishlist: async () => {
+        try {
+          const res = await fetch('/api/wishlist', {
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+          })
+          if (!res.ok) return
+          const data = await res.json()
+          set({ 
+            wishlistIds: data.items.map((item: { id: number }) => item.id),
+            wishlistCount: data.items.length
+          })
+        } catch (err) {
+          console.error('[wishlist load] error:', err)
+        }
+      },
+
+      loadCart: async () => {
+        try {
+          const res = await fetch('/api/cart', {
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+          })
+          if (!res.ok) return
+          const data = await res.json()
+          set({ 
+            cart: data.items.map((item: any) => ({
+              id: item.cart_item_id?.toString() || Math.random().toString(),
+              productId: item.id?.toString(),
+              title: item.title,
+              price: item.price,
+              quantity: item.quantity,
+              image: item.cloudinary_public_id || ''
+            }))
+          })
+        } catch (err) {
+          console.error('[cart load] error:', err)
         }
       },
       
@@ -185,15 +242,15 @@ export const useStore = create<StoreState>()(
           ...localCartOnly
         ];
         
-        const serverWishIds = new Set(serverWishlist.map((i: any) => (i.listing_id || i.id)?.toString()));
-        const localWishOnly = state.wishlist.filter(i => !serverWishIds.has(i.productId));
+        const serverWishIds = new Set(serverWishlist.map((i: any) => (i.listing_id || i.id)));
+        const localWishOnly = state.wishlistIds.filter(id => !serverWishIds.has(id));
         
-        const mergedWishlist = [
-          ...serverWishlist.map((i: any) => ({ productId: (i.listing_id || i.id)?.toString() })),
+        const mergedWishlistIds = [
+          ...serverWishlist.map((i: any) => Number(i.listing_id || i.id)),
           ...localWishOnly
         ];
 
-        return { cart: mergedCart, wishlist: mergedWishlist };
+        return { cart: mergedCart, wishlistIds: mergedWishlistIds, wishlistCount: mergedWishlistIds.length };
       })
     }),
     {
@@ -201,7 +258,8 @@ export const useStore = create<StoreState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         cart: state.cart,
-        wishlist: state.wishlist,
+        wishlistIds: state.wishlistIds,
+        wishlistCount: state.wishlistCount,
         token: state.token, // Optional: persist token
         user: state.user // Optional: persist user
       }),

@@ -1,97 +1,75 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession, authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
 
-const authOptions = {};
-async function getServerSession(options: any) {
-  const cookieStore = cookies();
-  const token = cookieStore.get('session_token')?.value;
-  if (!token) return null;
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_change_me') as any;
-    return { user: { id: payload.userId } };
-  } catch (e) {
-    return null;
-  }
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  
+  const userId = parseInt(String(session.user.id), 10)
+  
+  const result = await db.query(
+    `SELECT 
+      c.id as cart_item_id,
+      1 as quantity,
+      l.id,
+      l.title,
+      l.price,
+      l.cloudinary_public_id,
+      l.listing_type,
+      l.category
+     FROM cart_items c
+     JOIN listings l ON l.id = c.listing_id
+     WHERE c.user_id = $1
+       AND l.status = 'active'
+       AND l.is_published = true
+       AND l.listing_type != 'auction'
+     ORDER BY c.created_at DESC`,
+    [userId]
+  )
+  return NextResponse.json({ items: result.rows })
 }
 
-async function getUserId(request: Request) {
-  const session = await getServerSession(authOptions);
-  let userId = session?.user?.id;
-  if (!userId) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_change_me') as any;
-        userId = payload.userId;
-      } catch (e) {}
-    }
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  
+  const userId = parseInt(String(session.user.id), 10)
+  const body = await req.json()
+  const listingId = parseInt(String(body.listing_id), 10)
+
+  // Verify listing exists and is not an auction
+  const listing = await db.query(
+    `SELECT id, listing_type FROM listings WHERE id = $1 AND status = 'active'`,
+    [listingId]
+  )
+  if (!listing.rows[0]) return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
+  if (listing.rows[0].listing_type === 'auction') {
+    return NextResponse.json({ error: 'Auction items cannot be added to cart' }, { status: 400 })
   }
-  return userId ? parseInt(userId as string, 10) : null;
+
+  await db.query(
+    `INSERT INTO cart_items (user_id, listing_id, created_at, updated_at)
+     VALUES ($1, $2, NOW(), NOW())
+     ON CONFLICT (user_id, listing_id) DO NOTHING`,
+    [userId, listingId]
+  )
+  return NextResponse.json({ success: true })
 }
 
-export async function POST(request: Request) {
-  try {
-    const userId = await getUserId(request);
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function DELETE(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  
+  const userId = parseInt(String(session.user.id), 10)
+  const { searchParams } = new URL(req.url)
+  const listingId = parseInt(String(searchParams.get('listing_id')), 10)
 
-    const body = await request.json();
-    const listingId = parseInt(body.listing_id, 10);
+  if (isNaN(listingId)) return NextResponse.json({ error: 'Invalid listing id' }, { status: 400 })
 
-    if (!listingId) return NextResponse.json({ error: 'listing_id_required' }, { status: 400 });
-
-    // Add to cart (upsert — don't duplicate)
-    await prisma.$queryRaw`
-      INSERT INTO cart_items (user_id, listing_id, quantity, created_at)
-      VALUES (${userId}, ${listingId}, 1, NOW())
-      ON CONFLICT (user_id, listing_id) DO UPDATE SET quantity = cart_items.quantity + 1
-    `;
-
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('Cart POST error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
-
-export async function GET(request: Request) {
-  try {
-    const userId = await getUserId(request);
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    // Cart page query
-    const cartItems = await prisma.$queryRaw`
-      SELECT c.id as cart_item_id, c.quantity, l.*
-      FROM cart_items c
-      JOIN listings l ON l.id = c.listing_id
-      WHERE c.user_id = ${userId} AND l.status = 'active' AND l.is_published = true
-      ORDER BY c.created_at DESC
-    `;
-
-    return NextResponse.json({ cart: cartItems });
-  } catch (err: any) {
-    console.error('Cart GET error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
-
-export async function DELETE(request: Request) {
-  try {
-    const userId = await getUserId(request);
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const { searchParams } = new URL(request.url);
-    const listingId = parseInt(searchParams.get('listing_id') || '0', 10);
-
-    if (listingId) {
-      await prisma.$queryRaw`DELETE FROM cart_items WHERE user_id = ${userId} AND listing_id = ${listingId}`;
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('Cart DELETE error:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+  await db.query(
+    `DELETE FROM cart_items WHERE user_id = $1 AND listing_id = $2`,
+    [userId, listingId]
+  )
+  return NextResponse.json({ success: true })
 }

@@ -53,7 +53,7 @@ export const Navbar = React.memo(function Navbar() {
   const pathname = usePathname()
   const isHomepage = pathname === '/'
 
-  const { location, cart, wishlist } = useStore()
+  const { location, cart, wishlistCount } = useStore()
   const { user, isAuthenticated, clearAuth } = useAuthStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -65,7 +65,7 @@ export const Navbar = React.memo(function Navbar() {
   const navRef = useRef<HTMLDivElement>(null)
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0)
-  const wishlistCount = wishlist.length
+
 
   useEffect(() => {
     const handleScroll = () => {

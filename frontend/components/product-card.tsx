@@ -11,8 +11,11 @@ import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
 
 import { AuctionTimer } from '@/components/AuctionTimer'
+import { useStore } from '@/lib/store'
+
 export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Listing, priority?: boolean }) {
-  const [isWishlisted, setIsWishlisted] = useState(false)
+  const { wishlistIds, toggleWishlist: storeToggleWishlist } = useStore()
+  const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id))
   const { isAuthenticated } = useAuthStore()
   const router = useRouter()
 
@@ -25,7 +28,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       return
     }
     
-    setIsWishlisted(!isWishlisted)
+    storeToggleWishlist(Number(product.numericId || product.id))
   }
 
   async function handleAddToCart(e: React.MouseEvent) {
@@ -37,15 +40,21 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       return
     }
     try {
-      await fetch('/api/cart', {
+      const res = await fetch('/api/cart', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ listing_id: product.id })
+        body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
       })
-      alert('Added to cart!')
+      if (res.ok) {
+        alert('Added to cart!')
+        useStore.getState().loadCart()
+      } else {
+        alert('Failed to add to cart')
+      }
     } catch (err) {
       console.error(err)
+      alert('Failed to add to cart')
     }
   }
 

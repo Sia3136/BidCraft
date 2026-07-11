@@ -1,121 +1,100 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+import { getServerSession, authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
-import { useAuthStore } from '@/store/authStore'
-import { Trash2 } from 'lucide-react'
+import Image from 'next/image'
+import { getCloudinaryUrl } from '@/lib/cloudinary'
 
-type CartItem = {
-  cart_item_id: number;
-  quantity: number;
-  id: number;
-  title: string;
-  price: string;
-  photos: string | string[];
-  seller_name: string;
-}
-
-export default function CartPage() {
-  const { user, token } = useAuthStore()
-  const [items, setItems] = useState<CartItem[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (!token) {
-      setLoading(false)
-      return
-    }
-    fetch(`/api/cart`, {
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.cart) setItems(data.cart)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setLoading(false)
-      })
-  }, [token])
-
-  const removeItem = async (listingId: number) => {
-    try {
-      await fetch(`/api/cart?listing_id=${listingId}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      })
-      setItems(items.filter(i => i.id !== listingId))
-    } catch (err) {
-      console.error(err)
-    }
+export default async function CartPage() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session?.user?.id) {
+    redirect('/auth?redirect=/cart')
   }
 
-  const formatPrice = (p: string | number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(p))
+  const userId = parseInt(String(session.user.id), 10)
 
-  const total = items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
+  const result = await db.query(
+    `SELECT 
+      c.id as cart_item_id,
+      1 as quantity,
+      l.id,
+      l.title,
+      l.price,
+      l.cloudinary_public_id,
+      l.listing_type,
+      l.category
+     FROM cart_items c
+     JOIN listings l ON l.id = c.listing_id
+     WHERE c.user_id = $1
+       AND l.status = 'active'
+       AND l.is_published = true
+       AND l.listing_type != 'auction'
+     ORDER BY c.created_at DESC`,
+    [userId]
+  )
+
+  const items = result.rows
+  const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
 
   return (
-    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 max-w-[var(--container-max)] mx-auto w-full px-[var(--space-4)] py-[var(--space-6)]">
-        <h1 className="text-display-md font-display text-[var(--color-ink-900)] mb-[var(--space-6)]">Your Cart</h1>
-        
-        {loading ? (
-          <p>Loading cart...</p>
-        ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-10 text-center">
-            <h2 className="text-heading-lg mb-2">Your Cart is empty</h2>
-            <p className="text-[var(--color-ink-500)] mb-6">
-              {user ? "Nothing here yet" : "Sign in to save your favourite items"}
-            </p>
-            <Link href={user ? "/explore" : "/auth"} className="px-6 py-3 bg-[var(--color-terracotta-600)] text-white rounded-[var(--radius-md)] font-bold">
-              {user ? "Start Exploring" : "Sign In"}
-            </Link>
+    <main className="px-6 lg:px-16 py-12 min-h-screen bg-[#F5F0E8]">
+      <h1 className="text-4xl font-bold font-playfair text-[#1C1C1C] mb-8">
+        Your Cart
+        <span className="text-lg font-normal text-gray-500 ml-3">({items.length} items)</span>
+      </h1>
+
+      {items.length === 0 ? (
+        <div className="text-center py-24">
+          <p className="text-xl font-semibold text-[#1C1C1C] mb-2">Your cart is empty</p>
+          <p className="text-gray-500 mb-6">Explore the marketplace to find pieces you love</p>
+          <Link href="/explore" className="bg-[#C4501A] text-white px-8 py-3 rounded-lg font-medium">
+            Start Exploring
+          </Link>
+        </div>
+      ) : (
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex-1 space-y-6">
+            {items.map((item) => (
+              <div key={item.cart_item_id} className="bg-white p-4 rounded-xl flex gap-6 items-center shadow-sm">
+                <div className="relative w-24 h-24 rounded-lg overflow-hidden shrink-0">
+                  <Image
+                    src={getCloudinaryUrl(item.cloudinary_public_id, 'f_auto,q_auto,w_200')}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="100px"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-[#1C1C1C]">{item.title}</h3>
+                  <p className="text-gray-500 text-sm mt-1">Quantity: {item.quantity}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-[#C4501A]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        ) : (
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 flex flex-col gap-4">
-              {items.map(item => {
-                const imageUrl = Array.isArray(item.photos) ? item.photos[0] : (typeof item.photos === 'string' ? JSON.parse(item.photos)[0] : '');
-                return (
-                  <div key={item.cart_item_id} className="flex gap-4 bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
-                    <img src={imageUrl} alt={item.title} className="w-24 h-24 object-cover rounded-[var(--radius-sm)]" />
-                    <div className="flex-1">
-                      <h3 className="text-heading-sm font-display text-[var(--color-ink-900)]"><Link href={`/product/${item.id}`}>{item.title}</Link></h3>
-                      <p className="text-sm text-[var(--color-ink-500)]">by {item.seller_name}</p>
-                      <p className="font-bold text-[var(--color-terracotta-600)] mt-2">{formatPrice(item.price)}</p>
-                    </div>
-                    <div className="flex flex-col items-end justify-between">
-                      <button onClick={() => removeItem(item.id)} className="text-[var(--color-urgent-600)] hover:text-[var(--color-urgent-700)]"><Trash2 className="w-5 h-5" /></button>
-                      <span className="text-sm font-medium">Qty: {item.quantity}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <div className="w-full lg:w-[320px] bg-white p-6 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] h-fit">
-              <h3 className="text-heading-sm font-display mb-4 border-b border-[var(--color-border-subtle)] pb-4">Order Summary</h3>
-              <div className="flex justify-between mb-2">
+          
+          <div className="w-full lg:w-80">
+            <div className="bg-white p-6 rounded-xl shadow-sm sticky top-24">
+              <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+              <div className="flex justify-between mb-4 text-gray-600">
                 <span>Subtotal</span>
-                <span>{formatPrice(total)}</span>
+                <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-[var(--color-border-subtle)]">
+              <div className="flex justify-between font-bold text-lg border-t pt-4 mb-6">
                 <span>Total</span>
-                <span>{formatPrice(total)}</span>
+                <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
-              <button className="w-full mt-6 h-12 bg-[var(--color-terracotta-600)] text-white rounded-[var(--radius-pill)] font-bold hover:bg-[var(--color-terracotta-700)]">
+              <button className="w-full bg-[#C4501A] text-white py-3 rounded-lg font-semibold hover:bg-[#A34316] transition">
                 Proceed to Checkout
               </button>
             </div>
           </div>
-        )}
-      </main>
-      
-      <Footer />
-    </div>
+        </div>
+      )}
+    </main>
   )
 }

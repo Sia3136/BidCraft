@@ -63,10 +63,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
   const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
   const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
   
-  const { toggleWishlist: storeToggleWishlist, wishlist, addToCart } = useStore();
+  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart } = useStore();
   const { isAuthenticated } = useAuthStore();
   
-  const isWishlisted = wishlist.some(w => w.productId === product.id);
+  const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
   const [added, setAdded] = useState(false);
   
   const [activeImageIdx, setActiveImageIdx] = useState(0);
@@ -104,15 +104,16 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
   
   const handleAdd = () => {
     handleAuthCheck(() => {
-      addToCart({ id: Math.random().toString(), productId: product.id, title: product.title, price: product.price, quantity: 1, image: product.image });
+      addToCart({ id: Math.random().toString(), productId: String(product.numericId || product.id), title: product.title, price: product.price, quantity: 1, image: product.image });
       setAdded(true);
       setTimeout(() => setAdded(false), 1200);
     });
   };
 
-  const toggleWishlist = (id: string) => {
+  const toggleWishlist = (id?: string | number) => {
     handleAuthCheck(() => {
-      storeToggleWishlist(id);
+      const numericId = product.numericId || (id ? Number(id) : NaN) || Number(product.id);
+      storeToggleWishlist(Number(numericId));
     });
   };
 
@@ -229,7 +230,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
               {product.buyingMethod === 'Auction' && (
                 <div className="flex flex-col gap-2 w-full">
                   <div className="flex items-center gap-2 mb-2">
-                    <button type="button" onClick={() => toggleWishlist(product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                    <button type="button" onClick={() => toggleWishlist(product.numericId || product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
                       <Heart className={cn("w-5 h-5 mr-2", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
                       <span className="font-semibold">{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
                     </button>
@@ -254,7 +255,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
                     <div className="flex-1 flex flex-col gap-2">
-                      <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
+                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
                       <button onClick={async (e) => {
                         e.stopPropagation()
                         if (!useAuthStore.getState().isAuthenticated) {
@@ -262,13 +263,26 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                           return
                         }
                         try {
-                          await fetch(`/api/cart`, {
+                          const res = await fetch(`/api/cart`, {
                             method: 'POST',
                             credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ listing_id: product.id })
+                            body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
                           })
-                          alert('Added to cart!')
+                          if (res.ok) {
+                            alert('Added to cart!')
+                            useStore.getState().loadCart()
+                          } else {
+                            let errMsg = 'Failed to add to cart';
+                            try {
+                              const err = await res.json()
+                              errMsg = err.error || errMsg;
+                              console.error('Cart error:', err.error)
+                            } catch (e) {
+                              console.error('Non-JSON error response')
+                            }
+                            alert(errMsg)
+                          }
                         } catch (err) {
                           console.error(err)
                           alert('Failed to add to cart')
@@ -277,7 +291,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                         Add to Cart
                       </button>
                     </div>
-                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
                       <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
                     </button>
                   </div>

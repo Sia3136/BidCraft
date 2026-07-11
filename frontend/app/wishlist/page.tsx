@@ -1,107 +1,83 @@
-'use client'
-
-import React, { useEffect, useState } from 'react'
+// app/wishlist/page.tsx
+import { getServerSession, authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
-import { useStore } from '@/lib/store'
-import { useAuthStore } from '@/store/authStore'
-import { Trash2 } from 'lucide-react'
+import Image from 'next/image'
+import { getCloudinaryUrl } from '@/lib/cloudinary'  // your URL builder
 
-type WishlistItem = {
-  wishlist_id: number;
-  wishlisted_at: string;
-  id: number;
-  title: string;
-  price: string;
-  photos: string | string[];
-  seller_name: string;
-}
-
-export default function WishlistPage() {
-  const { user, token } = useAuthStore()
-  const { toggleWishlist } = useStore()
-  const [items, setItems] = useState<WishlistItem[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (!token) {
-      setLoading(false)
-      return
-    }
-    fetch(`/api/wishlist`, {
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.wishlist) setItems(data.wishlist)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error(err)
-        setLoading(false)
-      })
-  }, [token])
-
-  const removeItem = async (listingId: number) => {
-    toggleWishlist(String(listingId))
-    setItems(items.filter(i => i.id !== listingId))
+export default async function WishlistPage() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session?.user?.id) {
+    redirect('/auth?redirect=/wishlist')
   }
 
-  const formatPrice = (p: string | number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(p))
+  const userId = parseInt(String(session.user.id), 10)
+
+  const result = await db.query(
+    `SELECT 
+      w.id as wishlist_id,
+      l.id,
+      l.title,
+      l.slug,
+      l.price,
+      l.listing_type,
+      l.cloudinary_public_id,
+      l.category,
+      l.subcategory
+     FROM wishlists w
+     JOIN listings l ON l.id = w.listing_id
+     WHERE w.user_id = $1
+       AND l.status = 'active'
+       AND l.is_published = true
+     ORDER BY w.created_at DESC`,
+    [userId]
+  )
+
+  const items = result.rows
 
   return (
-    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 max-w-[var(--container-max)] mx-auto w-full px-[var(--space-4)] py-[var(--space-6)]">
-        <h1 className="text-display-md font-display text-[var(--color-ink-900)] mb-[var(--space-6)]">Your Wishlist</h1>
-        
-        {loading ? (
-          <p>Loading wishlist...</p>
-        ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-10 text-center">
-            <h2 className="text-heading-lg mb-2">Your Wishlist is empty</h2>
-            <p className="text-[var(--color-ink-500)] mb-6">
-              {user ? "Nothing here yet" : "Sign in to save your favourite items"}
-            </p>
-            <Link href={user ? "/explore" : "/auth"} className="px-6 py-3 bg-[var(--color-terracotta-600)] text-white rounded-[var(--radius-md)] font-bold">
-              {user ? "Start Exploring" : "Sign In"}
+    <main className="px-6 lg:px-16 py-12 min-h-screen bg-[#F5F0E8]">
+      <h1 className="text-4xl font-bold font-playfair text-[#1C1C1C] mb-8">
+        Your Wishlist
+        <span className="text-lg font-normal text-gray-500 ml-3">({items.length} items)</span>
+      </h1>
+
+      {items.length === 0 ? (
+        <div className="text-center py-24">
+          <p className="text-xl font-semibold text-[#1C1C1C] mb-2">Your wishlist is empty</p>
+          <p className="text-gray-500 mb-6">Save pieces you love while browsing</p>
+          <Link href="/explore" className="bg-[#C4501A] text-white px-8 py-3 rounded-lg font-medium">
+            Start Exploring
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {items.map((item) => (
+            <Link key={item.wishlist_id} href={`/product/${item.id}`} className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+              <div className="relative aspect-square">
+                <Image
+                  src={getCloudinaryUrl(item.cloudinary_public_id, 'f_auto,q_auto,w_400')}
+                  alt={item.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
+                <span className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-full text-white ${
+                  item.listing_type === 'auction' ? 'bg-orange-500' : 'bg-emerald-600'
+                }`}>
+                  {item.listing_type === 'auction' ? 'AUCTION' : 'BUY NOW'}
+                </span>
+              </div>
+              <div className="p-4">
+                <p className="font-semibold text-[#1C1C1C] truncate">{item.title}</p>
+                <p className="text-[#C4501A] font-bold mt-1">₹{item.price?.toLocaleString('en-IN')}</p>
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {items.map(item => {
-              const imageUrl = Array.isArray(item.photos) ? item.photos[0] : (typeof item.photos === 'string' ? JSON.parse(item.photos)[0] : '');
-              return (
-                <div key={item.wishlist_id} className="bg-white rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] overflow-hidden">
-                  <div className="aspect-square bg-[var(--color-cream-raised)] relative group">
-                    {imageUrl ? (
-                      <img src={imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-[var(--color-cream-lowered)] text-[var(--color-ink-400)] text-sm font-medium">
-                        No Image
-                      </div>
-                    )}
-                    <button onClick={() => removeItem(item.id)} className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm flex items-center justify-center rounded-full text-[var(--color-ink-700)] hover:text-[var(--color-urgent-600)] transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-heading-sm font-display truncate mb-1">
-                      <Link href={`/product/${item.id}`} className="hover:text-[var(--color-terracotta-600)] transition-colors">{item.title}</Link>
-                    </h3>
-                    <p className="text-sm text-[var(--color-ink-500)] mb-2">by {item.seller_name}</p>
-                    <p className="font-bold text-[var(--color-ink-900)]">{formatPrice(item.price)}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </main>
-      
-      <Footer />
-    </div>
+          ))}
+        </div>
+      )}
+    </main>
   )
 }

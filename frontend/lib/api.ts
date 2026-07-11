@@ -42,6 +42,7 @@ export type Listing = {
   status: string
   createdAt: string
   auctionId?: string
+  numericId?: number
 }
 
 export type ListingsResponse = {

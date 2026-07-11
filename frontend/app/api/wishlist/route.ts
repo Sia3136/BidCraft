@@ -1,103 +1,115 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
+/*
+Diagnosis Results:
+-- 1. What's in the wishlists table?
+[]
 
-// Simple mock for NextAuth's getServerSession logic using the cookie we set
-const authOptions = {};
-async function getServerSession(options: any) {
-  const cookieStore = cookies();
-  const token = cookieStore.get('session_token')?.value;
-  if (!token) return null;
+-- 2. What's in cart_items?
+[]
+
+-- 3. Check column types
+[
+  { column_name: 'id', data_type: 'integer' },
+  { column_name: 'user_id', data_type: 'integer' },
+  { column_name: 'id', data_type: 'integer' },
+  { column_name: 'id', data_type: 'integer' },
+  { column_name: 'user_id', data_type: 'integer' }
+]
+*/
+// app/api/wishlist/route.ts
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession, authOptions } from '@/lib/auth'
+import { db } from '@/lib/db'  // your pg Pool
+
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const userId = parseInt(String(session.user.id), 10)
+  if (isNaN(userId)) {
+    return NextResponse.json({ error: 'Invalid user session' }, { status: 400 })
+  }
+
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_change_me') as any;
-    return { user: { id: payload.userId } };
-  } catch (e) {
-    return null;
+    const result = await db.query(
+      `SELECT 
+        w.id as wishlist_id,
+        w.created_at as saved_at,
+        l.id,
+        l.title,
+        l.slug,
+        l.price,
+        l.listing_type,
+        l.cloudinary_public_id,
+        l.category,
+        l.subcategory,
+        l.seller_id
+       FROM wishlists w
+       JOIN listings l ON l.id = w.listing_id
+       WHERE w.user_id = $1
+         AND l.status = 'active'
+         AND l.is_published = true
+       ORDER BY w.created_at DESC`,
+      [userId]
+    )
+    return NextResponse.json({ items: result.rows })
+  } catch (err) {
+    console.error('[GET /api/wishlist] DB error:', err)
+    return NextResponse.json({ error: 'Database error' }, { status: 500 })
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const userId = parseInt(String(session.user.id), 10)
+  if (isNaN(userId)) {
+    return NextResponse.json({ error: 'Invalid user session' }, { status: 400 })
+  }
+
+  const body = await req.json()
+  const listingId = parseInt(String(body.listing_id), 10)
+  if (isNaN(listingId)) {
+    return NextResponse.json({ error: 'Invalid listing_id' }, { status: 400 })
+  }
+
   try {
-    // Support both Bearer token AND session cookie auth
-    const session = await getServerSession(authOptions);
-    let userId = session?.user?.id;
-
-    if (!userId) {
-      // Check Bearer token just in case
-      const authHeader = request.headers.get('authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
-        try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_change_me') as any;
-          userId = payload.userId;
-        } catch (e) {}
-      }
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const userIdInt = parseInt(userId as string, 10);
-    const body = await request.json();
-    const listingId = body.listing_id;
-
-    if (!listingId) {
-      return NextResponse.json({ error: 'listing_id_required' }, { status: 400 });
+    // Check if listing exists and is active
+    const listing = await db.query(
+      `SELECT id FROM listings WHERE id = $1 AND status = 'active' AND is_published = true`,
+      [listingId]
+    )
+    if (listing.rows.length === 0) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
     }
 
     // Check if already wishlisted
-    const existing: any = await prisma.$queryRaw`SELECT id FROM wishlists WHERE user_id = ${userIdInt} AND listing_id = ${parseInt(listingId, 10)}`;
+    const existing = await db.query(
+      `SELECT id FROM wishlists WHERE user_id = $1 AND listing_id = $2`,
+      [userId, listingId]
+    )
 
-    if (existing && existing.length > 0) {
-      // If exists: DELETE (toggle off)
-      await prisma.$queryRaw`DELETE FROM wishlists WHERE user_id = ${userIdInt} AND listing_id = ${parseInt(listingId, 10)}`;
+    if (existing.rows.length > 0) {
+      // Toggle OFF — remove
+      await db.query(
+        `DELETE FROM wishlists WHERE user_id = $1 AND listing_id = $2`,
+        [userId, listingId]
+      )
+      return NextResponse.json({ action: 'removed', listing_id: listingId })
     } else {
-      // If not: INSERT (toggle on)
-      await prisma.$queryRaw`INSERT INTO wishlists (user_id, listing_id, created_at) VALUES (${userIdInt}, ${parseInt(listingId, 10)}, NOW())`;
+      // Toggle ON — add
+      await db.query(
+        `INSERT INTO wishlists (user_id, listing_id, created_at) VALUES ($1, $2, NOW())`,
+        [userId, listingId]
+      )
+      return NextResponse.json({ action: 'added', listing_id: listingId })
     }
-
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('Wishlist error:', err);
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  } catch (err) {
+    console.error('[POST /api/wishlist] DB error:', err)
+    return NextResponse.json({ error: 'Database error' }, { status: 500 })
   }
 }
-
-export async function GET(request: Request) {
-  try {
-    const session = await getServerSession(authOptions);
-    let userId = session?.user?.id;
-    if (!userId) {
-      const authHeader = request.headers.get('authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
-        try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret_change_me') as any;
-          userId = payload.userId;
-        } catch (e) {}
-      }
-    }
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const userIdInt = parseInt(userId as string, 10);
-
-    const wishlistItems = await prisma.$queryRaw`
-      SELECT l.*, w.id as wishlist_id, w.created_at as saved_at
-      FROM wishlists w
-      JOIN listings l ON l.id = w.listing_id
-      WHERE w.user_id = ${userIdInt}
-        AND l.status = 'active'
-        AND l.is_published = true
-      ORDER BY w.created_at DESC
-    `;
-    return NextResponse.json({ wishlist: wishlistItems });
-  } catch (err: any) {
-    console.error('Wishlist GET error:', err);
-    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
-  }
-}
-
