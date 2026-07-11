@@ -64,7 +64,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       image: Array.isArray(listing.photos) ? listing.photos[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : listing.photos),
       description: listing.description || '',
       verified: listing.users.profiles?.is_verified || false,
-      offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
+      offersAllowed: listing.listing_type === 'NEGOTIABLE',
       bidCount: listing.auctions?.total_bids || 0,
       currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
     };

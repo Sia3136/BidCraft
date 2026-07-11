@@ -44,8 +44,8 @@ function mapListingToProduct(listing: any): Product {
     buyingMethod: listing.listing_type === 'AUCTION' ? 'Auction' : (listing.listing_type === 'BUY_NOW' ? 'Buy Now' : 'Make Offer'),
     image: imagePath || '/images/default.jpg',
     description: listing.description || '',
-    verified: listing.users?.profiles?.[0]?.is_verified || false,
-    offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
+    verified: listing.users?.profiles?.is_verified || false,
+    offersAllowed: listing.listing_type === 'NEGOTIABLE',
     bidCount: listing.auctions?.total_bids || 0,
     currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
     auctionEndTime: listing.auctions?.end_time ? listing.auctions.end_time.toISOString() : undefined,
@@ -102,7 +102,10 @@ export async function getProducts(options?: { category?: string; subcategory?: s
       users: { include: { profiles: true } },
       auctions: true,
     },
-    orderBy: sort === 'newest' ? { created_at: 'desc' } : { created_at: 'desc' },
+    orderBy: sort.toLowerCase() === 'price: low to high' || sort === 'price-asc' ? { price: 'asc' } :
+             sort.toLowerCase() === 'price: high to low' || sort === 'price-desc' ? { price: 'desc' } :
+             sort.toLowerCase() === 'oldest' ? { created_at: 'asc' } :
+             { created_at: 'desc' },
     take: 20,
     skip: (page - 1) * 20
   });

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { login as apiLogin, register as apiRegister, getMe } from './api'
 
@@ -18,6 +18,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, token, setAuth, clearAuth } = useAuthStore()
+  const [hasHydrated, setHasHydrated] = useState(false)
+
+  useEffect(() => {
+    setHasHydrated(useAuthStore.persist.hasHydrated())
+    const unsubFinishHydration = useAuthStore.persist.onFinishHydration(() => setHasHydrated(true))
+    return () => {
+      unsubFinishHydration()
+    }
+  }, [])
 
   const login = async (credentials: any) => {
     const { user, token } = await apiLogin({ emailOrMobile: credentials.email, password: credentials.password })
@@ -45,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading: false, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, loading: !hasHydrated, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

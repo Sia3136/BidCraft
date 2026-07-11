@@ -7,9 +7,11 @@ export async function GET(request: Request) {
   const subcategory = searchParams.get('subcategory');
 
   try {
+    const sort = searchParams.get('sort') || 'Newest';
+
     const where: any = {};
     if (category) {
-      // Just returning everything for now or filter if needed
+      where.category = category;
     }
     if (subcategory) {
       where.category = subcategory;
@@ -23,7 +25,10 @@ export async function GET(request: Request) {
         },
         auctions: true,
       },
-      orderBy: { created_at: 'desc' }
+      orderBy: sort.toLowerCase() === 'price: low to high' || sort === 'price-asc' ? { price: 'asc' } :
+               sort.toLowerCase() === 'price: high to low' || sort === 'price-desc' ? { price: 'desc' } :
+               sort.toLowerCase() === 'oldest' ? { created_at: 'asc' } :
+               { created_at: 'desc' }
     });
 
     const products = listings.map(listing => ({
@@ -37,7 +42,7 @@ export async function GET(request: Request) {
       image: Array.isArray(listing.photos) ? listing.photos[0] : (typeof listing.photos === 'string' ? JSON.parse(listing.photos)[0] : listing.photos),
       description: listing.description || '',
       verified: listing.users?.profiles?.is_verified || false,
-      offersAllowed: listing.listing_type === 'NEGOTIABLE' || true,
+      offersAllowed: listing.listing_type === 'NEGOTIABLE',
       bidCount: listing.auctions?.total_bids || 0,
       currentBid: listing.auctions?.current_bid ? Number(listing.auctions.current_bid) : Number(listing.price),
     }));
