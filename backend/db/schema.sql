@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(200),
   avatar_url VARCHAR(500),
   role VARCHAR(20) DEFAULT 'buyer',
+  email_verified BOOLEAN DEFAULT FALSE,
+  mobile_verified BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

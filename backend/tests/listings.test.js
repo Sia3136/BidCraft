@@ -29,6 +29,7 @@ describe('Listings Integration Tests', () => {
       .post('/api/auth/register')
       .send({ email: otherEmail, password: 'Password123!', name: 'Other User' });
     otherUserToken = otherRes.body.accessToken;
+    await db.query("UPDATE users SET email_verified = true");
   });
 
   afterAll(async () => {
@@ -46,11 +47,11 @@ describe('Listings Integration Tests', () => {
         .set('Authorization', `Bearer ${sellerToken}`)
         .send({
           title: 'Test Listing 1',
-          description: 'A great test item',
-          category_id: categoryId,
-          condition: 'New',
-          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
-          listing_type: 'fixed',
+          description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
+          buyingMethod: 'Buy Now',
           price: 500.00
         });
 
@@ -66,10 +67,10 @@ describe('Listings Integration Tests', () => {
         .set('Authorization', `Bearer ${sellerToken}`)
         .send({
           description: 'No title provided',
-          category_id: categoryId,
-          condition: 'New',
-          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
-          listing_type: 'fixed'
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg'],
+          buyingMethod: 'Buy Now'
         });
 
       expect(res.status).toBe(400);

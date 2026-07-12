@@ -55,12 +55,12 @@ describe('Redis Caching Integration Tests', () => {
 
   it('should invalidate listings cache on creating a new listing', async () => {
     const payload = {
-      title: 'Cache Test Item',
-      description: 'Desc',
-      category_id: categoryId,
-      condition: 'new',
-      photos: ['url1', 'url2', 'url3', 'url4', 'url5', 'url6'],
-      listing_type: 'fixed',
+      title: 'Test Listing 1',
+          description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
+          buyingMethod: 'Buy Now',
       price: 100
     };
 

@@ -55,12 +55,12 @@ describe('Auctions and Bidding Integration Tests', () => {
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)
       .send({
-        title: 'Test Listing Auction',
-        description: 'Auction item description',
-        category_id: categoryId,
-        condition: 'Used',
-        photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
-        listing_type: 'auction',
+        title: 'Test Listing 1',
+          description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
+          buyingMethod: 'Buy Now',
         price: null
       });
     listingId = listingRes.body.listing.id;
@@ -94,12 +94,12 @@ describe('Auctions and Bidding Integration Tests', () => {
         .post('/api/listings')
         .set('Authorization', `Bearer ${sellerToken}`)
         .send({
-          title: 'Test Listing Scheduled Auction',
-          description: 'Scheduled auction item',
-          category_id: categoryId,
-          condition: 'New',
-          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
-          listing_type: 'auction',
+          title: 'Test Listing 1',
+          description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
+          buyingMethod: 'Buy Now',
           price: null
         });
       scheduledListingId = listingRes.body.listing.id;
@@ -177,12 +177,12 @@ describe('Auctions and Bidding Integration Tests', () => {
         .post('/api/listings')
         .set('Authorization', `Bearer ${sellerToken}`)
         .send({
-          title: 'Test Listing Ended Auction',
-          description: 'Ended auction item',
-          category_id: categoryId,
-          condition: 'Used',
-          photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'],
-          listing_type: 'auction',
+          title: 'Test Listing 1',
+          description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          category: 'Art',
+          subcategory: 'Paintings',
+          imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
+          buyingMethod: 'Buy Now',
           price: null
         });
       endedListingId = listingRes.body.listing.id;

@@ -125,7 +125,10 @@ async function createListing(req, res, next) {
         } catch (e) {}
       }
 
-      res.status(201).json({ listingId, success: true });
+      res.status(201).json({ 
+        success: true, 
+        listing: { id: listingId, title } 
+      });
       
       // Async: notify all followers of this seller about the new listing
       setImmediate(async () => {
