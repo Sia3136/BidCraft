@@ -6,13 +6,13 @@ import { useAuthStore } from '@/store/authStore'
 import { uploadListingImage, createListing } from '@/lib/api'
 import { X, UploadCloud, CheckCircle } from 'lucide-react'
 
-const CATEGORIES: Record<string, string[]> = {
-  'Handmade Jewelry': ['Necklaces', 'Rings', 'Bracelets', 'Earrings'],
-  'Vintage Clothing': ['Shirts', 'Dresses', 'Jackets', 'Accessories'],
-  'Pottery & Ceramics': ['Mugs', 'Bowls', 'Vases', 'Plates'],
-  'Art & Collectibles': ['Paintings', 'Prints', 'Sculptures', 'Digital Art'],
-  'Candles & Soaps': ['Scented Candles', 'Bar Soaps', 'Bath Bombs'],
-}
+import { CATEGORIES as CATEGORIES_DATA } from '@/lib/categories'
+
+const CATEGORIES = CATEGORIES_DATA.reduce((acc, cat) => {
+  acc[cat.name] = cat.subcategories;
+  return acc;
+}, {} as Record<string, string[]>);
+
 
 export default function CreateListingPage() {
   const router = useRouter()

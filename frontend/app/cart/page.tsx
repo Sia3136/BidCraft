@@ -21,16 +21,14 @@ export default async function CartPage() {
       l.id,
       l.title,
       l.price,
-      l.cloudinary_public_id,
+      l.photos->>0 as cloudinary_public_id,
       l.listing_type,
       l.category
      FROM cart_items c
      JOIN listings l ON l.id = c.listing_id
      WHERE c.user_id = $1
        AND l.status = 'active'
-       AND l.is_published = true
-       AND l.listing_type != 'auction'
-     ORDER BY c.created_at DESC`,
+       AND l.listing_type != 'AUCTION'`,
     [userId]
   )
 

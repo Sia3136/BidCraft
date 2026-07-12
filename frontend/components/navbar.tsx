@@ -12,41 +12,16 @@ import { CloudinaryImage } from '@/components/CloudinaryImage'
 import Image from 'next/image'
 import { slugify } from '@/lib/slugify'
 
-const categories = [
-  { name: 'Art', slug: 'art', subcategories: [
-    { name: 'Paintings', slug: 'paintings' },
-    { name: 'Sketches & Drawings', slug: 'sketches-and-drawings' },
-    { name: 'Digital Art & Illustrations', slug: 'digital-art-and-illustrations' },
-    { name: 'Prints & Posters', slug: 'prints-and-posters' },
-    { name: 'Sculptures', slug: 'sculptures' }
-  ] },
-  { name: 'Handmade & Crafts', slug: 'handmade-and-crafts', subcategories: [
-    { name: 'Pottery & Ceramics', slug: 'pottery-and-ceramics' },
-    { name: 'Textile Art', slug: 'textile-art' },
-    { name: 'Jewellery Making', slug: 'jewellery-making' },
-    { name: 'Candles & Soaps', slug: 'candles-and-soaps' },
-    { name: 'Woodwork', slug: 'woodwork' }
-  ] },
-  { name: 'Collectibles', slug: 'collectibles', subcategories: [
-    { name: 'Action Figures', slug: 'action-figures' },
-    { name: 'Funko Pops', slug: 'funko-pops' },
-    { name: 'Hot Wheels', slug: 'hot-wheels' },
-    { name: 'Rare Collectibles', slug: 'rare-collectibles' },
-    { name: 'Trading Cards', slug: 'trading-cards' }
-  ] },
-  { name: 'Gaming & Hobby', slug: 'gaming-and-hobby', subcategories: [
-    { name: 'Board Games', slug: 'board-games' },
-    { name: 'Puzzles', slug: 'puzzles' },
-    { name: 'Outdoor & Sports Hobbies', slug: 'outdoor-and-sports-hobbies' }
-  ] },
-  { name: 'Lifestyle & Gifts', slug: 'lifestyle-and-gifts', subcategories: [
-    { name: 'Home Decor', slug: 'home-decor' },
-    { name: 'Books & Stationery', slug: 'books-and-stationery' },
-    { name: 'Plants & Botanicals', slug: 'plants-and-botanicals' },
-    { name: 'Wellness & Self Care', slug: 'wellness-and-self-care' },
-    { name: 'Jewellery & Accessories', slug: 'jewellery-and-accessories' }
-  ] }
-]
+import { CATEGORIES } from '@/lib/categories'
+
+const categories = CATEGORIES.map(c => ({
+  name: c.name,
+  slug: slugify(c.name),
+  subcategories: c.subcategories.map(sub => ({
+    name: sub,
+    slug: slugify(sub)
+  }))
+}))
 
 export const Navbar = React.memo(function Navbar() {
   const router = useRouter()

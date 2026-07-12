@@ -23,15 +23,13 @@ export default async function WishlistPage() {
       l.slug,
       l.price,
       l.listing_type,
-      l.cloudinary_public_id,
+      l.photos->>0 as cloudinary_public_id,
       l.category,
-      l.subcategory
-     FROM wishlists w
+      l.category as subcategory
+     FROM wishlist w
      JOIN listings l ON l.id = w.listing_id
      WHERE w.user_id = $1
-       AND l.status = 'active'
-       AND l.is_published = true
-     ORDER BY w.created_at DESC`,
+       AND l.status = 'active'`,
     [userId]
   )
 

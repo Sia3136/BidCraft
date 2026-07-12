@@ -1,0 +1,490 @@
+[
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should create auction with scheduled status when start_time is in the future",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:105:52)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should block bidding on a scheduled (not-yet-started) auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:105:52)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should allow seller to cancel a scheduled auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:105:52)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should block bidding on a cancelled auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:105:52)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should reject cancelling an already-cancelled auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:105:52)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should resolve status as ended when end_time has passed",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:188:48)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should block bidding on an ended auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:188:48)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should block cancelling an ended auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5) TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:188:48)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should create an auction successfully for owner listing",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should fail if listing does not belong to the caller",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should return list of auctions",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should filter auctions by status=active",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should fail if bidder has not pre-authorized their card",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should place a valid bid successfully",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should fail if bid is below starting bid + increment",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should prevent seller from bidding on their own auction",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should reject cancel attempt by non-owner",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\auctions.test.js",
+    "name": "should process concurrent identical bids, allowing only one to succeed",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\auctions.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should settle an ended auction with bids and create an order",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:76:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should be idempotent — calling settle twice returns same order",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:91:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should handle no-bid auction gracefully",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:104:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should handle reserve price not met",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:116:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should reject settle attempt by non-seller",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:128:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should reject settle on auction not yet ended",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:137:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should mark listing as sold after settlement",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:148:40)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\settlement.test.js",
+    "name": "should return 401 without authentication",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at id (C:\\Bidcraft\\backend\\tests\\settlement.test.js:48:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)     at Object.<anonymous> (C:\\Bidcraft\\backend\\tests\\settlement.test.js:158:29)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should create a listing successfully",
+    "expected": "201",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 201 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:57:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should fail creation with missing field",
+    "expected": "400",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 400 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:75:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should return details of specific listing",
+    "expected": "200",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 200 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:95:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should return 404 for non-existent listing",
+    "expected": "404",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 404 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:103:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should update listing successfully if owner",
+    "expected": "200",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 200 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:118:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should fail update if not owner",
+    "expected": "403",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 403 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:131:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should fail delete if not owner",
+    "expected": "403",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 403 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:142:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\listings.test.js",
+    "name": "should delete listing successfully if owner",
+    "expected": "200",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 200 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\listings.test.js:151:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger new_follower notification when followed",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger outbid notification during bidding",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger auction_won and auction_lost notifications on settlement",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger payment_received notification on verification",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger order_shipped notification",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should trigger dispute_update notifications",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should mark a specific notification as read",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\notifications.test.js",
+    "name": "should mark all notifications as read",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\notifications.test.js:66:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\follows.test.js",
+    "name": "should return 404 for a non-existent seller",
+    "expected": "404",
+    "actual": "201",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 404 Received: 201     at Object.toBe (C:\\Bidcraft\\backend\\tests\\follows.test.js:78:26)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\follows.test.js",
+    "name": "should return the users followed by the current user",
+    "expected": "1",
+    "actual": "2",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 1 Received: 2     at Object.toBe (C:\\Bidcraft\\backend\\tests\\follows.test.js:108:41)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\follows.test.js",
+    "name": "should unfollow a seller successfully",
+    "expected": "0",
+    "actual": "1",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 0 Received: 1     at Object.toBe (C:\\Bidcraft\\backend\\tests\\follows.test.js:132:45)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return 401 without authentication",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should add the listing to the wishlist successfully",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should reject a duplicate wishlist request",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return 404 for a non-existent listing",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return 401 without authentication",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return list of wishlisted items with listing details",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return 401 without authentication",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should remove the listing from the wishlist successfully",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\wishlist.test.js",
+    "name": "should return 404 when removing an item not in wishlist",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "id",
+    "message": "TypeError: Cannot read properties of undefined (reading 'id')     at Object.id (C:\\Bidcraft\\backend\\tests\\wishlist.test.js:46:41)     at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\search.test.js",
+    "name": "should paginate results using page and limit",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "toHaveProperty",
+    "message": "Error: expect(received).toHaveProperty(path)  Expected path: \"pagination\" Received path: [] "
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\search.test.js",
+    "name": "should filter listings by min_price and max_price",
+    "expected": "<= 1000",
+    "actual": "   1100",
+    "assertion": "toBeLessThanOrEqual",
+    "message": "Error: expect(received).toBeLessThanOrEqual(expected)  Expected: <= 1000 Received:    1100     at toBeLessThanOrEqual (C:\\Bidcraft\\backend\\tests\\search.test.js:39:23)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\search.test.js",
+    "name": "should sort listings by price ascending",
+    "expected": "<= 2950",
+    "actual": "   3800",
+    "assertion": "toBeLessThanOrEqual",
+    "message": "Error: expect(received).toBeLessThanOrEqual(expected)  Expected: <= 2950 Received:    3800     at Object.toBeLessThanOrEqual (C:\\Bidcraft\\backend\\tests\\search.test.js:49:27)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\search.test.js",
+    "name": "should sort listings by price descending",
+    "expected": ">= 3800",
+    "actual": "   1100",
+    "assertion": "toBeGreaterThanOrEqual",
+    "message": "Error: expect(received).toBeGreaterThanOrEqual(expected)  Expected: >= 3800 Received:    1100     at Object.toBeGreaterThanOrEqual (C:\\Bidcraft\\backend\\tests\\search.test.js:59:27)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\search.test.js",
+    "name": "should filter listings by condition",
+    "expected": "\"new\"",
+    "actual": "undefined",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: \"new\" Received: undefined     at toBe (C:\\Bidcraft\\backend\\tests\\search.test.js:67:35)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\redis.test.js",
+    "name": "should cache getListings response",
+    "expected": "N/A",
+    "actual": "N/A",
+    "assertion": "toHaveBeenCalled",
+    "message": "Error: expect(jest.fn()).toHaveBeenCalled()  Expected number of calls: >= 1 Received number of calls:    0     at Object.toHaveBeenCalled (C:\\Bidcraft\\backend\\tests\\redis.test.js:49:23)"
+  },
+  {
+    "file": "C:\\Bidcraft\\backend\\tests\\redis.test.js",
+    "name": "should invalidate listings cache on creating a new listing",
+    "expected": "201",
+    "actual": "500",
+    "assertion": "toBe",
+    "message": "Error: expect(received).toBe(expected) // Object.is equality  Expected: 201 Received: 500     at Object.toBe (C:\\Bidcraft\\backend\\tests\\redis.test.js:75:24)"
+  }
+]

@@ -8,28 +8,28 @@ const VISUAL_CATEGORIES = [
     name: 'Art',
     description: 'Paintings, prints, and digital creations.',
     image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=600&auto=format&fit=crop',
-    href: '/category/art'
+    href: '/explore?category=art'
   },
   {
-    id: 'crafts',
-    name: 'Crafts',
+    id: 'handmade-crafts',
+    name: 'Handmade & Crafts',
     description: 'Handmade pottery, decor, and textiles.',
     image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=600&auto=format&fit=crop',
-    href: '/category/crafts'
-  },
-  {
-    id: 'hot-wheels',
-    name: 'Hot Wheels',
-    description: 'Rare die-cast models and treasure hunts.',
-    image: 'https://images.unsplash.com/photo-1581022295087-35e593704911?q=80&w=600&auto=format&fit=crop',
-    href: '/category/hot-wheels'
+    href: '/explore?category=handmade-and-crafts'
   },
   {
     id: 'collectibles',
     name: 'Collectibles',
-    description: 'Action figures, trading cards, and coins.',
+    description: 'Action figures, trading cards, and rare items.',
+    image: 'https://images.unsplash.com/photo-1581022295087-35e593704911?q=80&w=600&auto=format&fit=crop',
+    href: '/explore?category=collectibles'
+  },
+  {
+    id: 'gaming-hobby',
+    name: 'Gaming & Hobby',
+    description: 'Board games, cosplay props, and anime merchandise.',
     image: 'https://images.unsplash.com/photo-1606148386401-209fae4895cc?q=80&w=600&auto=format&fit=crop',
-    href: '/category/collectibles'
+    href: '/explore?category=gaming-and-hobby'
   }
 ]
 

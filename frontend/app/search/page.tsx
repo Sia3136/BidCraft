@@ -94,12 +94,12 @@ function SearchPageContent() {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-[var(--space-4)] w-full max-w-[880px]">
               {[
-                { name: 'Ceramics', img: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=300&auto=format&fit=crop' },
-                { name: 'Die-Cast Cars', img: 'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=300&auto=format&fit=crop' },
-                { name: 'Textiles', img: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=300&auto=format&fit=crop' },
-                { name: 'Woodwork', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=300&auto=format&fit=crop' },
+                { name: 'Clay & Pottery', img: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=300&auto=format&fit=crop', slug: 'clay-and-pottery' },
+                { name: 'Hot Wheels', img: 'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=300&auto=format&fit=crop', slug: 'hot-wheels' },
+                { name: 'Crochet & Knitting', img: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=300&auto=format&fit=crop', slug: 'crochet-and-knitting' },
+                { name: 'Resin Arts', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=300&auto=format&fit=crop', slug: 'resin-arts' },
               ].map(cat => (
-                <Link key={cat.name} href={`/category/${cat.name.toLowerCase().replace(' ', '-')}`} className="group relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden">
+                <Link key={cat.name} href={`/explore?subcategory=${cat.slug}`} className="group relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden">
                   <img src={cat.img} alt={cat.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-slow group-hover:scale-[1.04]" />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                   <span className="absolute bottom-[var(--space-4)] left-[var(--space-4)] text-heading-sm text-white">{cat.name}</span>

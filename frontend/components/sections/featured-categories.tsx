@@ -6,33 +6,28 @@ import { cn } from '@/lib/utils'
 const CATEGORIES = [
   {
     name: 'Art',
-    href: '/category/art',
-    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=600&auto=format&fit=crop' // Painting
+    href: '/explore?category=art',
+    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=600&auto=format&fit=crop'
   },
   {
-    name: 'Crafts',
-    href: '/category/crafts',
-    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=600&auto=format&fit=crop' // Crafting tools
-  },
-  {
-    name: 'Hot Wheels',
-    href: '/category/hot-wheels',
-    image: 'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=600&auto=format&fit=crop' // Hot wheels
+    name: 'Handmade & Crafts',
+    href: '/explore?category=handmade-and-crafts',
+    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=600&auto=format&fit=crop'
   },
   {
     name: 'Collectibles',
-    href: '/category/collectibles',
-    image: 'https://images.unsplash.com/photo-1610486806085-f3769c3a38a3?q=80&w=600&auto=format&fit=crop' // Figures
+    href: '/explore?category=collectibles',
+    image: 'https://images.unsplash.com/photo-1610486806085-f3769c3a38a3?q=80&w=600&auto=format&fit=crop'
   },
   {
-    name: 'Handmade & Lifestyle',
-    href: '/category/handmade-lifestyle',
-    image: 'https://images.unsplash.com/photo-1490288860714-eb065c71a355?q=80&w=600&auto=format&fit=crop' // Jewelry/decor
+    name: 'Gaming & Hobby',
+    href: '/explore?category=gaming-and-hobby',
+    image: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600&auto=format&fit=crop'
   },
   {
-    name: 'Hobby & Gaming',
-    href: '/category/hobby-gaming',
-    image: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600&auto=format&fit=crop' // Board games/hobby
+    name: 'Lifestyle & Gifts',
+    href: '/explore?category=lifestyle-and-gifts',
+    image: 'https://images.unsplash.com/photo-1490288860714-eb065c71a355?q=80&w=600&auto=format&fit=crop'
   }
 ]
 

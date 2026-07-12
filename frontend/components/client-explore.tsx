@@ -7,13 +7,7 @@ import { ProductCard } from '@/components/product-card'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { slugify } from '@/lib/slugify'
 
-const CATEGORIES = [
-  { name: 'Art', subcategories: ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'] },
-  { name: 'Handmade & Crafts', subcategories: ['Crochet & Knitting', 'Resin Art', 'Clay & Pottery', 'Candles & Soaps', 'Paper Crafts'] },
-  { name: 'Collectibles', subcategories: ['Action Figures', 'Trading Cards', 'Funko Pops', 'Hot Wheels', 'Rare Collectibles'] },
-  { name: 'Gaming & Hobby', subcategories: ['Board Games', 'Anime Merchandise', 'Cosplay Props', 'Puzzle Collections'] },
-  { name: 'Lifestyle & Gifts', subcategories: ['Home Decor', 'Jewellery & Accessories', 'Miniatures', 'Stationery'] }
-]
+import { CATEGORIES } from '@/lib/categories'
 
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
 const COLLECTIONS = ['Vintage & Retro', 'Modern Minimalist', 'Traditional Arts']

@@ -131,12 +131,11 @@ export const TRENDING_PRODUCTS = [
 ]
 
 export const CATEGORIES = [
-  { id: 'art', name: 'Art & Prints', count: 2341, color: 'bg-gradient-to-br from-amber-400 to-orange-500' },
-  { id: 'crafts', name: 'Crafts & DIY', count: 1856, color: 'bg-gradient-to-br from-green-400 to-emerald-500' },
+  { id: 'art', name: 'Art', count: 2341, color: 'bg-gradient-to-br from-amber-400 to-orange-500' },
+  { id: 'handmade-crafts', name: 'Handmade & Crafts', count: 1856, color: 'bg-gradient-to-br from-green-400 to-emerald-500' },
   { id: 'collectibles', name: 'Collectibles', count: 3421, color: 'bg-gradient-to-br from-purple-400 to-pink-500' },
-  { id: 'hotwheels', name: 'Hot Wheels', count: 892, color: 'bg-gradient-to-br from-red-400 to-orange-600' },
-  { id: 'books', name: 'Books & Media', count: 1245, color: 'bg-gradient-to-br from-blue-400 to-cyan-500' },
-  { id: 'electronics', name: 'Electronics', count: 1678, color: 'bg-gradient-to-br from-slate-400 to-slate-600' },
+  { id: 'gaming-hobby', name: 'Gaming & Hobby', count: 892, color: 'bg-gradient-to-br from-blue-400 to-cyan-500' },
+  { id: 'lifestyle-gifts', name: 'Lifestyle & Gifts', count: 1678, color: 'bg-gradient-to-br from-red-400 to-orange-600' }
 ]
 
 export const CREATORS = [

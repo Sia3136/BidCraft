@@ -1,0 +1,32 @@
+[
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\search.test.js",
+    "name": "should filter listings by min_price and max_price",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 500\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\search.test.js:34:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\search.test.js",
+    "name": "should sort listings by price ascending",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 500\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\search.test.js:45:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\search.test.js",
+    "name": "should sort listings by price descending",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 500\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\search.test.js:55:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\redis.test.js",
+    "name": "should invalidate listings cache on creating a new listing",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 201\nReceived: 500\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\redis.test.js:58:24)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\admin-analytics.test.js",
+    "name": "should return 403 for non-admin users",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 403\nReceived: 401\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\admin-analytics.test.js:25:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  {
+    "file": "C:\\vs code\\BidCraft\\backend\\tests\\admin-analytics.test.js",
+    "name": "should return analytics data for admins",
+    "messages": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 401\n    at Object.toBe (C:\\vs code\\BidCraft\\backend\\tests\\admin-analytics.test.js:33:26)\n    at processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  }
+]

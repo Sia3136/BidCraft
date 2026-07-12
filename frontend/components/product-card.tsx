@@ -73,9 +73,13 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   }
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'duzlsyzwa'
-  const imageUrl = product.image.startsWith('http') || product.image.startsWith('/') 
-    ? product.image 
-    : `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_500/${product.image}`;
+  const FALLBACK_IMAGE = "/placeholder.jpg";
+  const imageStr = product.image?.trim();
+  const imageUrl = !imageStr
+    ? FALLBACK_IMAGE
+    : imageStr.startsWith('http') || imageStr.startsWith('/')
+      ? imageStr
+      : `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_500/${imageStr}`;
 
   return (
     <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">

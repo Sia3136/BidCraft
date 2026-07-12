@@ -3,17 +3,37 @@ const Joi = require('joi');
 const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 
+const categoriesData = require('../../../shared/categories.json');
+const VALID_CATEGORIES = categoriesData.categories.map(c => c.name);
+const VALID_SUBCATEGORIES = categoriesData.categories.flatMap(c => c.subcategories);
+
 const createListingSchema = Joi.object({
   title: Joi.string().min(5).max(250).required(),
   description: Joi.string().min(200).required(),
   price: Joi.number().min(50).max(50000).required(),
-  category: Joi.string().required(),
-  subcategory: Joi.string().required(),
+  category: Joi.string().valid(...VALID_CATEGORIES).required(),
+  subcategory: Joi.string().valid(...VALID_SUBCATEGORIES).required(),
   buyingMethod: Joi.string().valid('Buy Now', 'Auction', 'Negotiable').required(),
   offersAllowed: Joi.boolean().optional(),
   minimumOfferPercent: Joi.number().min(50).max(100).optional(),
   specifications: Joi.object().optional(),
   imageUrls: Joi.array().items(Joi.string()).min(1).max(6).required(),
+  auctionEndsAt: Joi.date().optional(),
+  collections: Joi.array().items(Joi.string()).optional(),
+  occasions: Joi.array().items(Joi.string()).optional()
+});
+
+const updateListingSchema = Joi.object({
+  title: Joi.string().min(5).max(250).optional(),
+  description: Joi.string().min(200).optional(),
+  price: Joi.number().min(50).max(50000).optional(),
+  category: Joi.string().valid(...VALID_CATEGORIES).optional(),
+  subcategory: Joi.string().valid(...VALID_SUBCATEGORIES).optional(),
+  buyingMethod: Joi.string().valid('Buy Now', 'Auction', 'Negotiable').optional(),
+  offersAllowed: Joi.boolean().optional(),
+  minimumOfferPercent: Joi.number().min(50).max(100).optional(),
+  specifications: Joi.object().optional(),
+  imageUrls: Joi.array().items(Joi.string()).min(1).max(6).optional(),
   auctionEndsAt: Joi.date().optional(),
   collections: Joi.array().items(Joi.string()).optional(),
   occasions: Joi.array().items(Joi.string()).optional()
@@ -189,13 +209,17 @@ const getListings = async (req, res) => {
     const values = []
     let idx = 1
 
+    const slugify = (str) => str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    
     if (category) {
+      const mapped = VALID_CATEGORIES.find(c => slugify(c) === category) || category;
       conditions.push(`l.category = $${idx++}`)
-      values.push(category)
+      values.push(mapped)
     }
     if (subcategory) {
+      const mapped = VALID_SUBCATEGORIES.find(s => slugify(s) === subcategory) || subcategory;
       conditions.push(`l.subcategory = $${idx++}`)
-      values.push(subcategory)
+      values.push(mapped)
     }
     if (method) {
       const methodMap = { 'buy-now': 'Buy Now', 'auction': 'Auction', 'negotiable': 'Negotiable' }
