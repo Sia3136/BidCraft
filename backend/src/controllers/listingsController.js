@@ -3,7 +3,7 @@ const Joi = require('joi');
 const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 
-const categoriesData = require('../../../shared/categories.json');
+const categoriesData = require('../utils/categories.js');
 const VALID_CATEGORIES = categoriesData.categories.map(c => c.name);
 const VALID_SUBCATEGORIES = categoriesData.categories.flatMap(c => c.subcategories);
 
