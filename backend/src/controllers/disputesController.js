@@ -10,7 +10,7 @@ const createDisputeSchema = Joi.object({
 });
 
 const updateDisputeSchema = Joi.object({
-  status:     Joi.string().valid('review', 'resolved', 'dismissed').required(),
+  status:     Joi.string().valid('under_review', 'resolved', 'dismissed').required(),
   resolution: Joi.string().max(500).allow('', null)
 });
 

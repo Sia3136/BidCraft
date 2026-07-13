@@ -54,14 +54,25 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         throw new Error(`Your bid must be higher than the current bid of ₹${currentHighestBid}`);
       }
 
-      // Update the auction record
-      const updatedAuction = await tx.auctions.update({
-        where: { id: listing.auctions.id },
-        data: {
-          current_bid: bidAmount,
-          total_bids: { increment: 1 }
-        }
+      // Update the auction record atomically to prevent race conditions
+      const updatedRows = await tx.$executeRaw`
+        UPDATE auctions 
+        SET current_bid = ${bidAmount}, total_bids = COALESCE(total_bids, 0) + 1 
+        WHERE id = ${listing.auctions.id} 
+        AND (current_bid IS NULL OR current_bid < ${bidAmount})
+      `;
+
+      if (updatedRows === 0) {
+        throw new Error('Someone else just placed a higher bid. Please try again.');
+      }
+
+      const updatedAuction = await tx.auctions.findUnique({
+        where: { id: listing.auctions.id }
       });
+
+      if (!updatedAuction) {
+        throw new Error('Failed to retrieve updated auction');
+      }
 
       await tx.bids.create({
         data: {

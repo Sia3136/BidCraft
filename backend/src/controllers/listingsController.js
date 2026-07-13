@@ -357,7 +357,7 @@ const getListingById = async (req, res) => {
         a.id AS "auctionId",
         a.status AS auction_status,
         a.start_bid AS starting_bid,
-        (SELECT MAX(amount) FROM bids WHERE auction_id = a.id) as highest_bid
+        (SELECT MAX(bid_amount) FROM bids WHERE auction_id = a.id) as highest_bid
       FROM listings l
       LEFT JOIN auctions a ON a.listing_id = l.id
       WHERE (l.slug = $1 OR l.id::text = $1) AND l.status::text != 'deleted'

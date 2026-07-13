@@ -160,10 +160,10 @@ describe('Disputes API Integration Tests', () => {
     it('should update dispute status to review', async () => {
       const res = await request(app).patch(`/api/disputes/${disputeId}/status`)
         .set('Authorization', `Bearer ${sellerToken}`)
-        .send({ status: 'review' });
+        .send({ status: 'under_review' });
 
       expect(res.status).toBe(200);
-      expect(res.body.dispute.status).toBe('review');
+      expect(res.body.dispute.status).toBe('under_review');
     });
 
     it('should resolve a dispute with resolution note', async () => {
@@ -199,7 +199,7 @@ describe('Disputes API Integration Tests', () => {
 
       const res = await request(app).patch(`/api/disputes/${dispRes.body.dispute.id}/status`)
         .set('Authorization', `Bearer ${otherToken}`)
-        .send({ status: 'review' });
+        .send({ status: 'under_review' });
       expect(res.status).toBe(403);
     });
   });

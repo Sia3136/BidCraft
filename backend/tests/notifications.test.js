@@ -232,7 +232,7 @@ describe('Notifications API Integration Tests', () => {
     const dispUpdate = await request(app)
       .patch(`/api/disputes/${disputeId}/status`)
       .set('Authorization', `Bearer ${sellerToken}`)
-      .send({ status: 'review' });
+      .send({ status: 'under_review' });
     expect(dispUpdate.status).toBe(200);
 
     // Buyer B gets dispute_update notification

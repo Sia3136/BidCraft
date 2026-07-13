@@ -15,13 +15,19 @@ export const redis = isRedisConfigured
   ? new Redis({ url: process.env.UPSTASH_REDIS_REST_URL!, token: process.env.UPSTASH_REDIS_REST_TOKEN! })
   : null;
 
-// Usage wrapper — always use this instead of redis directly:
+const ENV_PREFIX = process.env.NODE_ENV || 'development';
+
 export async function cacheGet(key: string) {
   if (!redis) return null;
-  return redis.get(key);
+  return redis.get(`${ENV_PREFIX}:${key}`);
 }
 
 export async function cacheSet(key: string, value: unknown, ttl: number) {
   if (!redis) return;
-  await redis.set(key, JSON.stringify(value), { ex: ttl });
+  await redis.set(`${ENV_PREFIX}:${key}`, JSON.stringify(value), { ex: ttl });
+}
+
+export async function cacheDel(key: string) {
+  if (!redis) return;
+  await redis.del(`${ENV_PREFIX}:${key}`);
 }

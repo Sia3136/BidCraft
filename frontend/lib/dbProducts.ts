@@ -1,5 +1,5 @@
 import { prisma } from './prisma';
-import { redis, cacheGet, cacheSet } from './redis';
+import { cacheGet, cacheSet, cacheDel } from './redis';
 import { exploreProducts } from './exploreProducts';
 import { slugify } from './slugify';
 
@@ -54,10 +54,8 @@ function mapListingToProduct(listing: any): Product {
 
 export async function invalidateListingCache(id: string) {
   try {
-    if (redis) {
-      await redis.del(`listing:${id}`);
-      await redis.del('home:live-auctions');
-    }
+    await cacheDel(`listing:${id}`);
+    await cacheDel('home:live-auctions');
   } catch (e) {
     console.warn('Redis cache invalidate error:', e);
   }

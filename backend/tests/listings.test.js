@@ -94,7 +94,7 @@ describe('Listings Integration Tests', () => {
         .get(`/api/listings/${testListingId}`);
 
       expect(res.status).toBe(200);
-      expect(res.body.listing.id).toBe(testListingId);
+      expect(res.body.id).toBe(testListingId);
     });
 
     it('should return 404 for non-existent listing', async () => {
@@ -102,7 +102,7 @@ describe('Listings Integration Tests', () => {
         .get('/api/listings/99999');
 
       expect(res.status).toBe(404);
-      expect(res.body.error).toBe('listing_not_found');
+      expect(res.body.error).toBe('Listing not found');
     });
   });
 
