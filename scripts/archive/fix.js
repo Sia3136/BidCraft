@@ -1,5 +1,5 @@
-const db = require('./src/utils/db');
-const redis = require('./src/utils/redis');
+const db = require('../src/utils/db');
+const redis = require('../src/utils/redis');
 
 async function run() {
   try {

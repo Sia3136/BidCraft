@@ -9,7 +9,7 @@
     "migrate:down": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate.js down",
     "migrate:status": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate.js up --dry-run",
     "test": "node -r dotenv/config node_modules/jest/bin/jest.js --runInBand --detectOpenHandles",
-    "test:webhook": "node scripts/testWebhook.js",
+    "test:webhook": "node ../scripts/maintenance/testWebhook.js",
     "tunnel": "npx ngrok http 8000"
   },
   "dependencies": {

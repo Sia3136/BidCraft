@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const exploreProductsFile = path.join(__dirname, 'frontend', 'lib', 'exploreProducts.ts');
+const exploreProductsFile = path.join(__dirname, '..', 'frontend', 'lib', 'exploreProducts.ts');
 let content = fs.readFileSync(exploreProductsFile, 'utf8');
 
-const tempFile = path.join(__dirname, 'frontend', 'lib', 'exploreProducts.js');
+const tempFile = path.join(__dirname, '..', 'frontend', 'lib', 'exploreProducts.js');
 let jsContent = content.replace(/import { Product } from '.\/dbProducts';/g, '')
                        .replace(/export const exploreProducts: any\[\] = /g, 'module.exports.exploreProducts = ')
                        .replace(/export const productReviews: Record<string, any\[\]> = /g, 'module.exports.productReviews = ');
@@ -12,7 +12,7 @@ fs.writeFileSync(tempFile, jsContent);
 
 const { exploreProducts, productReviews } = require('./frontend/lib/exploreProducts.js');
 
-// 1. Pick 15 New Arrivals
+try {// 1. Pick 15 New Arrivals
 const categories = ['Art', 'Handmade & Crafts', 'Collectibles', 'Gaming & Hobby', 'Lifestyle & Gifts'];
 let newArrivals = [];
 for (const cat of categories) {
@@ -64,13 +64,15 @@ export const productReviews: Record<string, any[]> = ${JSON.stringify(productRev
 fs.writeFileSync(exploreProductsFile, newContent);
 
 // Create lib/newArrivals.ts
-const newArrivalsFile = path.join(__dirname, 'frontend', 'lib', 'newArrivals.ts');
+const newArrivalsFile = path.join(__dirname, '..', 'frontend', 'lib', 'newArrivals.ts');
 const newArrivalsContent = `export const NEW_ARRIVAL_IDS: string[] = ${JSON.stringify(newArrivalIds, null, 2)};\n`;
 fs.writeFileSync(newArrivalsFile, newArrivalsContent);
 
 console.log('Update complete.');
 
-// Clean up intermediate file
-if (fs.existsSync(tempFile)) {
-    fs.unlinkSync(tempFile);
+} finally {
+    // Clean up intermediate file
+    if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile);
+    }
 }

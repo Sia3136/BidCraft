@@ -35,7 +35,13 @@ export const exploreProducts: any[] = [
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "exp-008",
@@ -45,7 +51,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Paper Crafts",
     "price": 799,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-05T17:52:17.143Z",
+    "auctionEndsAt": "2026-09-01T12:00:00.000Z",
     "image": "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
     "description": "This stunning Handcrafted Shell Jewellery Stand represents the pinnacle of craftsmanship in the Paper Crafts category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": false,
@@ -73,7 +79,13 @@ export const exploreProducts: any[] = [
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "exp-010",
@@ -108,7 +120,13 @@ export const exploreProducts: any[] = [
       "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
       "/images/80891aa6bb34af3854d903c9a40bde21.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "exp-011",
@@ -118,7 +136,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Action Figures",
     "price": 3200,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-05T20:03:15.445Z",
+    "auctionEndsAt": "2026-09-01T12:00:00.000Z",
     "image": "/images/p452729_2.jpg",
     "description": "This stunning Vintage Hand-carved Chess Set represents the pinnacle of craftsmanship in the Action Figures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": false,
@@ -147,7 +165,13 @@ export const exploreProducts: any[] = [
       "/images/p452729_2.jpg",
       "/images/p452729_2.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "exp-013",
@@ -183,7 +207,13 @@ export const exploreProducts: any[] = [
       "/images/da73bc9b03ca4657978e673c794395f8.jpg",
       "/images/da73bc9b03ca4657978e673c794395f8.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "exp-014",
@@ -217,7 +247,13 @@ export const exploreProducts: any[] = [
       "/images/a344e75529581e9f43f2c00dc233dea4.webp",
       "/images/a344e75529581e9f43f2c00dc233dea4.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "exp-016",
@@ -252,7 +288,13 @@ export const exploreProducts: any[] = [
       "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
       "/images/27c1a7020f1f1ae13757444e6e302582.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "exp-017",
@@ -285,7 +327,13 @@ export const exploreProducts: any[] = [
       "/images/4472fc60307774b77a3457158adcd98c.webp",
       "/images/4472fc60307774b77a3457158adcd98c.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "art-001",
@@ -295,7 +343,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Sketches & Drawings",
     "price": 6500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-05T21:37:43.899Z",
+    "auctionEndsAt": "2026-09-01T12:00:00.000Z",
     "image": "/images/5ad309e5bf37d2a19670076e986021fd.webp",
     "description": "This stunning Lord Ganesha — Intricate Ink Study represents the pinnacle of craftsmanship in the Sketches & Drawings category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": true,
@@ -324,7 +372,13 @@ export const exploreProducts: any[] = [
       "/images/5ad309e5bf37d2a19670076e986021fd.webp",
       "/images/5ad309e5bf37d2a19670076e986021fd.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "art-002",
@@ -360,10 +414,20 @@ export const exploreProducts: any[] = [
       "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
       "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
-    "id": "art-003", "occasions": ["birthdays","anniversaries"],
+    "id": "art-003",
+    "occasions": [
+      "birthdays",
+      "anniversaries"
+    ],
     "title": "The Eye — Abstract Portrait",
     "creator": "Kavita Singh",
     "category": "Art",
@@ -395,10 +459,17 @@ export const exploreProducts: any[] = [
       "/images/31e38d210b5e219cf5831d51863aff83.webp",
       "/images/31e38d210b5e219cf5831d51863aff83.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Modern Minimalist"
+    ]
   },
   {
-    "id": "art-004", "occasions": ["birthdays","anniversaries"],
+    "id": "art-004",
+    "occasions": [
+      "birthdays",
+      "anniversaries"
+    ],
     "title": "Hibiscus in Bloom",
     "creator": "Amit Patel",
     "category": "Art",
@@ -429,17 +500,24 @@ export const exploreProducts: any[] = [
       "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
       "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Traditional Arts"
+    ]
   },
   {
-    "id": "art-005", "occasions": ["birthdays","anniversaries"],
+    "id": "art-005",
+    "occasions": [
+      "birthdays",
+      "anniversaries"
+    ],
     "title": "Candlelight",
     "creator": "Priya Nair",
     "category": "Art",
     "subcategory": "Paintings",
     "price": 5500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-05T23:54:28.345Z",
+    "auctionEndsAt": "2026-09-01T12:00:00.000Z",
     "image": "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
     "description": "This stunning Candlelight represents the pinnacle of craftsmanship in the Paintings category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": false,
@@ -467,10 +545,17 @@ export const exploreProducts: any[] = [
       "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
       "/images/1289afe396aec8a3225851a4f68bf9ed.webp"
     ],
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ]
   },
   {
-    "id": "art-006", "occasions": ["birthdays","anniversaries"],
+    "id": "art-006",
+    "occasions": [
+      "birthdays",
+      "anniversaries"
+    ],
     "title": "En Pointe & Fighting Back",
     "creator": "Rohit Verma",
     "category": "Art",
@@ -502,10 +587,17 @@ export const exploreProducts: any[] = [
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp"
+    ],
+    "collections": [
+      "Modern Minimalist"
     ]
   },
   {
-    "id": "art-007", "occasions": ["birthdays","anniversaries"],
+    "id": "art-007",
+    "occasions": [
+      "birthdays",
+      "anniversaries"
+    ],
     "title": "Floral Reverie",
     "creator": "Anjali Gupta",
     "category": "Art",
@@ -536,6 +628,9 @@ export const exploreProducts: any[] = [
       "/images/ae02a7936a96a8d1302dc65047499be9.webp",
       "/images/ae02a7936a96a8d1302dc65047499be9.webp",
       "/images/ae02a7936a96a8d1302dc65047499be9.webp"
+    ],
+    "collections": [
+      "Traditional Arts"
     ]
   },
   {
@@ -546,7 +641,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Paintings",
     "price": 2800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T01:24:26.247Z",
+    "auctionEndsAt": "2026-09-03T00:00:00.000Z",
     "image": "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
     "description": "This stunning Noir Cinema represents the pinnacle of craftsmanship in the Paintings category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": false,
@@ -574,6 +669,12 @@ export const exploreProducts: any[] = [
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg"
+    ],
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
     ]
   },
   {
@@ -609,6 +710,12 @@ export const exploreProducts: any[] = [
       "/images/968355308d40d83a2e1f59daa61c5089.jpg",
       "/images/968355308d40d83a2e1f59daa61c5089.jpg",
       "/images/968355308d40d83a2e1f59daa61c5089.jpg"
+    ],
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
     ]
   },
   {
@@ -644,6 +751,12 @@ export const exploreProducts: any[] = [
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg"
+    ],
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
     ]
   },
   {
@@ -678,6 +791,12 @@ export const exploreProducts: any[] = [
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg"
+    ],
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
     ]
   },
   {
@@ -688,7 +807,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Sketches & Drawings",
     "price": 1800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T03:16:37.057Z",
+    "auctionEndsAt": "2026-09-03T00:00:00.000Z",
     "image": "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
     "description": "This stunning Charcoal Portrait Sketch represents the pinnacle of craftsmanship in the Sketches & Drawings category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": true,
@@ -715,10 +834,20 @@ export const exploreProducts: any[] = [
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg"
+    ],
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
     ]
   },
   {
-    "id": "art-013", "occasions": ["anniversaries","housewarming"],
+    "id": "art-013",
+    "occasions": [
+      "anniversaries",
+      "housewarming"
+    ],
     "title": "Architectural Wonders",
     "creator": "Divya Sharma",
     "category": "Art",
@@ -748,10 +877,17 @@ export const exploreProducts: any[] = [
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg"
+    ],
+    "collections": [
+      "Traditional Arts"
     ]
   },
   {
-    "id": "art-014", "occasions": ["anniversaries","housewarming"],
+    "id": "art-014",
+    "occasions": [
+      "anniversaries",
+      "housewarming"
+    ],
     "title": "Palace Stairway — Charcoal Study",
     "creator": "Suresh Menon",
     "category": "Art",
@@ -782,10 +918,17 @@ export const exploreProducts: any[] = [
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp"
+    ],
+    "collections": [
+      "Vintage & Retro"
     ]
   },
   {
-    "id": "art-015", "occasions": ["anniversaries","housewarming"],
+    "id": "art-015",
+    "occasions": [
+      "anniversaries",
+      "housewarming"
+    ],
     "title": "Metro Station",
     "creator": "Arjun Mehta",
     "category": "Art",
@@ -816,10 +959,17 @@ export const exploreProducts: any[] = [
       "/images/44baf8c7320670cef2659e68cb492255.webp",
       "/images/44baf8c7320670cef2659e68cb492255.webp",
       "/images/44baf8c7320670cef2659e68cb492255.webp"
+    ],
+    "collections": [
+      "Modern Minimalist"
     ]
   },
   {
-    "id": "art-016", "occasions": ["anniversaries","housewarming"],
+    "id": "art-016",
+    "occasions": [
+      "anniversaries",
+      "housewarming"
+    ],
     "title": "Mandala Study",
     "creator": "Rajesh Kumar",
     "category": "Art",
@@ -850,10 +1000,17 @@ export const exploreProducts: any[] = [
       "/images/e28037264502713adb183f8523837b47.webp",
       "/images/e28037264502713adb183f8523837b47.webp",
       "/images/e28037264502713adb183f8523837b47.webp"
+    ],
+    "collections": [
+      "Traditional Arts"
     ]
   },
   {
-    "id": "art-017", "occasions": ["anniversaries","housewarming"],
+    "id": "art-017",
+    "occasions": [
+      "anniversaries",
+      "housewarming"
+    ],
     "title": "Abstract Digital Composition",
     "creator": "Pixels by Pooja",
     "category": "Art",
@@ -882,6 +1039,9 @@ export const exploreProducts: any[] = [
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg"
+    ],
+    "collections": [
+      "Vintage & Retro"
     ]
   },
   {
@@ -892,7 +1052,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Digital Art & Illustrations",
     "price": 3800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T05:27:50.070Z",
+    "auctionEndsAt": "2026-09-03T00:00:00.000Z",
     "image": "/images/013d7240408456110f7fbb438010ac91.webp",
     "description": "This stunning Cyberpunk Cityscape represents the pinnacle of craftsmanship in the Digital Art & Illustrations category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": false,
@@ -918,6 +1078,12 @@ export const exploreProducts: any[] = [
       "/images/013d7240408456110f7fbb438010ac91.webp",
       "/images/013d7240408456110f7fbb438010ac91.webp",
       "/images/013d7240408456110f7fbb438010ac91.webp"
+    ],
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Birthdays"
     ]
   },
   {
@@ -951,6 +1117,12 @@ export const exploreProducts: any[] = [
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp"
+    ],
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Anniversaries"
     ]
   },
   {
@@ -983,6 +1155,12 @@ export const exploreProducts: any[] = [
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp"
+    ],
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Housewarming"
     ]
   },
   {
@@ -1015,6 +1193,12 @@ export const exploreProducts: any[] = [
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp"
+    ],
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Just Because"
     ]
   },
   {
@@ -1047,17 +1231,27 @@ export const exploreProducts: any[] = [
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg"
+    ],
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "All Occasions"
     ]
   },
   {
-    "id": "art-023", "occasions": ["housewarming","just-because"],
+    "id": "art-023",
+    "occasions": [
+      "housewarming",
+      "just-because"
+    ],
     "title": "Stranger Things — Poster Art",
     "creator": "Vikram Rao",
     "category": "Art",
     "subcategory": "Prints & Posters",
     "price": 3200,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T07:27:57.154Z",
+    "auctionEndsAt": "2026-09-03T00:00:00.000Z",
     "image": "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
     "description": "This stunning Stranger Things — Poster Art represents the pinnacle of craftsmanship in the Prints & Posters category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": true,
@@ -1084,10 +1278,17 @@ export const exploreProducts: any[] = [
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp"
+    ],
+    "collections": [
+      "Vintage & Retro"
     ]
   },
   {
-    "id": "art-024", "occasions": ["housewarming","just-because"],
+    "id": "art-024",
+    "occasions": [
+      "housewarming",
+      "just-because"
+    ],
     "title": "Titanic — Iconic Poster",
     "creator": "Pooja Joshi",
     "category": "Art",
@@ -1117,10 +1318,17 @@ export const exploreProducts: any[] = [
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp"
+    ],
+    "collections": [
+      "Modern Minimalist"
     ]
   },
   {
-    "id": "art-025", "occasions": ["housewarming","just-because"],
+    "id": "art-025",
+    "occasions": [
+      "housewarming",
+      "just-because"
+    ],
     "title": "Spider-Man — Movie Poster",
     "creator": "Karan Sethi",
     "category": "Art",
@@ -1150,10 +1358,17 @@ export const exploreProducts: any[] = [
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg"
+    ],
+    "collections": [
+      "Traditional Arts"
     ]
   },
   {
-    "id": "art-026", "occasions": ["housewarming","just-because"],
+    "id": "art-026",
+    "occasions": [
+      "housewarming",
+      "just-because"
+    ],
     "title": "Friends — Series Poster",
     "creator": "Karan Sethi",
     "category": "Art",
@@ -1183,17 +1398,24 @@ export const exploreProducts: any[] = [
       "/images/470b571670ccddef91176aaaee01b23c.webp",
       "/images/470b571670ccddef91176aaaee01b23c.webp",
       "/images/470b571670ccddef91176aaaee01b23c.webp"
+    ],
+    "collections": [
+      "Vintage & Retro"
     ]
   },
   {
-    "id": "art-027", "occasions": ["housewarming","just-because"],
+    "id": "art-027",
+    "occasions": [
+      "housewarming",
+      "just-because"
+    ],
     "title": "Modern Abstract Sculpture",
     "creator": "Vikram Rao",
     "category": "Art",
     "subcategory": "Sculptures",
     "price": 8500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T09:13:55.375Z",
+    "auctionEndsAt": "2026-09-05T00:00:00.000Z",
     "image": "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
     "description": "This stunning Modern Abstract Sculpture represents the pinnacle of craftsmanship in the Sculptures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
     "verified": true,
@@ -1221,6 +1443,9 @@ export const exploreProducts: any[] = [
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg"
+    ],
+    "collections": [
+      "Modern Minimalist"
     ]
   },
   {
@@ -1254,6 +1479,12 @@ export const exploreProducts: any[] = [
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg"
+    ],
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
     ]
   },
   {
@@ -1291,7 +1522,13 @@ export const exploreProducts: any[] = [
       "Ingredients/Materials": "Natural oils, Shea Butter, Essential Oils",
       "Ships From": "Mumbai, India"
     },
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "hc-cs-1",
@@ -1325,7 +1562,13 @@ export const exploreProducts: any[] = [
       "Weight": "120g",
       "Ingredients/Materials": "Glycerin, Natural Loofah, Citrus Essential Oil",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "hc-cs-2",
@@ -1342,7 +1585,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Candles & Soaps",
     "price": 899,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T11:13:16.555Z",
+    "auctionEndsAt": "2026-09-05T00:00:00.000Z",
     "currentBid": 450,
     "bidCount": 5,
     "image": "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
@@ -1363,7 +1606,13 @@ export const exploreProducts: any[] = [
       "Burn Time": "45 Hours",
       "Ingredients/Materials": "Soy Wax Blend, Cotton Wick",
       "Ships From": "Jaipur, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "hc-cs-3",
@@ -1397,10 +1646,20 @@ export const exploreProducts: any[] = [
       "Weight": "300g (Set)",
       "Ingredients/Materials": "Olive Oil, Rose Essential Oil, Dried Petals",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
-    "id": "hc-cs-4", "occasions": ["just-because","all-occasions"],
+    "id": "hc-cs-4",
+    "occasions": [
+      "just-because",
+      "all-occasions"
+    ],
     "title": "Birthday Celebration Candle",
     "creator": "Rohit Verma",
     "creatorRating": 4.4,
@@ -1433,10 +1692,17 @@ export const exploreProducts: any[] = [
       "Burn Time": "30 Hours",
       "Ingredients/Materials": "Soy Wax, Fragrance Oils, Wax Sprinkles",
       "Ships From": "Pune, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ]
   },
   {
-    "id": "hc-cp-0", "occasions": ["just-because","all-occasions"],
+    "id": "hc-cp-0",
+    "occasions": [
+      "just-because",
+      "all-occasions"
+    ],
     "title": "Hand-painted Traditional Vase",
     "creator": "Sanjay Patel",
     "creatorRating": 4.9,
@@ -1470,10 +1736,17 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Wipe with damp cloth",
       "Ships From": "Ahmedabad, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ]
   },
   {
-    "id": "hc-cp-1", "occasions": ["just-because","all-occasions"],
+    "id": "hc-cp-1",
+    "occasions": [
+      "just-because",
+      "all-occasions"
+    ],
     "title": "Traditional Garba Pots",
     "creator": "Kiran Desai",
     "creatorRating": 4.8,
@@ -1487,7 +1760,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Clay & Pottery",
     "price": 1500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T13:09:02.350Z",
+    "auctionEndsAt": "2026-09-05T00:00:00.000Z",
     "currentBid": 600,
     "bidCount": 8,
     "image": "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
@@ -1508,10 +1781,17 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Keep dry, dust with soft brush",
       "Ships From": "Surat, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ]
   },
   {
-    "id": "hc-cp-2", "occasions": ["just-because","all-occasions"],
+    "id": "hc-cp-2",
+    "occasions": [
+      "just-because",
+      "all-occasions"
+    ],
     "title": "Ceramic Floral Vase",
     "creator": "Priya Menon",
     "creatorRating": 4.6,
@@ -1543,10 +1823,17 @@ export const exploreProducts: any[] = [
       "Food Safe": "Yes",
       "Care Instructions": "Hand wash recommended",
       "Ships From": "Kochi, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ]
   },
   {
-    "id": "hc-cp-3", "occasions": ["just-because","all-occasions"],
+    "id": "hc-cp-3",
+    "occasions": [
+      "just-because",
+      "all-occasions"
+    ],
     "title": "Abstract Clay Figure Sculpture",
     "creator": "Ananya Gupta",
     "creatorRating": 4.9,
@@ -1559,7 +1846,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Clay & Pottery",
     "price": 4500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T15:08:56.398Z",
+    "auctionEndsAt": "2026-09-05T00:00:00.000Z",
     "currentBid": 1200,
     "bidCount": 14,
     "image": "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
@@ -1580,7 +1867,10 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Dust with dry cloth",
       "Ships From": "New Delhi, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ]
   },
   {
     "id": "hc-cp-4",
@@ -1616,7 +1906,13 @@ export const exploreProducts: any[] = [
       "Food Safe": "Yes",
       "Care Instructions": "Hand wash only, not microwave safe",
       "Ships From": "Kolkata, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "hc-cp-5",
@@ -1651,7 +1947,13 @@ export const exploreProducts: any[] = [
       "Food Safe": "No",
       "Care Instructions": "Dry wipe, do not fill with water",
       "Ships From": "Lucknow, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "hc-ck-0",
@@ -1685,7 +1987,13 @@ export const exploreProducts: any[] = [
       "Weight": "30g",
       "Care Instructions": "Gentle hand wash",
       "Ships From": "Hyderabad, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "hc-ck-1",
@@ -1720,7 +2028,13 @@ export const exploreProducts: any[] = [
       "Weight": "25g",
       "Care Instructions": "Spot clean only",
       "Ships From": "Chandigarh, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "hc-ck-2",
@@ -1736,7 +2050,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Crochet & Knitting",
     "price": 1200,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T17:04:03.153Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "currentBid": 550,
     "bidCount": 6,
     "image": "/images/crochet-flowers-blue-pot.jpeg",
@@ -1756,7 +2070,13 @@ export const exploreProducts: any[] = [
       "Weight": "200g",
       "Care Instructions": "Dust gently, do not wash",
       "Ships From": "Chennai, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "hc-ck-3",
@@ -1792,7 +2112,13 @@ export const exploreProducts: any[] = [
       "Weight": "450g",
       "Care Instructions": "Keep away from direct sunlight",
       "Ships From": "Pune, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "hc-ck-4",
@@ -1809,7 +2135,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Crochet & Knitting",
     "price": 3800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T18:57:35.627Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "currentBid": 1800,
     "bidCount": 12,
     "image": "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
@@ -1829,7 +2155,13 @@ export const exploreProducts: any[] = [
       "Weight": "800g",
       "Care Instructions": "Hand wash cold, dry flat",
       "Ships From": "Darjeeling, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "hc-ck-5",
@@ -1863,7 +2195,13 @@ export const exploreProducts: any[] = [
       "Weight": "150g",
       "Care Instructions": "Spot clean only",
       "Ships From": "Ahmedabad, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "hc-pc-0",
@@ -1897,7 +2235,13 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "300gsm Cardstock",
       "Finish": "Matte Laminated",
       "Ships From": "Indore, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "hc-pc-1",
@@ -1932,7 +2276,13 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "150gsm Craft Paper",
       "Finish": "Natural Paper",
       "Ships From": "Jaipur, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "hc-pc-2",
@@ -1965,7 +2315,13 @@ export const exploreProducts: any[] = [
       "Material/Paper Weight": "250gsm Art Card",
       "Finish": "Textured",
       "Ships From": "Noida, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "hc-ra-0",
@@ -2000,7 +2356,13 @@ export const exploreProducts: any[] = [
       "Resin Type": "UV Resin",
       "Finish": "Glossy",
       "Ships From": "Goa, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "hc-ra-1",
@@ -2017,7 +2379,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Resin Art",
     "price": 4500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T20:40:59.628Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "currentBid": 2100,
     "bidCount": 18,
     "image": "/images/6825197426036f192e947bf86984bbb3.webp",
@@ -2037,7 +2399,13 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "hc-ra-2",
@@ -2071,7 +2439,13 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Mumbai, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "hc-ra-3",
@@ -2106,7 +2480,13 @@ export const exploreProducts: any[] = [
       "Resin Type": "Epoxy Resin",
       "Finish": "Glossy",
       "Ships From": "Kochi, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "hc-ra-4",
@@ -2140,7 +2520,13 @@ export const exploreProducts: any[] = [
       "Resin Type": "UV Resin",
       "Finish": "Glossy",
       "Ships From": "Hyderabad, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "ls-hd-0",
@@ -2176,7 +2562,13 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "ls-hd-2",
@@ -2211,7 +2603,13 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "ls-hd-3",
@@ -2247,7 +2645,13 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "ls-hd-4",
@@ -2263,7 +2667,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Home Decor",
     "price": 1800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-06T22:38:46.570Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/c3f27a4077f7d8474444c2c129199224.webp",
@@ -2285,7 +2689,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Jaipur"
     },
     "currentBid": 1850,
-    "bidCount": 2
+    "bidCount": 2,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "ls-hd-5",
@@ -2320,7 +2730,13 @@ export const exploreProducts: any[] = [
       "Weight": "500g",
       "Care Instructions": "Wipe with dry cloth",
       "Ships From": "Jaipur"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "ls-ja-0",
@@ -2357,7 +2773,13 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "ls-ja-1",
@@ -2373,7 +2795,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Stationery",
     "price": 1100,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T00:38:05.529Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
@@ -2396,7 +2818,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi"
     },
     "currentBid": 1200,
-    "bidCount": 3
+    "bidCount": 3,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "ls-ja-2",
@@ -2432,7 +2860,13 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "ls-ja-3",
@@ -2469,7 +2903,13 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "ls-ja-4",
@@ -2505,7 +2945,13 @@ export const exploreProducts: any[] = [
       "Weight": "15g",
       "Finish": "Polished",
       "Ships From": "Delhi"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "ls-ja-5",
@@ -2521,7 +2967,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Jewellery & Accessories",
     "price": 2500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T02:42:14.109Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/629babcd420c53e76b891e70f45966ee.jpg",
@@ -2544,7 +2990,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi"
     },
     "currentBid": 2800,
-    "bidCount": 6
+    "bidCount": 6,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "ls-mn-0",
@@ -2561,7 +3013,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Miniatures",
     "price": 1500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T04:30:46.947Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
@@ -2583,7 +3035,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune"
     },
     "currentBid": 1600,
-    "bidCount": 5
+    "bidCount": 5,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "ls-mn-1",
@@ -2618,7 +3076,13 @@ export const exploreProducts: any[] = [
       "Finish": "Painted",
       "Display Base": "Yes",
       "Ships From": "Pune"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "ls-mn-2",
@@ -2653,7 +3117,13 @@ export const exploreProducts: any[] = [
       "Finish": "Painted",
       "Display Base": "Yes",
       "Ships From": "Pune"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "ls-st-0",
@@ -2689,7 +3159,13 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "ls-st-1",
@@ -2724,7 +3200,13 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "ls-st-2",
@@ -2740,7 +3222,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Stationery",
     "price": 600,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T06:31:17.796Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
@@ -2762,7 +3244,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai"
     },
     "currentBid": 650,
-    "bidCount": 2
+    "bidCount": 2,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "ls-st-3",
@@ -2798,7 +3286,13 @@ export const exploreProducts: any[] = [
       "Dimensions": "A5",
       "Ruling Type": "Unruled",
       "Ships From": "Mumbai"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "gh-am-0",
@@ -2837,7 +3331,13 @@ export const exploreProducts: any[] = [
       "Limited Edition": "Yes",
       "Ships From": "Mumbai, India"
     },
-    "newArrival": true
+    "newArrival": true,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "gh-am-1",
@@ -2874,7 +3374,13 @@ export const exploreProducts: any[] = [
       "Weight": "200g",
       "Limited Edition": "Yes",
       "Ships From": "Mumbai, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "gh-am-2",
@@ -2891,7 +3397,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Anime Merchandise",
     "price": 3500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T08:13:21.074Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/ee616c53d459a38d4c2122653aa94920.jpg",
@@ -2914,7 +3420,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai, India"
     },
     "currentBid": 2800,
-    "bidCount": 7
+    "bidCount": 7,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "gh-bg-0",
@@ -2950,7 +3462,13 @@ export const exploreProducts: any[] = [
       "Dimensions": "Standard Box",
       "Weight": "1.2kg",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "gh-bg-1",
@@ -2986,7 +3504,13 @@ export const exploreProducts: any[] = [
       "Dimensions": "Standard Box",
       "Weight": "1.2kg",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "gh-bg-2",
@@ -3004,7 +3528,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Board Games",
     "price": 4200,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T10:10:30.235Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/b355c24663070085652f2205eb853402.webp",
@@ -3027,7 +3551,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 3360,
-    "bidCount": 1
+    "bidCount": 1,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "gh-bg-3",
@@ -3043,7 +3573,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Board Games",
     "price": 4800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T11:58:14.788Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/p452729_2.jpg",
@@ -3066,7 +3596,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 3840,
-    "bidCount": 15
+    "bidCount": 15,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "gh-cp-0",
@@ -3084,7 +3620,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Cosplay Props",
     "price": 5000,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T13:57:53.355Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/3b996e5246d79ef9617231779fe39bfd.webp",
@@ -3107,7 +3643,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Bangalore, India"
     },
     "currentBid": 4000,
-    "bidCount": 7
+    "bidCount": 7,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "gh-cp-1",
@@ -3144,7 +3686,13 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "gh-cp-2",
@@ -3181,7 +3729,13 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "gh-cp-3",
@@ -3217,7 +3771,13 @@ export const exploreProducts: any[] = [
       "LED": "Yes",
       "Assembly Required": "No",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "gh-pc-0",
@@ -3252,7 +3812,13 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "gh-pc-1",
@@ -3287,7 +3853,13 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "gh-pc-2",
@@ -3323,7 +3895,13 @@ export const exploreProducts: any[] = [
       "Material": "Cardboard",
       "Age Range": "12+",
       "Ships From": "Chennai, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "col-af-0",
@@ -3360,7 +3938,13 @@ export const exploreProducts: any[] = [
       "Articulation Points": "24",
       "Includes Accessories": "Alternate hands, base",
       "Ships From": "Pune, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "col-af-1",
@@ -3377,7 +3961,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Action Figures",
     "price": 3400,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T16:07:17.580Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
@@ -3399,7 +3983,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune, India"
     },
     "currentBid": 2720,
-    "bidCount": 4
+    "bidCount": 4,
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "col-af-2",
@@ -3416,7 +4006,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Action Figures",
     "price": 4100,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T17:36:28.491Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/4256f8dcb8f244ba618721219f550054.jpg",
@@ -3438,7 +4028,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Pune, India"
     },
     "currentBid": 3280,
-    "bidCount": 1
+    "bidCount": 1,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "col-fp-0",
@@ -3456,7 +4052,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Funko Pops",
     "price": 4500,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T19:52:56.813Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
@@ -3479,7 +4075,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Kolkata, India"
     },
     "currentBid": 3600,
-    "bidCount": 7
+    "bidCount": 7,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "col-fp-1",
@@ -3515,7 +4117,13 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "col-fp-2",
@@ -3552,7 +4160,13 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    }
+    },
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "col-fp-3",
@@ -3588,7 +4202,13 @@ export const exploreProducts: any[] = [
       "Box Condition": "Mint",
       "Limited Edition": "Yes",
       "Ships From": "Kolkata, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "col-hw-0",
@@ -3626,7 +4246,13 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "col-hw-1",
@@ -3643,7 +4269,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Hot Wheels",
     "price": 2100,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T21:49:13.522Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
@@ -3666,7 +4292,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 1680,
-    "bidCount": 13
+    "bidCount": 13,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "col-hw-2",
@@ -3702,7 +4334,13 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "col-hw-3",
@@ -3739,7 +4377,13 @@ export const exploreProducts: any[] = [
       "Wheel Type": "Real Riders",
       "Box Condition": "Mint",
       "Ships From": "Delhi, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   },
   {
     "id": "col-hw-4",
@@ -3755,7 +4399,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Hot Wheels",
     "price": 3200,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-07T23:25:15.493Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/hw-vintage-corvette.jpg",
@@ -3778,7 +4422,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Delhi, India"
     },
     "currentBid": 2560,
-    "bidCount": 4
+    "bidCount": 4,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "All Occasions"
+    ]
   },
   {
     "id": "col-rc-0",
@@ -3796,7 +4446,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Rare Collectibles",
     "price": 4900,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-08T01:32:21.397Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/da73bc9b03ca4657978e673c794395f8.jpg",
@@ -3818,7 +4468,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Mumbai, India"
     },
     "currentBid": 3920,
-    "bidCount": 7
+    "bidCount": 7,
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Birthdays"
+    ]
   },
   {
     "id": "col-rc-1",
@@ -3854,7 +4510,13 @@ export const exploreProducts: any[] = [
       "Condition": "Excellent",
       "Rarity": "Rare",
       "Ships From": "Mumbai, India"
-    }
+    },
+    "collections": [
+      "Modern Minimalist"
+    ],
+    "occasions": [
+      "Anniversaries"
+    ]
   },
   {
     "id": "col-tc-0",
@@ -3872,7 +4534,7 @@ export const exploreProducts: any[] = [
     "subcategory": "Trading Cards",
     "price": 3800,
     "buyingMethod": "Auction",
-    "auctionEndsAt": "2026-07-08T03:18:52.722Z",
+    "auctionEndsAt": "2026-09-08T00:00:00.000Z",
     "offersAllowed": false,
     "minimumOfferPercent": 70,
     "image": "/images/3e509945098af056b376472bd2b9c91c.webp",
@@ -3893,7 +4555,13 @@ export const exploreProducts: any[] = [
       "Ships From": "Bangalore, India"
     },
     "currentBid": 3040,
-    "bidCount": 4
+    "bidCount": 4,
+    "collections": [
+      "Traditional Arts"
+    ],
+    "occasions": [
+      "Housewarming"
+    ]
   },
   {
     "id": "col-tc-1",
@@ -3927,7 +4595,13 @@ export const exploreProducts: any[] = [
       "Condition": "Near Mint",
       "Holographic": "Yes",
       "Ships From": "Bangalore, India"
-    }
+    },
+    "collections": [
+      "Vintage & Retro"
+    ],
+    "occasions": [
+      "Just Because"
+    ]
   }
 ];
 
