@@ -69,3 +69,8 @@ const newArrivalsContent = `export const NEW_ARRIVAL_IDS: string[] = ${JSON.stri
 fs.writeFileSync(newArrivalsFile, newArrivalsContent);
 
 console.log('Update complete.');
+
+// Clean up intermediate file
+if (fs.existsSync(tempFile)) {
+    fs.unlinkSync(tempFile);
+}

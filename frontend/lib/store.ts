@@ -4,13 +4,7 @@ import { useAuthStore } from '@/store/authStore'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  avatar?: string;
-}
+// User interface removed from here as it belongs to authStore
 
 interface CartItem {
   id: string;
@@ -30,17 +24,13 @@ import { notifications as staticNotifications, Notification as NotificationType 
 type Notification = NotificationType;
 
 interface StoreState {
-  user: User | null;
-  token: string | null;
   location: string | null;
   cart: CartItem[];
   wishlistIds: number[];
   wishlistCount: number;
   notifications: Notification[];
   
-  // Auth Actions
-  login: (user: User, token: string) => void;
-  logout: () => void;
+  // Auth Actions removed (handled by authStore)
   setLocation: (location: string) => void;
   
   // Cart Actions
@@ -69,19 +59,13 @@ interface StoreState {
 export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      user: null,
-      token: null,
       location: null,
       cart: [],
       wishlistIds: [],
       wishlistCount: 0,
       notifications: staticNotifications,
       
-      login: (user, token) => {
-        set({ user, token });
-        get().mergeAnonymousData();
-      },
-      logout: () => set({ user: null, token: null, location: null, cart: [], wishlistIds: [], wishlistCount: 0, notifications: staticNotifications }),
+      // Auth actions removed to avoid duplication with authStore
       setLocation: (location) => set({ location }),
       
       addToCart: async (item) => {
@@ -259,9 +243,7 @@ export const useStore = create<StoreState>()(
       partialize: (state) => ({
         cart: state.cart,
         wishlistIds: state.wishlistIds,
-        wishlistCount: state.wishlistCount,
-        token: state.token, // Optional: persist token
-        user: state.user // Optional: persist user
+        wishlistCount: state.wishlistCount
       }),
     }
   )

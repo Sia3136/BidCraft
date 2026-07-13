@@ -15,10 +15,9 @@ Diagnosis Results:
   { column_name: 'user_id', data_type: 'integer' }
 ]
 */
-// app/api/wishlist/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession, authOptions } from '@/lib/auth'
-import { db } from '@/lib/db'  // your pg Pool
+import { prisma } from '@/lib/prisma'
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -32,26 +31,48 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const result = await db.query(
-      `SELECT 
-        w.id as wishlist_id,
-        w.created_at as saved_at,
-        l.id,
-        l.title,
-        l.slug,
-        l.price,
-        l.listing_type,
-        (l.photos->0)::text as image,
-        l.category,
-        l.seller_id
-       FROM wishlist w
-       JOIN listings l ON l.id = w.listing_id
-       WHERE w.user_id = $1
-         AND l.status = 'active'
-       ORDER BY w.created_at DESC`,
-      [userId]
-    )
-    return NextResponse.json({ items: result.rows })
+    const result = await prisma.wishlist.findMany({
+      where: {
+        user_id: userId,
+        listings: { status: 'active' }
+      },
+      include: {
+        listings: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            price: true,
+            listing_type: true,
+            photos: true,
+            category: true,
+            seller_id: true,
+          }
+        }
+      },
+      orderBy: { created_at: 'desc' }
+    })
+    
+    const items = result.map((w: any) => {
+      let image = null;
+      if (Array.isArray(w.listings?.photos) && w.listings.photos.length > 0) {
+        image = String(w.listings.photos[0]);
+      }
+      return {
+        wishlist_id: w.id,
+        saved_at: w.created_at,
+        id: w.listings?.id,
+        title: w.listings?.title,
+        slug: w.listings?.slug,
+        price: w.listings?.price,
+        listing_type: w.listings?.listing_type,
+        image: image,
+        category: w.listings?.category,
+        seller_id: w.listings?.seller_id
+      };
+    })
+
+    return NextResponse.json({ items })
   } catch (err) {
     console.error('[GET /api/wishlist] DB error:', err)
     return NextResponse.json({ error: 'Database error' }, { status: 500 })
@@ -76,34 +97,29 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Check if listing exists and is active
-    const listing = await db.query(
-      `SELECT id FROM listings WHERE id = $1 AND status = 'active'`,
-      [listingId]
-    )
-    if (listing.rows.length === 0) {
+    const listing = await prisma.listings.findFirst({
+      where: { id: listingId, status: 'active' }
+    })
+    
+    if (!listing) {
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
     }
 
-    // Check if already wishlisted
-    const existing = await db.query(
-      `SELECT id FROM wishlist WHERE user_id = $1 AND listing_id = $2`,
-      [userId, listingId]
-    )
+    const existing = await prisma.wishlist.findFirst({
+      where: { user_id: userId, listing_id: listingId }
+    })
 
-    if (existing.rows.length > 0) {
+    if (existing) {
       // Toggle OFF — remove
-      await db.query(
-        `DELETE FROM wishlist WHERE user_id = $1 AND listing_id = $2`,
-        [userId, listingId]
-      )
+      await prisma.wishlist.delete({
+        where: { user_id_listing_id: { user_id: userId, listing_id: listingId } }
+      })
       return NextResponse.json({ action: 'removed', listing_id: listingId })
     } else {
       // Toggle ON — add
-      await db.query(
-        `INSERT INTO wishlist (user_id, listing_id, created_at) VALUES ($1, $2, NOW())`,
-        [userId, listingId]
-      )
+      await prisma.wishlist.create({
+        data: { user_id: userId, listing_id: listingId }
+      })
       return NextResponse.json({ action: 'added', listing_id: listingId })
     }
   } catch (err) {

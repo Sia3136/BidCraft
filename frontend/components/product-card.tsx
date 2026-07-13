@@ -47,13 +47,16 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
       })
       if (res.ok) {
+        // TODO: Replace with proper transient toast system
         alert('Added to cart!')
         useStore.getState().loadCart()
       } else {
+        // TODO: Replace with proper transient toast system
         alert('Failed to add to cart')
       }
     } catch (err) {
       console.error(err)
+      // TODO: Replace with proper transient toast system
       alert('Failed to add to cart')
     }
   }
