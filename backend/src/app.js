@@ -1,5 +1,21 @@
 require('dotenv').config();
+
+if (process.env.NODE_ENV !== 'test') {
+  const requiredEnvVars = ['JWT_SECRET', 'CRON_SECRET', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET'];
+  for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+      throw new Error(`FATAL: ${envVar} environment variable is missing.`);
+    }
+  }
+} else {
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret';
+  process.env.CRON_SECRET = process.env.CRON_SECRET || 'test_cron_secret';
+  process.env.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'test_razor_key';
+  process.env.RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || 'test_razor_webhook';
+}
+
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -32,6 +48,7 @@ const cronRoutes = require('./routes/cron');
 
 const app = express();
 app.use(helmet());
+app.use(cookieParser());
 
 const morganFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
 app.use(morgan(morganFormat, { stream: { write: message => logger.info(message.trim()) } }));

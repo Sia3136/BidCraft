@@ -4,9 +4,18 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
+const JWT_SECRET = process.env.JWT_SECRET;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
+
+function setSessionCookie(res, token) {
+  res.cookie('session_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 15 * 60 * 1000
+  });
+}
 
 async function register(req, res, next) {
   try {
@@ -22,6 +31,7 @@ async function register(req, res, next) {
     const refreshToken = crypto.randomBytes(40).toString('hex');
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
+    setSessionCookie(res, accessToken);
     res.json({ user, accessToken, refreshToken });
   } catch (err) {
     if (err.code === '23505') return res.status(409).json({ error: 'email_taken' });
@@ -44,6 +54,7 @@ async function login(req, res, next) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
     
+    setSessionCookie(res, accessToken);
     res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken, refreshToken });
   } catch (err) {
     next(err);
@@ -99,6 +110,7 @@ async function googleLogin(req, res, next) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshTokenStr, user.id, expiresAt]);
 
+    setSessionCookie(res, accessToken);
     res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role, avatarUrl: user.avatar_url }, accessToken, refreshToken: refreshTokenStr });
   } catch (err) {
     if (err.message && err.message.includes('verifyIdToken')) {
@@ -125,6 +137,11 @@ async function logout(req, res) {
   if (refreshToken) {
     await db.query('DELETE FROM refresh_tokens WHERE token=$1', [refreshToken]);
   }
+  res.clearCookie('session_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
+  });
   res.json({ success: true });
 }
 
@@ -149,6 +166,7 @@ async function refreshToken(req, res, next) {
     await db.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
     await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [newRefreshToken, rt.user_id, expiresAt]);
     
+    setSessionCookie(res, accessToken);
     res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (err) {
     next(err);

@@ -20,7 +20,6 @@ export const useAuthStore = create<AuthStore>()(
       token: null,
       isAuthenticated: false,
       setAuth: async (user, token) => {
-        document.cookie = `session_token=${token}; path=/; max-age=86400`;
         set({ user, token, isAuthenticated: true });
         try {
           const [cartRes, wishRes] = await Promise.all([
@@ -40,7 +39,6 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
       clearAuth: () => {
-        document.cookie = `session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
         set({ user: null, token: null, isAuthenticated: false });
       },
     }),
@@ -48,7 +46,6 @@ export const useAuthStore = create<AuthStore>()(
       name: 'bidcraft-auth',
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }

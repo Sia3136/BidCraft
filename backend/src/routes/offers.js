@@ -116,9 +116,19 @@ router.put('/:offerId/accept', auth, async (req, res) => {
   }
 })
 
-// PUT /api/offers/:offerId/reject
 router.put('/:offerId/reject', auth, async (req, res) => {
   try {
+    const check = await db.query(`
+      SELECT o.id
+      FROM offers o
+      JOIN listings l ON l.id = o.listing_id
+      WHERE o.id = $1 AND l.seller_id = $2 AND o.status = 'pending'
+    `, [req.params.offerId, req.userId]);
+
+    if (check.rows.length === 0) {
+      return res.status(404).json({ error: 'Offer not found or not authorised' });
+    }
+
     const result = await db.query(
       `UPDATE offers SET status='rejected', updated_at=NOW()
        WHERE id=$1 AND status='pending'`,

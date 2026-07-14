@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../utils/db');
 const auth = require('../middleware/auth');
+const rateLimit = require('express-rate-limit');
+
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => `${req.ip}_${req.params.orderId}`,
+  message: { error: 'Too many OTP verification attempts. Please try again later.' }
+});
 
 // POST /api/escrow/:orderId/ship — seller marks as shipped
 router.post('/:orderId/ship', auth, async (req, res) => {
@@ -62,13 +70,13 @@ router.post('/:orderId/ship', auth, async (req, res) => {
 })
 
 // POST /api/escrow/:orderId/verify-otp — delivery partner verifies OTP
-router.post('/:orderId/verify-otp', auth, async (req, res) => {
+router.post('/:orderId/verify-otp', auth, otpLimiter, async (req, res) => {
   try {
     const { otp } = req.body;
     if (!otp) return res.status(400).json({ error: 'OTP is required' });
 
     const orderQuery = await db.query(`
-      SELECT o.id, o.delivery_otp, o.delivery_otp_expires_at, o.total_amount, l.seller_id
+      SELECT o.id, o.delivery_otp, o.delivery_otp_expires_at, o.total_amount, l.seller_id, o.buyer_id
       FROM orders o
       JOIN listings l ON l.id = o.listing_id
       WHERE o.id = $1
@@ -77,6 +85,10 @@ router.post('/:orderId/verify-otp', auth, async (req, res) => {
     if (orderQuery.rows.length === 0) return res.status(404).json({ error: 'Order not found' });
     
     const order = orderQuery.rows[0];
+
+    if (order.buyer_id !== req.userId) {
+      return res.status(403).json({ error: 'Not authorized to verify this order' });
+    }
 
     if (order.delivery_otp !== otp) {
       return res.status(400).json({ error: 'Invalid OTP' });
@@ -105,6 +117,7 @@ router.post('/:orderId/verify-otp', auth, async (req, res) => {
       console.log(`[escrow] Payout due: ₹${order.total_amount} to seller ${order.seller_id} for order ${req.params.orderId}`);
 
       await client.query('COMMIT');
+      otpLimiter.resetKey(`${req.ip}_${req.params.orderId}`);
       res.json({ success: true, message: 'Delivery confirmed via OTP. Escrow released to seller.' });
     } catch (err) {
       await client.query('ROLLBACK');

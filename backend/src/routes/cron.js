@@ -6,7 +6,7 @@ const settlementService = require('../services/settlementService');
 router.post('/end-auctions', async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET || 'cron_secret'}`) {
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return res.status(401).json({ error: 'unauthorized' });
     }
 

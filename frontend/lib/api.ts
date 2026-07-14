@@ -59,7 +59,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
       .filter(([, v]) => v !== undefined && v !== null && v !== '')
       .map(([k, v]) => [k, String(v)])
   ).toString()
-  const res = await fetch(`${API_BASE}/api/listings${qs ? '?' + qs : ''}`, {
+  const res = await fetch(, { credentials: 'include',
     next: { revalidate: 60 }   // ISR: re-fetch every 60s
   })
   if (!res.ok) throw new Error(`fetchListings failed: ${res.status}`)
@@ -67,7 +67,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
 }
 
 export async function fetchListingById(id: string): Promise<Listing> {
-  const res = await fetch(`${API_BASE}/api/listings/${id}`, {
+  const res = await fetch(, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchListingById failed: ${res.status}`)
@@ -75,7 +75,7 @@ export async function fetchListingById(id: string): Promise<Listing> {
 }
 
 export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[] }> {
-  const res = await fetch(`${API_BASE}/api/listings/auctions/live?limit=${limit}`, {
+  const res = await fetch(, { credentials: 'include',
     next: { revalidate: 30 }  // shorter cache — auctions change fast
   })
   if (!res.ok) throw new Error(`fetchLiveAuctions failed: ${res.status}`)
@@ -83,7 +83,7 @@ export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[
 }
 
 export async function fetchNewArrivals(): Promise<{ listings: Listing[] }> {
-  const res = await fetch(`${API_BASE}/api/listings/new-arrivals`, {
+  const res = await fetch(, { credentials: 'include',
     next: { revalidate: 120 }
   })
   if (!res.ok) throw new Error(`fetchNewArrivals failed: ${res.status}`)
@@ -97,7 +97,7 @@ export async function register(data: {
   mobile?: string
   password: string
 }): Promise<AuthResponse> {
-  const res = await fetch(`${API_BASE}/api/auth/register`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -112,7 +112,7 @@ export async function login(data: {
   emailOrMobile: string
   password: string
 }): Promise<AuthResponse> {
-  const res = await fetch(`${API_BASE}/api/auth/login`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     // Map emailOrMobile to email since backend expects email
@@ -125,7 +125,7 @@ export async function login(data: {
 
 // Get current user (requires token)
 export async function getMe(token: string): Promise<User> {
-  const res = await fetch(`${API_BASE}/api/auth/me`, {
+  const res = await fetch(, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })
@@ -143,7 +143,7 @@ export type CreateOrderResponse = {
 }
 
 export async function createOrder(listingId: string, token: string): Promise<{ order: { id: string } }> {
-  const res = await fetch(`${API_BASE}/api/orders`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ export async function createPaymentOrder(
   orderId: string,
   token: string
 ): Promise<CreateOrderResponse> {
-  const res = await fetch(`${API_BASE}/api/payments/create-order`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ export async function verifyPayment(data: {
   razorpay_signature: string
   order_id: number
 }, token: string): Promise<{ success: boolean; order_id: string; status: string }> {
-  const res = await fetch(`${API_BASE}/api/payments/verify`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ export async function verifyPayment(data: {
 }
 
 export async function fetchOrderById(id: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/orders/${id}`, {
+  const res = await fetch(, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })
@@ -215,7 +215,7 @@ export async function placeBid(
   amount: number,
   token: string
 ): Promise<BidResponse> {
-  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/bids`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ export async function placeBid(
 }
 
 export async function createBidDeposit(auctionId: string, amount: number, token: string) {
-  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/deposit`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -243,7 +243,7 @@ export async function createBidDeposit(auctionId: string, amount: number, token:
 }
 
 export async function verifyBidDeposit(auctionId: string, data: any, token: string) {
-  const res = await fetch(`${API_BASE}/api/auctions/${auctionId}/deposit/verify`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ export async function verifyBidDeposit(auctionId: string, data: any, token: stri
 export async function uploadListingImage(file: File, token: string): Promise<{ url: string; publicId: string }> {
   const form = new FormData()
   form.append('image', file)
-  const res = await fetch(`${API_BASE}/api/listings/upload-image`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: form,
@@ -276,7 +276,7 @@ export async function createListing(data: {
   imageUrls: string[]; specifications: Record<string, string>;
   auctionEndsAt?: string; collections?: string[]; occasions?: string[];
 }, token: string): Promise<{ listingId: string }> {
-  const res = await fetch(`${API_BASE}/api/listings`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
@@ -287,21 +287,21 @@ export async function createListing(data: {
 }
 
 export async function fetchSellerListings(token: string) {
-  const res = await fetch(`${API_BASE}/api/seller/listings`, {
+  const res = await fetch(, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()
 }
 
 export async function fetchSellerOrders(token: string) {
-  const res = await fetch(`${API_BASE}/api/seller/orders`, {
+  const res = await fetch(, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()
 }
 
 export async function deleteListing(listingId: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/seller/listings/${listingId}`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   })
@@ -309,7 +309,7 @@ export async function deleteListing(listingId: string, token: string) {
 }
 
 export async function submitOffer(listingId: string, offerAmount: number, token: string) {
-  const res = await fetch(`${API_BASE}/api/offers`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ listingId, offerAmount }),
@@ -320,7 +320,7 @@ export async function submitOffer(listingId: string, offerAmount: number, token:
 }
 
 export async function shipOrder(orderId: string, data: { trackingNumber: string; carrier: string }, token: string) {
-  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/ship`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
@@ -331,7 +331,7 @@ export async function shipOrder(orderId: string, data: { trackingNumber: string;
 }
 
 export async function confirmDelivery(orderId: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/confirm-delivery`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -341,7 +341,7 @@ export async function confirmDelivery(orderId: string, token: string) {
 }
 
 export async function disputeOrder(orderId: string, reason: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/escrow/${orderId}/dispute`, {
+  const res = await fetch(, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ reason }),
@@ -353,7 +353,7 @@ export async function disputeOrder(orderId: string, reason: string, token: strin
 
 export async function fetchCreators(sort: string = 'followers', limit: number = 20, offset: number = 0) {
   const qs = new URLSearchParams({ sort, limit: String(limit), offset: String(offset) }).toString();
-  const res = await fetch(`${API_BASE}/api/creators?${qs}`, {
+  const res = await fetch(, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchCreators failed: ${res.status}`)
