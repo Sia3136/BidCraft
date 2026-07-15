@@ -59,7 +59,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
       .filter(([, v]) => v !== undefined && v !== null && v !== '')
       .map(([k, v]) => [k, String(v)])
   ).toString()
-  const res = await fetch(, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings?${qs}`, { credentials: 'include',
     next: { revalidate: 60 }   // ISR: re-fetch every 60s
   })
   if (!res.ok) throw new Error(`fetchListings failed: ${res.status}`)
@@ -67,7 +67,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
 }
 
 export async function fetchListingById(id: string): Promise<Listing> {
-  const res = await fetch(, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/${id}`, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchListingById failed: ${res.status}`)
@@ -75,7 +75,7 @@ export async function fetchListingById(id: string): Promise<Listing> {
 }
 
 export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[] }> {
-  const res = await fetch(, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/live?limit=${limit}`, { credentials: 'include',
     next: { revalidate: 30 }  // shorter cache — auctions change fast
   })
   if (!res.ok) throw new Error(`fetchLiveAuctions failed: ${res.status}`)

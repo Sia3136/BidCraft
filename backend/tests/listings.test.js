@@ -94,7 +94,7 @@ describe('Listings Integration Tests', () => {
         .get(`/api/listings/${testListingId}`);
 
       expect(res.status).toBe(200);
-      expect(res.body.id).toBe(testListingId);
+      expect(res.body.numericId).toBe(testListingId);
     });
 
     it('should return 404 for non-existent listing', async () => {

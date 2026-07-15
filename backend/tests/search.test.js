@@ -24,9 +24,8 @@ describe('Search & Filters API Integration Tests', () => {
       const res = await request(app).get('/api/listings?page=1&limit=5');
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('listings');
-      expect(res.body).toHaveProperty('pagination');
-      expect(res.body.pagination.limit).toBe(5);
-      expect(res.body.pagination.page).toBe(1);
+      expect(res.body.limit).toBe(5);
+      expect(res.body.offset).toBe(0);
     });
 
     it('should filter listings by min_price and max_price', async () => {

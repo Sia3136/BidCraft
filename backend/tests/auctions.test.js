@@ -51,6 +51,8 @@ describe('Auctions and Bidding Integration Tests', () => {
       .send({ razorpay_payment_id: 'pay_mockbuyerB' });
 
     // Create an auction listing
+
+    await db.query("UPDATE users SET email_verified = true");
     const listingRes = await request(app)
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)

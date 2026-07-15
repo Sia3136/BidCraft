@@ -42,7 +42,10 @@ describe('Auction Settlement Integration Tests', () => {
 
   async function createAuctionWithBid({ endedAlready = true, placeBid = true, reservePrice = null } = {}) {
     // Create listing
-    const lRes = await request(app).post('/api/listings').set('Authorization', `Bearer ${sellerToken}`)
+
+    await db.query("UPDATE users SET email_verified = true");
+    const lRes = await request(app)
+      .post('/api/listings').set('Authorization', `Bearer ${sellerToken}`)
       .send({ title: `Settle Test Listing ${Date.now()}`, category_id: categoryId, condition: 'New',
               photos: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg', 'https://example.com/p3.jpg', 'https://example.com/p4.jpg', 'https://example.com/p5.jpg', 'https://example.com/p6.jpg'], listing_type: 'auction' });
     const listingId = lRes.body.listing.id;

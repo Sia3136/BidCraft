@@ -27,6 +27,7 @@ describe('Follows API Integration Tests', () => {
       .send({ email: emailB, password: 'Password123!', name: 'Seller User' });
     userBToken = resB.body.accessToken;
     userBId = resB.body.user.id;
+    await db.query("UPDATE users SET email_verified = true");
   });
 
   afterAll(async () => {
@@ -72,7 +73,7 @@ describe('Follows API Integration Tests', () => {
 
     it('should return 404 for a non-existent seller', async () => {
       const res = await request(app)
-        .post('/api/users/999999/follow')
+        .post('/api/users/9999999/follow')
         .set('Authorization', `Bearer ${userAToken}`);
       
       expect(res.status).toBe(404);

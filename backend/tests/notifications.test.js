@@ -51,6 +51,8 @@ describe('Notifications API Integration Tests', () => {
     sellerId = resS.body.user.id;
 
     // Create a listing for the seller
+
+    await db.query("UPDATE users SET email_verified = true");
     const listingRes = await request(app)
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)

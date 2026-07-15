@@ -67,6 +67,8 @@ describe('Redis Caching Integration Tests', () => {
     // Pre-populate cache so keys() returns something and del() gets called
     await redis.set('cache:listings:dummy', 'data');
 
+
+    await db.query("UPDATE users SET email_verified = true");
     const res = await request(app)
       .post('/api/listings')
       .set('Authorization', `Bearer ${token}`)

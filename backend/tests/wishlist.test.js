@@ -31,6 +31,8 @@ describe('Wishlist API Integration Tests', () => {
     sellerToken = sellerRes.body.accessToken;
 
     // Create a listing
+
+    await db.query("UPDATE users SET email_verified = true");
     const listingRes = await request(app)
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)
