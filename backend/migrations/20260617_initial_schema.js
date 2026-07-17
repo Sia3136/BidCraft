@@ -34,4 +34,3 @@ exports.down = (pgm) => {
   `);
 };
 
-no one 
