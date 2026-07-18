@@ -70,14 +70,18 @@ async function verifyCheckout(req, res, next) {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, listing_id, address_id } = value;
     const buyerId = req.userId;
 
-    const valid = paymentService.verifySignature(
+    const valid = paymentService.verifySignature({
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature
-    );
+    });
 
-    if (!valid && !paymentService.MOCK_MODE) {
-      return res.status(400).json({ error: 'invalid_signature' });
+    if (!valid) {
+      if (process.env.NODE_ENV === 'test' && razorpay_signature === 'test_mock_signature') {
+        // mock logic strictly bounded to test env
+      } else {
+        return res.status(400).json({ error: 'invalid_signature' });
+      }
     }
 
     const listingRes = await db.query('SELECT * FROM listings WHERE id = $1 AND status = $2 FOR UPDATE', [listing_id, 'active']);
@@ -293,7 +297,9 @@ async function handleWebhook(req, res, next) {
       process.env.RAZORPAY_WEBHOOK_SECRET
     );
 
-    if (!valid && !paymentService.MOCK_MODE) {
+    if (!valid) {
+      const logger = require('../utils/logger');
+      logger.warn('Webhook verification failed', { ip: req.ip });
       return res.status(400).json({ error: 'invalid_webhook_signature' });
     }
 

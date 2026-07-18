@@ -3,6 +3,8 @@ const Joi = require('joi');
 const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 
+const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos'];
+
 const categoriesData = require('../utils/categories.js');
 const VALID_CATEGORIES = categoriesData.categories.map(c => c.name);
 const VALID_SUBCATEGORIES = categoriesData.categories.flatMap(c => c.subcategories);
@@ -329,7 +331,7 @@ const getListings = async (req, res) => {
     })
   } catch (err) {
     console.error('[listings] Error:', err.message)
-    res.status(500).json({ error: 'Internal server error', detail: err.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -369,7 +371,7 @@ const getListingById = async (req, res) => {
     res.json(result.rows[0])
   } catch (err) {
     console.error('[listings] Error:', err.message)
-    res.status(500).json({ error: 'Internal server error', detail: err.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -395,7 +397,7 @@ const getLiveAuctions = async (req, res) => {
     res.json({ auctions: result.rows })
   } catch (err) {
     console.error('[listings] Error:', err.message)
-    res.status(500).json({ error: 'Internal server error', detail: err.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -421,7 +423,7 @@ const getNewArrivals = async (req, res) => {
     res.json({ listings: result.rows })
   } catch (err) {
     console.error('[listings] Error:', err.message)
-    res.status(500).json({ error: 'Internal server error', detail: err.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 }
 
@@ -433,10 +435,27 @@ async function updateListing(req, res, next) {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Check listing ownership
-    const ownershipCheck = await db.query('SELECT seller_id FROM listings WHERE id = $1', [id]);
+    const ownershipCheck = await db.query('SELECT seller_id, buying_method, status FROM listings WHERE id = $1', [id]);
     const listing = ownershipCheck.rows[0];
     if (!listing) return res.status(404).json({ error: 'listing_not_found' });
     if (listing.seller_id !== req.userId) return res.status(403).json({ error: 'unauthorized_action' });
+
+    if (listing.buying_method === 'Auction' && listing.status === 'active') {
+      const bidCheck = await db.query(`
+        SELECT COUNT(*) FROM bids b 
+        JOIN auctions a ON a.id = b.auction_id 
+        WHERE a.listing_id = $1
+      `, [id]);
+      if (parseInt(bidCheck.rows[0].count) > 0) {
+        const prohibitedFields = Object.keys(value).filter(key => !EDITABLE_AUCTION_FIELDS.includes(key));
+        if (prohibitedFields.length > 0) {
+          return res.status(400).json({ 
+            error: 'Cannot modify these fields once an auction has bids.', 
+            prohibitedFields 
+          });
+        }
+      }
+    }
 
     const updates = [];
     const params = [id];

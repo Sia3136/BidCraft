@@ -27,7 +27,9 @@ router.post('/:orderId/ship', auth, async (req, res) => {
       return res.status(403).json({ error: 'Order not found or not authorised' })
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit OTP
+    const crypto = require('crypto');
+    const otp = crypto.randomInt(100000, 1000000).toString(); // 6 digit OTP
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
     await db.query(`
       UPDATE escrow
@@ -38,7 +40,7 @@ router.post('/:orderId/ship', auth, async (req, res) => {
 
     await db.query(`
       UPDATE orders SET status = 'shipped', delivery_otp = $1, delivery_otp_expires_at = NOW() + INTERVAL '14 days', updated_at = NOW() WHERE id = $2
-    `, [otp, req.params.orderId])
+    `, [hashedOtp, req.params.orderId])
 
     // Fetch buyer email to send the OTP
     const orderQuery = await db.query(`
@@ -90,7 +92,24 @@ router.post('/:orderId/verify-otp', auth, otpLimiter, async (req, res) => {
       return res.status(403).json({ error: 'Not authorized to verify this order' });
     }
 
-    if (order.delivery_otp !== otp) {
+    const crypto = require('crypto');
+    let isValid = false;
+    
+    if (order.delivery_otp && order.delivery_otp.length === 64) {
+      const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+      const providedBuffer = Buffer.from(hashedOtp);
+      const storedBuffer = Buffer.from(order.delivery_otp);
+      if (providedBuffer.length === storedBuffer.length && crypto.timingSafeEqual(providedBuffer, storedBuffer)) {
+        isValid = true;
+      }
+    } else {
+      // Legacy plaintext OTP comparison
+      if (order.delivery_otp === otp) {
+        isValid = true;
+      }
+    }
+
+    if (!isValid) {
       return res.status(400).json({ error: 'Invalid OTP' });
     }
 

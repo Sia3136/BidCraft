@@ -45,6 +45,7 @@ const sellerRoutes = require('./routes/seller');
 const escrowRoutes = require('./routes/escrow');
 const offersRoutes = require('./routes/offers');
 const cronRoutes = require('./routes/cron');
+const reportsRoutes = require('./routes/reports');
 
 const app = express();
 app.use(helmet());
@@ -115,10 +116,12 @@ app.use('/api/seller',    sellerRoutes);
 app.use('/api/escrow',    escrowRoutes);
 app.use('/api/offers',    offersRoutes);
 app.use('/api/cron',      cronRoutes);
+app.use('/api/reports',   reportsRoutes);
 
 app.use((err, req, res, next) => {
   logger.error(err.message || 'internal_error', { error: err, stack: err.stack });
-  res.status(err.status || 500).json({ error: err.message || 'internal_error' });
+  const status = err.status || 500;
+  res.status(status).json({ error: status === 500 ? 'internal_error' : err.message || 'internal_error' });
 });
 
 module.exports = app;

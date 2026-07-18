@@ -13,4 +13,13 @@ const bidLimiter = rateLimit({
   message: { error: 'too_many_bids' }
 });
 
-module.exports = { authLimiter, bidLimiter };
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // max 5 attempts per window per identity
+  keyGenerator: (req) => {
+    return req.userId ? `${req.userId}_${req.ip}` : req.ip;
+  },
+  message: { error: 'too_many_otp_attempts' }
+});
+
+module.exports = { authLimiter, bidLimiter, otpLimiter };

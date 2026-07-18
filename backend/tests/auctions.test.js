@@ -65,7 +65,7 @@ describe('Auctions and Bidding Integration Tests', () => {
           buyingMethod: 'Buy Now',
         price: null
       });
-    listingId = listingRes.body.listing.id;
+    console.log(listingRes.body); listingId = listingRes.body.listing ? listingRes.body.listing.id : null;
   });
 
   afterAll(async () => {

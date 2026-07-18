@@ -190,13 +190,17 @@ async function sendVerification(req, res, next) {
     }
 
     // Generate 6 digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
 
     await db.query(
       'INSERT INTO verification_codes (user_id, code, expires_at, purpose) VALUES ($1, $2, $3, $4)',
-      [userId, otp, expiresAt, 'email_verification']
+      [userId, hashedOtp, expiresAt, 'email_verification']
     );
+
+    const logger = require('../utils/logger');
+    logger.info('OTP generated', { userId, purpose: 'email_verification' });
 
     await sendOTPEmail(user.email, otp);
 
@@ -212,15 +216,27 @@ async function verifyEmail(req, res, next) {
     const { code } = req.body;
     if (!code) return res.status(400).json({ error: 'code_required' });
 
+    const hashedOtp = crypto.createHash('sha256').update(code).digest('hex');
     const codeRes = await db.query(
-      'SELECT * FROM verification_codes WHERE user_id = $1 AND code = $2 AND purpose = $3 ORDER BY created_at DESC LIMIT 1',
-      [userId, code, 'email_verification']
+      'SELECT * FROM verification_codes WHERE user_id = $1 AND purpose = $2 ORDER BY created_at DESC LIMIT 1',
+      [userId, 'email_verification']
     );
     const vCode = codeRes.rows[0];
 
-    if (!vCode) return res.status(400).json({ error: 'invalid_code' });
+    const logger = require('../utils/logger');
+    if (!vCode) {
+      logger.warn('OTP verification failed', { userId, purpose: 'email_verification' });
+      return res.status(400).json({ error: 'invalid_code' });
+    }
     if (new Date() > new Date(vCode.expires_at)) {
       return res.status(400).json({ error: 'code_expired' });
+    }
+
+    const providedBuffer = Buffer.from(hashedOtp);
+    const storedBuffer = Buffer.from(vCode.code);
+    if (providedBuffer.length !== storedBuffer.length || !crypto.timingSafeEqual(providedBuffer, storedBuffer)) {
+      logger.warn('OTP verification failed', { userId, purpose: 'email_verification' });
+      return res.status(400).json({ error: 'invalid_code' });
     }
 
     // Mark email as checked, but do not set is_verified=TRUE yet (must do phone next)
@@ -252,13 +268,17 @@ async function sendPhoneVerification(req, res, next) {
     }
 
     // Generate 6 digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
 
     await db.query(
       'INSERT INTO verification_codes (user_id, code, expires_at, purpose) VALUES ($1, $2, $3, $4)',
-      [userId, otp, expiresAt, 'phone_verification']
+      [userId, hashedOtp, expiresAt, 'phone_verification']
     );
+
+    const logger = require('../utils/logger');
+    logger.info('OTP generated', { userId, purpose: 'phone_verification' });
 
     // Update profile with the phone number
     await db.query(
@@ -282,15 +302,27 @@ async function verifyPhone(req, res, next) {
     const { code } = req.body;
     if (!code) return res.status(400).json({ error: 'code_required' });
 
+    const hashedOtp = crypto.createHash('sha256').update(code).digest('hex');
     const codeRes = await db.query(
-      'SELECT * FROM verification_codes WHERE user_id = $1 AND code = $2 AND purpose = $3 ORDER BY created_at DESC LIMIT 1',
-      [userId, code, 'phone_verification']
+      'SELECT * FROM verification_codes WHERE user_id = $1 AND purpose = $2 ORDER BY created_at DESC LIMIT 1',
+      [userId, 'phone_verification']
     );
     const vCode = codeRes.rows[0];
 
-    if (!vCode) return res.status(400).json({ error: 'invalid_code' });
+    const logger = require('../utils/logger');
+    if (!vCode) {
+      logger.warn('OTP verification failed', { userId, purpose: 'phone_verification' });
+      return res.status(400).json({ error: 'invalid_code' });
+    }
     if (new Date() > new Date(vCode.expires_at)) {
       return res.status(400).json({ error: 'code_expired' });
+    }
+
+    const providedBuffer = Buffer.from(hashedOtp);
+    const storedBuffer = Buffer.from(vCode.code);
+    if (providedBuffer.length !== storedBuffer.length || !crypto.timingSafeEqual(providedBuffer, storedBuffer)) {
+      logger.warn('OTP verification failed', { userId, purpose: 'phone_verification' });
+      return res.status(400).json({ error: 'invalid_code' });
     }
 
     // Mark as verified
@@ -347,4 +379,89 @@ async function updatePassword(req, res, next) {
   }
 }
 
-module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail, sendPhoneVerification, verifyPhone, updateMe, updatePassword };
+async function forgotPassword(req, res, next) {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'email_required' });
+    const userRes = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
+    
+    // Always return success to prevent enumeration
+    res.json({ success: true, message: 'If the email exists, a password reset link has been sent.' });
+
+    if (user) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+      await db.query(
+        'INSERT INTO verification_codes (user_id, code, expires_at, purpose) VALUES ($1, $2, $3, $4)',
+        [user.id, hashedToken, expiresAt, 'password_reset']
+      );
+
+      const logger = require('../utils/logger');
+      logger.info('Password reset requested', { userId: user.id });
+
+      const emailService = require('../services/emailService');
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Password Reset',
+        text: `Your password reset token is: ${token}\n\nIt expires in 15 minutes.`
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function resetPassword(req, res, next) {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword || newPassword.length < 6) {
+      return res.status(400).json({ error: 'Invalid input' });
+    }
+    
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const codeRes = await db.query(
+      'SELECT user_id, code, expires_at FROM verification_codes WHERE purpose = $1 AND code = $2 ORDER BY created_at DESC LIMIT 1',
+      ['password_reset', hashedToken]
+    );
+    const vCode = codeRes.rows[0];
+    
+    const logger = require('../utils/logger');
+    if (!vCode || new Date() > new Date(vCode.expires_at)) {
+      if (vCode) logger.warn('Password reset failed - expired', { userId: vCode.user_id });
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    const providedBuffer = Buffer.from(hashedToken);
+    const storedBuffer = Buffer.from(vCode.code);
+    if (providedBuffer.length !== storedBuffer.length || !crypto.timingSafeEqual(providedBuffer, storedBuffer)) {
+      return res.status(400).json({ error: 'Invalid token' });
+    }
+
+    const hashedPwd = await bcrypt.hash(newPassword, 10);
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [hashedPwd, vCode.user_id]);
+      await client.query('DELETE FROM verification_codes WHERE user_id = $1 AND purpose = $2', [vCode.user_id, 'password_reset']);
+      await client.query('DELETE FROM refresh_tokens WHERE user_id = $1', [vCode.user_id]);
+      await client.query('COMMIT');
+      
+      logger.info('Password reset completed', { userId: vCode.user_id });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+    
+    res.clearCookie('session_token', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail, sendPhoneVerification, verifyPhone, updateMe, updatePassword, forgotPassword, resetPassword };

@@ -21,8 +21,6 @@ router.delete('/listings/:id', adminController.deleteListing);
 
 // Reports
 router.get('/reports', adminController.getReports);
-router.post('/reports', adminController.createReport); // Any user can create a report, but wait, this route requires admin.
-// Let's move report creation to another file, or just use auth for create.
 router.patch('/reports/:id/status', adminController.updateReportStatus);
 
 // Disputes Admin Override
