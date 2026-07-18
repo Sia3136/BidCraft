@@ -1,12 +1,17 @@
 require('dotenv').config();
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'test';
 process.env.RAZORPAY_WEBHOOK_SECRET = 'test';
 const request = require('supertest');
 const app = require('./src/app');
-const { generateToken } = require('./src/utils/token');
+const db = require('./src/utils/db');
 
 async function test() {
-  const token = generateToken({ id: 1, role: 'user' });
+  const sellerEmail = 'test-seller-debug-' + Date.now() + '@example.com';
+  const sellerRes = await request(app)
+    .post('/api/auth/register')
+    .send({ email: sellerEmail, password: 'Password123!', name: 'Seller User' });
+  const token = sellerRes.body.accessToken;
+  await db.query("UPDATE users SET email_verified = true");
   const res = await request(app)
     .post('/api/listings')
     .set('Authorization', 'Bearer ' + token)
