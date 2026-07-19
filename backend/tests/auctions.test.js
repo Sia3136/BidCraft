@@ -8,7 +8,9 @@ jest.setTimeout(30000); // Neon DB round-trips can exceed default 5s
 describe('Auctions and Bidding Integration Tests', () => {
   let sellerToken = '';
   let buyerAToken = '';
+  let buyerAId = null;
   let buyerBToken = '';
+  let buyerBId = null;
   let categoryId = null;
   let listingId = null;
   let auctionId = null;
@@ -31,6 +33,7 @@ describe('Auctions and Bidding Integration Tests', () => {
       .post('/api/auth/register')
       .send({ email: buyerAEmail, password: 'Password123!', name: 'Buyer A' });
     buyerAToken = buyerARes.body.accessToken;
+    buyerAId = buyerARes.body.user.id;
 
     // Create Buyer B
     const buyerBEmail = `test-buyer-b-${Date.now()}@example.com`;
@@ -38,6 +41,7 @@ describe('Auctions and Bidding Integration Tests', () => {
       .post('/api/auth/register')
       .send({ email: buyerBEmail, password: 'Password123!', name: 'Buyer B' });
     buyerBToken = buyerBRes.body.accessToken;
+    buyerBId = buyerBRes.body.user.id;
 
     // Pre-authorize Buyer A and Buyer B by registering mock card details
     await request(app)
@@ -62,11 +66,15 @@ describe('Auctions and Bidding Integration Tests', () => {
           category: 'Art',
           subcategory: 'Paintings',
           imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
-          buyingMethod: 'Buy Now',
-        price: null
+          buyingMethod: 'Auction',
+          price: 100.00,
+          auctionEndsAt: new Date(Date.now() + 86400000).toISOString()
       });
-    console.log(listingRes.body); listingId = listingRes.body.listing ? listingRes.body.listing.id : null;
-  });
+      expect(listingRes.status).toBe(201);
+      listingId = listingRes.body.listing.id;
+      // Delete auto-created auction so we can test POST /api/auctions
+      await db.query('DELETE FROM auctions WHERE listing_id = $1', [listingId]);
+    });
 
   afterAll(async () => {
     // Cleanup — order matters: dependent tables first, users last
@@ -101,10 +109,14 @@ describe('Auctions and Bidding Integration Tests', () => {
           category: 'Art',
           subcategory: 'Paintings',
           imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
-          buyingMethod: 'Buy Now',
-          price: null
+          buyingMethod: 'Auction',
+          price: 100.00,
+          auctionEndsAt: new Date(Date.now() + 86400000).toISOString()
         });
+      expect(listingRes.status).toBe(201);
       scheduledListingId = listingRes.body.listing.id;
+      // Delete auto-created auction so we can manually create a scheduled one
+      await db.query('DELETE FROM auctions WHERE listing_id = $1', [scheduledListingId]);
     });
 
     it('should create auction with scheduled status when start_time is in the future', async () => {
@@ -125,6 +137,7 @@ describe('Auctions and Bidding Integration Tests', () => {
       expect(res.status).toBe(201);
       expect(res.body.auction.status).toBe('scheduled');
       scheduledAuctionId = res.body.auction.id;
+      await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [scheduledAuctionId, buyerAId]);
     });
 
     it('should block bidding on a scheduled (not-yet-started) auction', async () => {
@@ -184,10 +197,14 @@ describe('Auctions and Bidding Integration Tests', () => {
           category: 'Art',
           subcategory: 'Paintings',
           imageUrls: ['https://example.com/p1.jpg', 'https://example.com/p2.jpg'],
-          buyingMethod: 'Buy Now',
-          price: null
+          buyingMethod: 'Auction',
+          price: 100.00,
+          auctionEndsAt: new Date(Date.now() + 86400000).toISOString()
         });
+      expect(listingRes.status).toBe(201);
       endedListingId = listingRes.body.listing.id;
+      // Delete auto-created auction so we can insert an ended one directly
+      await db.query('DELETE FROM auctions WHERE listing_id = $1', [endedListingId]);
 
       // Insert auction directly with past end_time to simulate ended state
       const pastStart = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 hours ago
@@ -206,6 +223,7 @@ describe('Auctions and Bidding Integration Tests', () => {
         [endedListingId, sellerId, pastStart.toISOString(), pastEnd.toISOString()]
       );
       endedAuctionId = auctionRes.rows[0].id;
+      await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [endedAuctionId, buyerAId]);
     });
 
     it('should resolve status as ended when end_time has passed', async () => {
@@ -301,21 +319,37 @@ describe('Auctions and Bidding Integration Tests', () => {
   });
 
   describe('POST /api/auctions/:id/bids', () => {
-    it('should fail if bidder has not pre-authorized their card', async () => {
+    let buyerAId = null;
+    let buyerBId = null;
+
+    beforeAll(async () => {
+      const aRes = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${buyerAToken}`);
+      buyerAId = aRes.body.user.id;
+      const bRes = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${buyerBToken}`);
+      buyerBId = bRes.body.user.id;
+      
+      await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [auctionId, buyerAId]);
+      await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [auctionId, buyerBId]);
+    });
+
+    it('should fail if bidder has not placed a deposit', async () => {
       // Register a third buyer who does not perform pre-authorization
       const testEmail = `test-no-auth-${Date.now()}@example.com`;
       const registerRes = await request(app)
         .post('/api/auth/register')
         .send({ email: testEmail, password: 'Password123!', name: 'No PreAuth Buyer' });
       const noAuthToken = registerRes.body.accessToken;
+      const noAuthId = registerRes.body.user.id;
+      await db.query('INSERT INTO profiles (user_id, is_verified) VALUES ($1, true)', [noAuthId]);
+      await db.query("UPDATE users SET email_verified = true WHERE email = $1", [testEmail]);
 
       const res = await request(app)
         .post(`/api/auctions/${auctionId}/bids`)
         .set('Authorization', `Bearer ${noAuthToken}`)
         .send({ bid_amount: 115.00 });
 
-      expect(res.status).toBe(400);
-      expect(res.body.error).toBe('pre_authorization_required');
+      expect(res.status).toBe(402);
+      expect(res.body.error).toBe('A deposit is required to place a bid on this auction.');
     });
 
     it('should place a valid bid successfully', async () => {
