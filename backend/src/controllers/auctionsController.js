@@ -11,6 +11,16 @@ const createAuctionSchema = Joi.object({
   end_time: Joi.date().greater(Joi.ref('start_time')).required()
 });
 
+/**
+ * @deprecated This endpoint is no longer part of the active production workflow, 
+ * as auctions are now automatically created via POST /api/listings.
+ * 
+ * However, this endpoint is intentionally retained because future product requirements 
+ * (such as Draft Auctions, Manual Moderation, Scheduled Publishing, or decoupled 
+ * listing/auction creation) may require explicit auction provisioning again.
+ * Removing it today would make those future architectural changes more difficult.
+ * See docs/ADR-001-Auction-Creation-Flow.md for details.
+ */
 async function createAuction(req, res, next) {
   try {
     const { error, value } = createAuctionSchema.validate(req.body);

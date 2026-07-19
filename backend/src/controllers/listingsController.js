@@ -111,6 +111,10 @@ async function createListing(req, res, next) {
       const listingId = result.rows[0].id;
       
       if (buyingMethod === 'Auction') {
+        // Architecture Note (see docs/ADR-001-Auction-Creation-Flow.md):
+        // Auctions are provisioned automatically here alongside the listing to streamline 
+        // the production workflow and avoid orphaned listings. 
+        // The standalone POST /api/auctions endpoint is retained for future structural flexibility.
         await client.query(`
           INSERT INTO auctions (
             listing_id, seller_id, start_bid, current_bid, min_bid_increment, start_time, end_time, status, created_at, updated_at
