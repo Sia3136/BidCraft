@@ -2,6 +2,7 @@ const db = require('../utils/db');
 const Joi = require('joi');
 const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
+const { validateImageFile } = require('../utils/fileValidator');
 
 const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
 
@@ -198,6 +199,11 @@ cloudinary.config({
 const uploadImage = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file provided' });
+
+    const validation = validateImageFile(req.file.buffer);
+    if (!validation.valid) {
+      return res.status(400).json({ error: 'invalid_file_content', message: validation.reason });
+    }
 
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(

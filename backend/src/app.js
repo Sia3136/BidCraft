@@ -48,7 +48,10 @@ const cronRoutes = require('./routes/cron');
 const reportsRoutes = require('./routes/reports');
 
 const app = express();
-app.use(helmet());
+// Disable CSP for API-only backend as it serves no HTML and restrictive CSPs provide no benefit while risking integration breakage
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
 app.use(cookieParser());
 
 const morganFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';

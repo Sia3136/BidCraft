@@ -1,6 +1,7 @@
 const { uploadMany } = require('../services/imageService');
 const similarityService = require('../services/similarityService');
 const redisClient = require('../utils/redis');
+const { validateImageFile } = require('../utils/fileValidator');
 
 const ALLOWED_MIMETYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_MB = 5;
@@ -24,6 +25,13 @@ async function uploadImages(req, res, next) {
         return res.status(400).json({
           error: 'file_too_large',
           message: `Each file must be under ${MAX_FILE_SIZE_MB}MB`
+        });
+      }
+      const validation = validateImageFile(file.buffer);
+      if (!validation.valid) {
+        return res.status(400).json({
+          error: 'invalid_file_content',
+          message: validation.reason
         });
       }
     }
