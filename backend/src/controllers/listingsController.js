@@ -3,7 +3,26 @@ const Joi = require('joi');
 const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 
-const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos'];
+const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
+
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
+
+const UPDATE_FIELD_MAP = {
+  title: 'title',
+  description: 'description',
+  price: 'price',
+  category: 'category',
+  subcategory: 'subcategory',
+  buyingMethod: 'buying_method',
+  offersAllowed: 'offers_allowed',
+  minimumOfferPercent: 'minimum_offer_percent',
+  specifications: 'specifications',
+  imageUrls: 'image_urls',
+  auctionEndsAt: 'auction_ends_at',
+  collections: 'collections',
+  occasions: 'occasions'
+};
 
 const categoriesData = require('../utils/categories.js');
 const VALID_CATEGORIES = categoriesData.categories.map(c => c.name);
@@ -211,8 +230,11 @@ const getListings = async (req, res) => {
     const {
       category, subcategory, method, collection,
       occasion, type, minPrice, maxPrice,
-      sort = 'newest', limit = 50, offset = 0
+      sort = 'newest', limit = DEFAULT_PAGE_SIZE, offset = 0
     } = req.query
+
+    const parsedLimit = parseInt(limit);
+    const finalLimit = isNaN(parsedLimit) ? DEFAULT_PAGE_SIZE : Math.max(1, Math.min(parsedLimit, MAX_PAGE_SIZE));
 
     const conditions = ["l.status = 'active'", "(l.buying_method != 'Auction' OR COALESCE(a.end_time, l.auction_ends_at) > NOW())"]
     const values = []
@@ -298,7 +320,7 @@ const getListings = async (req, res) => {
     const total = parseInt(countResult.rows[0].count)
 
     // Data query
-    values.push(parseInt(limit), parseInt(offset))
+    values.push(finalLimit, parseInt(offset))
     const result = await db.query(`
       SELECT
         l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
@@ -329,7 +351,7 @@ const getListings = async (req, res) => {
     res.json({
       listings: result.rows,
       total,
-      limit: parseInt(limit),
+      limit: finalLimit,
       offset: parseInt(offset),
       hasMore: parseInt(offset) + result.rows.length < total
     })
@@ -465,12 +487,17 @@ async function updateListing(req, res, next) {
     const params = [id];
 
     Object.keys(value).forEach((key) => {
+      const dbColumn = UPDATE_FIELD_MAP[key];
+      if (!dbColumn) return;
+
       let val = value[key];
-      if (key === 'photos') {
-        val = JSON.stringify(val);
-      }
       params.push(val);
-      updates.push(`${key} = $${params.length}`);
+      updates.push(`${dbColumn} = $${params.length}`);
+
+      if (key === 'imageUrls') {
+        params.push(JSON.stringify(val));
+        updates.push(`photos = $${params.length}`);
+      }
     });
 
     if (updates.length === 0) {

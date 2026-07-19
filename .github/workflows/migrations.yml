@@ -19,8 +19,8 @@ jobs:
       - name: Run migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DB_SSL: true
-          DB_SSL_REJECT: false
+          DB_SSL: ${{ vars.DB_SSL || 'true' }}
+          DB_SSL_REJECT: ${{ vars.DB_SSL_REJECT || 'true' }}
         run: |
           if [ -z "$DATABASE_URL" ]; then
             echo "Error: DATABASE_URL secret is not set!"

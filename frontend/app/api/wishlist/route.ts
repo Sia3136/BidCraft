@@ -1,20 +1,3 @@
-/*
-Diagnosis Results:
--- 1. What's in the wishlists table?
-[]
-
--- 2. What's in cart_items?
-[]
-
--- 3. Check column types
-[
-  { column_name: 'id', data_type: 'integer' },
-  { column_name: 'user_id', data_type: 'integer' },
-  { column_name: 'id', data_type: 'integer' },
-  { column_name: 'id', data_type: 'integer' },
-  { column_name: 'user_id', data_type: 'integer' }
-]
-*/
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession, authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'

@@ -29,8 +29,9 @@ async function register(req, res, next) {
     const user = result.rows[0];
     const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = crypto.randomBytes(40).toString('hex');
+    const hashedRefreshToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [hashedRefreshToken, user.id, expiresAt]);
     setSessionCookie(res, accessToken);
     res.json({ user, accessToken, refreshToken });
   } catch (err) {
@@ -51,8 +52,9 @@ async function login(req, res, next) {
     
     const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = crypto.randomBytes(40).toString('hex');
+    const hashedRefreshToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshToken, user.id, expiresAt]);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [hashedRefreshToken, user.id, expiresAt]);
     
     setSessionCookie(res, accessToken);
     res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken, refreshToken });
@@ -64,10 +66,10 @@ async function login(req, res, next) {
 async function googleLogin(req, res, next) {
   try {
     const { token } = req.body;
-    if (!token) return res.status(400).json({ error: 'token_required' });
+    if (!token || typeof token !== 'string') return res.status(400).json({ error: 'invalid_token' });
 
     let payload;
-    if (token.startsWith('mock_token_') && (process.env.NODE_ENV === 'test' || !GOOGLE_CLIENT_ID)) {
+    if (token.startsWith('mock_token_') && process.env.NODE_ENV === 'test') {
       const userId = token.replace('mock_token_', '');
       payload = {
         sub: `google_mock_id_${userId}`,
@@ -107,8 +109,9 @@ async function googleLogin(req, res, next) {
 
     const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
     const refreshTokenStr = crypto.randomBytes(40).toString('hex');
+    const hashedRefreshToken = crypto.createHash('sha256').update(refreshTokenStr).digest('hex');
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [refreshTokenStr, user.id, expiresAt]);
+    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [hashedRefreshToken, user.id, expiresAt]);
 
     setSessionCookie(res, accessToken);
     res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role, avatarUrl: user.avatar_url }, accessToken, refreshToken: refreshTokenStr });
@@ -134,8 +137,9 @@ async function me(req, res, next) {
 async function logout(req, res) {
   // If the client sends the refresh token to logout, delete it
   const { refreshToken } = req.body;
-  if (refreshToken) {
-    await db.query('DELETE FROM refresh_tokens WHERE token=$1', [refreshToken]);
+  if (refreshToken && typeof refreshToken === 'string') {
+    const hashedToken = crypto.createHash('sha256').update(refreshToken).digest('hex');
+    await db.query('DELETE FROM refresh_tokens WHERE token=$1', [hashedToken]);
   }
   res.clearCookie('session_token', {
     httpOnly: true,
@@ -148,26 +152,44 @@ async function logout(req, res) {
 async function refreshToken(req, res, next) {
   try {
     const { token } = req.body;
-    if (!token) return res.status(400).json({ error: 'token_required' });
+    if (!token || typeof token !== 'string') return res.status(400).json({ error: 'invalid_token' });
     
-    const result = await db.query('SELECT user_id, expires_at FROM refresh_tokens WHERE token=$1', [token]);
-    const rt = result.rows[0];
-    if (!rt) return res.status(401).json({ error: 'invalid_refresh_token' });
+    const hashedIncomingToken = crypto.createHash('sha256').update(token).digest('hex');
     
-    if (new Date() > new Date(rt.expires_at)) {
-      await db.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
-      return res.status(401).json({ error: 'refresh_token_expired' });
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      // Atomically find and delete the token to prevent race conditions (duplicate sessions)
+      const result = await client.query('DELETE FROM refresh_tokens WHERE token=$1 RETURNING user_id, expires_at', [hashedIncomingToken]);
+      const rt = result.rows[0];
+      
+      if (!rt) {
+        await client.query('ROLLBACK');
+        return res.status(401).json({ error: 'invalid_refresh_token' });
+      }
+      
+      if (new Date() > new Date(rt.expires_at)) {
+        await client.query('ROLLBACK');
+        return res.status(401).json({ error: 'refresh_token_expired' });
+      }
+      
+      const accessToken = jwt.sign({ userId: rt.user_id }, JWT_SECRET, { expiresIn: '15m' });
+      const newRefreshToken = crypto.randomBytes(40).toString('hex');
+      const hashedNewRefreshToken = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      
+      await client.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [hashedNewRefreshToken, rt.user_id, expiresAt]);
+      await client.query('COMMIT');
+      
+      setSessionCookie(res, accessToken);
+      res.json({ accessToken, refreshToken: newRefreshToken });
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
     }
-    
-    const accessToken = jwt.sign({ userId: rt.user_id }, JWT_SECRET, { expiresIn: '15m' });
-    const newRefreshToken = crypto.randomBytes(40).toString('hex');
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    
-    await db.query('DELETE FROM refresh_tokens WHERE token=$1', [token]);
-    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [newRefreshToken, rt.user_id, expiresAt]);
-    
-    setSessionCookie(res, accessToken);
-    res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (err) {
     next(err);
   }
@@ -371,9 +393,25 @@ async function updatePassword(req, res, next) {
     if (!match) return res.status(400).json({ error: 'Incorrect current password' });
     
     const hashed = await bcrypt.hash(newPassword, 10);
-    await db.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [hashed, req.userId]);
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [hashed, req.userId]);
+      await client.query('DELETE FROM refresh_tokens WHERE user_id = $1', [req.userId]);
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
     
-    res.json({ success: true });
+    res.clearCookie('session_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+    res.json({ success: true, message: 'Password updated. Please log in again.' });
   } catch (err) {
     next(err);
   }
