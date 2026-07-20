@@ -249,19 +249,23 @@ const getListings = async (req, res) => {
     const slugify = (str) => str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
     
     if (category) {
-      const mapped = VALID_CATEGORIES.find(c => slugify(c) === category) || category;
-      conditions.push(`l.category = $${idx++}`)
-      values.push(mapped)
+      const cats = category.split(',').map(c => c.trim());
+      const mappedCats = cats.map(cat => VALID_CATEGORIES.find(c => slugify(c) === cat) || cat);
+      conditions.push(`l.category = ANY($${idx++}::text[])`)
+      values.push(mappedCats)
     }
     if (subcategory) {
-      const mapped = VALID_SUBCATEGORIES.find(s => slugify(s) === subcategory) || subcategory;
-      conditions.push(`l.subcategory = $${idx++}`)
-      values.push(mapped)
+      const subcats = subcategory.split(',').map(s => s.trim());
+      const mappedSubcats = subcats.map(subcat => VALID_SUBCATEGORIES.find(s => slugify(s) === subcat) || subcat);
+      conditions.push(`l.subcategory = ANY($${idx++}::text[])`)
+      values.push(mappedSubcats)
     }
     if (method) {
+      const methods = method.split(',').map(m => m.trim());
       const methodMap = { 'buy-now': 'Buy Now', 'auction': 'Auction', 'negotiable': 'Negotiable' }
-      conditions.push(`l.buying_method = $${idx++}`)
-      values.push(methodMap[method] || method)
+      const mappedMethods = methods.map(m => methodMap[m] || m);
+      conditions.push(`l.buying_method = ANY($${idx++}::text[])`)
+      values.push(mappedMethods)
     }
     const search = req.query.search;
     if (search) {

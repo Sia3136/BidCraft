@@ -69,6 +69,10 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
     badgeBg = 'var(--color-terracotta-600)';
     badgeColor = 'var(--color-white)';
     badgeText = 'Auction';
+  } else if (product.buyingMethod === 'Negotiable') {
+    badgeBg = 'var(--color-info-100)';
+    badgeColor = 'var(--color-info-700)';
+    badgeText = 'Make Offer';
   } else {
     badgeBg = 'var(--color-success-100)';
     badgeColor = 'var(--color-success-700)';
