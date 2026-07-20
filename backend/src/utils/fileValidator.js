@@ -1,4 +1,4 @@
-const sizeOf = require('image-size');
+const { imageSize } = require('image-size');
 
 const MAX_WIDTH = 4096;
 const MAX_HEIGHT = 4096;
@@ -15,7 +15,7 @@ function validateImageFile(buffer) {
     }
 
     // 1. Check magic bytes and basic decodability (header parsing)
-    const dimensions = sizeOf(buffer);
+    const dimensions = imageSize(buffer);
     
     // 2. Reject unsupported animated formats to prevent GIF bombs
     if (dimensions.type === 'gif') {
