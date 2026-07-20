@@ -75,7 +75,7 @@ export async function fetchListingById(id: string): Promise<Listing> {
 }
 
 export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[] }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/live?limit=${limit}`, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/auctions/live?limit=${limit}`, { credentials: 'include',
     next: { revalidate: 30 }  // shorter cache — auctions change fast
   })
   if (!res.ok) throw new Error(`fetchLiveAuctions failed: ${res.status}`)

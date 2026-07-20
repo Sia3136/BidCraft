@@ -16,13 +16,14 @@ const TYPES = [{ label: 'New Arrivals', value: 'new-arrivals' }, { label: 'Live 
 
 const SORT_OPTIONS = ['Newest', 'Price: Low to High', 'Price: High to Low']
 
-function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] }) {
+function ExploreContent({ initialListings = [], total = 0 }: { initialListings?: Listing[], total?: number }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
   const searchQuery = searchParams.get('search')
   const sortQuery = searchParams.get('sort') || 'Newest'
+  const page = parseInt(searchParams.get('page') || '1', 10)
   
   // Array parameters
   const categoriesParam = searchParams.getAll('category')
@@ -438,7 +439,9 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
             <div className="flex flex-col gap-[var(--space-6)]">
               
               <div className="hidden lg:flex items-center justify-between">
-                <h2 className="text-heading-md text-[var(--color-ink-900)]">{filteredProducts.length} items</h2>
+                <h2 className="text-heading-md text-[var(--color-ink-900)]">
+                  Showing {Math.min((page - 1) * 24 + 1, total)}–{Math.min(page * 24, total)} of {total} listings
+                </h2>
                 <div className="flex items-center gap-2">
                   <span className="text-body-md text-[var(--color-ink-700)]">Sort by:</span>
                   <select 
@@ -488,21 +491,44 @@ function ExploreContent({ initialListings = [] }: { initialListings?: Listing[] 
                   </button>
                 </div>
               )}
+              
+              {/* Pagination Controls */}
+              {total > 24 && (
+                <div className="flex justify-center items-center gap-4 mt-8 mb-4">
+                  <button
+                    disabled={page === 1}
+                    onClick={() => updateUrl({ page: String(page - 1) })}
+                    className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--color-cream-deep)] transition-colors text-body-md font-medium text-[var(--color-ink-900)]"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-body-md font-medium text-[var(--color-ink-900)]">
+                    Page {page} of {Math.ceil(total / 24)}
+                  </span>
+                  <button
+                    disabled={page >= Math.ceil(total / 24)}
+                    onClick={() => updateUrl({ page: String(page + 1) })}
+                    className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--color-cream-deep)] transition-colors text-body-md font-medium text-[var(--color-ink-900)]"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
     </div>
   )
 }
 
-export default function ClientExplore({ initialListings = [], total, initialParams }: { initialListings?: Listing[], total?: number, initialParams?: any }) {
+export default function ClientExplore({ initialListings = [], total = 0, initialParams }: { initialListings?: Listing[], total?: number, initialParams?: any }) {
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
-      <ClientExploreInner initialListings={initialListings} />
+      <ClientExploreInner initialListings={initialListings} total={total} />
     </Suspense>
   )
 }
 
-function ClientExploreInner({ initialListings = [] }: { initialListings?: Listing[] }) {
+function ClientExploreInner({ initialListings = [], total = 0 }: { initialListings?: Listing[], total?: number }) {
   const searchParams = useSearchParams()
   const title = searchParams.get('subcategory') || searchParams.get('category') || searchParams.get('collection') || searchParams.get('occasion') || 'Explore All'
   
@@ -517,7 +543,7 @@ function ClientExploreInner({ initialListings = [] }: { initialListings?: Listin
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
           </p>
         </section>
-        <ExploreContent initialListings={initialListings} />
+        <ExploreContent initialListings={initialListings} total={total} />
       </main>
     </div>
   )

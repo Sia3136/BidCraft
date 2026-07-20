@@ -21,8 +21,13 @@ export default async function ExplorePage({
   if (resolvedParams.maxPrice)    params.maxPrice = resolvedParams.maxPrice;
   if (resolvedParams.sort)        params.sort = resolvedParams.sort;
   if (resolvedParams.search)      params.search = resolvedParams.search;
+  if (resolvedParams.page)        params.page = resolvedParams.page;
+  
+  const page = parseInt(params.page || '1', 10);
+  const limit = 24;
+  const offset = (page - 1) * limit;
 
-  const data = await fetchListings({ ...params, limit: 50 });
+  const data = await fetchListings({ ...params, limit, offset });
 
   return <ClientExplore initialListings={data.listings} total={data.total} initialParams={params} />;
 }
