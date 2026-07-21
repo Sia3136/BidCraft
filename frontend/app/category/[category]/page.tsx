@@ -6,7 +6,7 @@ import { ProductCard } from '@/components/product-card';
 import { CategoryFilters } from '@/components/category-filters';
 import { slugify } from '@/lib/slugify';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 const megaMenuData: Record<string, string[]> = {
   'Art': ['Paintings', 'Sketches & Drawings', 'Digital Art & Illustrations', 'Prints & Posters', 'Sculptures'],
