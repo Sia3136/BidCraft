@@ -4,10 +4,6 @@ const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 const { validateImageFile } = require('../utils/fileValidator');
 
-const TRACKED_AUCTION = 'REPLACE_WITH_AUCTION_SLUG';
-const TRACKED_NEGOTIABLE = 'REPLACE_WITH_NEGOTIABLE_SLUG';
-const TRACKED_BUY_NOW = 'REPLACE_WITH_BUY_NOW_SLUG';
-
 const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
 
 const DEFAULT_PAGE_SIZE = 50;
@@ -361,31 +357,6 @@ const getListings = async (req, res) => {
       ORDER BY ${orderBy.includes('price') ? 'l.' + orderBy : 'l.' + orderBy}
       LIMIT $${idx++} OFFSET $${idx++}
     `, values)
-
-    // TRACE LOGGING
-    let buyNowCount = 0, auctionCount = 0, negotiableCount = 0;
-    let trackAuctionFound = false, trackNegotiableFound = false, trackBuyNowFound = false;
-
-    for (const row of result.rows) {
-      if (row.buyingMethod === 'Buy Now') buyNowCount++;
-      if (row.buyingMethod === 'Auction') auctionCount++;
-      if (row.buyingMethod === 'Negotiable') negotiableCount++;
-      
-      if (row.id === TRACKED_AUCTION) trackAuctionFound = true;
-      if (row.id === TRACKED_NEGOTIABLE) trackNegotiableFound = true;
-      if (row.id === TRACKED_BUY_NOW) trackBuyNowFound = true;
-    }
-
-    console.log("=== TRACE: listingsController.js ===");
-    console.log("Total DB Match Count (countResult):", countResult.rows[0].count);
-    console.log("Returned Rows (result.length):", result.rows.length);
-    console.log("Buy Now Count:", buyNowCount);
-    console.log("Auction Count:", auctionCount);
-    console.log("Negotiable Count:", negotiableCount);
-    console.log(`Tracked Auction (${TRACKED_AUCTION}) Present:`, trackAuctionFound);
-    console.log(`Tracked Negotiable (${TRACKED_NEGOTIABLE}) Present:`, trackNegotiableFound);
-    console.log(`Tracked Buy Now (${TRACKED_BUY_NOW}) Present:`, trackBuyNowFound);
-    console.log("====================================");
 
     res.json({
       listings: result.rows,

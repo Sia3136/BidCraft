@@ -62,18 +62,8 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   }
 
   let badgeColor = 'var(--color-terracotta-600)';
-  let badgeText = '';
+  let badgeText = product.buyingMethod || '';
   let badgeBg = 'var(--color-terracotta-100)';
-
-  const TRACKED_AUCTION = 'REPLACE_WITH_AUCTION_SLUG';
-  const TRACKED_NEGOTIABLE = 'REPLACE_WITH_NEGOTIABLE_SLUG';
-  const TRACKED_BUY_NOW = 'REPLACE_WITH_BUY_NOW_SLUG';
-
-  useEffect(() => {
-    if (product.id === TRACKED_AUCTION || product.id === TRACKED_NEGOTIABLE || product.id === TRACKED_BUY_NOW) {
-      console.log(`=== TRACE: ProductCard Rendered for ${product.id} ===`);
-    }
-  });
   
   if (product.buyingMethod === 'Auction') {
     badgeBg = 'var(--color-terracotta-600)';

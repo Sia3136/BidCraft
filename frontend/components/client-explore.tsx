@@ -164,110 +164,37 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
   // Filtering Logic
   const filteredProducts = useMemo(() => {
-    
-    // TRACE LOGGING: Initial evaluation
-    const TRACKED_AUCTION = 'REPLACE_WITH_AUCTION_SLUG';
-    const TRACKED_NEGOTIABLE = 'REPLACE_WITH_NEGOTIABLE_SLUG';
-    const TRACKED_BUY_NOW = 'REPLACE_WITH_BUY_NOW_SLUG';
-    
-    let initialBuyNow = 0, initialAuction = 0, initialNegotiable = 0;
-    let trackAuctionIn = false, trackNegotiableIn = false, trackBuyNowIn = false;
-    for (const p of initialListings) {
-      if (p.buyingMethod === 'Buy Now') initialBuyNow++;
-      if (p.buyingMethod === 'Auction') initialAuction++;
-      if (p.buyingMethod === 'Negotiable') initialNegotiable++;
-      if (p.id === TRACKED_AUCTION) trackAuctionIn = true;
-      if (p.id === TRACKED_NEGOTIABLE) trackNegotiableIn = true;
-      if (p.id === TRACKED_BUY_NOW) trackBuyNowIn = true;
-    }
-    console.log("=== TRACE: ClientExplore (Initial) ===");
-    console.log("Total received:", initialListings.length);
-    console.log("Buy Now Count:", initialBuyNow);
-    console.log("Auction Count:", initialAuction);
-    console.log("Negotiable Count:", initialNegotiable);
-    console.log(`Tracked Auction (${TRACKED_AUCTION}) Present:`, trackAuctionIn);
-    console.log(`Tracked Negotiable (${TRACKED_NEGOTIABLE}) Present:`, trackNegotiableIn);
-    console.log(`Tracked Buy Now (${TRACKED_BUY_NOW}) Present:`, trackBuyNowIn);
-    console.log("======================================");
-
-    const result = initialListings.filter(p => {
-      const isTracked = p.id === TRACKED_AUCTION || p.id === TRACKED_NEGOTIABLE || p.id === TRACKED_BUY_NOW;
-
+    return initialListings.filter(p => {
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         if (!p.title.toLowerCase().includes(query) && !(p.description && p.description.toLowerCase().includes(query))) {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to searchQuery`);
           return false
         }
       }
 
       if (categoriesParam.length > 0) {
-        if (!categoriesParam.includes(slugify(p.category))) {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to category filter (category: ${p.category}, slug: ${slugify(p.category)}, param: ${categoriesParam})`);
-          return false;
-        }
+        if (!categoriesParam.includes(slugify(p.category))) return false;
       }
 
       if (subcategoriesParam.length > 0) {
-        if (!p.subcategory || !subcategoriesParam.includes(slugify(p.subcategory))) {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to subcategory filter`);
-          return false;
-        }
+        if (!p.subcategory || !subcategoriesParam.includes(slugify(p.subcategory))) return false;
       }
 
       if (methodsParam.length > 0) {
-        if (!methodsParam.includes(slugify(p.buyingMethod))) {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to method filter (method: ${p.buyingMethod}, slug: ${slugify(p.buyingMethod)}, param: ${methodsParam})`);
-          return false;
-        }
+        if (!methodsParam.includes(slugify(p.buyingMethod))) return false;
       }
 
       if (typeParam === 'new-arrivals') {
-        if (!(p as any).newArrival) {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to new-arrivals`);
-          return false;
-        }
+        if (!(p as any).newArrival) return false;
       } else if (typeParam === 'auction') {
-        if (p.buyingMethod !== 'Auction') {
-          if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to auction typeParam`);
-          return false;
-        }
+        if (p.buyingMethod !== 'Auction') return false;
       }
 
-      if (p.price < priceMinParam) {
-        if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to priceMinParam (${p.price} < ${priceMinParam})`);
-        return false
-      }
-      if (priceMaxParam < 5000 && p.price > priceMaxParam) {
-        if (isTracked) console.log(`[TRACE] Dropped ${p.id} due to priceMaxParam (${p.price} > ${priceMaxParam})`);
-        return false
-      }
+      if (p.price < priceMinParam) return false
+      if (priceMaxParam < 5000 && p.price > priceMaxParam) return false
 
       return true
-    })
-
-    // TRACE LOGGING: Post filtering
-    let finalBuyNow = 0, finalAuction = 0, finalNegotiable = 0;
-    let trackAuctionOut = false, trackNegotiableOut = false, trackBuyNowOut = false;
-    for (const p of result) {
-      if (p.buyingMethod === 'Buy Now') finalBuyNow++;
-      if (p.buyingMethod === 'Auction') finalAuction++;
-      if (p.buyingMethod === 'Negotiable') finalNegotiable++;
-      if (p.id === TRACKED_AUCTION) trackAuctionOut = true;
-      if (p.id === TRACKED_NEGOTIABLE) trackNegotiableOut = true;
-      if (p.id === TRACKED_BUY_NOW) trackBuyNowOut = true;
-    }
-    console.log("=== TRACE: ClientExplore (Filtered) ===");
-    console.log("Total filtered:", result.length);
-    console.log("Buy Now Count:", finalBuyNow);
-    console.log("Auction Count:", finalAuction);
-    console.log("Negotiable Count:", finalNegotiable);
-    console.log(`Tracked Auction (${TRACKED_AUCTION}) Present:`, trackAuctionOut);
-    console.log(`Tracked Negotiable (${TRACKED_NEGOTIABLE}) Present:`, trackNegotiableOut);
-    console.log(`Tracked Buy Now (${TRACKED_BUY_NOW}) Present:`, trackBuyNowOut);
-    console.log("=======================================");
-
-    return result.sort((a, b) => {
+    }).sort((a, b) => {
       if (sortQuery === 'Price: Low to High') return a.price - b.price
       if (sortQuery === 'Price: High to Low') return b.price - a.price
       return 0 
