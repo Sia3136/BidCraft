@@ -43,6 +43,8 @@ import { Footer } from '@/components/footer'
 import { AuthRehydrator } from '@/components/AuthRehydrator'
 import { Suspense } from 'react'
 import { SkeletonGrid } from '@/components/skeleton-grid'
+import { SocketProvider } from '@/components/SocketProvider'
+import { Toaster } from 'react-hot-toast'
 
 export default function RootLayout({
   children,
@@ -53,23 +55,26 @@ export default function RootLayout({
     <html lang="en" className={`${playfair.variable} ${jakarta.variable}`}>
       <body className="font-sans antialiased">
         <AuthProvider>
-          <PrefetchRoutes />
-          <AuthRehydrator />
-          <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
-            <Suspense fallback={<div className="h-[64px] bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)]" />}>
-              <Navbar />
-            </Suspense>
-            <main className="flex-1 w-full">
-              <Suspense fallback={
-                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
-                  <SkeletonGrid count={8} />
-                </div>
-              }>
-                {children}
+          <SocketProvider>
+            <PrefetchRoutes />
+            <AuthRehydrator />
+            <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
+              <Suspense fallback={<div className="h-[64px] bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)]" />}>
+                <Navbar />
               </Suspense>
-            </main>
-            <Footer />
-          </div>
+              <main className="flex-1 w-full">
+                <Suspense fallback={
+                  <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
+                    <SkeletonGrid count={8} />
+                  </div>
+                }>
+                  {children}
+                </Suspense>
+              </main>
+              <Footer />
+            </div>
+            <Toaster />
+          </SocketProvider>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

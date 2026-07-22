@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { io, Socket } from 'socket.io-client'
+import { useState, useEffect } from 'react'
+import { useSocketContext } from '@/components/SocketProvider'
+import { SOCKET_EVENTS, BidPlacedEvent, AuctionEndedEvent } from '@/lib/socketEvents'
 
 type AuctionState = {
   currentBid: number | null
@@ -11,33 +12,21 @@ type AuctionState = {
 
 export function useAuction(auctionId: string | undefined, initial: AuctionState) {
   const [state, setState] = useState<AuctionState>(initial)
-  const socketRef = useRef<Socket | null>(null)
+  const { socket } = useSocketContext()
 
   useEffect(() => {
-    if (!auctionId) return;
+    if (!auctionId || !socket) return;
 
-    const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-
-    const socket = io(SOCKET_URL, {
-      transports: ['websocket'],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
+    // Join room with acknowledgement callback
+    socket.emit(SOCKET_EVENTS.JOIN_AUCTION, auctionId, (response: { success: boolean, error?: string }) => {
+      if (!response?.success) {
+        console.error('[useAuction] Failed to join auction room:', response?.error)
+      } else {
+        console.log('[useAuction] Joined auction room:', auctionId)
+      }
     })
 
-    socketRef.current = socket
-
-    socket.on('connect', () => {
-      socket.emit('join_auction', auctionId)
-    })
-
-    socket.on('bid_placed', (data: {
-      auction_id: string
-      bidder_id: string
-      bid_amount: string
-      total_bids: number
-      auction_ends_at: string
-      created_at: string
-    }) => {
+    const onBidPlaced = (data: BidPlacedEvent) => {
       if (String(data.auction_id) !== String(auctionId)) return
       
       setState(prev => ({
@@ -46,20 +35,27 @@ export function useAuction(auctionId: string | undefined, initial: AuctionState)
         bidCount: data.total_bids || prev.bidCount + 1,
         auctionEndsAt: data.auction_ends_at || prev.auctionEndsAt,
       }))
-    })
+    }
 
-    // The backend uses a job to close the auction, so we just rely on local timer for isEnded for now.
-    // We could listen for a 'auction_ended' event if backend emitted one.
+    const onAuctionEnded = (data: AuctionEndedEvent) => {
+      if (String(data.auction_id) !== String(auctionId)) return
+      
+      setState(prev => ({
+        ...prev,
+        isEnded: true,
+        currentBid: data.winning_bid !== null ? Number(data.winning_bid) : prev.currentBid
+      }))
+    }
 
-    socket.on('disconnect', () => {
-      console.log('[socket] Disconnected from auction room')
-    })
+    socket.on(SOCKET_EVENTS.BID_PLACED, onBidPlaced)
+    socket.on(SOCKET_EVENTS.AUCTION_ENDED, onAuctionEnded)
 
     return () => {
-      socket.emit('leave_auction', auctionId)
-      socket.disconnect()
+      socket.emit(SOCKET_EVENTS.LEAVE_AUCTION, auctionId)
+      socket.off(SOCKET_EVENTS.BID_PLACED, onBidPlaced)
+      socket.off(SOCKET_EVENTS.AUCTION_ENDED, onAuctionEnded)
     }
-  }, [auctionId])
+  }, [auctionId, socket])
 
   return state
 }
