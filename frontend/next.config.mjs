@@ -9,6 +9,7 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
+  allowedDevOrigins: ["192.168.1.110", "localhost"],
 }
 
 export default nextConfig
