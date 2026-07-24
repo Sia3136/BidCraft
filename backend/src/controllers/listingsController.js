@@ -269,16 +269,16 @@ const getListings = async (req, res) => {
     }
     const search = req.query.search;
     if (search) {
-      conditions.push(`(LOWER(l.title) LIKE LOWER($${idx}) OR LOWER(l.description) LIKE LOWER($${idx}) OR LOWER(l.tags::text) LIKE LOWER($${idx}))`)
+      conditions.push(`(LOWER(l.title) LIKE LOWER($${idx}) OR LOWER(l.description) LIKE LOWER($${idx}) OR LOWER(l.collections::text) LIKE LOWER($${idx}) OR LOWER(l.occasions::text) LIKE LOWER($${idx}))`)
       values.push(`%${search}%`)
       idx++
     }
     if (collection === 'vintage-retro') {
-      conditions.push(`(l.tags::text ILIKE '%vintage%' OR l.tags::text ILIKE '%retro%')`)
+      conditions.push(`(l.collections::text ILIKE '%vintage%' OR l.collections::text ILIKE '%retro%')`)
     } else if (collection === 'modern-minimalist') {
-      conditions.push(`(l.tags::text ILIKE '%minimalist%' OR l.tags::text ILIKE '%modern%')`)
+      conditions.push(`(l.collections::text ILIKE '%minimalist%' OR l.collections::text ILIKE '%modern%')`)
     } else if (collection === 'traditional-arts') {
-      conditions.push(`(l.tags::text ILIKE '%traditional%' OR l.tags::text ILIKE '%folk%')`)
+      conditions.push(`(l.collections::text ILIKE '%traditional%' OR l.collections::text ILIKE '%folk%')`)
     } else if (collection) {
       conditions.push(`$${idx++} = ANY(l.collections)`)
       values.push(collection)
@@ -286,13 +286,13 @@ const getListings = async (req, res) => {
     
     const gift = req.query.gift;
     if (gift === 'birthdays') {
-      conditions.push(`l.tags::text ILIKE '%birthday%'`)
+      conditions.push(`l.occasions::text ILIKE '%birthday%'`)
     } else if (gift === 'anniversaries') {
-      conditions.push(`l.tags::text ILIKE '%anniversary%'`)
+      conditions.push(`l.occasions::text ILIKE '%anniversary%'`)
     } else if (gift === 'housewarming') {
-      conditions.push(`l.tags::text ILIKE '%housewarming%'`)
+      conditions.push(`l.occasions::text ILIKE '%housewarming%'`)
     } else if (gift === 'just-because') {
-      conditions.push(`l.tags::text ILIKE '%gift%'`)
+      conditions.push(`l.occasions::text ILIKE '%gift%'`)
     } else if (occasion) {
       conditions.push(`$${idx++} = ANY(l.occasions)`)
       values.push(occasion)
