@@ -385,7 +385,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 { occ: 'All Occasions', slug: 'all-occasions', image: '/images/417caba42ec36fd9ba441b33afd74e7c.jpg', colSpanMobile: true }
               ].map((item, i) => (
                 <motion.div key={item.occ} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className={cn("relative rounded-[var(--radius-md)] overflow-hidden group cursor-pointer bg-[var(--color-cream-deep)] min-h-[220px]", item.colSpanMobile && "col-span-2 md:col-span-1 lg:col-span-1")}>
-                  <Link href={item.occ === 'All Occasions' ? '/explore' : `/explore?gift=${item.slug}`} className="absolute inset-0 z-20"></Link>
+                  <Link href={item.occ === 'All Occasions' ? '/explore' : `/explore?occasion=${item.slug}`} className="absolute inset-0 z-20"></Link>
                   <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
                   <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20">{item.occ}</h3>

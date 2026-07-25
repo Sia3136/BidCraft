@@ -53,3 +53,32 @@ export const CATEGORIES: CategoryData[] = [
     ]
   }
 ];
+
+export const COLLECTIONS = ['Vintage & Retro', 'Modern Minimalist', 'Traditional Arts'];
+export const OCCASIONS = ['Birthdays', 'Anniversaries', 'Housewarming', 'Just Because', 'All Occasions'];
+
+import { slugify } from './slugify';
+
+export function resolveDisplayTitle(slug: string | null): string | null {
+  if (!slug) return null;
+  
+  // Check subcategories
+  for (const cat of CATEGORIES) {
+    for (const sub of cat.subcategories) {
+      if (slugify(sub) === slug) return sub;
+    }
+    if (slugify(cat.name) === slug) return cat.name;
+  }
+  
+  // Check collections
+  for (const col of COLLECTIONS) {
+    if (slugify(col) === slug) return col;
+  }
+  
+  // Check occasions
+  for (const occ of OCCASIONS) {
+    if (slugify(occ) === slug) return occ;
+  }
+  
+  return null;
+}

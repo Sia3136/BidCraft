@@ -1,5 +1,6 @@
 import { fetchListings } from '@/lib/api';
 import ClientExplore from '@/components/client-explore';
+import { resolveDisplayTitle } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,8 +18,15 @@ export default async function ExplorePage({
   if (resolvedParams.category)    params.category = sanitize(resolvedParams.category);
   if (resolvedParams.subcategory) params.subcategory = sanitize(resolvedParams.subcategory);
   if (resolvedParams.method)      params.method = sanitize(resolvedParams.method);
-  if (resolvedParams.collection)  params.collection = sanitize(resolvedParams.collection);
-  if (resolvedParams.occasion)    params.occasion = sanitize(resolvedParams.occasion);
+  
+  if (resolvedParams.collection) {
+    const slug = sanitize(resolvedParams.collection);
+    params.collection = resolveDisplayTitle(slug) || slug;
+  }
+  if (resolvedParams.occasion) {
+    const slug = sanitize(resolvedParams.occasion);
+    params.occasion = resolveDisplayTitle(slug) || slug;
+  }
   if (resolvedParams.type)        params.type = sanitize(resolvedParams.type);
   if (resolvedParams.priceMin)    params.minPrice = sanitize(resolvedParams.priceMin);
   if (resolvedParams.priceMax)    params.maxPrice = sanitize(resolvedParams.priceMax);

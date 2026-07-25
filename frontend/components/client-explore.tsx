@@ -7,14 +7,16 @@ import { ProductCard } from '@/components/product-card'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { slugify } from '@/lib/slugify'
 
-import { CATEGORIES } from '@/lib/categories'
+import { CATEGORIES, COLLECTIONS, OCCASIONS, resolveDisplayTitle } from '@/lib/categories'
 
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
-const COLLECTIONS = ['Vintage & Retro', 'Modern Minimalist', 'Traditional Arts']
-const OCCASIONS = ['Birthdays', 'Anniversaries', 'Housewarming', 'Just Because', 'All Occasions']
 const TYPES = [{ label: 'New Arrivals', value: 'new-arrivals' }, { label: 'Live Auctions', value: 'auction' }]
 
-const SORT_OPTIONS = ['Newest', 'Price: Low to High', 'Price: High to Low']
+const SORT_OPTIONS = [
+  { label: 'Newest', value: 'newest' },
+  { label: 'Price: Low to High', value: 'price-asc' },
+  { label: 'Price: High to Low', value: 'price-desc' }
+]
 
 function ExploreContent({ initialListings = [], total = 0 }: { initialListings?: Listing[], total?: number }) {
   const searchParams = useSearchParams()
@@ -22,7 +24,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const pathname = usePathname()
 
   const searchQuery = searchParams.get('search')
-  const sortQuery = searchParams.get('sort') || 'Newest'
+  const sortQuery = searchParams.get('sort') || 'newest'
   const page = parseInt(searchParams.get('page') || '1', 10)
   
   // Array parameters
@@ -36,43 +38,9 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const typeParam = searchParams.get('type')
   const priceMinParam = searchParams.get('priceMin') ? Number(searchParams.get('priceMin')) : 50
   const priceMaxParam = searchParams.get('priceMax') ? Number(searchParams.get('priceMax')) : 5000
-
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [priceMin, setPriceMin] = useState<number>(priceMinParam)
   const [priceMax, setPriceMax] = useState<number>(priceMaxParam)
-
-  useEffect(() => {
-    setPriceMin(priceMinParam)
-    setPriceMax(priceMaxParam)
-  }, [priceMinParam, priceMaxParam])
-
-  // Debounced URL update for price
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (priceMin === priceMinParam && priceMax === priceMaxParam) return;
-      const updates: Record<string, string | null> = {}
-      if (priceMin > 50) updates.priceMin = String(priceMin)
-      else updates.priceMin = null
-      
-      if (priceMax < 5000) updates.priceMax = String(priceMax)
-      else updates.priceMax = null
-      
-      const params = new URLSearchParams(searchParams.toString())
-      let changed = false;
-      Object.entries(updates).forEach(([key, value]) => {
-        const oldVal = params.get(key);
-        if (value !== null) {
-          if (oldVal !== value) { params.set(key, value); changed = true; }
-        } else {
-          if (oldVal !== null) { params.delete(key); changed = true; }
-        }
-      })
-      if (changed) {
-        router.push(`${pathname}?${params.toString()}`)
-      }
-    }, 300)
-    return () => clearTimeout(handler)
-  }, [priceMin, priceMax, priceMinParam, priceMaxParam, searchParams, pathname, router])
 
   // Helper to update URL
   const updateUrl = useCallback((updates: Record<string, string | string[] | null>) => {
@@ -89,6 +57,28 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
     
     router.push(`${pathname}?${params.toString()}`)
   }, [searchParams, pathname, router])
+
+  useEffect(() => {
+    setPriceMin(priceMinParam)
+    setPriceMax(priceMaxParam)
+  }, [priceMinParam, priceMaxParam])
+
+  // Debounced URL update for price
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (priceMin === priceMinParam && priceMax === priceMaxParam) return;
+      
+      const updates: Record<string, string | null> = {}
+      if (priceMin > 50) updates.priceMin = String(priceMin)
+      else updates.priceMin = null
+      
+      if (priceMax < 5000) updates.priceMax = String(priceMax)
+      else updates.priceMax = null
+
+      updateUrl(updates)
+    }, 400)
+    return () => clearTimeout(handler)
+  }, [priceMin, priceMax, priceMinParam, priceMaxParam, updateUrl])
 
   const clearAllFilters = () => {
     router.push(pathname)
@@ -190,13 +180,23 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
         if (p.buyingMethod !== 'Auction') return false;
       }
 
+      if (collectionParam) {
+        const orig = COLLECTIONS.find(c => slugify(c) === collectionParam);
+        if (orig && (!p.collections || !p.collections.includes(orig))) return false;
+      }
+
+      if (occasionParam) {
+        const orig = OCCASIONS.find(o => slugify(o) === occasionParam);
+        if (orig && (!p.occasions || !p.occasions.includes(orig))) return false;
+      }
+
       if (p.price < priceMinParam) return false
       if (priceMaxParam < 5000 && p.price > priceMaxParam) return false
 
       return true
     }).sort((a, b) => {
-      if (sortQuery === 'Price: Low to High') return a.price - b.price
-      if (sortQuery === 'Price: High to Low') return b.price - a.price
+      if (sortQuery === 'price-asc') return a.price - b.price
+      if (sortQuery === 'price-desc') return b.price - a.price
       return 0 
     })
   }, [initialListings, searchQuery, categoriesParam, subcategoriesParam, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
@@ -449,7 +449,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
                     onChange={(e) => updateUrl({ sort: e.target.value })}
                     className="h-[36px] bg-transparent border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-2 text-body-md font-medium text-[var(--color-ink-900)] outline-none cursor-pointer"
                   >
-                    {SORT_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    {SORT_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
               </div>
@@ -530,14 +530,15 @@ export default function ClientExplore({ initialListings = [], total = 0, initial
 
 function ClientExploreInner({ initialListings = [], total = 0 }: { initialListings?: Listing[], total?: number }) {
   const searchParams = useSearchParams()
-  const title = searchParams.get('subcategory') || searchParams.get('category') || searchParams.get('collection') || searchParams.get('occasion') || 'Explore All'
+  const rawSlug = searchParams.get('subcategory') || searchParams.get('category') || searchParams.get('collection') || searchParams.get('occasion')
+  const title = resolveDisplayTitle(rawSlug) || 'Explore All'
   
   return (
     <div className="bg-[var(--color-cream-base)] flex flex-col">
       <main className="flex-1 w-full">
         <section className="w-full h-[280px] bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] flex flex-col items-center justify-center text-center px-[var(--space-5)]">
           <h1 className="text-display-xl font-display text-[var(--color-ink-900)] mb-[var(--space-2)] capitalize">
-            {title.replace(/-/g, ' ')}
+            {title}
           </h1>
           <p className="text-body-lg text-[var(--color-ink-700)] max-w-[600px]">
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
