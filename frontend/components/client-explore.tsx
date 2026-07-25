@@ -55,7 +55,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
       }
     })
     
-    router.push(`${pathname}?${params.toString()}`)
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }, [searchParams, pathname, router])
 
   useEffect(() => {
@@ -63,22 +63,30 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
     setPriceMax(priceMaxParam)
   }, [priceMinParam, priceMaxParam])
 
-  // Debounced URL update for price
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (priceMin === priceMinParam && priceMax === priceMaxParam) return;
-      
-      const updates: Record<string, string | null> = {}
-      if (priceMin > 50) updates.priceMin = String(priceMin)
-      else updates.priceMin = null
-      
-      if (priceMax < 5000) updates.priceMax = String(priceMax)
-      else updates.priceMax = null
+  const applyPriceFilter = () => {
+    let min = priceMin;
+    let max = priceMax;
+    
+    if (isNaN(min) || min < 50) min = 50;
+    if (isNaN(max) || max > 5000) max = 5000;
+    if (min > max) {
+      const temp = min;
+      min = max;
+      max = temp;
+    }
+    
+    setPriceMin(min);
+    setPriceMax(max);
 
-      updateUrl(updates)
-    }, 400)
-    return () => clearTimeout(handler)
-  }, [priceMin, priceMax, priceMinParam, priceMaxParam, updateUrl])
+    const updates: Record<string, string | null> = {}
+    if (min > 50) updates.priceMin = String(min)
+    else updates.priceMin = null
+    
+    if (max < 5000) updates.priceMax = String(max)
+    else updates.priceMax = null
+
+    updateUrl(updates)
+  };
 
   const clearAllFilters = () => {
     router.push(pathname)
@@ -277,37 +285,37 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
         <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)] flex justify-between items-center">
           Price Range
         </h3>
-        <p className="text-body-md text-[var(--color-ink-700)] mb-3">₹{priceMin} — ₹{priceMax}{priceMax === 5000 ? '+' : ''}</p>
-        <div className="relative h-6 flex items-center">
-          <div className="absolute w-full h-1 bg-[var(--color-cream-deep)] rounded-full"></div>
-          <div
-            className="absolute h-1 bg-[var(--color-terracotta-600)] rounded-full"
-            style={{
-              left: `${(priceMin / 5000) * 100}%`,
-              right: `${100 - (priceMax / 5000) * 100}%`
-            }}
-          ></div>
-          <input
-            type="range"
-            min={50} max={5000} step={50}
-            value={priceMin}
-            onChange={(e) => {
-              const val = Number(e.target.value)
-              if (val <= priceMax - 50) setPriceMin(val)
-            }}
-            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:rounded-full"
-          />
-          <input
-            type="range"
-            min={50} max={5000} step={50}
-            value={priceMax}
-            onChange={(e) => {
-              const val = Number(e.target.value)
-              if (val >= priceMin + 50) setPriceMax(val)
-            }}
-            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[var(--color-terracotta-600)] [&::-webkit-slider-thumb]:rounded-full"
-          />
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] text-body-sm">₹</span>
+            <input 
+              type="number" 
+              min={50} max={5000}
+              value={priceMin}
+              onChange={(e) => setPriceMin(Number(e.target.value))}
+              onBlur={() => { if (priceMin < 50) setPriceMin(50); }}
+              className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+            />
+          </div>
+          <span className="text-[var(--color-ink-500)]">—</span>
+          <div className="flex-1 relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] text-body-sm">₹</span>
+            <input 
+              type="number" 
+              min={50} max={5000}
+              value={priceMax}
+              onChange={(e) => setPriceMax(Number(e.target.value))}
+              onBlur={() => { if (priceMax > 5000) setPriceMax(5000); }}
+              className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+            />
+          </div>
         </div>
+        <button 
+          onClick={applyPriceFilter}
+          className="w-full h-[40px] bg-[var(--color-cream-deep)] hover:bg-[var(--color-terracotta-600)] text-[var(--color-ink-900)] hover:text-white text-body-sm font-bold rounded-[var(--radius-sm)] transition-colors"
+        >
+          Apply
+        </button>
       </div>
 
       <div className="h-px w-full bg-[var(--color-border-subtle)]" />

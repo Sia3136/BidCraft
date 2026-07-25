@@ -15,17 +15,21 @@ export default async function ExplorePage({
   const sanitize = (val: string | string[] | undefined) => 
     Array.isArray(val) ? val.join(',') : val || '';
 
-  if (resolvedParams.category)    params.category = sanitize(resolvedParams.category);
-  if (resolvedParams.subcategory) params.subcategory = sanitize(resolvedParams.subcategory);
+  const resolveSlugs = (val: string | string[] | undefined) => {
+    if (!val) return '';
+    const arr = Array.isArray(val) ? val : [val];
+    return arr.map(slug => resolveDisplayTitle(slug) || slug).join(',');
+  };
+
+  if (resolvedParams.category)    params.category = resolveSlugs(resolvedParams.category);
+  if (resolvedParams.subcategory) params.subcategory = resolveSlugs(resolvedParams.subcategory);
   if (resolvedParams.method)      params.method = sanitize(resolvedParams.method);
   
   if (resolvedParams.collection) {
-    const slug = sanitize(resolvedParams.collection);
-    params.collection = resolveDisplayTitle(slug) || slug;
+    params.collection = resolveSlugs(resolvedParams.collection);
   }
   if (resolvedParams.occasion) {
-    const slug = sanitize(resolvedParams.occasion);
-    params.occasion = resolveDisplayTitle(slug) || slug;
+    params.occasion = resolveSlugs(resolvedParams.occasion);
   }
   if (resolvedParams.type)        params.type = sanitize(resolvedParams.type);
   if (resolvedParams.priceMin)    params.minPrice = sanitize(resolvedParams.priceMin);

@@ -62,7 +62,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   }
 
   let badgeColor = 'var(--color-terracotta-600)';
-  let badgeText = product.buyingMethod || '';
+  let badgeText: string = product.buyingMethod || '';
   let badgeBg = 'var(--color-terracotta-100)';
   
   if (product.buyingMethod === 'Auction') {
@@ -70,8 +70,8 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
     badgeColor = 'var(--color-white)';
     badgeText = 'Auction';
   } else if (product.buyingMethod === 'Negotiable') {
-    badgeBg = 'var(--color-info-100)';
-    badgeColor = 'var(--color-info-700)';
+    badgeBg = 'var(--color-ink-900)';
+    badgeColor = 'var(--color-white)';
     badgeText = 'Make Offer';
   } else {
     badgeBg = 'var(--color-success-100)';

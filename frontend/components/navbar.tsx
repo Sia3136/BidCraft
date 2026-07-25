@@ -354,9 +354,14 @@ export const Navbar = React.memo(function Navbar() {
 
               {/* Categories */}
               {categories.map((category) => (
-                <div key={category.slug} className="relative h-full flex items-center" onMouseEnter={() => setOpenDropdown(category.slug)}>
+                <div key={category.slug} className="relative h-full flex items-center">
                   <Link
                     href={`/explore?category=${category.slug}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenDropdown(openDropdown === category.slug ? null : category.slug);
+                    }}
+                    aria-expanded={openDropdown === category.slug}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
                   >
                     {category.name}
@@ -398,7 +403,6 @@ export const Navbar = React.memo(function Navbar() {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
-                onMouseLeave={() => setOpenDropdown(null)}
               >
                 <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
                   <div className="grid grid-cols-3 gap-y-4 gap-x-8">
