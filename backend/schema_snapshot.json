@@ -2686,51 +2686,6 @@
           "column_default": "now()"
         }
       ]
-    },
-    "wishlists": {
-      "row_count": "-1",
-      "columns": [
-        {
-          "column_name": "id",
-          "data_type": "integer",
-          "udt_name": "int4",
-          "character_maximum_length": null,
-          "numeric_precision": 32,
-          "numeric_scale": 0,
-          "is_nullable": "NO",
-          "column_default": "nextval('wishlists_id_seq'::regclass)"
-        },
-        {
-          "column_name": "user_id",
-          "data_type": "integer",
-          "udt_name": "int4",
-          "character_maximum_length": null,
-          "numeric_precision": 32,
-          "numeric_scale": 0,
-          "is_nullable": "YES",
-          "column_default": null
-        },
-        {
-          "column_name": "listing_id",
-          "data_type": "integer",
-          "udt_name": "int4",
-          "character_maximum_length": null,
-          "numeric_precision": 32,
-          "numeric_scale": 0,
-          "is_nullable": "YES",
-          "column_default": null
-        },
-        {
-          "column_name": "created_at",
-          "data_type": "timestamp with time zone",
-          "udt_name": "timestamptz",
-          "character_maximum_length": null,
-          "numeric_precision": null,
-          "numeric_scale": null,
-          "is_nullable": "YES",
-          "column_default": "now()"
-        }
-      ]
     }
   },
   "constraints": [
@@ -3933,36 +3888,6 @@
       "constraint_type": "u",
       "table_name": "wishlist",
       "definition": "UNIQUE (user_id, listing_id)"
-    },
-    {
-      "constraint_name": "wishlists_listing_id_fkey",
-      "constraint_type": "f",
-      "table_name": "wishlists",
-      "definition": "FOREIGN KEY (listing_id) REFERENCES listings(id)"
-    },
-    {
-      "constraint_name": "wishlists_user_id_fkey",
-      "constraint_type": "f",
-      "table_name": "wishlists",
-      "definition": "FOREIGN KEY (user_id) REFERENCES users(id)"
-    },
-    {
-      "constraint_name": "wishlists_id_not_null",
-      "constraint_type": "n",
-      "table_name": "wishlists",
-      "definition": "NOT NULL id"
-    },
-    {
-      "constraint_name": "wishlists_pkey",
-      "constraint_type": "p",
-      "table_name": "wishlists",
-      "definition": "PRIMARY KEY (id)"
-    },
-    {
-      "constraint_name": "wishlists_user_id_listing_id_key",
-      "constraint_type": "u",
-      "table_name": "wishlists",
-      "definition": "UNIQUE (user_id, listing_id)"
     }
   ],
   "indexes": [
@@ -4250,16 +4175,6 @@
       "table_name": "wishlist",
       "index_name": "wishlist_user_id_listing_id_key",
       "definition": "CREATE UNIQUE INDEX wishlist_user_id_listing_id_key ON public.wishlist USING btree (user_id, listing_id)"
-    },
-    {
-      "table_name": "wishlists",
-      "index_name": "wishlists_pkey",
-      "definition": "CREATE UNIQUE INDEX wishlists_pkey ON public.wishlists USING btree (id)"
-    },
-    {
-      "table_name": "wishlists",
-      "index_name": "wishlists_user_id_listing_id_key",
-      "definition": "CREATE UNIQUE INDEX wishlists_user_id_listing_id_key ON public.wishlists USING btree (user_id, listing_id)"
     }
   ],
   "triggers": [
@@ -4528,14 +4443,6 @@
     },
     {
       "sequence_name": "wishlist_id_seq",
-      "data_type": "integer",
-      "start_value": "1",
-      "minimum_value": "1",
-      "maximum_value": "2147483647",
-      "increment": "1"
-    },
-    {
-      "sequence_name": "wishlists_id_seq",
       "data_type": "integer",
       "start_value": "1",
       "minimum_value": "1",

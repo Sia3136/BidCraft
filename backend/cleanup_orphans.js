@@ -70,7 +70,7 @@ async function runCleanup() {
     if (parseInt(brokenOrders[0].count) > 0) throw new Error('Broken orders found');
     
     const { rows: brokenWishlist } = await client.query('SELECT count(*) FROM wishlist WHERE listing_id NOT IN (SELECT id FROM listings)');
-    if (parseInt(brokenWishlist[0].count) > 0) throw new Error('Broken wishlists found');
+    if (parseInt(brokenWishlist[0].count) > 0) throw new Error('Broken wishlist records found');
 
     console.log('✓ No broken foreign keys or references');
 
