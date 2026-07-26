@@ -209,7 +209,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
     })
   }, [initialListings, searchQuery, categoriesParam, subcategoriesParam, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
 
-  const Sidebar = () => (
+  const sidebarContent = (
     <div className="space-y-6">
       {/* Category */}
       <div>
@@ -418,7 +418,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
             
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block sticky top-[160px] h-[calc(100vh-160px)] overflow-y-auto pr-4 hide-scrollbar">
-              <Sidebar />
+              {sidebarContent}
             </aside>
 
             {/* Mobile Filter Drawer */}
@@ -433,7 +433,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
                     </button>
                   </div>
                   <div className="p-5 flex-1">
-                    <Sidebar />
+                    {sidebarContent}
                   </div>
                   <div className="p-4 border-t border-[var(--color-border-subtle)] bg-[var(--color-white)] sticky bottom-0 z-10 flex gap-3">
                     <button onClick={clearAllFilters} className="flex-1 py-3 text-body-md font-medium text-[var(--color-ink-700)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)]">Clear All</button>
