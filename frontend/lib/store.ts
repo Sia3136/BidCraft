@@ -145,7 +145,7 @@ export const useStore = create<StoreState>()(
           }
       
           const data = await res.json()
-          console.log('[wishlist toggle] success:', data.action, listingId)
+
         } catch (err) {
           console.error('[wishlist toggle] Network error:', err)
           // Revert

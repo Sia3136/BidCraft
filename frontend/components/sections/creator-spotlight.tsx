@@ -75,9 +75,9 @@ export function CreatorSpotlightSection() {
               <button className="px-8 py-3.5 bg-[#171717] text-white rounded-full font-medium hover:bg-[#2B2B2B] transition-colors shadow-lg active:scale-95">
                 Follow Creator
               </button>
-              <Link href={`/creator/${featured.id}`} className="px-8 py-3.5 bg-transparent border border-border text-foreground rounded-full font-medium hover:bg-white hover:border-transparent hover:shadow-md transition-all active:scale-95 text-center">
+              <span className="px-8 py-3.5 bg-transparent border border-border text-foreground rounded-full font-medium hover:bg-white hover:border-transparent hover:shadow-md transition-all active:scale-95 text-center cursor-not-allowed opacity-50">
                 View Profile
-              </Link>
+              </span>
             </div>
           </div>
 

@@ -25,7 +25,7 @@ export function CreatorCard({
 }: CreatorCardProps) {
   return (
     <div className="bg-card rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 text-center hover:-translate-y-1">
-      <Link href={`/creator/${id}`} className="block">
+      <div className="block cursor-not-allowed">
         {/* Avatar */}
         <div className="relative mb-4">
           <img
@@ -42,7 +42,7 @@ export function CreatorCard({
 
         {/* Name */}
         <h3 className="font-semibold text-foreground mb-1 hover:text-primary transition-colors">{name}</h3>
-      </Link>
+      </div>
 
       {/* Trust & Rating */}
       <div className="flex items-center justify-center gap-2 mb-3">

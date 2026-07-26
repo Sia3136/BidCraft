@@ -26,6 +26,8 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const searchQuery = searchParams.get('search')
   const sortQuery = searchParams.get('sort') || 'newest'
   const page = parseInt(searchParams.get('page') || '1', 10)
+  const itemsPerPage = 25
+  const totalPages = Math.ceil(total / itemsPerPage)
   
   // Array parameters
   const categoriesParam = searchParams.getAll('category')
@@ -39,8 +41,8 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const priceMinParam = searchParams.get('priceMin') ? Number(searchParams.get('priceMin')) : 50
   const priceMaxParam = searchParams.get('priceMax') ? Number(searchParams.get('priceMax')) : 5000
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  const [priceMin, setPriceMin] = useState<number>(priceMinParam)
-  const [priceMax, setPriceMax] = useState<number>(priceMaxParam)
+  const [priceMin, setPriceMin] = useState<string>(String(priceMinParam))
+  const [priceMax, setPriceMax] = useState<string>(String(priceMaxParam))
 
   // Helper to update URL
   const updateUrl = useCallback((updates: Record<string, string | string[] | null>) => {
@@ -59,13 +61,13 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   }, [searchParams, pathname, router])
 
   useEffect(() => {
-    setPriceMin(priceMinParam)
-    setPriceMax(priceMaxParam)
+    setPriceMin(String(priceMinParam))
+    setPriceMax(String(priceMaxParam))
   }, [priceMinParam, priceMaxParam])
 
   const applyPriceFilter = () => {
-    let min = priceMin;
-    let max = priceMax;
+    let min = Number(priceMin);
+    let max = Number(priceMax);
     
     if (isNaN(min) || min < 50) min = 50;
     if (isNaN(max) || max > 5000) max = 5000;
@@ -75,8 +77,8 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
       max = temp;
     }
     
-    setPriceMin(min);
-    setPriceMax(max);
+    setPriceMin(String(min));
+    setPriceMax(String(max));
 
     const updates: Record<string, string | null> = {}
     if (min > 50) updates.priceMin = String(min)
@@ -292,8 +294,8 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
               type="number" 
               min={50} max={5000}
               value={priceMin}
-              onChange={(e) => setPriceMin(Number(e.target.value))}
-              onBlur={() => { if (priceMin < 50) setPriceMin(50); }}
+              onChange={(e) => setPriceMin(e.target.value)}
+              onBlur={() => { if (Number(priceMin) < 50) setPriceMin('50'); }}
               className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
             />
           </div>
@@ -304,8 +306,8 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
               type="number" 
               min={50} max={5000}
               value={priceMax}
-              onChange={(e) => setPriceMax(Number(e.target.value))}
-              onBlur={() => { if (priceMax > 5000) setPriceMax(5000); }}
+              onChange={(e) => setPriceMax(e.target.value)}
+              onBlur={() => { if (Number(priceMax) > 5000) setPriceMax('5000'); }}
               className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
             />
           </div>
@@ -501,7 +503,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
               )}
               
               {/* Pagination Controls */}
-              {total > 24 && (
+              {total > itemsPerPage && (
                 <div className="flex justify-center items-center gap-4 mt-8 mb-4">
                   <button
                     disabled={page === 1}
@@ -511,10 +513,10 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
                     Previous
                   </button>
                   <span className="text-body-md font-medium text-[var(--color-ink-900)]">
-                    Page {page} of {Math.ceil(total / 24)}
+                    Page {page} of {Math.ceil(total / itemsPerPage)}
                   </span>
                   <button
-                    disabled={page >= Math.ceil(total / 24)}
+                    disabled={page >= Math.ceil(total / itemsPerPage)}
                     onClick={() => updateUrl({ page: String(page + 1) })}
                     className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--color-cream-deep)] transition-colors text-body-md font-medium text-[var(--color-ink-900)]"
                   >

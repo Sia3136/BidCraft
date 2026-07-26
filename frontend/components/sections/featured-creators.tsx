@@ -66,10 +66,9 @@ export function FeaturedCreators() {
 
       <div className="flex overflow-x-auto snap-x snap-mandatory gap-[var(--space-5)] pb-4 md:pb-0 md:grid md:grid-cols-2 lg:grid-cols-4 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
         {CREATORS.map((creator, i) => (
-          <Link 
+          <div 
             key={creator.id}
-            href={`/creator/${creator.id}`}
-            className="group block flex-shrink-0 w-[280px] md:w-auto snap-start hover-card rounded-[var(--radius-md)] bg-[var(--color-white)] animate-fade-up"
+            className="group block flex-shrink-0 w-[280px] md:w-auto snap-start hover-card rounded-[var(--radius-md)] bg-[var(--color-white)] animate-fade-up cursor-not-allowed opacity-80"
             style={{ animationDelay: `${i * 60}ms` }}
           >
             {/* Cover Strip */}
@@ -109,7 +108,7 @@ export function FeaturedCreators() {
                 <span className="text-[var(--color-ink-500)]">({creator.reviews})</span>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </section>

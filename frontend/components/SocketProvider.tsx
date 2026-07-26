@@ -44,11 +44,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     socketRef.current = newSocket;
 
     newSocket.on(SOCKET_EVENTS.CONNECT, () => {
-      console.log('[SocketProvider] Socket connected', newSocket.id);
+
     });
 
     newSocket.on(SOCKET_EVENTS.DISCONNECT, (reason) => {
-      console.log('[SocketProvider] Socket disconnected', reason);
+
     });
 
     newSocket.on('connect_error', (err) => {

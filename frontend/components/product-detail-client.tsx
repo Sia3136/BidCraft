@@ -14,7 +14,6 @@ import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { productReviews } from '@/lib/exploreProducts';
 
 import { AuctionTimer } from '@/components/AuctionTimer';
 
@@ -183,7 +182,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
-                    <Link href={`/seller/${sellerSlug}`} className="hover:underline">{sellerName}</Link>
+                    <span className="hover:underline cursor-not-allowed">{sellerName}</span>
                   </h3>
                   {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
                 </div>
@@ -355,7 +354,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
             <div className="mt-4 pt-6 border-t border-[var(--color-border-subtle)]">
               <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
               <div className="space-y-4">
-                {(productReviews[product.id] || []).map((review: any, idx: number) => (
+                {(!product.reviews || product.reviews.length === 0) && (
+                  <p className="text-body-sm text-[var(--color-ink-500)] italic">No reviews yet for this seller.</p>
+                )}
+                {(product.reviews || []).map((review: any, idx: number) => (
                   <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="font-medium text-[var(--color-ink-900)]">{review.buyer}</span>

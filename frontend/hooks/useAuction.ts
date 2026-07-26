@@ -22,7 +22,7 @@ export function useAuction(auctionId: string | undefined, initial: AuctionState)
       if (!response?.success) {
         console.error('[useAuction] Failed to join auction room:', response?.error)
       } else {
-        console.log('[useAuction] Joined auction room:', auctionId)
+
       }
     })
 

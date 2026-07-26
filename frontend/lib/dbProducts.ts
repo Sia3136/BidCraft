@@ -1,6 +1,5 @@
 import { prisma } from './prisma';
 import { cacheGet, cacheSet, cacheDel } from './redis';
-import { exploreProducts } from './exploreProducts';
 import { slugify } from './slugify';
 
 export interface Product {
@@ -110,8 +109,7 @@ export async function getProducts(options?: { category?: string; subcategory?: s
 
   const dbResults = listings.map(mapListingToProduct);
   
-  // Merge with hardcoded exploreProducts
-  let allResults = [...exploreProducts, ...dbResults];
+  let allResults = [...dbResults];
   
   // Apply filters to merged results (since exploreProducts weren't filtered by Prisma)
   if (options?.category && options.category !== 'all') {
@@ -189,10 +187,8 @@ export async function getLiveAuctions(): Promise<Product[]> {
 
   let results = listings.map(mapListingToProduct);
   
-  const hardcodedAuctions = exploreProducts.filter(p => p.buyingMethod === 'Auction');
-  
-  // Merge and deduplicate
-  const allAuctions = [...hardcodedAuctions, ...results];
+  // deduplicate
+  const allAuctions = [...results];
   const uniqueAuctionsMap = new Map();
   allAuctions.forEach(p => uniqueAuctionsMap.set(p.id, p));
   results = Array.from(uniqueAuctionsMap.values()).slice(0, 6);
@@ -216,9 +212,6 @@ export async function getProductById(idOrSlug: string): Promise<Product | null> 
     console.warn('Redis cache read error:', e);
   }
 
-  // Check exploreProducts first for hardcoded listings
-  const hardcodedProduct = exploreProducts.find(p => p.id === idOrSlug || p.title.toLowerCase().replace(/ /g, '-') === idOrSlug);
-  if (hardcodedProduct) return hardcodedProduct;
 
   let listing;
   const numericId = parseInt(idOrSlug, 10);

@@ -6,7 +6,7 @@ const { validateImageFile } = require('../utils/fileValidator');
 
 const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
 
-const DEFAULT_PAGE_SIZE = 50;
+const DEFAULT_PAGE_SIZE = 25;
 const MAX_PAGE_SIZE = 100;
 
 const UPDATE_FIELD_MAP = {
@@ -24,6 +24,27 @@ const UPDATE_FIELD_MAP = {
   collections: 'collections',
   occasions: 'occasions'
 };
+
+const BASE_LISTING_SELECT = `
+  l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
+  l.buying_method AS "buyingMethod",
+  l.image_urls AS "images",
+  l.image_urls[1] AS image,
+  l.creator_name AS creator,
+  l.creator_rating AS "creatorRating",
+  l.creator_review_count AS "creatorReviewCount",
+  l.creator_badges AS "creatorBadges",
+  l.is_verified AS verified,
+  l.offers_allowed AS "offersAllowed",
+  l.minimum_offer_percent AS "minimumOfferPercent",
+  l.new_arrival AS "newArrival",
+  l.collections, l.occasions,
+  COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
+  COALESCE(a.current_bid, l.current_bid) AS "currentBid",
+  l.bid_count AS "bidCount",
+  l.specifications, l.reviews,
+  l.status, l.created_at AS "createdAt"
+`;
 
 const categoriesData = require('../utils/categories.js');
 const VALID_CATEGORIES = categoriesData.categories.map(c => c.name);
@@ -333,24 +354,7 @@ const getListings = async (req, res) => {
     values.push(finalLimit, parseInt(offset))
     const result = await db.query(`
       SELECT
-        l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
-        l.buying_method AS "buyingMethod",
-        l.image_urls AS "images",
-        l.image_urls[1] AS image,
-        l.creator_name AS creator,
-        l.creator_rating AS "creatorRating",
-        l.creator_review_count AS "creatorReviewCount",
-        l.creator_badges AS "creatorBadges",
-        l.is_verified AS verified,
-        l.offers_allowed AS "offersAllowed",
-        l.minimum_offer_percent AS "minimumOfferPercent",
-        l.new_arrival AS "newArrival",
-        l.collections, l.occasions,
-        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
-        COALESCE(a.current_bid, l.current_bid) AS "currentBid",
-        l.bid_count AS "bidCount",
-        l.specifications, l.reviews,
-        l.status, l.created_at AS "createdAt"
+        ${BASE_LISTING_SELECT}
       FROM listings l
       LEFT JOIN auctions a ON a.listing_id = l.id
       ${where}
@@ -376,22 +380,7 @@ const getListingById = async (req, res) => {
     const { id } = req.params
     const result = await db.query(`
       SELECT
-        l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
-        l.buying_method AS "buyingMethod",
-        l.image_urls AS "images",
-        l.image_urls[1] AS image,
-        l.creator_name AS creator,
-        l.creator_rating AS "creatorRating",
-        l.creator_review_count AS "creatorReviewCount",
-        l.creator_badges AS "creatorBadges",
-        l.is_verified AS verified,
-        l.offers_allowed AS "offersAllowed",
-        l.minimum_offer_percent AS "minimumOfferPercent",
-        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
-        COALESCE(a.current_bid, l.current_bid) AS "currentBid",
-        l.bid_count AS "bidCount",
-        l.specifications, l.reviews,
-        l.status, l.created_at AS "createdAt",
+        ${BASE_LISTING_SELECT},
         a.id AS "auctionId",
         a.status AS auction_status,
         a.start_bid AS starting_bid,
@@ -416,12 +405,7 @@ const getLiveAuctions = async (req, res) => {
     const { limit = 10 } = req.query
     const result = await db.query(`
       SELECT
-        l.slug AS id, l.id AS "numericId", l.title, l.image_urls[1] AS image,
-        l.creator_name AS creator,
-        l.price, COALESCE(a.current_bid, l.current_bid) AS "currentBid",
-        l.bid_count AS "bidCount",
-        COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
-        l.is_verified AS verified, l.buying_method AS "buyingMethod"
+        ${BASE_LISTING_SELECT}
       FROM listings l
       JOIN auctions a ON a.listing_id = l.id
       WHERE l.listing_type = 'auction'
@@ -441,19 +425,13 @@ const getNewArrivals = async (req, res) => {
   try {
     const result = await db.query(`
       SELECT
-        slug AS id, id AS "numericId", title, image_urls[1] AS image,
-        creator_name AS creator,
-        price, buying_method AS "buyingMethod",
-        is_verified AS verified,
-        offers_allowed AS "offersAllowed",
-        auction_ends_at AS "auctionEndsAt",
-        current_bid AS "currentBid",
-        bid_count AS "bidCount"
-      FROM listings
-      WHERE status = 'active'
-        AND is_published = true
-        AND listing_type != 'auction'
-      ORDER BY created_at DESC
+        ${BASE_LISTING_SELECT}
+      FROM listings l
+      LEFT JOIN auctions a ON a.listing_id = l.id
+      WHERE l.status = 'active'
+        AND l.is_published = true
+        AND l.listing_type != 'auction'
+      ORDER BY l.created_at DESC
       LIMIT 15
     `)
     res.json({ listings: result.rows })

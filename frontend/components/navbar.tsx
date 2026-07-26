@@ -358,7 +358,6 @@ export const Navbar = React.memo(function Navbar() {
                   <Link
                     href={`/explore?category=${category.slug}`}
                     onClick={(e) => {
-                      e.preventDefault();
                       setOpenDropdown(openDropdown === category.slug ? null : category.slug);
                     }}
                     aria-expanded={openDropdown === category.slug}

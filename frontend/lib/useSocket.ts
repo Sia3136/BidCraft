@@ -18,11 +18,11 @@ export function useSocket() {
       });
 
       socketInstance.on('connect', () => {
-        console.log('Socket connected');
+
       });
 
       socketInstance.on('disconnect', () => {
-        console.log('Socket disconnected');
+
       });
 
       setSocket(socketInstance);

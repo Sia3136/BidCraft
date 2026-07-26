@@ -39,7 +39,7 @@ export default async function ExplorePage({
   if (resolvedParams.page)        params.page = sanitize(resolvedParams.page);
   
   const page = parseInt(params.page || '1', 10);
-  const limit = 24;
+  const limit = 25;
   const offset = (page - 1) * limit;
 
   const data = await fetchListings({ ...params, limit, offset });

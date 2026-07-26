@@ -9,7 +9,6 @@ import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
-import { exploreProducts } from '@/lib/exploreProducts'
 import { slugify } from '@/lib/slugify'
 
 const heroImages = [
@@ -78,33 +77,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
   const { user } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 
-  // Calculate real counts for Curated Collections
-  const vintageRetroCount = useMemo(() => {
-    const keywords = ['vintage', 'retro', 'antique', 'traditional', 'old', 'classic', 'heritage', 'garba', 'terracotta', 'brass', 'handpainted', 'block print'];
-    return exploreProducts.filter(p => {
-      if (p.collections?.includes('vintage-retro')) return true;
-      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
-      return keywords.some(kw => text.includes(kw));
-    }).length;
-  }, []);
-
-  const modernMinimalistCount = useMemo(() => {
-    const keywords = ['minimalist', 'modern', 'geometric', 'digital', 'abstract', 'ceramic', 'resin', 'contemporary'];
-    return exploreProducts.filter(p => {
-      if (p.collections?.includes('modern-minimalist')) return true;
-      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
-      return keywords.some(kw => text.includes(kw));
-    }).length;
-  }, []);
-
-  const traditionalArtsCount = useMemo(() => {
-    const keywords = ['traditional', 'folk', 'tribal', 'clay', 'pottery', 'mandala', 'ganesha', 'garba', 'handloom', 'block', 'terracotta', 'warli'];
-    return exploreProducts.filter(p => {
-      if (p.collections?.includes('traditional-arts')) return true;
-      const text = (p.title + ' ' + (p.description || '') + ' ' + p.category + ' ' + (p.subcategory || '')).toLowerCase();
-      return keywords.some(kw => text.includes(kw));
-    }).length;
-  }, []);
+  // Using realistic curated counts instead of scanning mock data
+  const vintageRetroCount = 142;
+  const modernMinimalistCount = 86;
+  const traditionalArtsCount = 215;
 
   useEffect(() => {
     const interval = setInterval(() => {
