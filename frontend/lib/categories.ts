@@ -40,7 +40,7 @@ export const CATEGORIES: CategoryData[] = [
       "Candles & Soaps",
       "Crochet & Knitting",
       "Paper Crafts",
-      "Resin Arts"
+      "Resin Art"
     ]
   },
   {

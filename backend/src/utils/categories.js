@@ -36,7 +36,7 @@ module.exports = {
         "Candles & Soaps",
         "Crochet & Knitting",
         "Paper Crafts",
-        "Resin Arts"
+        "Resin Art"
       ]
     },
     {

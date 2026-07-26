@@ -97,7 +97,7 @@ function SearchPageContent() {
                 { name: 'Clay & Pottery', img: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=300&auto=format&fit=crop', slug: 'clay-and-pottery' },
                 { name: 'Hot Wheels', img: 'https://images.unsplash.com/photo-1596727289524-7dae28d052a3?q=80&w=300&auto=format&fit=crop', slug: 'hot-wheels' },
                 { name: 'Crochet & Knitting', img: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?q=80&w=300&auto=format&fit=crop', slug: 'crochet-and-knitting' },
-                { name: 'Resin Arts', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=300&auto=format&fit=crop', slug: 'resin-arts' },
+                { name: 'Resin Art', img: 'https://images.unsplash.com/photo-1611142998399-52e46d3eb808?q=80&w=300&auto=format&fit=crop', slug: 'resin-arts' },
               ].map(cat => (
                 <Link key={cat.name} href={`/explore?subcategory=${cat.slug}`} className="group relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden">
                   <img src={cat.img} alt={cat.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-slow group-hover:scale-[1.04]" />
