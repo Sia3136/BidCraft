@@ -31,6 +31,9 @@ export default async function ExplorePage({
   if (resolvedParams.occasion) {
     params.occasion = resolveSlugs(resolvedParams.occasion);
   }
+  if (resolvedParams.gift) {
+    params.gift = sanitize(resolvedParams.gift);
+  }
   if (resolvedParams.type)        params.type = sanitize(resolvedParams.type);
   if (resolvedParams.priceMin)    params.minPrice = sanitize(resolvedParams.priceMin);
   if (resolvedParams.priceMax)    params.maxPrice = sanitize(resolvedParams.priceMax);

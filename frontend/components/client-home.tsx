@@ -346,7 +346,36 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-                {/* 10. Gifts With a Story */}
+        {/* 9. NEW: BidCraft Guarantee / Marketplace Values */}
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-deep)] border-y border-[var(--color-cream-border)]">
+          <div className="max-w-[var(--container-max)] mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
+                  <ShieldCheck className="w-8 h-8 text-[var(--color-terracotta-600)]" />
+                </div>
+                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Secure Escrow</h3>
+                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">Funds are held safely until you receive your item exactly as described. Shop with complete peace of mind.</p>
+              </motion.div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} transition={{ delay: 0.1 }} className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
+                  <Star className="w-8 h-8 text-[var(--color-terracotta-600)]" />
+                </div>
+                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Verified Authenticity</h3>
+                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">Every creator goes through a rigorous verification process to ensure their work is truly handcrafted and original.</p>
+              </motion.div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} transition={{ delay: 0.2 }} className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
+                  <Package className="w-8 h-8 text-[var(--color-terracotta-600)]" />
+                </div>
+                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Direct to Creator</h3>
+                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">No middlemen or hidden fees. Your purchase directly supports independent artisans and their livelihoods.</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* 10. Gifts With a Story */}
         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12">
@@ -379,31 +408,31 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
               Community Voices
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {[1, 2, 3].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)] flex flex-col justify-between">
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-10 rounded-2xl flex flex-col justify-between shadow-sm border border-[var(--color-border-subtle)] transition-shadow hover:shadow-md">
                   <div>
-                    <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>
-                    <p className="text-body-lg font-display italic text-[var(--color-ink-900)] mb-8">
+                    <span className="text-display-2xl text-[var(--color-terracotta-400)] font-display leading-none mb-4 block">"</span>
+                    <p className="text-body-xl font-display italic text-[var(--color-ink-900)] mb-10 leading-relaxed">
                       {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
                     </p>
                   </div>
                   <div>
-                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
-                    <div className="flex items-center gap-4">
+                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-8" />
+                    <div className="flex items-center gap-5">
                       <Image 
                         src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
-                        width={96} 
-                        height={96} 
+                        width={72} 
+                        height={72} 
                         style={{ objectFit: 'cover' }}
                         alt={`User ${i}`}
-                        className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[96px] h-[96px] min-w-[96px]"
+                        className="rounded-full bg-[var(--color-ink-300)] w-[72px] h-[72px] min-w-[72px]"
                       />
                       <div>
-                        <p className="text-heading-sm text-[var(--color-ink-900)]">
+                        <p className="text-heading-md text-[var(--color-ink-900)] mb-1">
                           {i === 1 ? "Priya S." : i === 2 ? "Arjun M." : "Nandita R."}
                         </p>
-                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold font-ui">
+                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm font-bold font-ui">
                           {i === 1 ? "4.5 ★" : i === 2 ? "4.0 ★" : "5.0 ★"}
                         </div>
                       </div>
@@ -416,12 +445,12 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
         
         {/* 13. NEW: Become a Seller CTA */}
-        <section className="py-24 bg-[#1C1C1C] text-center px-[var(--space-5)]">
+        <section className="py-24 bg-[var(--color-slate-900)] text-center px-[var(--space-5)]">
           <div className="max-w-2xl mx-auto flex flex-col items-center">
-            <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">FOR CREATORS</span>
+            <span className="text-caption text-[var(--color-terracotta-400)] tracking-widest uppercase mb-4 block">FOR CREATORS</span>
             <h2 className="text-display-xl font-display text-white mb-6">Turn your craft into a livelihood</h2>
-            <p className="text-body-lg text-gray-300 mb-10">
-              Join 2,000+ Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+            <p className="text-body-lg text-white/80 mb-10">
+              Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
             </p>
             <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
               Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />

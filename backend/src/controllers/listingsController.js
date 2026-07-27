@@ -39,7 +39,7 @@ const BASE_LISTING_SELECT = `
   l.minimum_offer_percent AS "minimumOfferPercent",
   l.new_arrival AS "newArrival",
   l.collections, l.occasions,
-  COALESCE(a.end_time, l.auction_ends_at) AS "auctionEndsAt",
+  COALESCE(a.end_time::timestamptz, l.auction_ends_at) AS "auctionEndsAt",
   COALESCE(a.current_bid, l.current_bid) AS "currentBid",
   l.bid_count AS "bidCount",
   l.specifications, l.reviews,
@@ -263,7 +263,7 @@ const getListings = async (req, res) => {
     const parsedLimit = parseInt(limit);
     const finalLimit = isNaN(parsedLimit) ? DEFAULT_PAGE_SIZE : Math.max(1, Math.min(parsedLimit, MAX_PAGE_SIZE));
 
-    const conditions = ["l.status = 'active'", "(l.buying_method != 'Auction' OR COALESCE(a.end_time, l.auction_ends_at) > NOW())"]
+    const conditions = ["l.status = 'active'", "(l.buying_method != 'Auction' OR l.auction_ends_at > NOW())"]
     const values = []
     let idx = 1
 
@@ -346,7 +346,7 @@ const getListings = async (req, res) => {
 
     // Count query (for pagination UI)
     const countResult = await db.query(
-      `SELECT COUNT(*) FROM listings l LEFT JOIN auctions a ON a.listing_id = l.id ${where}`, values
+      `SELECT COUNT(*) FROM listings l ${where}`, values
     )
     const total = parseInt(countResult.rows[0].count)
 
@@ -370,7 +370,7 @@ const getListings = async (req, res) => {
       hasMore: parseInt(offset) + result.rows.length < total
     })
   } catch (err) {
-    console.error('[listings] Error:', err.message)
+    require('fs').writeFileSync('getListings_error.txt', err.stack || String(err));
     res.status(500).json({ error: 'Internal server error' })
   }
 }

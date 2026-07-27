@@ -13,10 +13,6 @@ export function Footer() {
           <p className="text-body-lg text-white/70 mb-4 max-w-xl">
             For general support, business enquiries, or creator assistance, reach out to us at our single point of contact.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-body-lg text-white/80">
-            <span>Email: <a href="mailto:support@bidcraft.in" className="text-white font-semibold hover:text-[var(--color-terracotta-600)] transition-colors">support@bidcraft.in</a></span>
-            <span>Instagram: <a href="#" className="text-white font-semibold hover:text-[var(--color-terracotta-600)] transition-colors">@bidcraft.in</a></span>
-          </div>
         </div>
         <Link href="/contact" className="h-14 px-8 flex items-center justify-center bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors whitespace-nowrap">
           Open Contact Form
@@ -87,7 +83,7 @@ export function Footer() {
           © 2026 BidCraft. All rights reserved.
         </p>
         <p className="text-caption text-[var(--color-ink-300)] text-center">
-          Questions? Email <a href="mailto:support@bidcraft.in" className="hover:text-white transition-colors">support@bidcraft.in</a> · Instagram <a href="#" className="hover:text-white transition-colors">@bidcraft.in</a>
+          Questions? Visit our <Link href="/contact" className="hover:text-white transition-colors">Contact Page</Link>
         </p>
         <div className="flex gap-6">
           <Link href="/privacy" className="text-caption text-[var(--color-ink-300)] hover:text-white transition-colors">Privacy Policy</Link>

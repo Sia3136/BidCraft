@@ -45,6 +45,7 @@ import { Suspense } from 'react'
 import { SkeletonGrid } from '@/components/skeleton-grid'
 import { SocketProvider } from '@/components/SocketProvider'
 import { Toaster } from 'react-hot-toast'
+import { ChatWidget } from '@/components/chat/ChatWidget'
 
 export default function RootLayout({
   children,
@@ -74,6 +75,7 @@ export default function RootLayout({
               <Footer />
             </div>
             <Toaster />
+            <ChatWidget />
           </SocketProvider>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
