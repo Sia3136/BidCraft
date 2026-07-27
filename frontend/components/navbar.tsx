@@ -127,27 +127,27 @@ export const Navbar = React.memo(function Navbar() {
       </div>
       <div className="flex flex-col">
         {notifications.map((n) => (
-          <Link
+          <button
             key={n.id}
-            href={n.productUrl}
             onClick={() => {
               if (!n.read) markNotificationRead(n.id);
+              router.push(n.productUrl);
               setOpenDropdown(null);
             }}
             className={cn(
-              "flex gap-3 p-4 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-cream-base)] transition-colors",
+              "flex gap-3 p-4 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-cream-base)] transition-colors text-left w-full",
               !n.read && "bg-[var(--color-terracotta-100)]"
             )}
           >
             <div className="shrink-0 w-12 h-12 relative rounded-[var(--radius-sm)] overflow-hidden">
               <Image src={n.productImage} alt={n.title} fill className="object-cover" />
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 w-full overflow-hidden">
               <span className="text-body-sm font-bold font-ui text-[var(--color-ink-900)] leading-tight">{n.title}</span>
               <span className="text-caption text-[var(--color-ink-700)] leading-snug">{n.body}</span>
               <span className="text-[11px] text-[var(--color-ink-500)] mt-1">{formatTime(n.timestamp)}</span>
             </div>
-          </Link>
+          </button>
         ))}
         {notifications.length === 0 && (
           <div className="p-8 text-center text-body-md text-[var(--color-ink-500)]">
@@ -173,18 +173,18 @@ export const Navbar = React.memo(function Navbar() {
         <p className="text-caption text-[var(--color-ink-500)] text-center w-full truncate">{user?.email}</p>
       </div>
 
-      <Link href="/orders" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+      <button onClick={() => { router.push('/orders'); setOpenDropdown(null); }} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors w-full text-left">
         <Package className="w-5 h-5" strokeWidth={1.5} />
         Previous Orders
-      </Link>
-      <Link href="/account" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+      </button>
+      <button onClick={() => { router.push('/account'); setOpenDropdown(null); }} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors w-full text-left">
         <User className="w-5 h-5" strokeWidth={1.5} />
         Account Info
-      </Link>
-      <Link href="/seller/listings" onClick={() => setOpenDropdown(null)} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors">
+      </button>
+      <button onClick={() => { router.push('/seller/listings'); setOpenDropdown(null); }} className="flex items-center gap-3 px-4 h-[44px] text-body-md text-[var(--color-ink-700)] hover:bg-[var(--color-cream-raised)] hover:text-[var(--color-terracotta-600)] transition-colors w-full text-left">
         <Store className="w-5 h-5" strokeWidth={1.5} />
         My Listings
-      </Link>
+      </button>
 
       <div className="h-px bg-[var(--color-border-subtle)] my-2" />
 
@@ -410,17 +410,29 @@ export const Navbar = React.memo(function Navbar() {
               >
                 <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
                   <div className="grid grid-cols-3 gap-y-4 gap-x-8">
-                    {categories.find(c => c.slug === openDropdown)?.subcategories.map(sub => (
-                        <Link
-                          key={sub.slug}
-                          href={`/explore?category=${openDropdown}&subcategory=${sub.slug}`}
-                          onClick={() => setOpenDropdown(null)}
-                          prefetch={false}
-                          className="text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block"
-                        >
-                          {sub.name}
-                        </Link>
-                    ))}
+                    {(() => {
+                      const activeCat = categories.find(c => c.slug === openDropdown);
+                      if (!activeCat) return null;
+                      return activeCat.subcategories.map(sub => {
+                        const href = `/explore?category=${activeCat.slug}&subcategory=${sub.slug}`;
+                        return (
+                          <button
+                            key={sub.slug}
+                            onClick={() => {
+                              console.log(`[Nav Flow - Desktop] 1. Click fired for ${sub.name}`);
+                              console.log(`[Nav Flow - Desktop] 2. Generated href: ${href}`);
+                              console.log(`[Nav Flow - Desktop] 3. Calling router.push()`);
+                              router.push(href);
+                              console.log(`[Nav Flow - Desktop] 4. router.push called, closing dropdown`);
+                              setOpenDropdown(null);
+                            }}
+                            className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
+                          >
+                            {sub.name}
+                          </button>
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
               </motion.div>
@@ -477,17 +489,23 @@ export const Navbar = React.memo(function Navbar() {
                       className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
                     >
                       {category.subcategories.map(sub => {
-                        const subSlug = sub.slug;
+                        const href = `/explore?category=${category.slug}&subcategory=${subSlug}`;
                         return (
-                          <Link
+                          <button
                             key={subSlug}
-                            href={`/explore?category=${category.slug}&subcategory=${subSlug}`}
-                            onClick={() => { setOpenDropdown(null); setIsMobileMenuOpen(false); }}
-                            prefetch={false}
-                            className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
+                            onClick={() => {
+                              console.log(`[Nav Flow - Mobile] 1. Click fired for ${sub.name}`);
+                              console.log(`[Nav Flow - Mobile] 2. Generated href: ${href}`);
+                              console.log(`[Nav Flow - Mobile] 3. Calling router.push()`);
+                              router.push(href);
+                              console.log(`[Nav Flow - Mobile] 4. router.push called, closing dropdown`);
+                              setOpenDropdown(null);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
                           >
                             {sub.name}
-                          </Link>
+                          </button>
                         )
                       })}
                     </motion.div>
@@ -495,33 +513,30 @@ export const Navbar = React.memo(function Navbar() {
                 </AnimatePresence>
               </div>
             ))}
-            <Link
-              href="/explore"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-body-lg text-[var(--color-terracotta-600)] font-semibold py-2"
+            <button
+              onClick={() => { router.push('/explore'); setIsMobileMenuOpen(false); }}
+              className="text-body-lg text-[var(--color-terracotta-600)] font-semibold py-2 text-left"
             >
               Explore All
-            </Link>
+            </button>
           </div>
 
           <div className="h-px bg-[var(--color-border-subtle)] my-2" />
 
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">About</h3>
-            <Link
-              href={isHomepage ? "#our-story" : "/our-story"}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium"
+            <button
+              onClick={() => { router.push(isHomepage ? "#our-story" : "/our-story"); setIsMobileMenuOpen(false); }}
+              className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
             >
               Our Story
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium"
+            </button>
+            <button
+              onClick={() => { router.push('/contact'); setIsMobileMenuOpen(false); }}
+              className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
             >
               Contact
-            </Link>
+            </button>
           </div>
         </div>
       </motion.div>
