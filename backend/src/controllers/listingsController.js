@@ -352,23 +352,25 @@ const getListings = async (req, res) => {
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
-    // Count query (for pagination UI)
-    const countResult = await db.query(
-      `SELECT COUNT(*) FROM listings l ${where}`, values
-    )
+    // Run count and data query concurrently
+    const dataValues = [...values, finalLimit, parseInt(offset)];
+    const dataIdx = idx;
+    
+    const [countResult, result] = await Promise.all([
+      db.query(`SELECT COUNT(*) FROM listings l ${where}`, values),
+      db.query(`
+        SELECT
+          ${BASE_LISTING_SELECT}
+        FROM listings l
+        LEFT JOIN auctions a ON a.listing_id = l.id
+        ${where}
+        ORDER BY ${orderBy.includes('price') ? 'l.' + orderBy : 'l.' + orderBy}
+        LIMIT $${dataIdx} OFFSET $${dataIdx + 1}
+      `, dataValues)
+    ]);
+    
     const total = parseInt(countResult.rows[0].count)
 
-    // Data query
-    values.push(finalLimit, parseInt(offset))
-    const result = await db.query(`
-      SELECT
-        ${BASE_LISTING_SELECT}
-      FROM listings l
-      LEFT JOIN auctions a ON a.listing_id = l.id
-      ${where}
-      ORDER BY ${orderBy.includes('price') ? 'l.' + orderBy : 'l.' + orderBy}
-      LIMIT $${idx++} OFFSET $${idx++}
-    `, values)
 
     res.json({
       listings: result.rows,
