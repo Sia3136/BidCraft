@@ -7,6 +7,7 @@ import { fetchOrderById, confirmDelivery, disputeOrder, shipOrder } from '@/lib/
 import { formatPrice } from '@/lib/formatPrice'
 import Link from 'next/link'
 import { CheckCircle, Truck, Package, ShieldAlert } from 'lucide-react'
+import { getProductRoute } from '@/lib/routes'
 
 const ESCROW_STEPS = ['held', 'shipped', 'released']
 
@@ -261,7 +262,7 @@ export default function OrderPage({ params, searchParams }: { params: Promise<{ 
                 {order.listingImage && <img src={order.listingImage} alt={order.listingTitle} className="w-full h-full object-cover" />}
               </div>
               <div>
-                <Link href={`/product/${order.listingId}`} className="font-bold text-lg text-[var(--color-ink-900)] hover:underline block mb-1">
+                <Link href={getProductRoute({ id: order.listingId })} className="font-bold text-lg text-[var(--color-ink-900)] hover:underline block mb-1">
                   {order.listingTitle}
                 </Link>
                 <p className="text-sm text-[var(--color-ink-500)]">Sold by {order.sellerName || 'Seller'}</p>

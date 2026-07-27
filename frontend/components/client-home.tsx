@@ -266,7 +266,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </div>
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
-              <Link href="/explore?sort=newest" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
+              <Link href="/explore?type=new-arrivals" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
                 Explore More New Arrivals <span>→</span>
               </Link>
             </motion.div>

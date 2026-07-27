@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCloudinaryUrl } from '@/lib/cloudinary'  // your URL builder
+import { getProductRoute } from '@/lib/routes'
 
 export default async function WishlistPage() {
   const session = await getServerSession(authOptions)
@@ -53,7 +54,7 @@ export default async function WishlistPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {items.map((item) => (
-            <Link key={item.wishlist_id} href={`/product/${item.id}`} className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+            <Link key={item.wishlist_id} href={getProductRoute(item)} className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
               <div className="relative aspect-square">
                 <Image
                   src={getCloudinaryUrl(item.cloudinary_public_id, 'f_auto,q_auto,w_400')}

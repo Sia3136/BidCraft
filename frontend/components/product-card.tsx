@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 
 import { AuctionTimer } from '@/components/AuctionTimer'
 import { useStore } from '@/lib/store'
+import { getProductRoute } from '@/lib/routes'
 
 export const ProductCard = React.memo(function ProductCard({ product, priority = false }: { product: Listing, priority?: boolean }) {
   const { wishlistIds, toggleWishlist: storeToggleWishlist } = useStore()
@@ -90,7 +91,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
 
   return (
     <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">
-      <Link href={`/product/${product.id}`} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
+      <Link href={getProductRoute(product)} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
         <Image
           src={imageUrl}
           alt={product.title}
@@ -192,7 +193,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
           )}
         </div>
 
-        <Link href={`/product/${product.id}`} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
+        <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
           <h3 className="font-display text-[15px] text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
             {product.title}
           </h3>

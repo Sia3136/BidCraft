@@ -26,7 +26,7 @@ const UPDATE_FIELD_MAP = {
 };
 
 const BASE_LISTING_SELECT = `
-  l.slug AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
+  COALESCE(l.slug, l.id::text) AS id, l.id AS "numericId", l.title, l.description, l.price, l.category, l.subcategory,
   l.buying_method AS "buyingMethod",
   l.image_urls AS "images",
   l.image_urls[1] AS image,
@@ -163,6 +163,12 @@ async function createListing(req, res, next) {
         `, [listingId, sellerId, price, price, auctionEndsAt]);
       }
 
+      // Generate deterministic unique slug
+      const baseSlug = title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+      const existingSlug = await client.query('SELECT id FROM listings WHERE slug = $1 AND id != $2', [baseSlug, listingId]);
+      const finalSlug = existingSlug.rows.length > 0 ? `${baseSlug}-${listingId}` : baseSlug;
+      await client.query('UPDATE listings SET slug = $1 WHERE id = $2', [finalSlug, listingId]);
+
       await client.query('COMMIT');
       
       if (redis) {
@@ -174,7 +180,9 @@ async function createListing(req, res, next) {
 
       res.status(201).json({ 
         success: true, 
-        listing: { id: listingId, title } 
+        listing: { id: listingId, title, slug: finalSlug },
+        listingId,
+        slug: finalSlug
       });
       
       // Async: notify all followers of this seller about the new listing

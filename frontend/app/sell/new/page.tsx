@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import { uploadListingImage, createListing } from '@/lib/api'
 import { X, UploadCloud, CheckCircle } from 'lucide-react'
+import { getProductRoute } from '@/lib/routes'
 
 import { CATEGORIES as CATEGORIES_DATA } from '@/lib/categories'
 
@@ -104,7 +105,7 @@ export default function CreateListingPage() {
       }, token!)
 
       alert('Your listing is live!')
-      router.push(`/product/${res.listingId}`)
+      router.push(getProductRoute({ id: res.slug || res.listingId }))
     } catch (err: any) {
       setError(err.message)
     }

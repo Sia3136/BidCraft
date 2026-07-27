@@ -276,7 +276,7 @@ export async function createListing(data: {
   offersAllowed: boolean; minimumOfferPercent: number;
   imageUrls: string[]; specifications: Record<string, string>;
   auctionEndsAt?: string; collections?: string[]; occasions?: string[];
-}, token: string): Promise<{ listingId: string }> {
+}, token: string): Promise<{ listingId: string, slug?: string }> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -288,14 +288,14 @@ export async function createListing(data: {
 }
 
 export async function fetchSellerListings(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/listings`, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/listings`, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()
 }
 
 export async function fetchSellerOrders(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me/orders`, { credentials: 'include',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/orders`, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()

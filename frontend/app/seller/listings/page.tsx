@@ -7,11 +7,12 @@ import { fetchSellerListings, fetchSellerOrders, deleteListing, shipOrder } from
 import { formatPrice } from '@/lib/formatPrice'
 import Link from 'next/link'
 import { Package, Tag, Clock, Trash2, Edit3, Truck } from 'lucide-react'
+import { getProductRoute } from '@/lib/routes'
 
 export default function SellerDashboard() {
   const router = useRouter()
   const { isAuthenticated, token } = useAuthStore()
-  const [tab, setTab] = useState<'listings' | 'orders'>('listings')
+  const [tab, setTab] = useState<'overview' | 'listings' | 'orders' | 'analytics' | 'profile' | 'settings'>('listings')
   
   const [listings, setListings] = useState<any[]>([])
   const [orders, setOrders] = useState<any[]>([])
@@ -82,20 +83,51 @@ export default function SellerDashboard() {
         </Link>
       </div>
 
-      <div className="flex gap-8 border-b border-[var(--color-border-subtle)] mb-8">
+      <div className="flex gap-8 border-b border-[var(--color-border-subtle)] mb-8 overflow-x-auto hide-scrollbar">
+        <button 
+          onClick={() => setTab('overview')} 
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'overview' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+        >
+          Overview
+        </button>
         <button 
           onClick={() => setTab('listings')} 
-          className={`pb-4 font-bold text-lg border-b-2 transition-colors ${tab === 'listings' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'listings' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
         >
           My Listings
         </button>
         <button 
           onClick={() => setTab('orders')} 
-          className={`pb-4 font-bold text-lg border-b-2 transition-colors ${tab === 'orders' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'orders' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
         >
-          My Orders
+          Orders
+        </button>
+        <button 
+          onClick={() => setTab('analytics')} 
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'analytics' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+        >
+          Analytics
+        </button>
+        <button 
+          onClick={() => setTab('profile')} 
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'profile' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+        >
+          Profile
+        </button>
+        <button 
+          onClick={() => setTab('settings')} 
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'settings' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+        >
+          Settings
         </button>
       </div>
+
+      {['overview', 'analytics', 'profile', 'settings'].includes(tab) && (
+        <div className="text-center py-24 bg-[var(--color-cream-raised)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+          <p className="text-xl font-bold text-[var(--color-ink-900)] mb-2">Coming Soon</p>
+          <p className="text-[var(--color-ink-500)]">We are working on bringing you powerful new tools for your dashboard.</p>
+        </div>
+      )}
 
       {tab === 'listings' && (
         <div>
@@ -126,7 +158,7 @@ export default function SellerDashboard() {
                             {listing.image && <img src={listing.image} alt={listing.title} className="w-full h-full object-cover" />}
                           </div>
                           <div>
-                            <Link href={`/product/${listing.id}`} className="font-bold text-[var(--color-ink-900)] hover:underline block">{listing.title}</Link>
+                            <Link href={getProductRoute(listing)} className="font-bold text-[var(--color-ink-900)] hover:underline block">{listing.title}</Link>
                             <span className="text-xs font-medium text-[var(--color-ink-500)] bg-[var(--color-cream-raised)] px-2 py-0.5 rounded-full inline-block mt-1">
                               {listing.buyingMethod}
                             </span>
@@ -210,7 +242,7 @@ export default function SellerDashboard() {
                       {order.listingImage && <img src={order.listingImage} alt={order.listingTitle} className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1">
-                      <Link href={`/product/${order.listingId}`} className="font-bold text-[var(--color-ink-900)] hover:underline block mb-1">
+                      <Link href={getProductRoute({ id: order.listingId })} className="font-bold text-[var(--color-ink-900)] hover:underline block mb-1">
                         {order.listingTitle}
                       </Link>
                     </div>
