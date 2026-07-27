@@ -1,5 +1,5 @@
 {
-  "version": "PostgreSQL 18.4 (2773af8) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
+  "version": "PostgreSQL 18.4 (df16b3c) on aarch64-unknown-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit",
   "extensions": [
     {
       "extname": "plpgsql",
@@ -73,7 +73,7 @@
   },
   "tables": {
     "auctions": {
-      "row_count": "45",
+      "row_count": "25",
       "columns": [
         {
           "column_name": "id",
@@ -1013,7 +1013,7 @@
       ]
     },
     "listings": {
-      "row_count": "156",
+      "row_count": "106",
       "columns": [
         {
           "column_name": "id",
@@ -1518,7 +1518,7 @@
       ]
     },
     "orders": {
-      "row_count": "0",
+      "row_count": "836",
       "columns": [
         {
           "column_name": "id",
@@ -1813,7 +1813,7 @@
       ]
     },
     "profiles": {
-      "row_count": "60",
+      "row_count": "61",
       "columns": [
         {
           "column_name": "id",
@@ -2158,7 +2158,7 @@
       ]
     },
     "reviews": {
-      "row_count": "0",
+      "row_count": "836",
       "columns": [
         {
           "column_name": "id",
@@ -2443,7 +2443,7 @@
       ]
     },
     "users": {
-      "row_count": "67",
+      "row_count": "903",
       "columns": [
         {
           "column_name": "id",
@@ -3908,6 +3908,11 @@
     },
     {
       "table_name": "auctions",
+      "index_name": "idx_auctions_listing_id",
+      "definition": "CREATE INDEX idx_auctions_listing_id ON public.auctions USING btree (listing_id)"
+    },
+    {
+      "table_name": "auctions",
       "index_name": "idx_auctions_seller_id",
       "definition": "CREATE INDEX idx_auctions_seller_id ON public.auctions USING btree (seller_id)"
     },
@@ -4013,6 +4018,16 @@
     },
     {
       "table_name": "listings",
+      "index_name": "idx_listings_buying_method",
+      "definition": "CREATE INDEX idx_listings_buying_method ON public.listings USING btree (buying_method)"
+    },
+    {
+      "table_name": "listings",
+      "index_name": "idx_listings_cat_subcat",
+      "definition": "CREATE INDEX idx_listings_cat_subcat ON public.listings USING btree (category, subcategory)"
+    },
+    {
+      "table_name": "listings",
       "index_name": "idx_listings_category",
       "definition": "CREATE INDEX idx_listings_category ON public.listings USING btree (category)"
     },
@@ -4023,6 +4038,11 @@
     },
     {
       "table_name": "listings",
+      "index_name": "idx_listings_created_at",
+      "definition": "CREATE INDEX idx_listings_created_at ON public.listings USING btree (created_at DESC)"
+    },
+    {
+      "table_name": "listings",
       "index_name": "idx_listings_description_trgm",
       "definition": "CREATE INDEX idx_listings_description_trgm ON public.listings USING gin (description gin_trgm_ops)"
     },
@@ -4030,6 +4050,16 @@
       "table_name": "listings",
       "index_name": "idx_listings_seller_id",
       "definition": "CREATE INDEX idx_listings_seller_id ON public.listings USING btree (seller_id)"
+    },
+    {
+      "table_name": "listings",
+      "index_name": "idx_listings_status",
+      "definition": "CREATE INDEX idx_listings_status ON public.listings USING btree (status)"
+    },
+    {
+      "table_name": "listings",
+      "index_name": "idx_listings_subcategory",
+      "definition": "CREATE INDEX idx_listings_subcategory ON public.listings USING btree (subcategory)"
     },
     {
       "table_name": "listings",
