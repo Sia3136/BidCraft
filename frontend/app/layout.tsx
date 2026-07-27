@@ -64,13 +64,7 @@ export default function RootLayout({
                 <Navbar />
               </Suspense>
               <main className="flex-1 w-full">
-                <Suspense fallback={
-                  <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
-                    <SkeletonGrid count={8} />
-                  </div>
-                }>
-                  {children}
-                </Suspense>
+                {children}
               </main>
               <Footer />
             </div>

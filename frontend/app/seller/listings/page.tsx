@@ -34,14 +34,15 @@ export default function SellerDashboard() {
       try {
         if (tab === 'listings') {
           const data = await fetchSellerListings(token!)
-          setListings(data.listings)
+          setListings(data?.listings || [])
         } else {
           const data = await fetchSellerOrders(token!)
-          setOrders(data.orders)
+          setOrders(data?.orders || [])
         }
       } catch (err) {
         console.error('Failed to load seller data', err)
         if (tab === 'orders') setOrders([])
+        if (tab === 'listings') setListings([])
       } finally {
         setLoading(false)
       }

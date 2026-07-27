@@ -415,6 +415,7 @@ export const Navbar = React.memo(function Navbar() {
                           key={sub.slug}
                           href={`/explore?category=${openDropdown}&subcategory=${sub.slug}`}
                           onClick={() => setOpenDropdown(null)}
+                          prefetch={false}
                           className="text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block"
                         >
                           {sub.name}
@@ -482,6 +483,7 @@ export const Navbar = React.memo(function Navbar() {
                             key={subSlug}
                             href={`/explore?category=${category.slug}&subcategory=${subSlug}`}
                             onClick={() => { setOpenDropdown(null); setIsMobileMenuOpen(false); }}
+                            prefetch={false}
                             className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
                           >
                             {sub.name}
