@@ -359,9 +359,23 @@ export async function fetchCreators(sort: string = 'followers', limit: number = 
   return res.json()
 }
 
-export async function checkUsername(username: string): Promise<{ available: boolean }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check-username?username=${encodeURIComponent(username)}`, { credentials: 'include' })
+export async function checkUsername(username: string, signal?: AbortSignal): Promise<{ available: boolean }> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check-username?username=${encodeURIComponent(username)}`, { 
+    credentials: 'include',
+    signal 
+  })
   if (!res.ok) throw new Error(`checkUsername failed`)
+  return res.json()
+}
+
+export async function suggestUsername(name: string): Promise<{ suggestion: string, available: boolean }> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/suggest-username`, { 
+    credentials: 'include',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name })
+  })
+  if (!res.ok) throw new Error(`suggestUsername failed`)
   return res.json()
 }
 
@@ -372,6 +386,13 @@ export async function updateProfile(data: any, token: string) {
     body: JSON.stringify(data),
   })
   const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Failed to update profile')
+  // Support Structured 409 error
+  if (!res.ok) {
+    const error = new Error(json.message || json.error || 'Failed to update profile') as any;
+    error.status = res.status;
+    error.code = json.error;
+    error.suggestion = json.suggestion;
+    throw error;
+  }
   return json
 }

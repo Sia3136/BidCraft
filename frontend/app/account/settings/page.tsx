@@ -5,22 +5,31 @@ import { useAuthStore } from '@/store/authStore'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { updateProfile, checkUsername } from '@/lib/api'
 import { Avatar } from '@/components/ui/avatar'
 
+const INTERESTS_LIST = [
+  'Vintage Clothing', 'Handmade Jewelry', 'Furniture', 'Art', 'Home Decor', 'Ceramics',
+  'Books', 'Collectibles', 'Electronics', 'Sneakers', 'Streetwear', 'Watches'
+]
+
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const callbackRef = useRef(callback)
   
+  useEffect(() => {
+    callbackRef.current = callback
+  }, [callback])
+
   return useCallback((...args: Parameters<T>) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
     timeoutRef.current = setTimeout(() => {
-      callback(...args)
+      callbackRef.current(...args)
     }, delay)
-  }, [callback, delay])
+  }, [delay])
 }
 
 export default function ProfileSettingsPage() {
@@ -31,36 +40,49 @@ export default function ProfileSettingsPage() {
   // Form State
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
-  const [bio, setBio] = useState('')
   const [city, setCity] = useState('')
-  const [country, setCountry] = useState('')
+  const [state, setState] = useState('')
   const [phone, setPhone] = useState('')
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([])
+  const [marketplaceRole, setMarketplaceRole] = useState<'buyer' | 'seller' | 'both'>('buyer')
   
   // Username validation
   const [isUsernameValid, setIsUsernameValid] = useState<boolean | null>(null)
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [usernameConflict, setUsernameConflict] = useState('')
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (user) {
       setName(user.name || '')
       setUsername(user.username || '')
-      setBio(user.bio || '')
       setCity(user.city || '')
-      setCountry(user.country || '')
+      setState(user.state || '')
       setPhone(user.phone || '')
+      setSelectedInterests(user.interests || [])
+      setMarketplaceRole(user.marketplace_role || 'buyer')
     }
   }, [user])
 
-  const checkUsernameAvailability = useDebounce(async (val: string) => {
+  const checkAvailability = useDebounce(async (val: string) => {
     if (!val || val.length < 3 || val === user?.username) {
       setIsUsernameValid(null)
       setIsCheckingUsername(false)
       return
     }
+    
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    abortControllerRef.current = new AbortController()
+
     try {
-      const res = await checkUsername(val)
+      const res = await checkUsername(val, abortControllerRef.current.signal)
       setIsUsernameValid(res.available)
-    } catch (err) {
+      if (!res.available) setUsernameConflict('Username is already taken.')
+      else setUsernameConflict('')
+    } catch (err: any) {
+      if (err.name === 'AbortError') return
       setIsUsernameValid(false)
     } finally {
       setIsCheckingUsername(false)
@@ -70,11 +92,24 @@ export default function ProfileSettingsPage() {
   useEffect(() => {
     if (username !== user?.username && username.length >= 3) {
       setIsCheckingUsername(true)
-      checkUsernameAvailability(username)
+      setIsUsernameValid(null)
+      checkAvailability(username)
+    } else if (username !== user?.username && username.length > 0 && username.length < 3) {
+      setIsUsernameValid(false)
+      setUsernameConflict('Must be at least 3 characters.')
     } else {
       setIsUsernameValid(null)
+      setUsernameConflict('')
     }
-  }, [username, checkUsernameAvailability, user?.username])
+  }, [username, checkAvailability, user?.username])
+
+  const toggleInterest = (interest: string) => {
+    setSelectedInterests(prev => 
+      prev.includes(interest) 
+        ? prev.filter(i => i !== interest)
+        : [...prev, interest]
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,17 +122,24 @@ export default function ProfileSettingsPage() {
       const { profile } = await updateProfile({
         name,
         username: username !== user.username ? username : undefined,
-        bio,
         city,
-        country,
-        phone
+        state,
+        phone,
+        interests: selectedInterests,
+        marketplace_role: marketplaceRole
       }, token)
       
       setAuth({ ...user, ...profile }, token)
       setMessage({ type: 'success', text: 'Profile updated successfully.' })
       setTimeout(() => setMessage(null), 3000)
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message || 'Failed to update profile.' })
+      if (err.status === 409 && err.code === 'USERNAME_TAKEN') {
+        setMessage({ type: 'error', text: `Username became unavailable. Suggested: ${err.suggestion}` })
+        setUsername(err.suggestion)
+        setIsUsernameValid(true)
+      } else {
+        setMessage({ type: 'error', text: err.message || 'Failed to update profile.' })
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -107,15 +149,15 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-display-sm text-[var(--color-ink-900)] mb-8">Profile Settings</h1>
+      <h1 className="text-display-sm text-[var(--color-ink-900)] mb-8">Profile</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>Public Profile</CardTitle>
+          <CardTitle>Public Identity</CardTitle>
           <CardDescription>Manage your public information and how others see you on BidCraft.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             
             {message && (
               <div className={`p-4 rounded-[var(--radius-md)] text-body-md flex items-center gap-2 ${
@@ -132,15 +174,15 @@ export default function ProfileSettingsPage() {
               <Avatar size="large" name={name || user.name} identifier={user.id} />
               <div>
                 <h3 className="text-body-lg font-medium text-[var(--color-ink-900)]">Avatar</h3>
-                <p className="text-body-sm text-[var(--color-ink-500)] mt-1">
-                  Your avatar is automatically generated from your initials and name.
+                <p className="text-body-sm text-[var(--color-ink-500)] mt-1 max-w-sm">
+                  Your avatar is automatically generated from your initials and name. It appears everywhere you interact.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-body-md font-medium text-[var(--color-ink-900)]">Full Name</label>
+                <label className="text-body-md font-medium text-[var(--color-ink-900)]">Full Name <span className="text-[var(--color-urgent-600)]">*</span></label>
                 <Input 
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
@@ -150,7 +192,7 @@ export default function ProfileSettingsPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-body-md font-medium text-[var(--color-ink-900)]">Username</label>
+                <label className="text-body-md font-medium text-[var(--color-ink-900)]">Username <span className="text-[var(--color-urgent-600)]">*</span></label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] select-none">@</span>
                   <Input 
@@ -163,7 +205,7 @@ export default function ProfileSettingsPage() {
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     {isCheckingUsername ? (
-                      <Loader2 className="w-4 h-4 text-[var(--color-ink-400)] animate-spin" />
+                      <Loader2 className="w-4 h-4 text-[var(--color-terracotta-600)] animate-spin" />
                     ) : isUsernameValid === true ? (
                       <CheckCircle2 className="w-4 h-4 text-[var(--color-success-600)]" />
                     ) : isUsernameValid === false ? (
@@ -172,48 +214,82 @@ export default function ProfileSettingsPage() {
                   </div>
                 </div>
                 {isUsernameValid === false && (
-                  <p className="text-caption text-[var(--color-urgent-600)]">Username is already taken or invalid.</p>
+                  <p className="text-caption text-[var(--color-urgent-600)]">{usernameConflict}</p>
                 )}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-body-md font-medium text-[var(--color-ink-900)]">Bio</label>
-              <Textarea 
-                value={bio} 
-                onChange={(e) => setBio(e.target.value)} 
-                placeholder="Tell us a bit about yourself..."
-                maxLength={160}
-                className="h-24 resize-none"
-              />
-              <p className="text-caption text-[var(--color-ink-500)] text-right">{bio.length}/160</p>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-body-md font-medium text-[var(--color-ink-900)]">City</label>
+                <label className="text-body-md font-medium text-[var(--color-ink-900)]">City <span className="text-[var(--color-ink-400)] font-normal ml-1">(Optional)</span></label>
                 <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Mumbai" />
               </div>
               <div className="space-y-2">
-                <label className="text-body-md font-medium text-[var(--color-ink-900)]">Country</label>
-                <Input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="India" />
+                <label className="text-body-md font-medium text-[var(--color-ink-900)]">State <span className="text-[var(--color-ink-400)] font-normal ml-1">(Optional)</span></label>
+                <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="Maharashtra" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-body-md font-medium text-[var(--color-ink-900)]">Contact Phone (Optional)</label>
+              <label className="text-body-md font-medium text-[var(--color-ink-900)]">Contact Phone <span className="text-[var(--color-ink-400)] font-normal ml-1">(Optional)</span></label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] select-none">+91</span>
                 <Input 
                   value={phone} 
                   onChange={(e) => setPhone(e.target.value)} 
                   placeholder="Mobile number" 
-                  className="pl-[42px]"
+                  className="pl-[42px] max-w-[240px]"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end pt-4 border-t border-[var(--color-border-subtle)]">
+            <div className="pt-6 border-t border-[var(--color-border-subtle)]">
+              <h3 className="text-body-lg font-medium text-[var(--color-ink-900)] mb-2">Marketplace Role</h3>
+              <p className="text-body-sm text-[var(--color-ink-500)] mb-4">How do you primarily use BidCraft?</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { id: 'buyer', label: 'Buyer' },
+                  { id: 'seller', label: 'Seller' },
+                  { id: 'both', label: 'Both' }
+                ].map(role => (
+                  <button
+                    key={role.id}
+                    type="button"
+                    onClick={() => setMarketplaceRole(role.id as any)}
+                    className={`h-[48px] rounded-[var(--radius-md)] border-2 font-medium transition-all ${
+                      marketplaceRole === role.id 
+                        ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-900)]' 
+                        : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)]'
+                    }`}
+                  >
+                    {role.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-[var(--color-border-subtle)]">
+              <h3 className="text-body-lg font-medium text-[var(--color-ink-900)] mb-2">Interests</h3>
+              <p className="text-body-sm text-[var(--color-ink-500)] mb-4">Update your interests to improve recommendations.</p>
+              <div className="flex flex-wrap gap-2">
+                {INTERESTS_LIST.map(interest => (
+                  <button
+                    key={interest}
+                    type="button"
+                    onClick={() => toggleInterest(interest)}
+                    className={`px-3 py-1.5 rounded-full border text-body-sm transition-all ${
+                      selectedInterests.includes(interest)
+                        ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-600)] text-white'
+                        : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)] hover:bg-[var(--color-cream-base)]'
+                    }`}
+                  >
+                    {interest}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-8 border-t border-[var(--color-border-subtle)]">
               <Button type="submit" disabled={isSubmitting || isUsernameValid === false || isCheckingUsername}>
                 {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 Save Changes

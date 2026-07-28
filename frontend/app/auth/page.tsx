@@ -181,10 +181,16 @@ function AuthPageContent() {
       {/* LEFT COLUMN - Branding / Image */}
       <div className="hidden lg:flex w-1/2 relative bg-[var(--color-slate-900)] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)] to-[var(--color-slate-900)] opacity-90 mix-blend-multiply z-10" />
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-60 z-0" 
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1615266895738-11f1371cd7e5?auto=format&fit=crop&q=80')" }} 
-        />
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="https://res.cloudinary.com/dzttne31e/image/upload/v1714902148/premium-ceramic-auth.jpg"
+            alt="Premium handcrafted items"
+            fill
+            sizes="50vw"
+            priority
+            className="object-cover opacity-60"
+          />
+        </div>
         
         <div className="relative z-20 flex flex-col justify-between p-16 h-full w-full">
           <Link href="/" className="text-display-md text-white font-bold tracking-tight">

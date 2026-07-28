@@ -6,14 +6,11 @@ const updateProfileSchema = Joi.object({
   name: Joi.string().max(200).allow('', null),
   username: Joi.string().regex(/^[a-zA-Z0-9_]{3,20}$/).allow('', null),
   onboarding_completed: Joi.boolean(),
-  bio: Joi.string().max(160).allow('', null),
   city: Joi.string().max(100).allow('', null),
-  country: Joi.string().max(100).allow('', null),
+  state: Joi.string().max(100).allow('', null),
   interests: Joi.array().items(Joi.string()).allow(null),
   marketplace_role: Joi.string().valid('buyer', 'seller', 'both').allow('', null),
-  phone: Joi.string().max(30).allow('', null),
-  social_links: Joi.object().allow(null),
-  avatar_url: Joi.string().uri().max(500).allow('', null) // retained for backwards compat
+  phone: Joi.string().max(30).allow('', null)
 });
 
 async function ensureProfileExists(userId) {
@@ -44,21 +41,23 @@ async function checkUsername(req, res, next) {
 // Suggest username
 async function suggestUsername(req, res, next) {
   try {
-    const { name } = req.query;
+    const { name } = req.body;
     if (!name) return res.status(400).json({ error: 'name_required' });
     let base = name.toLowerCase().replace(/[^a-z0-9]/g, '');
     if (base.length < 3) base = base + 'user';
     if (base.length > 15) base = base.substring(0, 15);
     
+    // Fast prefix search with index
+    const result = await db.query('SELECT username FROM users WHERE username LIKE $1', [`${base}%`]);
+    const taken = new Set(result.rows.map(row => row.username));
+    
     let suggested = base;
-    let count = 0;
-    while (true) {
-      const result = await db.query('SELECT id FROM users WHERE username = $1', [suggested]);
-      if (result.rows.length === 0) break;
-      count++;
+    let count = 1;
+    while (taken.has(suggested)) {
       suggested = `${base}${count}`;
+      count++;
     }
-    res.json({ username: suggested });
+    res.json({ suggestion: suggested, available: true });
   } catch (err) {
     next(err);
   }
@@ -71,8 +70,8 @@ async function getMyProfile(req, res, next) {
 
     const result = await db.query(
       `SELECT
-         u.id, u.email, u.name, u.username, u.onboarding_completed, u.avatar_url, u.role, u.created_at,
-         p.bio, p.city, p.country, p.interests, p.marketplace_role, p.phone, p.social_links, p.is_verified, p.trust_score,
+         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at,
+         p.city, p.state, p.interests, p.marketplace_role, p.phone, p.is_verified, p.trust_score,
          p.total_sales, p.total_revenue, p.razorpay_customer_id, p.razorpay_card_token
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
@@ -101,10 +100,36 @@ async function updateMyProfile(req, res, next) {
 
     await ensureProfileExists(userId);
 
+    if (value.onboarding_completed && !value.username) {
+      // Must ensure DB already has a username if not provided but completing onboarding
+      const uRes = await db.query('SELECT username FROM users WHERE id = $1', [userId]);
+      if (!uRes.rows[0].username) {
+        return res.status(400).json({ error: 'username_required', message: 'Username is required to complete onboarding.' });
+      }
+    }
+
     // Validate username uniqueness if provided
     if (value.username) {
       const checkRes = await db.query('SELECT id FROM users WHERE LOWER(username) = LOWER($1) AND id != $2', [value.username, userId]);
-      if (checkRes.rows.length > 0) return res.status(409).json({ error: 'username_taken' });
+      if (checkRes.rows.length > 0) {
+        // Find suggestion for the 409 response
+        let base = value.username.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (base.length < 3) base = base + 'user';
+        if (base.length > 15) base = base.substring(0, 15);
+        const prefixCheck = await db.query('SELECT username FROM users WHERE username LIKE $1', [`${base}%`]);
+        const taken = new Set(prefixCheck.rows.map(row => row.username));
+        let suggested = base;
+        let count = 1;
+        while (taken.has(suggested)) {
+          suggested = `${base}${count}`;
+          count++;
+        }
+        return res.status(409).json({ 
+          error: 'USERNAME_TAKEN', 
+          message: 'Username became unavailable.', 
+          suggestion: suggested 
+        });
+      }
     }
 
     const userFields = {};
@@ -113,15 +138,12 @@ async function updateMyProfile(req, res, next) {
     if (value.name !== undefined) userFields.name = value.name;
     if (value.username !== undefined) userFields.username = value.username;
     if (value.onboarding_completed !== undefined) userFields.onboarding_completed = value.onboarding_completed;
-    if (value.avatar_url !== undefined) userFields.avatar_url = value.avatar_url;
 
-    if (value.bio !== undefined) profileFields.bio = value.bio;
     if (value.city !== undefined) profileFields.city = value.city;
-    if (value.country !== undefined) profileFields.country = value.country;
+    if (value.state !== undefined) profileFields.state = value.state;
     if (value.interests !== undefined) profileFields.interests = value.interests;
     if (value.marketplace_role !== undefined) profileFields.marketplace_role = value.marketplace_role;
     if (value.phone !== undefined) profileFields.phone = value.phone;
-    if (value.social_links !== undefined) profileFields.social_links = value.social_links;
 
     if (Object.keys(userFields).length > 0) {
       const setClauses = [];
@@ -137,7 +159,7 @@ async function updateMyProfile(req, res, next) {
       const setClauses = [];
       const params = [userId];
       Object.entries(profileFields).forEach(([key, val]) => {
-        params.push((key === 'social_links' || key === 'interests') ? JSON.stringify(val) : val);
+        params.push(key === 'interests' ? JSON.stringify(val) : val);
         setClauses.push(`${key} = $${params.length}`);
       });
       await db.query(`UPDATE profiles SET ${setClauses.join(', ')}, updated_at = NOW() WHERE user_id = $1`, params);
@@ -145,8 +167,8 @@ async function updateMyProfile(req, res, next) {
 
     const result = await db.query(
       `SELECT
-         u.id, u.email, u.name, u.username, u.onboarding_completed, u.avatar_url, u.role, u.created_at,
-         p.bio, p.city, p.country, p.interests, p.marketplace_role, p.phone, p.social_links, p.is_verified, p.trust_score,
+         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at,
+         p.city, p.state, p.interests, p.marketplace_role, p.phone, p.is_verified, p.trust_score,
          p.total_sales, p.total_revenue
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
@@ -300,8 +322,8 @@ async function getPublicProfile(req, res, next) {
     const { id } = req.params;
     const result = await db.query(
       `SELECT
-         u.id, u.name, u.username, u.avatar_url, u.role, u.created_at,
-         p.bio, p.city, p.country, p.social_links, p.is_verified, p.trust_score,
+         u.id, u.name, u.username, u.role, u.created_at,
+         p.city, p.state, p.is_verified, p.trust_score,
          p.total_sales
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
@@ -390,7 +412,7 @@ async function getCreators(req, res, next) {
     else orderBy = 'follower_count DESC NULLS LAST';
     
     const result = await db.query(
-      `SELECT u.id, u.name, u.username, u.avatar_url, u.created_at, p.bio, p.is_verified, p.trust_score, p.total_sales,
+      `SELECT u.id, u.name, u.username, u.created_at, p.is_verified, p.trust_score, p.total_sales,
          COUNT(DISTINCT f.follower_id)::int AS follower_count, COUNT(DISTINCT l.id)::int AS active_listing_count,
          COALESCE(ROUND(AVG(r.rating)::numeric, 2), 0) AS average_rating, COUNT(DISTINCT r.id)::int AS total_reviews
        FROM users u
@@ -399,7 +421,7 @@ async function getCreators(req, res, next) {
        LEFT JOIN listings l ON l.seller_id = u.id AND l.status = 'active'
        LEFT JOIN reviews r ON r.reviewee_id = u.id
        WHERE u.role != 'admin'
-       GROUP BY u.id, u.name, u.username, u.avatar_url, u.created_at, p.bio, p.is_verified, p.trust_score, p.total_sales
+       GROUP BY u.id, u.name, u.username, u.created_at, p.is_verified, p.trust_score, p.total_sales
        HAVING COUNT(DISTINCT l.id) > 0
        ORDER BY ${orderBy} LIMIT $1 OFFSET $2`,
       [safeLimit, safeOffset]
