@@ -1,184 +1,166 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
-import { User as UserIcon, CheckCircle2 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ArrowRight, Package, Heart, Clock, Loader2 } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-
-export default function AccountPage() {
-  const { isAuthenticated, token, user, setAuth } = useAuthStore()
-  const router = useRouter()
-  const [profile, setProfile] = useState<any>(null)
+export default function AccountOverview() {
+  const { user, token } = useAuthStore()
+  const [recentlyViewed, setRecentlyViewed] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [editName, setEditName] = useState('')
-  const [isChangingPass, setIsChangingPass] = useState(false)
-  
-  const [passForm, setPassForm] = useState({ current: '', new: '', confirm: '' })
-  const [passMsg, setPassMsg] = useState('')
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/auth?returnTo=/account')
-      return
-    }
-
-    const fetchProfile = async () => {
+    const fetchRecent = async () => {
+      if (!token) return
       try {
-        const res = await fetch(`${API_BASE}/api/auth/me`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/recently-viewed`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         if (res.ok) {
           const data = await res.json()
-          setProfile(data.user)
-          setEditName(data.user.name || '')
+          setRecentlyViewed(data.recentlyViewed || [])
         }
-      } catch (e) {
-        console.error('Failed to fetch profile:', e)
+      } catch (err) {
+        console.error('Failed to fetch recently viewed', err)
       } finally {
         setLoading(false)
       }
     }
+    fetchRecent()
+  }, [token])
 
-    fetchProfile()
-  }, [isAuthenticated, token, router])
+  if (!user) return null
 
-  const handleSaveName = async () => {
-    if (editName.trim().length < 2) return;
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/me`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ name: editName })
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setProfile({ ...profile, name: data.name })
-        setAuth({ ...user, name: data.name } as any, token!)
-        setIsEditingName(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  
-  const handlePassChange = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (passForm.new !== passForm.confirm) {
-      setPassMsg('Passwords do not match')
-      return
-    }
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/password`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ currentPassword: passForm.current, newPassword: passForm.new })
-      })
-      if (res.ok) {
-        setPassMsg('Password updated successfully!')
-        setPassForm({ current: '', new: '', confirm: '' })
-        setTimeout(() => setIsChangingPass(false), 2000)
-      } else {
-        const err = await res.json()
-        setPassMsg(err.error || 'Failed to update password')
-      }
-    } catch (e) {
-      setPassMsg('Error changing password')
-    }
-  }
-
-  if (loading) return <div className="p-8 text-center text-body-md">Loading...</div>
-  if (!profile) return null
+  // Calculate profile completion (simplified)
+  let completion = 50
+  if (user.bio) completion += 10
+  if (user.city && user.country) completion += 15
+  if (user.interests?.length > 0) completion += 15
+  if (user.avatar_url) completion += 10
+  completion = Math.min(completion, 100)
 
   return (
-    <div className="w-full max-w-[600px] mx-auto px-4 py-8 mt-[80px]">
-      <h1 className="text-heading-lg font-display text-[var(--color-ink-900)] mb-8 flex items-center gap-3">
-        <UserIcon className="w-7 h-7 text-[var(--color-terracotta-600)]" /> Account Info
-      </h1>
-
-      <div className="bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-6 flex flex-col gap-6 shadow-[var(--shadow-card)]">
-        
-        {/* Name */}
-        <div className="flex flex-col gap-2">
-          <label className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider">Name</label>
-          {isEditingName ? (
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                value={editName}
-                onChange={e => setEditName(e.target.value)}
-                className="flex-1 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-body-md focus:border-[var(--color-terracotta-600)] outline-none"
+    <div className="space-y-8">
+      <h1 className="text-display-sm text-[var(--color-ink-900)]">Account Overview</h1>
+      
+      {/* Profile Completion */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Completion</CardTitle>
+          <CardDescription>Complete your profile to get personalized recommendations and build trust within the community.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <div className="flex-1 bg-[var(--color-cream-raised)] h-3 rounded-full overflow-hidden">
+              <div 
+                className="bg-[var(--color-terracotta-600)] h-full transition-all duration-1000"
+                style={{ width: `${completion}%` }}
               />
-              <button onClick={handleSaveName} className="bg-[var(--color-ink-900)] text-white px-4 py-2 rounded-[var(--radius-sm)] text-body-md font-medium">Save</button>
-              <button onClick={() => { setIsEditingName(false); setEditName(profile.name) }} className="bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] px-4 py-2 rounded-[var(--radius-sm)] text-body-md font-medium">Cancel</button>
             </div>
-          ) : (
-            <div className="flex justify-between items-center bg-[var(--color-cream-base)] p-3 rounded-[var(--radius-sm)]">
-              <span className="text-body-lg text-[var(--color-ink-900)] font-medium">{profile.name}</span>
-              <button onClick={() => setIsEditingName(true)} className="text-body-sm font-medium text-[var(--color-terracotta-600)] hover:underline">Edit</button>
-            </div>
-          )}
-        </div>
-
-        <div className="h-px bg-[var(--color-border-subtle)] w-full" />
-
-        {/* Email */}
-        <div className="flex flex-col gap-2">
-          <label className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider">Email Address</label>
-          <div className="flex justify-between items-center bg-[var(--color-cream-base)] p-3 rounded-[var(--radius-sm)]">
-            <span className="text-body-lg text-[var(--color-ink-900)]">{profile.email}</span>
-            <div className="flex items-center gap-1 text-[var(--color-success-600)] text-caption font-bold">
-              <CheckCircle2 className="w-4 h-4" /> Verified
-            </div>
+            <span className="font-bold text-[var(--color-ink-900)]">{completion}%</span>
           </div>
-        </div>
+          {completion < 100 && (
+            <Link href="/account/settings">
+              <Button variant="outline" className="mt-4">
+                Complete Profile
+              </Button>
+            </Link>
+          )}
+        </CardContent>
+      </Card>
 
-        <div className="h-px bg-[var(--color-border-subtle)] w-full" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Recent Orders Overview */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div>
+              <CardTitle>Recent Orders</CardTitle>
+              <CardDescription>Track and manage your purchases</CardDescription>
+            </div>
+            <Package className="w-5 h-5 text-[var(--color-ink-500)]" />
+          </CardHeader>
+          <CardContent>
+            <div className="py-8 flex flex-col items-center justify-center text-center">
+              <Package className="w-10 h-10 text-[var(--color-ink-300)] mb-3" />
+              <p className="text-body-md text-[var(--color-ink-700)]">No recent orders found.</p>
+              <Button variant="link" className="mt-2 text-[var(--color-terracotta-600)]" asChild>
+                <Link href="/collections/all">Start shopping <ArrowRight className="w-4 h-4 ml-1" /></Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Password */}
-        <div className="flex flex-col gap-4">
-          <label className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider">Security</label>
-          
-          {!isChangingPass ? (
-            <button 
-              onClick={() => setIsChangingPass(true)}
-              className="w-full text-left bg-[var(--color-cream-base)] p-3 rounded-[var(--radius-sm)] text-body-md font-medium text-[var(--color-ink-700)] hover:bg-[var(--color-cream-deep)] transition-colors"
-            >
-              Change Password
-            </button>
-          ) : (
-            <form onSubmit={handlePassChange} className="bg-[var(--color-cream-base)] p-4 rounded-[var(--radius-md)] flex flex-col gap-3">
-              <input type="password" placeholder="Current Password" required value={passForm.current} onChange={e => setPassForm({...passForm, current: e.target.value})} className="border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-body-md w-full outline-none" />
-              <input type="password" placeholder="New Password" required value={passForm.new} onChange={e => setPassForm({...passForm, new: e.target.value})} className="border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-body-md w-full outline-none" />
-              <input type="password" placeholder="Confirm New Password" required value={passForm.confirm} onChange={e => setPassForm({...passForm, confirm: e.target.value})} className="border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-3 py-2 text-body-md w-full outline-none" />
-              {passMsg && <p className={`text-caption ${passMsg.includes('success') ? 'text-[var(--color-success-600)]' : 'text-[var(--color-urgent-600)]'}`}>{passMsg}</p>}
-              <div className="flex gap-2 mt-1">
-                <button type="submit" className="flex-1 bg-[var(--color-ink-900)] text-white py-2 rounded-[var(--radius-sm)] text-body-md font-medium">Update</button>
-                <button type="button" onClick={() => setIsChangingPass(false)} className="flex-1 bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] py-2 rounded-[var(--radius-sm)] text-body-md font-medium">Cancel</button>
-              </div>
-            </form>
+        {/* Wishlist Overview */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div>
+              <CardTitle>Your Wishlist</CardTitle>
+              <CardDescription>Items you've saved for later</CardDescription>
+            </div>
+            <Heart className="w-5 h-5 text-[var(--color-ink-500)]" />
+          </CardHeader>
+          <CardContent>
+            <div className="py-8 flex flex-col items-center justify-center text-center">
+              <Heart className="w-10 h-10 text-[var(--color-ink-300)] mb-3" />
+              <p className="text-body-md text-[var(--color-ink-700)]">Your wishlist is empty.</p>
+              <Button variant="link" className="mt-2 text-[var(--color-terracotta-600)]" asChild>
+                <Link href="/collections/all">Explore items <ArrowRight className="w-4 h-4 ml-1" /></Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recently Viewed */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-heading-lg text-[var(--color-ink-900)] flex items-center gap-2">
+            <Clock className="w-5 h-5 text-[var(--color-ink-500)]" /> Recently Viewed
+          </h2>
+          {recentlyViewed.length > 0 && (
+            <Link href="/account/recently-viewed" className="text-body-sm font-medium text-[var(--color-terracotta-600)] hover:underline flex items-center">
+              View All <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
           )}
         </div>
-
-        <div className="h-px bg-[var(--color-border-subtle)] w-full" />
-
-        {/* Member Since */}
-        <div className="text-center pt-2">
-          <p className="text-caption text-[var(--color-ink-500)]">
-            Member since {new Date(profile.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </p>
-        </div>
-
+        
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-6 h-6 animate-spin text-[var(--color-terracotta-600)]" />
+          </div>
+        ) : recentlyViewed.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 flex flex-col items-center justify-center text-center">
+              <p className="text-body-md text-[var(--color-ink-700)]">You haven't viewed any items recently.</p>
+              <Button variant="outline" className="mt-4" asChild>
+                <Link href="/">Browse Marketplace</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {recentlyViewed.slice(0, 4).map((item) => (
+              <Link key={item.id} href={`/listing/${item.id}`} className="group block">
+                <div className="relative aspect-square bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] overflow-hidden mb-2">
+                  <Image 
+                    src={item.image || item.images?.[0] || 'https://images.unsplash.com/photo-1615266895738-11f1371cd7e5?auto=format&fit=crop&q=80'} 
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="text-body-sm font-medium text-[var(--color-ink-900)] truncate group-hover:text-[var(--color-terracotta-600)] transition-colors">{item.title}</h3>
+                <p className="text-body-sm text-[var(--color-ink-500)]">₹{item.price?.toLocaleString('en-IN')}</p>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
+
     </div>
   )
 }

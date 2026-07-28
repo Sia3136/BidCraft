@@ -22,16 +22,40 @@ const avatarVariants = cva(
 export interface AvatarProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof avatarVariants> {
-  src?: string
-  alt?: string
-  initials?: string
+  src?: string | null
+  alt?: string | null
+  initials?: string | null
+  name?: string | null
+  identifier?: string | null
   verified?: boolean
 }
 
+function getInitials(name?: string | null) {
+  if (!name) return "?";
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+function stringToColor(str?: string | null, lightness = 80) {
+  if (!str) return `hsl(0, 0%, ${lightness}%)`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h}, 70%, ${lightness}%)`;
+}
+
 const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
-  ({ className, size, src, alt, initials, verified, ...props }, ref) => {
+  ({ className, size, src, alt, initials, name, identifier, verified, ...props }, ref) => {
+    const displayInitials = initials || getInitials(name);
+    const colorSeed = identifier || name || "default";
+    const bgColor = stringToColor(colorSeed, 85);
+    const textColor = stringToColor(colorSeed, 25);
+
     return (
-      <div className="relative inline-flex">
+      <div className="relative inline-flex shrink-0">
         <div
           ref={ref}
           className={cn(avatarVariants({ size }), className)}
@@ -40,12 +64,15 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
           {src ? (
             <img
               src={src}
-              alt={alt}
+              alt={alt || name || "Avatar"}
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[var(--color-slate-100)] text-[var(--color-slate-700)] text-heading-sm">
-              {initials}
+            <div 
+              className="flex h-full w-full items-center justify-center font-bold"
+              style={{ backgroundColor: bgColor, color: textColor, fontSize: size === 'small' ? '12px' : size === 'large' ? '32px' : '16px' }}
+            >
+              {displayInitials}
             </div>
           )}
         </div>

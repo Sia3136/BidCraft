@@ -95,7 +95,6 @@ export async function fetchNewArrivals(): Promise<{ listings: Listing[] }> {
 export async function register(data: {
   name: string
   email: string
-  mobile?: string
   password: string
 }): Promise<AuthResponse> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, { credentials: 'include',
@@ -110,14 +109,13 @@ export async function register(data: {
 
 // Login
 export async function login(data: {
-  emailOrMobile: string
+  email: string
   password: string
 }): Promise<AuthResponse> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    // Map emailOrMobile to email since backend expects email
-    body: JSON.stringify({ email: data.emailOrMobile, password: data.password }),
+    body: JSON.stringify(data),
   })
   const json = await res.json()
   if (!res.ok) throw new Error(json.message || json.error || 'Login failed')
@@ -359,4 +357,21 @@ export async function fetchCreators(sort: string = 'followers', limit: number = 
   })
   if (!res.ok) throw new Error(`fetchCreators failed: ${res.status}`)
   return res.json()
+}
+
+export async function checkUsername(username: string): Promise<{ available: boolean }> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check-username?username=${encodeURIComponent(username)}`, { credentials: 'include' })
+  if (!res.ok) throw new Error(`checkUsername failed`)
+  return res.json()
+}
+
+export async function updateProfile(data: any, token: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, { credentials: 'include',
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data),
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to update profile')
+  return json
 }
