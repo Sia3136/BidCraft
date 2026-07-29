@@ -408,31 +408,31 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
               Community Voices
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-10 rounded-2xl flex flex-col justify-between shadow-sm border border-[var(--color-border-subtle)] transition-shadow hover:shadow-md">
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)] flex flex-col justify-between">
                   <div>
-                    <span className="text-display-2xl text-[var(--color-terracotta-400)] font-display leading-none mb-4 block">"</span>
-                    <p className="text-body-xl font-display italic text-[var(--color-ink-900)] mb-10 leading-relaxed">
+                    <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>
+                    <p className="text-body-lg font-display italic text-[var(--color-ink-900)] mb-8">
                       {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
                     </p>
                   </div>
                   <div>
-                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-8" />
-                    <div className="flex items-center gap-5">
+                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
+                    <div className="flex items-center gap-4">
                       <Image 
                         src={i === 1 ? "/images/5ac5f5ecddd67235241297452010a237.jpg" : i === 2 ? "/images/1da0c6767e60f79b79148794732a305f.jpg" : "/images/71d0457823cf94b6f1003b8c50253c61.webp"}
-                        width={72} 
-                        height={72} 
+                        width={96} 
+                        height={96} 
                         style={{ objectFit: 'cover' }}
                         alt={`User ${i}`}
-                        className="rounded-full bg-[var(--color-ink-300)] w-[72px] h-[72px] min-w-[72px]"
+                        className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[96px] h-[96px] min-w-[96px]"
                       />
                       <div>
-                        <p className="text-heading-md text-[var(--color-ink-900)] mb-1">
+                        <p className="text-heading-sm text-[var(--color-ink-900)]">
                           {i === 1 ? "Priya S." : i === 2 ? "Arjun M." : "Nandita R."}
                         </p>
-                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm font-bold font-ui">
+                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold font-ui">
                           {i === 1 ? "4.5 ★" : i === 2 ? "4.0 ★" : "5.0 ★"}
                         </div>
                       </div>

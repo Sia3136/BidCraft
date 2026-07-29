@@ -151,20 +151,23 @@ export default function ProfileSettingsPage() {
       <h1 className="text-display-sm text-[var(--color-ink-900)] mb-8">Profile</h1>
 
       <div className="mb-10">
-        <h2 className="text-heading-lg font-semibold text-[var(--color-ink-900)] mb-1">Public Identity</h2>
+        <p className="text-caption font-semibold tracking-wider text-[var(--color-ink-500)] uppercase mb-1">Public Identity</p>
+        <h2 className="text-heading-lg font-semibold text-[var(--color-ink-900)] mb-1">Profile Settings</h2>
         <p className="text-body-md text-[var(--color-ink-500)] mb-8">Manage your public information and how others see you on BidCraft.</p>
         
-        <form onSubmit={handleSubmit} className="space-y-10">
+        <form onSubmit={handleSubmit} className="space-y-6">
             
             {message && message.type === 'success' && (
-              <div className="p-4 rounded-sm text-body-md flex items-center gap-2 bg-[var(--color-success-50)] text-[var(--color-success-700)] border border-[var(--color-success-200)]">
+              <div className="p-4 rounded-sm text-body-md flex items-center gap-2 bg-[var(--color-success-50)] text-[var(--color-success-700)] border border-[var(--color-success-200)] mb-4">
                 <CheckCircle2 className="w-5 h-5 shrink-0" />
                 {message.text}
               </div>
             )}
 
             <div className="flex items-center gap-6 pb-6 border-b border-[var(--color-border-subtle)]">
-              <Avatar size="large" name={name || user.name} identifier={user.id} />
+              <div className="ring-2 ring-offset-2 ring-[var(--color-terracotta-600)] rounded-full">
+                <Avatar size="large" name={name || user.name} identifier={user.id} />
+              </div>
               <div>
                 <h3 className="text-body-lg font-medium text-[var(--color-ink-900)]">Avatar</h3>
                 <p className="text-body-sm text-[var(--color-ink-500)] mt-1 max-w-sm">

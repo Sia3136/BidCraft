@@ -71,7 +71,8 @@ export default function SecuritySettingsPage() {
         <ShieldCheck className="w-8 h-8 text-[var(--color-terracotta-600)]" /> Change Password
       </h1>
 
-      <div className="mb-10">
+      <div className="mb-10 mt-8">
+        <p className="text-caption font-semibold tracking-wider text-[var(--color-ink-500)] uppercase mb-1">Security</p>
         <h2 className="text-heading-lg font-semibold text-[var(--color-ink-900)] mb-1">Update Password</h2>
         <p className="text-body-md text-[var(--color-ink-500)] mb-8">Update your password to keep your account secure.</p>
         
@@ -123,7 +124,7 @@ export default function SecuritySettingsPage() {
               />
             </div>
 
-            <div className="pt-6 border-t border-[var(--color-border-subtle)] flex justify-start">
+            <div className="pt-6 border-t border-[var(--color-border-subtle)] flex justify-end">
               <Button type="submit" size="lg" disabled={isSubmitting} className="min-w-[120px]">
                 {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
               </Button>

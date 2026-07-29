@@ -79,93 +79,25 @@ export default function AccountOverview() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Recent Orders Overview */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div>
-              <CardTitle>Recent Orders</CardTitle>
-              <CardDescription>Track and manage your purchases</CardDescription>
-            </div>
-            <Package className="w-5 h-5 text-[var(--color-ink-500)]" />
-          </CardHeader>
-          <CardContent>
-            <div className="py-8 flex flex-col items-center justify-center text-center">
-              <Package className="w-10 h-10 text-[var(--color-ink-300)] mb-3" />
-              <p className="text-body-md text-[var(--color-ink-700)]">No recent orders found.</p>
-              <Button variant="link" className="mt-2 text-[var(--color-terracotta-600)]" asChild>
-                <Link href="/collections/all">Start shopping <ArrowRight className="w-4 h-4 ml-1" /></Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Wishlist Overview */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <div>
-              <CardTitle>Your Wishlist</CardTitle>
-              <CardDescription>Items you've saved for later</CardDescription>
-            </div>
-            <Heart className="w-5 h-5 text-[var(--color-ink-500)]" />
-          </CardHeader>
-          <CardContent>
-            <div className="py-8 flex flex-col items-center justify-center text-center">
-              <Heart className="w-10 h-10 text-[var(--color-ink-300)] mb-3" />
-              <p className="text-body-md text-[var(--color-ink-700)]">Your wishlist is empty.</p>
-              <Button variant="link" className="mt-2 text-[var(--color-terracotta-600)]" asChild>
-                <Link href="/collections/all">Explore items <ArrowRight className="w-4 h-4 ml-1" /></Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recently Viewed */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-heading-lg text-[var(--color-ink-900)] flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[var(--color-ink-500)]" /> Recently Viewed
-          </h2>
-          {recentlyViewed.length > 0 && (
-            <Link href="/account/recently-viewed" className="text-body-sm font-medium text-[var(--color-terracotta-600)] hover:underline flex items-center">
-              View All <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
-          )}
-        </div>
-        
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-[var(--color-terracotta-600)]" />
+      {/* Recent Orders Overview */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div>
+            <CardTitle>Recent Orders</CardTitle>
+            <CardDescription>Track and manage your purchases</CardDescription>
           </div>
-        ) : recentlyViewed.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 flex flex-col items-center justify-center text-center">
-              <p className="text-body-md text-[var(--color-ink-700)]">You haven't viewed any items recently.</p>
-              <Button variant="outline" className="mt-4" asChild>
-                <Link href="/">Browse Marketplace</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {recentlyViewed.slice(0, 4).map((item) => (
-              <Link key={item.id} href={`/listing/${item.id}`} className="group block">
-                <div className="relative aspect-square bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] overflow-hidden mb-2">
-                  <Image 
-                    src={item.image || item.images?.[0] || 'https://images.unsplash.com/photo-1615266895738-11f1371cd7e5?auto=format&fit=crop&q=80'} 
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <h3 className="text-body-sm font-medium text-[var(--color-ink-900)] truncate group-hover:text-[var(--color-terracotta-600)] transition-colors">{item.title}</h3>
-                <p className="text-body-sm text-[var(--color-ink-500)]">₹{item.price?.toLocaleString('en-IN')}</p>
-              </Link>
-            ))}
+          <Package className="w-5 h-5 text-[var(--color-ink-500)]" />
+        </CardHeader>
+        <CardContent>
+          <div className="py-8 flex flex-col items-center justify-center text-center">
+            <Package className="w-10 h-10 text-[var(--color-ink-300)] mb-3" />
+            <p className="text-body-md text-[var(--color-ink-700)]">No recent orders found.</p>
+            <Button variant="link" className="mt-2 text-[var(--color-terracotta-600)]" asChild>
+              <Link href="/collections/all">Start shopping <ArrowRight className="w-4 h-4 ml-1" /></Link>
+            </Button>
           </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
 
     </div>
   )

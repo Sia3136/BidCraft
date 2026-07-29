@@ -56,8 +56,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <div className="flex flex-col md:flex-row gap-8">
         
         {/* Sidebar */}
-        <aside className="w-full md:w-[280px] shrink-0">
-          <div className="bg-[var(--color-white)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] p-6 shadow-[var(--shadow-card)] sticky top-[100px]">
+        <aside className="w-full md:w-[280px] shrink-0 md:border-r border-[var(--color-border-subtle)] md:pr-8">
+          <div className="sticky top-[100px]">
             
             {/* User Info */}
             <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border-subtle)]">

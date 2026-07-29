@@ -171,73 +171,40 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       
-      {/* Background imagery depending on step */}
-      <AnimatePresence>
-        {step === 1 && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
-            className="absolute inset-0 z-0 bg-[var(--color-slate-900)]"
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-slate-900)] via-[var(--color-slate-900)]/80 to-[var(--color-slate-900)]/40 z-10" />
-            <Image 
-              src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp" 
-              alt="Welcome" 
-              fill 
-              className="object-cover opacity-50" 
-            />
-          </motion.div>
-        )}
-        {step === 4 && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
-            className="absolute inset-0 z-0 bg-[var(--color-cream-base)]"
-          >
-            <div className="absolute inset-0 bg-[var(--color-cream-base)]/60 z-10 backdrop-blur-[4px]" />
-            <Image 
-              src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/minimal_dog.jpg" 
-              alt="Ready" 
-              fill 
-              className="object-cover opacity-20" 
-            />
-          </motion.div>
-        )}
-        {step !== 1 && step !== 4 && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
-            className="absolute inset-0 z-0 bg-[var(--color-cream-base)]"
-          />
-        )}
-      </AnimatePresence>
+      {/* Background imagery for all steps */}
+      <div className="absolute inset-0 z-0 bg-[var(--color-slate-900)]">
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-slate-900)] via-[var(--color-slate-900)]/80 to-[var(--color-slate-900)]/40 z-10" />
+        <Image 
+          src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp" 
+          alt="Welcome" 
+          fill 
+          className="object-cover opacity-50" 
+        />
+      </div>
 
       <div className="w-full flex justify-between items-center p-6 sm:p-8 relative z-20">
-        <Link href="/" className={step === 1 ? "text-display-md text-white font-bold tracking-tight drop-shadow-md" : "text-display-md text-[var(--color-ink-900)] font-bold tracking-tight"}>
+        <Link href="/" className="text-display-md text-white font-bold tracking-tight drop-shadow-md">
           BidCraft
         </Link>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative z-20">
-        <div className="w-full max-w-[560px] overflow-hidden relative min-h-[500px] flex flex-col">
+        <div className="w-full max-w-[560px] relative min-h-[500px] flex flex-col">
         
         {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-cream-raised)]">
+        <div className="absolute top-0 left-0 w-full h-1 bg-white/20 rounded-full overflow-hidden">
           <motion.div 
-            className="h-full bg-[var(--color-terracotta-600)]"
+            className="h-full bg-white"
             initial={{ width: `${((step - 1) / 4) * 100}%` }}
             animate={{ width: `${(step / 4) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
 
-        <div className="text-caption font-bold tracking-wider text-[var(--color-ink-500)] uppercase mb-6 flex items-center justify-between">
+        <div className="text-caption font-bold tracking-wider text-white/60 uppercase mb-6 flex items-center justify-between mt-4">
           <span>Step {step} of 4</span>
           {step > 1 && step < 4 && (
-             <span className="text-[var(--color-ink-400)]">{step === 2 ? 'Required' : 'Optional'}</span>
+             <span className="text-white/40">{step === 2 ? 'Required' : 'Optional'}</span>
           )}
         </div>
 
@@ -282,22 +249,22 @@ export default function OnboardingPage() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex-1 flex flex-col"
               >
-                <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-2">Your Profile</h2>
-                <p className="text-body-md text-[var(--color-ink-700)] mb-8">This information represents you on the marketplace.</p>
+                <h2 className="text-heading-lg text-white mb-2 drop-shadow-sm">Your Profile</h2>
+                <p className="text-body-md text-white/80 mb-8 drop-shadow-sm">This information represents you on the marketplace.</p>
                 
                 <div className="space-y-6 flex-1">
-                  <div className="flex items-center gap-4 p-4 bg-[var(--color-cream-base)] rounded-sm border border-[var(--color-border-subtle)]">
+                  <div className="flex items-center gap-4 p-4 bg-white/10 rounded-sm border border-white/20 backdrop-blur-sm shadow-sm">
                     <Avatar size="large" name={user.name} identifier={user.id} />
-                    <div className="text-body-sm text-[var(--color-ink-700)]">
-                      <p className="font-semibold text-body-md text-[var(--color-ink-900)]">{user.name}</p>
+                    <div className="text-body-sm text-white/80">
+                      <p className="font-semibold text-body-md text-white">{user.name}</p>
                       Your avatar is automatically generated from your initials and used everywhere on BidCraft.
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Username <span className="text-[var(--color-urgent-600)]">*</span></label>
+                    <label className="block text-body-md text-white font-medium mb-1.5">Username <span className="text-white/60">*</span></label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-body-md text-[var(--color-ink-500)] select-none">@</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-body-md text-white/50 select-none">@</span>
                       <input
                         type="text"
                         required
@@ -305,7 +272,7 @@ export default function OnboardingPage() {
                         onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
                         placeholder="username"
                         maxLength={20}
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm pl-10 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                        className="w-full h-[48px] bg-white/10 border border-white/20 rounded-sm pl-10 pr-12 text-body-md text-white placeholder-white/40 focus:border-white focus:shadow-[0_0_0_3px_rgba(255,255,255,0.12)] outline-none transition-all shadow-sm"
                       />
                       <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">
                         {isCheckingUsername ? (
@@ -322,12 +289,12 @@ export default function OnboardingPage() {
 
                 </div>
 
-                <div className="mt-8 flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
-                  <button onClick={() => setStep(1)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
+                <div className="mt-8 flex justify-between items-center pt-6 border-t border-white/20">
+                  <button onClick={() => setStep(1)} className="text-body-md font-medium text-white/60 hover:text-white transition-colors">Back</button>
                   <button 
                     onClick={() => setStep(3)} 
                     disabled={!username || isUsernameValid === false || isCheckingUsername}
-                    className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-sm hover:bg-black disabled:opacity-50 transition-colors shadow-sm"
+                    className="h-[48px] px-8 bg-white text-[var(--color-ink-900)] text-body-md font-semibold rounded-full hover:bg-[var(--color-cream-100)] disabled:opacity-50 transition-colors shadow-lg"
                   >
                     Continue
                   </button>
@@ -345,19 +312,19 @@ export default function OnboardingPage() {
                 className="flex-1 flex flex-col"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif">Your Interests</h2>
+                  <h2 className="text-display-xs text-white font-serif drop-shadow-md">Your Interests</h2>
                 </div>
-                <p className="text-body-md text-[var(--color-ink-700)] mb-8">Select a few categories to help us personalize your feed.</p>
+                <p className="text-body-md text-white/80 mb-8 drop-shadow-sm">Select a few categories to help us personalize your feed.</p>
                 
                 <div className="flex flex-wrap gap-3 flex-1 content-start">
                   {categories.map(cat => (
                     <button
                       key={cat.id}
                       onClick={() => toggleInterest(cat.name)}
-                      className={`px-4 py-2.5 rounded-full border-2 transition-all text-body-md font-medium ${
+                      className={`px-4 py-2.5 rounded-full border-2 transition-all text-body-md font-medium backdrop-blur-sm ${
                         selectedInterests.includes(cat.name)
-                          ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-800)] shadow-sm'
-                          : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)] hover:bg-[var(--color-cream-base)]'
+                          ? 'border-white bg-white text-[var(--color-ink-900)] shadow-sm'
+                          : 'border-white/20 bg-white/10 text-white hover:border-white/40 hover:bg-white/20'
                       }`}
                     >
                       {cat.name}
@@ -365,17 +332,17 @@ export default function OnboardingPage() {
                   ))}
                 </div>
 
-                <div className="mt-8 flex flex-col items-center pt-6 border-t border-[var(--color-border-subtle)] space-y-4">
+                <div className="mt-8 flex flex-col items-center pt-6 border-t border-white/20 space-y-4">
                   <div className="w-full flex justify-between items-center">
-                    <button onClick={() => setStep(2)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
+                    <button onClick={() => setStep(2)} className="text-body-md font-medium text-white/60 hover:text-white transition-colors">Back</button>
                     <button 
                       onClick={() => setStep(4)} 
-                      className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-sm hover:bg-black transition-colors shadow-sm"
+                      className="h-[48px] px-8 bg-white text-[var(--color-ink-900)] text-body-md font-semibold rounded-full hover:bg-[var(--color-cream-100)] transition-colors shadow-lg"
                     >
                       Continue
                     </button>
                   </div>
-                  <button onClick={() => setStep(4)} className="text-body-sm font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] hover:underline">
+                  <button onClick={() => setStep(4)} className="text-body-sm font-medium text-white/50 hover:text-white/80 hover:underline">
                     Skip for now
                   </button>
                 </div>
@@ -392,9 +359,9 @@ export default function OnboardingPage() {
                 className="flex-1 flex flex-col"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif">How will you use BidCraft?</h2>
+                  <h2 className="text-display-xs text-white font-serif drop-shadow-md">How will you use BidCraft?</h2>
                 </div>
-                <p className="text-body-md text-[var(--color-ink-700)] mb-8">You can always change this later if you decide to sell.</p>
+                <p className="text-body-md text-white/80 mb-8 drop-shadow-sm">You can always change this later if you decide to sell.</p>
                 
                 <div className="space-y-4 flex-1">
                   {[
@@ -405,23 +372,23 @@ export default function OnboardingPage() {
                     <div 
                       key={option.id}
                       onClick={() => setMarketplaceRole(option.id as any)}
-                      className={`p-5 rounded-sm border-2 cursor-pointer transition-all ${
+                      className={`p-5 rounded-sm border-2 cursor-pointer transition-all backdrop-blur-sm ${
                         marketplaceRole === option.id 
-                          ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] shadow-sm' 
-                          : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] hover:border-[var(--color-ink-300)]'
+                          ? 'border-white bg-white shadow-sm' 
+                          : 'border-white/20 bg-white/10 hover:border-white/40 hover:bg-white/20'
                       }`}
                     >
                       <div className="flex items-start gap-4">
                         <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                          marketplaceRole === option.id ? 'border-[var(--color-terracotta-600)]' : 'border-[var(--color-ink-300)]'
+                          marketplaceRole === option.id ? 'border-[var(--color-ink-900)]' : 'border-white/40'
                         }`}>
-                          {marketplaceRole === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-terracotta-600)]" />}
+                          {marketplaceRole === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-ink-900)]" />}
                         </div>
                         <div>
-                          <h3 className={`font-semibold text-body-lg ${marketplaceRole === option.id ? 'text-[var(--color-terracotta-900)]' : 'text-[var(--color-ink-900)]'}`}>
+                          <h3 className={`font-semibold text-body-lg ${marketplaceRole === option.id ? 'text-[var(--color-ink-900)]' : 'text-white'}`}>
                             {option.title}
                           </h3>
-                          <p className={`text-body-sm mt-1 ${marketplaceRole === option.id ? 'text-[var(--color-terracotta-800)]' : 'text-[var(--color-ink-500)]'}`}>
+                          <p className={`text-body-sm mt-1 ${marketplaceRole === option.id ? 'text-[var(--color-ink-700)]' : 'text-white/60'}`}>
                             {option.desc}
                           </p>
                         </div>
@@ -430,21 +397,21 @@ export default function OnboardingPage() {
                   ))}
                 </div>
 
-                <div className="mt-8 flex flex-col items-center pt-6 border-t border-[var(--color-border-subtle)] space-y-4">
+                <div className="mt-8 flex flex-col items-center pt-6 border-t border-white/20 space-y-4">
                   <div className="w-full flex justify-between items-center">
-                    <button onClick={() => setStep(3)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
+                    <button onClick={() => setStep(3)} className="text-body-md font-medium text-white/60 hover:text-white transition-colors">Back</button>
                     <div className="flex flex-col items-end gap-2">
                       <button 
                         onClick={handleFinish}
                         disabled={isSubmitting}
-                        className="h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2 shadow-sm min-w-[140px]"
+                        className="h-[48px] px-8 bg-white text-[var(--color-ink-900)] text-body-md font-semibold rounded-full hover:bg-[var(--color-cream-100)] transition-colors flex items-center justify-center gap-2 shadow-lg min-w-[140px]"
                       >
                         {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Finish'}
                       </button>
                       {error && <FieldError message={error} />}
                     </div>
                   </div>
-                  <button onClick={handleFinish} disabled={isSubmitting} className="text-body-sm font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] hover:underline">
+                  <button onClick={handleFinish} disabled={isSubmitting} className="text-body-sm font-medium text-white/50 hover:text-white/80 hover:underline">
                     Skip for now
                   </button>
                 </div>

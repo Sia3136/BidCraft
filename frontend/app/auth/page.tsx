@@ -191,7 +191,7 @@ function AuthPageContent() {
       {/* BRANDING / IMAGE */}
       <div className={cn(
         "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)]",
-        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-[58%] h-56 sm:h-64 lg:h-auto"
+        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-[50%] h-56 sm:h-64 lg:self-stretch lg:min-h-full"
       )}>
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)]/40 to-[var(--color-ink-900)]/70 mix-blend-multiply z-10" />
         
@@ -200,7 +200,7 @@ function AuthPageContent() {
         )}
 
         <Image
-          src={isForgotFlow ? 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344942/bidcraft/auth/crochet_pouch.jpg' : 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp'}
+          src={isForgotFlow ? 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785357702/bidcraft/auth/y8qeonqjocthl62yqmkq.jpg' : 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785357702/bidcraft/auth/y8qeonqjocthl62yqmkq.jpg'}
           alt="Premium handcrafted items"
           fill
           sizes="100vw"
@@ -230,7 +230,7 @@ function AuthPageContent() {
       {/* RIGHT COLUMN - Auth Form */}
       <div className={cn(
         "flex flex-col items-center justify-center p-6 sm:p-12 flex-1 relative z-30",
-        isFullScreenBg ? "w-full" : "w-full lg:w-[42%]"
+        isFullScreenBg ? "w-full" : "w-full lg:w-[50%]"
       )}>
         
         {isFullScreenBg && (
@@ -247,20 +247,18 @@ function AuthPageContent() {
         )}>
           
           <div className={cn(
-            "p-8 sm:p-10",
-            isFullScreenBg 
-              ? "bg-[var(--color-white)]/95 backdrop-blur-md rounded-[4px] border border-[var(--color-border-subtle)] shadow-sm" 
-              : "bg-[var(--color-white)] rounded-[4px] border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]"
+            "sm:p-4",
+            isFullScreenBg && "p-8 sm:p-10 bg-[var(--color-white)]/95 backdrop-blur-md rounded-[4px] border border-[var(--color-border-subtle)] shadow-sm"
           )}>
             
             {/* Tabs */}
             {(activeTab === 'signin' || isRegisterStep1) && (
-              <div className="flex bg-[var(--color-cream-raised)] rounded-sm p-1 mb-10 relative">
+              <div className="inline-flex flex-row gap-1 bg-[var(--color-cream-raised)] rounded-sm p-1 mb-6">
                 <button
                   onClick={() => { setActiveTab('signin'); setError(''); }}
                   className={cn(
-                    "flex-1 py-2 rounded-sm text-body-md font-semibold transition-colors z-10",
-                    activeTab === 'signin' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
+                    "px-6 py-2 rounded-sm text-body-md font-semibold transition-colors",
+                    activeTab === 'signin' ? "bg-white text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
                   Sign In
@@ -268,18 +266,12 @@ function AuthPageContent() {
                 <button
                   onClick={() => { setActiveTab('signup'); setError(''); }}
                   className={cn(
-                    "flex-1 py-2 rounded-sm text-body-md font-semibold transition-colors z-10",
-                    activeTab === 'signup' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
+                    "px-6 py-2 rounded-sm text-body-md font-semibold transition-colors",
+                    activeTab === 'signup' ? "bg-white text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
                   Create Account
                 </button>
-                <motion.div
-                  className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[var(--color-white)] rounded-sm shadow-sm"
-                  initial={false}
-                  animate={{ left: activeTab === 'signin' ? '4px' : 'calc(50%)' }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
               </div>
             )}
 
