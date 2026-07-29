@@ -248,8 +248,10 @@ function AuthPageContent() {
         )}>
           
           <div className={cn(
-            "p-8",
-            isFullScreenBg ? "" : "bg-[var(--color-cream-base)]"
+            "p-8 sm:p-10",
+            isFullScreenBg 
+              ? "bg-[var(--color-white)]/95 backdrop-blur-md rounded-[4px] border border-[var(--color-border-subtle)] shadow-sm" 
+              : "bg-[var(--color-white)] rounded-[4px] border border-[var(--color-border-subtle)] shadow-[var(--shadow-card)]"
           )}>
             
             {/* Tabs */}

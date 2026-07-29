@@ -101,7 +101,7 @@ async function getFollowers(req, res, next) {
 
     const result = await db.query(
       `SELECT f.id as follow_id, f.created_at as followed_at,
-              u.id as user_id, u.name, u.avatar_url, p.trust_score
+              u.id as user_id, u.name, p.trust_score
        FROM follows f
        JOIN users u ON u.id = f.follower_id
        LEFT JOIN profiles p ON p.user_id = u.id
@@ -126,7 +126,7 @@ async function getFollowing(req, res, next) {
 
     const result = await db.query(
       `SELECT f.id as follow_id, f.created_at as followed_at,
-              u.id as user_id, u.name, u.avatar_url, p.trust_score, p.bio
+              u.id as user_id, u.name, p.trust_score, p.bio
        FROM follows f
        JOIN users u ON u.id = f.seller_id
        LEFT JOIN profiles p ON p.user_id = u.id

@@ -6,5 +6,6 @@ module.exports = {
   clearMocks: true,
   resetMocks: false,
   restoreMocks: false,
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js']
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  modulePathIgnorePatterns: ['<rootDir>/node_modules_old/']
 };

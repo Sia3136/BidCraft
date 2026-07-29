@@ -7,7 +7,7 @@ const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.FROM_EMAIL || 'BidCraft <siarozani3136@gmail.com>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'BidCraft <onboarding@resend.dev>';
 
 let smtpTransporter = null;
 if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {

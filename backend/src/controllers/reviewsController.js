@@ -78,7 +78,7 @@ async function getSellerReviews(req, res, next) {
     const { userId } = req.params;
 
     const reviewsRes = await db.query(
-      `SELECT r.*, u.name as reviewer_name, u.avatar_url as reviewer_avatar
+      `SELECT r.*, u.name as reviewer_name
        FROM reviews r
        JOIN users u ON u.id = r.reviewer_id
        WHERE r.reviewee_id = $1

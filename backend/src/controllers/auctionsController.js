@@ -107,7 +107,7 @@ async function getAuctionById(req, res, next) {
 
     // Fetch bids history for this auction
     const bidsRes = await db.query(
-      `SELECT b.id, b.bid_amount, b.created_at, u.name as bidder_name, u.avatar_url as bidder_avatar
+      `SELECT b.id, b.bid_amount, b.created_at, u.name as bidder_name
        FROM bids b
        JOIN users u ON b.bidder_id = u.id
        WHERE b.auction_id = $1

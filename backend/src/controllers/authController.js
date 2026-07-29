@@ -204,9 +204,9 @@ async function googleLogin(req, res, next) {
       payload = ticket.getPayload();
     }
 
-    const { sub: googleId, email, name, picture: avatarUrl } = payload;
+    const { sub: googleId, email, name } = payload;
 
-    let userResult = await db.query('SELECT id, email, name, role, avatar_url, google_id, onboarding_completed, username FROM users WHERE google_id=$1 OR email=$2', [googleId, email]);
+    let userResult = await db.query('SELECT id, email, name, role, google_id, onboarding_completed, username FROM users WHERE google_id=$1 OR email=$2', [googleId, email]);
     let user = userResult.rows[0];
 
     if (user) {
@@ -220,8 +220,8 @@ async function googleLogin(req, res, next) {
       await db.query('INSERT INTO profiles (user_id, created_at, updated_at) VALUES ($1, NOW(), NOW()) ON CONFLICT DO NOTHING', [user.id]);
     } else {
       const createResult = await db.query(
-        'INSERT INTO users (email, google_id, name, avatar_url, role, email_verified, email_verified_at, google_account, created_at, updated_at, last_login_at) VALUES ($1,$2,$3,$4,$5,true,NOW(),true,NOW(),NOW(),NOW()) RETURNING id, email, name, role, avatar_url, onboarding_completed, username',
-        [email, googleId, name, avatarUrl, 'buyer']
+        'INSERT INTO users (email, google_id, name, role, email_verified, email_verified_at, google_account, created_at, updated_at, last_login_at) VALUES ($1,$2,$3,$4,true,NOW(),true,NOW(),NOW(),NOW()) RETURNING id, email, name, role, onboarding_completed, username',
+        [email, googleId, name, 'buyer']
       );
       user = createResult.rows[0];
       await db.query('INSERT INTO profiles (user_id, created_at, updated_at) VALUES ($1, NOW(), NOW()) ON CONFLICT DO NOTHING', [user.id]);
@@ -413,7 +413,7 @@ async function resetPassword(req, res, next) {
 async function me(req, res, next) {
   try {
     const userId = req.userId;
-    const result = await db.query('SELECT id, email, name, avatar_url, role, username, onboarding_completed, email_verified FROM users WHERE id=$1', [userId]);
+    const result = await db.query('SELECT id, email, name, role, username, onboarding_completed, email_verified FROM users WHERE id=$1', [userId]);
     if (!result.rows[0]) return res.status(404).json({ error: 'not_found' });
     res.json({ user: result.rows[0] });
   } catch (err) {
