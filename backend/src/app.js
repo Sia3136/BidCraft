@@ -46,6 +46,7 @@ const escrowRoutes = require('./routes/escrow');
 const offersRoutes = require('./routes/offers');
 const cronRoutes = require('./routes/cron');
 const reportsRoutes = require('./routes/reports');
+const categoriesRoutes = require('./routes/categories');
 
 const app = express();
 // Disable CSP for API-only backend as it serves no HTML and restrictive CSPs provide no benefit while risking integration breakage
@@ -120,6 +121,7 @@ app.use('/api/escrow',    escrowRoutes);
 app.use('/api/offers',    offersRoutes);
 app.use('/api/cron',      cronRoutes);
 app.use('/api/reports',   reportsRoutes);
+app.use('/api/categories',categoriesRoutes);
 
 app.use((err, req, res, next) => {
   logger.error(err.message || 'internal_error', { error: err, stack: err.stack });

@@ -8,11 +8,13 @@ import { updateProfile, checkUsername, suggestUsername } from '@/lib/api'
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
+import Image from 'next/image'
 
-const INTERESTS_LIST = [
-  'Vintage Clothing', 'Handmade Jewelry', 'Furniture', 'Art', 'Home Decor', 'Ceramics',
-  'Books', 'Collectibles', 'Electronics', 'Sneakers', 'Streetwear', 'Watches'
-]
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -50,7 +52,17 @@ export default function OnboardingPage() {
   const [state, setState] = useState('')
   
   // Interests Data
+  const [categories, setCategories] = useState<Category[]>([])
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
+  
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.categories) setCategories(data.categories)
+      })
+      .catch(err => console.error('Failed to fetch categories:', err))
+  }, [])
   
   // Role Data
   const [marketplaceRole, setMarketplaceRole] = useState<'buyer' | 'seller' | 'both'>('buyer')
@@ -175,14 +187,51 @@ export default function OnboardingPage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col items-center justify-center p-4 py-12">
-      <div className="w-full max-w-[600px] mb-6 flex justify-center">
+    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative overflow-hidden">
+      
+      {/* Background imagery depending on step */}
+      <AnimatePresence>
+        {step === 1 && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="absolute inset-0 z-0"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-cream-base)] via-[var(--color-cream-base)]/80 to-[var(--color-cream-100)]/40 z-10 backdrop-blur-[4px]" />
+            <Image 
+              src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp" 
+              alt="Welcome" 
+              fill 
+              className="object-cover opacity-30" 
+            />
+          </motion.div>
+        )}
+        {step === 4 && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="absolute inset-0 z-0"
+          >
+            <div className="absolute inset-0 bg-[var(--color-cream-base)]/80 z-10 backdrop-blur-[8px]" />
+            <Image 
+              src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/minimal_dog.jpg" 
+              alt="Ready" 
+              fill 
+              className="object-cover opacity-25" 
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="w-full max-w-[600px] mb-6 flex justify-center relative z-20">
         <Link href="/" className="text-display-md text-[var(--color-ink-900)] font-bold tracking-tight">
           BidCraft
         </Link>
       </div>
 
-      <div className="w-full max-w-[600px] bg-[var(--color-white)] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8 overflow-hidden relative min-h-[550px] flex flex-col">
+      <div className="w-full max-w-[600px] bg-[var(--color-white)]/95 backdrop-blur-[12px] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8 overflow-hidden relative min-h-[550px] flex flex-col z-20">
         
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-cream-raised)]">
@@ -221,9 +270,9 @@ export default function OnboardingPage() {
                 className="flex-1 flex flex-col items-center justify-center text-center space-y-6"
               >
                 <div className="w-24 h-24 rounded-full bg-[var(--color-cream-raised)] flex items-center justify-center mb-2">
-                  <span className="text-display-md text-[var(--color-terracotta-600)]">👋</span>
+                  <span className="text-display-lg drop-shadow-sm">👋</span>
                 </div>
-                <h1 className="text-heading-xl text-[var(--color-ink-900)]">Welcome to BidCraft, {user.name.split(' ')[0]}!</h1>
+                <h1 className="text-display-sm text-[var(--color-ink-900)] font-serif mt-2">Welcome to BidCraft, {user.name.split(' ')[0]}!</h1>
                 <p className="text-body-lg text-[var(--color-ink-700)] max-w-md">
                   We're thrilled to have you here. Let's set up your identity and preferences to personalize your experience.
                 </p>
@@ -332,34 +381,38 @@ export default function OnboardingPage() {
                 className="flex-1 flex flex-col"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-heading-lg text-[var(--color-ink-900)]">Your Interests</h2>
-                  <button onClick={() => setStep(4)} className="text-body-sm font-medium text-[var(--color-terracotta-600)] hover:underline mt-1">Skip</button>
+                  <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif">Your Interests</h2>
                 </div>
                 <p className="text-body-md text-[var(--color-ink-700)] mb-8">Select a few categories to help us personalize your feed.</p>
                 
                 <div className="flex flex-wrap gap-3 flex-1 content-start">
-                  {INTERESTS_LIST.map(interest => (
+                  {categories.map(cat => (
                     <button
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
+                      key={cat.id}
+                      onClick={() => toggleInterest(cat.name)}
                       className={`px-4 py-2.5 rounded-full border-2 transition-all text-body-md font-medium ${
                         selectedInterests.includes(interest)
                           ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-800)] shadow-sm'
                           : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)] hover:bg-[var(--color-cream-base)]'
                       }`}
                     >
-                      {interest}
+                      {cat.name}
                     </button>
                   ))}
                 </div>
 
-                <div className="mt-8 flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
-                  <button onClick={() => setStep(2)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
-                  <button 
-                    onClick={() => setStep(4)} 
-                    className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-black transition-colors shadow-sm"
-                  >
-                    Continue
+                <div className="mt-8 flex flex-col items-center pt-6 border-t border-[var(--color-border-subtle)] space-y-4">
+                  <div className="w-full flex justify-between items-center">
+                    <button onClick={() => setStep(2)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
+                    <button 
+                      onClick={() => setStep(4)} 
+                      className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-black transition-colors shadow-sm"
+                    >
+                      Continue
+                    </button>
+                  </div>
+                  <button onClick={() => setStep(4)} className="text-body-sm font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] hover:underline">
+                    Skip for now
                   </button>
                 </div>
               </motion.div>
@@ -375,8 +428,7 @@ export default function OnboardingPage() {
                 className="flex-1 flex flex-col"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-heading-lg text-[var(--color-ink-900)]">How will you use BidCraft?</h2>
-                  <button onClick={handleFinish} className="text-body-sm font-medium text-[var(--color-terracotta-600)] hover:underline mt-1">Skip</button>
+                  <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif">How will you use BidCraft?</h2>
                 </div>
                 <p className="text-body-md text-[var(--color-ink-700)] mb-8">You can always change this later if you decide to sell.</p>
                 
@@ -414,14 +466,19 @@ export default function OnboardingPage() {
                   ))}
                 </div>
 
-                <div className="mt-8 flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">
-                  <button onClick={() => setStep(3)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
-                  <button 
-                    onClick={handleFinish}
-                    disabled={isSubmitting}
-                    className="h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2 shadow-sm min-w-[140px]"
-                  >
-                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Finish'}
+                <div className="mt-8 flex flex-col items-center pt-6 border-t border-[var(--color-border-subtle)] space-y-4">
+                  <div className="w-full flex justify-between items-center">
+                    <button onClick={() => setStep(3)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
+                    <button 
+                      onClick={handleFinish}
+                      disabled={isSubmitting}
+                      className="h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2 shadow-sm min-w-[140px]"
+                    >
+                      {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Finish'}
+                    </button>
+                  </div>
+                  <button onClick={handleFinish} disabled={isSubmitting} className="text-body-sm font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] hover:underline">
+                    Skip for now
                   </button>
                 </div>
               </motion.div>

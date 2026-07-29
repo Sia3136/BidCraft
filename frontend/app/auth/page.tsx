@@ -176,30 +176,34 @@ function AuthPageContent() {
     }
   }
 
+  const currentImage = activeTab === 'forgot'
+    ? 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344942/bidcraft/auth/crochet_pouch.jpg'
+    : 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp'
+
   return (
-    <div className="min-h-screen bg-[var(--color-cream-base)] flex">
-      {/* LEFT COLUMN - Branding / Image */}
-      <div className="hidden lg:flex w-1/2 relative bg-[var(--color-slate-900)] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)] to-[var(--color-slate-900)] opacity-90 mix-blend-multiply z-10" />
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--color-cream-base)]">
+      {/* BRANDING / IMAGE - Top Banner (Mobile), Left Column (Desktop) */}
+      <div className="w-full lg:w-1/2 relative h-56 sm:h-64 lg:h-auto overflow-hidden bg-[var(--color-slate-900)] shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)]/40 to-[var(--color-ink-900)]/70 mix-blend-multiply z-10" />
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://res.cloudinary.com/dzttne31e/image/upload/v1714902148/premium-ceramic-auth.jpg"
+            src={currentImage}
             alt="Premium handcrafted items"
             fill
-            sizes="50vw"
+            sizes="(max-width: 1024px) 100vw, 50vw"
             priority
-            className="object-cover opacity-60"
+            className="object-cover opacity-80"
           />
         </div>
         
-        <div className="relative z-20 flex flex-col justify-between p-16 h-full w-full">
-          <Link href="/" className="text-display-md text-white font-bold tracking-tight">
+        <div className="relative z-20 flex flex-col justify-between p-6 sm:p-12 lg:p-16 h-full w-full">
+          <Link href="/" className="text-display-md text-white font-bold tracking-tight drop-shadow-md">
             BidCraft
           </Link>
           
-          <div className="max-w-md">
-            <h1 className="text-display-sm text-white mb-6">Discover unique artisanal goods.</h1>
-            <p className="text-body-lg text-[var(--color-slate-200)]">
+          <div className="hidden lg:block max-w-md">
+            <h1 className="text-display-sm text-white mb-6 drop-shadow-md">Discover unique artisanal goods.</h1>
+            <p className="text-body-lg text-white/90 drop-shadow-sm">
               Join the premium marketplace for handcrafted items, vintage treasures, and one-of-a-kind art pieces.
             </p>
           </div>
@@ -207,16 +211,10 @@ function AuthPageContent() {
       </div>
 
       {/* RIGHT COLUMN - Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-[440px]">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 flex-1">
+        <div className="w-full max-w-[440px] -mt-16 lg:mt-0 relative z-30">
           
-          <div className="lg:hidden mb-12">
-            <Link href="/" className="text-display-md text-[var(--color-ink-900)] font-bold">
-              BidCraft
-            </Link>
-          </div>
-
-          <div className="bg-[var(--color-white)] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8">
+          <div className="bg-[var(--color-white)]/95 backdrop-blur-[12px] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8">
             
             {/* Tabs */}
             {(activeTab === 'signin' || (activeTab === 'signup' && signUpStep === 1)) && (

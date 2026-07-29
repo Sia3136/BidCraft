@@ -4,8 +4,23 @@
  */
 
 const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'BidCraft <siarozani3136@gmail.com>';
+
+let smtpTransporter = null;
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
+  smtpTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+}
 
 async function sendEmail({ to, subject, text, html, ctaLink, ctaText }) {
   if (process.env.NODE_ENV === 'test') {
@@ -32,19 +47,31 @@ CTA: ${ctaText} -> ${ctaLink}
   `;
 
   try {
-    const data = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: [to],
-      subject,
-      html: html || defaultHtml
-    });
-    
-    if (data.error) {
-      console.error('Email delivery error from Resend:', data.error);
-      throw new Error(data.error.message);
+    if (process.env.NODE_ENV === 'production') {
+      const data = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: [to],
+        subject,
+        html: html || defaultHtml
+      });
+      
+      if (data.error) {
+        console.error('Email delivery error from Resend:', data.error);
+        throw new Error(data.error.message);
+      }
+      return { success: true, data };
+    } else {
+      if (!smtpTransporter) throw new Error('SMTP transporter not configured');
+      const info = await smtpTransporter.sendMail({
+        from: FROM_EMAIL,
+        to,
+        subject,
+        text,
+        html: html || defaultHtml
+      });
+      console.log(`[SMTP EMAIL SENT] MessageId: ${info.messageId}`);
+      return { success: true, messageId: info.messageId };
     }
-    
-    return { success: true, data };
   } catch (err) {
     console.error('Email delivery failed:', err);
     throw err;
