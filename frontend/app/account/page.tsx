@@ -35,12 +35,16 @@ export default function AccountOverview() {
 
   if (!user) return null
 
-  // Calculate profile completion (simplified)
+  // Calculate profile completion based solely on active fields:
+  // Name, Username (required: combined 50%)
+  // City (10%), State (10%)
+  // Interests (15%)
+  // Marketplace Role (15%)
   let completion = 50
-  if (user.bio) completion += 10
-  if (user.city && user.country) completion += 15
+  if (user.city) completion += 10
+  if (user.state) completion += 10
   if (user.interests?.length > 0) completion += 15
-  if (user.avatar_url) completion += 10
+  if (user.marketplace_role) completion += 15
   completion = Math.min(completion, 100)
 
   return (

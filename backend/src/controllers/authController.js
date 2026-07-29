@@ -342,7 +342,11 @@ async function forgotPassword(req, res, next) {
       });
     }
   } catch (err) {
-    next(err);
+    if (!res.headersSent) {
+      next(err);
+    } else {
+      console.error('Error in background forgotPassword task:', err);
+    }
   }
 }
 

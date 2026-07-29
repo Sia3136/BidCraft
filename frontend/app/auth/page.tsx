@@ -176,54 +176,85 @@ function AuthPageContent() {
     }
   }
 
-  const currentImage = activeTab === 'forgot'
-    ? 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344942/bidcraft/auth/crochet_pouch.jpg'
-    : 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp'
+  const isForgotFlow = activeTab === 'forgot'
+  const isOtpFlow = activeTab === 'signup' && signUpStep === 2
+  const isFullScreenBg = isForgotFlow || isOtpFlow
+  const isRegisterStep1 = activeTab === 'signup' && signUpStep === 1
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--color-cream-base)]">
-      {/* BRANDING / IMAGE - Top Banner (Mobile), Left Column (Desktop) */}
-      <div className="w-full lg:w-1/2 relative h-56 sm:h-64 lg:h-auto overflow-hidden bg-[var(--color-slate-900)] shrink-0">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[var(--color-cream-base)] relative overflow-hidden">
+      {/* BRANDING / IMAGE */}
+      <div className={cn(
+        "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)]",
+        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-1/2 h-56 sm:h-64 lg:h-auto",
+        isRegisterStep1 && !isFullScreenBg ? "lg:order-last" : ""
+      )}>
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)]/40 to-[var(--color-ink-900)]/70 mix-blend-multiply z-10" />
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={currentImage}
-            alt="Premium handcrafted items"
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            priority
-            className="object-cover opacity-80"
-          />
-        </div>
         
-        <div className="relative z-20 flex flex-col justify-between p-6 sm:p-12 lg:p-16 h-full w-full">
-          <Link href="/" className="text-display-md text-white font-bold tracking-tight drop-shadow-md">
-            BidCraft
-          </Link>
-          
-          <div className="hidden lg:block max-w-md">
-            <h1 className="text-display-sm text-white mb-6 drop-shadow-md">Discover unique artisanal goods.</h1>
-            <p className="text-body-lg text-white/90 drop-shadow-sm">
-              Join the premium marketplace for handcrafted items, vintage treasures, and one-of-a-kind art pieces.
-            </p>
+        {isFullScreenBg && (
+           <div className="absolute inset-0 bg-[var(--color-cream-base)]/80 z-20 backdrop-blur-md" />
+        )}
+
+        <Image
+          src={isForgotFlow ? 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344942/bidcraft/auth/crochet_pouch.jpg' : 'https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp'}
+          alt="Premium handcrafted items"
+          fill
+          sizes="100vw"
+          priority
+          className={cn("object-cover", isFullScreenBg ? "opacity-30" : "opacity-80")}
+          style={{ objectPosition: 'center 30%' }}
+        />
+        
+        {!isFullScreenBg && (
+          <div className="relative z-20 flex flex-col justify-between p-6 sm:p-12 lg:p-16 h-full w-full">
+            <Link href="/" className="text-display-md text-white font-bold tracking-tight drop-shadow-md">
+              BidCraft
+            </Link>
+            
+            <div className="hidden lg:block max-w-md">
+              <h1 className="text-display-sm text-white mb-6 drop-shadow-md">
+                {isRegisterStep1 ? 'Join the community.' : 'Discover unique artisanal goods.'}
+              </h1>
+              <p className="text-body-lg text-white/90 drop-shadow-sm">
+                {isRegisterStep1 ? 'Set up your identity and start exploring premium handcrafted items.' : 'Join the premium marketplace for handcrafted items, vintage treasures, and one-of-a-kind art pieces.'}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* RIGHT COLUMN - Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 flex-1">
-        <div className="w-full max-w-[440px] -mt-16 lg:mt-0 relative z-30">
+      <div className={cn(
+        "flex flex-col items-center justify-center p-6 sm:p-12 flex-1 relative z-30",
+        isFullScreenBg ? "w-full" : "w-full lg:w-1/2"
+      )}>
+        
+        {isFullScreenBg && (
+           <div className="absolute top-8 left-8 sm:top-12 sm:left-12">
+              <Link href="/" className="text-display-md text-[var(--color-ink-900)] font-bold tracking-tight">
+                BidCraft
+              </Link>
+           </div>
+        )}
+
+        <div className={cn(
+          "w-full max-w-[440px]",
+          !isFullScreenBg && "-mt-8 lg:mt-0"
+        )}>
           
-          <div className="bg-[var(--color-white)]/95 backdrop-blur-[12px] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8">
+          <div className={cn(
+            "p-8",
+            isFullScreenBg ? "" : "bg-[var(--color-cream-base)]"
+          )}>
             
             {/* Tabs */}
-            {(activeTab === 'signin' || (activeTab === 'signup' && signUpStep === 1)) && (
-              <div className="flex bg-[var(--color-cream-raised)] rounded-[var(--radius-pill)] p-1 mb-8 relative">
+            {(activeTab === 'signin' || isRegisterStep1) && (
+              <div className="flex bg-[var(--color-cream-raised)] rounded-[var(--radius-pill)] p-1 mb-10 relative">
                 <button
                   onClick={() => { setActiveTab('signin'); setError(''); }}
                   className={cn(
                     "flex-1 py-2 rounded-[var(--radius-pill)] text-body-md font-semibold transition-colors z-10",
-                    activeTab === 'signin' ? "text-[var(--color-ink-900)]" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
+                    activeTab === 'signin' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
                   Sign In
@@ -232,7 +263,7 @@ function AuthPageContent() {
                   onClick={() => { setActiveTab('signup'); setError(''); }}
                   className={cn(
                     "flex-1 py-2 rounded-[var(--radius-pill)] text-body-md font-semibold transition-colors z-10",
-                    activeTab === 'signup' ? "text-[var(--color-ink-900)]" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
+                    activeTab === 'signup' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
                   Create Account
@@ -248,13 +279,13 @@ function AuthPageContent() {
 
             {/* ERROR ALERT */}
             {error && (
-              <div className="mb-6 p-3 bg-[var(--color-urgent-100)] text-[var(--color-urgent-700)] text-body-md rounded-[var(--radius-sm)] border border-[var(--color-urgent-200)] flex items-start gap-2">
-                <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <div className="mb-8 p-4 bg-[var(--color-urgent-50)] text-[var(--color-urgent-700)] text-body-md rounded-[var(--radius-md)] border border-[var(--color-urgent-200)] flex items-start gap-3">
+                <svg className="w-5 h-5 shrink-0 mt-0.5 text-[var(--color-urgent-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 {error}
               </div>
             )}
 
-            <div className="overflow-hidden">
+            <div className="overflow-visible">
               <AnimatePresence mode="wait">
                 
                 {/* SIGN IN FORM */}
@@ -266,22 +297,25 @@ function AuthPageContent() {
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.2 }}
                     onSubmit={handleSignIn}
-                    className="space-y-5"
+                    className="space-y-6"
                   >
                     <div>
-                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Email Address</label>
+                      <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif mb-6">Welcome back.</h2>
+                    </div>
+                    <div>
+                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">Email Address</label>
                       <input
                         type="email"
                         required
                         value={signInEmail}
                         onChange={(e) => setSignInEmail(e.target.value)}
                         placeholder="name@example.com"
-                        className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                        className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                       />
                     </div>
 
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center justify-between mb-2">
                         <label className="block text-body-md text-[var(--color-ink-900)] font-medium">Password</label>
                         <button type="button" onClick={() => { setActiveTab('forgot'); setError(''); }} className="text-caption font-medium text-[var(--color-terracotta-600)] hover:underline">
                           Forgot password?
@@ -294,7 +328,7 @@ function AuthPageContent() {
                           value={signInPassword}
                           onChange={(e) => setSignInPassword(e.target.value)}
                           placeholder="Password"
-                          className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                          className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                         />
                         <button
                           type="button"
@@ -309,12 +343,12 @@ function AuthPageContent() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-2 flex items-center justify-center gap-2"
+                      className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-4 flex items-center justify-center gap-2 shadow-md"
                     >
                       {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
                     </button>
                     
-                    <div className="relative flex items-center py-4">
+                    <div className="relative flex items-center py-6">
                       <div className="flex-grow border-t border-[var(--color-border-subtle)]"></div>
                       <span className="shrink-0 px-4 text-caption text-[var(--color-ink-500)]">or</span>
                       <div className="flex-grow border-t border-[var(--color-border-subtle)]"></div>
@@ -323,7 +357,7 @@ function AuthPageContent() {
                     <button
                       type="button"
                       onClick={handleGoogleLogin}
-                      className="w-full h-[48px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
+                      className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -355,34 +389,37 @@ function AuthPageContent() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20 }}
                           onSubmit={handleSignUpStep1}
-                          className="space-y-4"
+                          className="space-y-5"
                         >
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Full Name</label>
+                            <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif mb-6">Create an account.</h2>
+                          </div>
+                          <div>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">Full Name</label>
                             <input
                               type="text"
                               required
                               value={signUpName}
                               onChange={(e) => setSignUpName(e.target.value)}
                               placeholder="John Doe"
-                              className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Email Address</label>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">Email Address</label>
                             <input
                               type="email"
                               required
                               value={signUpEmail}
                               onChange={(e) => setSignUpEmail(e.target.value)}
                               placeholder="name@example.com"
-                              className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Password</label>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">Password</label>
                             <div className="relative">
                               <input
                                 type={showSignUpPassword ? 'text' : 'password'}
@@ -391,7 +428,7 @@ function AuthPageContent() {
                                 onChange={(e) => setSignUpPassword(e.target.value)}
                                 placeholder="Min. 6 characters"
                                 minLength={6}
-                                className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                                className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                               />
                               <button
                                 type="button"
@@ -406,12 +443,12 @@ function AuthPageContent() {
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-4 flex items-center justify-center gap-2"
+                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-6 flex items-center justify-center gap-2 shadow-md"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
                           </button>
 
-                          <div className="relative flex items-center py-2">
+                          <div className="relative flex items-center py-4">
                             <div className="flex-grow border-t border-[var(--color-border-subtle)]"></div>
                             <span className="shrink-0 px-4 text-caption text-[var(--color-ink-500)]">or</span>
                             <div className="flex-grow border-t border-[var(--color-border-subtle)]"></div>
@@ -420,7 +457,7 @@ function AuthPageContent() {
                           <button
                             type="button"
                             onClick={handleGoogleLogin}
-                            className="w-full h-[48px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
+                            className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
                           >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -431,7 +468,7 @@ function AuthPageContent() {
                             Continue with Google
                           </button>
                           
-                          <p className="text-center font-ui text-[12px] text-[var(--color-ink-500)] mt-4">
+                          <p className="text-center font-ui text-[12px] text-[var(--color-ink-500)] mt-6">
                             By creating an account, you agree to our <Link href="/terms" className="hover:underline text-[var(--color-terracotta-600)]">Terms of Service</Link> and <Link href="/privacy" className="hover:underline text-[var(--color-terracotta-600)]">Privacy Policy</Link>.
                           </p>
                         </motion.form>
@@ -441,16 +478,19 @@ function AuthPageContent() {
                       {signUpStep === 2 && (
                         <motion.form
                           key="step2"
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
                           onSubmit={handleSignUpStep2}
-                          className="space-y-6"
+                          className="space-y-8 flex flex-col items-center justify-center py-12"
                         >
+                          <div className="w-16 h-16 rounded-full bg-[var(--color-cream-raised)] flex items-center justify-center mb-2 shadow-sm border border-[var(--color-border-subtle)]">
+                            <span className="text-display-xs">✉️</span>
+                          </div>
                           <div className="text-center">
-                            <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-2">Check your email</h2>
-                            <p className="text-body-md text-[var(--color-ink-700)]">
-                              We've sent a 6-digit code to <strong>{signUpEmail}</strong>
+                            <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif mb-4">Check your email</h2>
+                            <p className="text-body-lg text-[var(--color-ink-700)]">
+                              We've sent a 6-digit code to <br/><strong className="text-[var(--color-ink-900)]">{signUpEmail}</strong>
                             </p>
                           </div>
 
@@ -461,21 +501,21 @@ function AuthPageContent() {
                             value={otp}
                             onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                             placeholder="000000"
-                            className="w-full h-[56px] text-center tracking-[0.5em] text-heading-lg bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                            className="w-full max-w-[280px] h-[64px] text-center tracking-[0.75em] font-serif text-[32px] bg-transparent border-b-2 border-[var(--color-ink-300)] focus:border-[var(--color-terracotta-600)] outline-none transition-all mx-auto placeholder:opacity-20 placeholder:tracking-normal"
                           />
 
                           <button
                             type="submit"
                             disabled={isSubmitting || otp.length !== 6}
-                            className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-lg mt-8"
                           >
-                            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Continue'}
+                            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify Account'}
                           </button>
                           
                           <button
                             type="button"
                             onClick={() => setSignUpStep(1)}
-                            className="w-full text-center text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)] transition-colors mt-2"
+                            className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors mt-6"
                           >
                             Use a different email
                           </button>
@@ -498,13 +538,13 @@ function AuthPageContent() {
                     <button 
                       type="button" 
                       onClick={() => setActiveTab('signin')} 
-                      className="flex items-center gap-2 text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] mb-6 transition-colors"
+                      className="flex items-center gap-2 text-body-md text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] mb-8 transition-colors"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Back to Sign In
                     </button>
                     
-                    <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-2">Reset Password</h2>
+                    <h2 className="text-display-xs text-[var(--color-ink-900)] font-serif mb-8">Reset Password</h2>
                     
                     <AnimatePresence mode="wait">
                       {forgotStep === 1 && (
@@ -514,28 +554,28 @@ function AuthPageContent() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20 }}
                           onSubmit={handleForgotStep1}
-                          className="space-y-5"
+                          className="space-y-6"
                         >
-                          <p className="text-body-md text-[var(--color-ink-700)] mb-4">
+                          <p className="text-body-lg text-[var(--color-ink-700)] mb-6">
                             Enter the email associated with your account and we'll send you a verification code to reset your password.
                           </p>
 
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Email Address</label>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">Email Address</label>
                             <input
                               type="email"
                               required
                               value={forgotEmail}
                               onChange={(e) => setForgotEmail(e.target.value)}
                               placeholder="name@example.com"
-                              className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
                           </div>
 
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2"
+                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg mt-4"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Reset Code'}
                           </button>
@@ -549,14 +589,14 @@ function AuthPageContent() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20 }}
                           onSubmit={handleForgotStep2}
-                          className="space-y-5"
+                          className="space-y-8"
                         >
-                          <p className="text-body-md text-[var(--color-ink-700)] mb-4">
+                          <p className="text-body-lg text-[var(--color-ink-700)] mb-6">
                             We've sent a 6-digit code to <strong>{forgotEmail}</strong>
                           </p>
 
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">Verification Code</label>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2 text-center">Verification Code</label>
                             <input
                               type="text"
                               required
@@ -564,12 +604,12 @@ function AuthPageContent() {
                               value={forgotOtp}
                               onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, ''))}
                               placeholder="000000"
-                              className="w-full h-[48px] text-center tracking-[0.5em] text-body-lg bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                              className="w-full h-[64px] text-center tracking-[0.75em] font-serif text-[32px] bg-transparent border-b-2 border-[var(--color-ink-300)] focus:border-[var(--color-terracotta-600)] outline-none transition-all mx-auto placeholder:opacity-20 placeholder:tracking-normal mb-8"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">New Password</label>
+                            <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-2">New Password</label>
                             <div className="relative">
                               <input
                                 type={showSignInPassword ? 'text' : 'password'}
@@ -578,7 +618,7 @@ function AuthPageContent() {
                                 value={forgotNewPassword}
                                 onChange={(e) => setForgotNewPassword(e.target.value)}
                                 placeholder="Min. 6 characters"
-                                className="w-full h-[48px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                                className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                               />
                               <button
                                 type="button"
@@ -593,9 +633,9 @@ function AuthPageContent() {
                           <button
                             type="submit"
                             disabled={isSubmitting || forgotOtp.length !== 6 || forgotNewPassword.length < 6}
-                            className="w-full h-[48px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-lg"
                           >
-                            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Reset Password'}
+                            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Set New Password'}
                           </button>
                         </motion.form>
                       )}

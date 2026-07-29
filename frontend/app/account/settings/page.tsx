@@ -8,11 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { updateProfile, checkUsername } from '@/lib/api'
 import { Avatar } from '@/components/ui/avatar'
-
-const INTERESTS_LIST = [
-  'Vintage Clothing', 'Handmade Jewelry', 'Furniture', 'Art', 'Home Decor', 'Ceramics',
-  'Books', 'Collectibles', 'Electronics', 'Sneakers', 'Streetwear', 'Watches'
-]
+import { useCategories } from '@/hooks/useCategories'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -43,6 +39,8 @@ export default function ProfileSettingsPage() {
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [phone, setPhone] = useState('')
+  
+  const { categories } = useCategories()
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
   const [marketplaceRole, setMarketplaceRole] = useState<'buyer' | 'seller' | 'both'>('buyer')
   
@@ -272,18 +270,18 @@ export default function ProfileSettingsPage() {
               <h3 className="text-body-lg font-medium text-[var(--color-ink-900)] mb-2">Interests</h3>
               <p className="text-body-sm text-[var(--color-ink-500)] mb-4">Update your interests to improve recommendations.</p>
               <div className="flex flex-wrap gap-2">
-                {INTERESTS_LIST.map(interest => (
+                {categories.map(cat => (
                   <button
-                    key={interest}
+                    key={cat.id}
                     type="button"
-                    onClick={() => toggleInterest(interest)}
+                    onClick={() => toggleInterest(cat.name)}
                     className={`px-3 py-1.5 rounded-full border text-body-sm transition-all ${
-                      selectedInterests.includes(interest)
+                      selectedInterests.includes(cat.name)
                         ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-600)] text-white'
                         : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)] hover:bg-[var(--color-cream-base)]'
                     }`}
                   >
-                    {interest}
+                    {cat.name}
                   </button>
                 ))}
               </div>

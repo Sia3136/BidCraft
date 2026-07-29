@@ -9,12 +9,7 @@ import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
 import Image from 'next/image'
-
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-}
+import { useCategories } from '@/hooks/useCategories'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -52,17 +47,8 @@ export default function OnboardingPage() {
   const [state, setState] = useState('')
   
   // Interests Data
-  const [categories, setCategories] = useState<Category[]>([])
+  const { categories } = useCategories()
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
-  
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.categories) setCategories(data.categories)
-      })
-      .catch(err => console.error('Failed to fetch categories:', err))
-  }, [])
   
   // Role Data
   const [marketplaceRole, setMarketplaceRole] = useState<'buyer' | 'seller' | 'both'>('buyer')
@@ -187,7 +173,7 @@ export default function OnboardingPage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
       
       {/* Background imagery depending on step */}
       <AnimatePresence>
@@ -196,14 +182,14 @@ export default function OnboardingPage() {
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-0 bg-[var(--color-slate-900)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-cream-base)] via-[var(--color-cream-base)]/80 to-[var(--color-cream-100)]/40 z-10 backdrop-blur-[4px]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-slate-900)] via-[var(--color-slate-900)]/80 to-[var(--color-slate-900)]/40 z-10" />
             <Image 
               src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/pottery_artwork.webp" 
               alt="Welcome" 
               fill 
-              className="object-cover opacity-30" 
+              className="object-cover opacity-50" 
             />
           </motion.div>
         )}
@@ -212,26 +198,35 @@ export default function OnboardingPage() {
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
-            className="absolute inset-0 z-0"
+            className="absolute inset-0 z-0 bg-[var(--color-cream-base)]"
           >
-            <div className="absolute inset-0 bg-[var(--color-cream-base)]/80 z-10 backdrop-blur-[8px]" />
+            <div className="absolute inset-0 bg-[var(--color-cream-base)]/60 z-10 backdrop-blur-[4px]" />
             <Image 
               src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785344944/bidcraft/auth/minimal_dog.jpg" 
               alt="Ready" 
               fill 
-              className="object-cover opacity-25" 
+              className="object-cover opacity-20" 
             />
           </motion.div>
         )}
+        {step !== 1 && step !== 4 && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="absolute inset-0 z-0 bg-[var(--color-cream-base)]"
+          />
+        )}
       </AnimatePresence>
 
-      <div className="w-full max-w-[600px] mb-6 flex justify-center relative z-20">
-        <Link href="/" className="text-display-md text-[var(--color-ink-900)] font-bold tracking-tight">
+      <div className="w-full flex justify-between items-center p-6 sm:p-8 relative z-20">
+        <Link href="/" className={step === 1 ? "text-display-md text-white font-bold tracking-tight drop-shadow-md" : "text-display-md text-[var(--color-ink-900)] font-bold tracking-tight"}>
           BidCraft
         </Link>
       </div>
 
-      <div className="w-full max-w-[600px] bg-[var(--color-white)]/95 backdrop-blur-[12px] rounded-[var(--radius-lg)] shadow-[var(--shadow-modal)] p-8 overflow-hidden relative min-h-[550px] flex flex-col z-20">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative z-20">
+        <div className="w-full max-w-[560px] overflow-hidden relative min-h-[500px] flex flex-col">
         
         {/* Progress Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-[var(--color-cream-raised)]">
@@ -264,23 +259,25 @@ export default function OnboardingPage() {
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="flex-1 flex flex-col items-center justify-center text-center space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex-1 flex flex-col items-center justify-center text-center space-y-8 px-4"
               >
-                <div className="w-24 h-24 rounded-full bg-[var(--color-cream-raised)] flex items-center justify-center mb-2">
-                  <span className="text-display-lg drop-shadow-sm">👋</span>
+                <div>
+                  <h1 className="text-display-lg text-white font-serif mb-4 drop-shadow-md">
+                    Welcome to BidCraft, {user.name.split(' ')[0]}.
+                  </h1>
+                  <p className="text-body-xl text-white/90 max-w-md mx-auto font-light drop-shadow-sm">
+                    We're thrilled to have you here. Let's set up your identity and preferences to personalize your experience.
+                  </p>
                 </div>
-                <h1 className="text-display-sm text-[var(--color-ink-900)] font-serif mt-2">Welcome to BidCraft, {user.name.split(' ')[0]}!</h1>
-                <p className="text-body-lg text-[var(--color-ink-700)] max-w-md">
-                  We're thrilled to have you here. Let's set up your identity and preferences to personalize your experience.
-                </p>
-                <button
-                  onClick={() => setStep(2)}
-                  className="mt-8 h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors shadow-sm"
+                
+                <button 
+                  onClick={() => setStep(2)} 
+                  className="h-[56px] px-12 bg-white text-[var(--color-ink-900)] text-body-lg font-semibold rounded-full hover:bg-[var(--color-cream-100)] transition-colors shadow-lg"
                 >
-                  Let's Go
+                  Get Started
                 </button>
               </motion.div>
             )}
@@ -391,7 +388,7 @@ export default function OnboardingPage() {
                       key={cat.id}
                       onClick={() => toggleInterest(cat.name)}
                       className={`px-4 py-2.5 rounded-full border-2 transition-all text-body-md font-medium ${
-                        selectedInterests.includes(interest)
+                        selectedInterests.includes(cat.name)
                           ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-800)] shadow-sm'
                           : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)] hover:bg-[var(--color-cream-base)]'
                       }`}

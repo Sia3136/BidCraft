@@ -37,4 +37,24 @@ router.post('/end-auctions', async (req, res, next) => {
   }
 });
 
+router.post('/cleanup', async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const verificationResult = await db.query(`DELETE FROM verification_codes WHERE expires_at < NOW()`);
+    const refreshResult = await db.query(`DELETE FROM refresh_tokens WHERE expires_at < NOW()`);
+
+    res.json({
+      success: true,
+      deleted_verification_codes: verificationResult.rowCount,
+      deleted_refresh_tokens: refreshResult.rowCount
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
