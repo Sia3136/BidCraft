@@ -9,6 +9,7 @@ import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { useCategories } from '@/hooks/useCategories'
 import { FieldError } from '@/components/ui/field-error'
+import { updateProfile } from '@/lib/api'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -146,16 +147,14 @@ export default function ProfileSettingsPage() {
   if (!user) return null
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-4xl">
       <h1 className="text-display-sm text-[var(--color-ink-900)] mb-8">Profile</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Public Identity</CardTitle>
-          <CardDescription>Manage your public information and how others see you on BidCraft.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="mb-10">
+        <h2 className="text-heading-lg font-semibold text-[var(--color-ink-900)] mb-1">Public Identity</h2>
+        <p className="text-body-md text-[var(--color-ink-500)] mb-8">Manage your public information and how others see you on BidCraft.</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-10">
             
             {message && message.type === 'success' && (
               <div className="p-4 rounded-sm text-body-md flex items-center gap-2 bg-[var(--color-success-50)] text-[var(--color-success-700)] border border-[var(--color-success-200)]">
@@ -281,17 +280,14 @@ export default function ProfileSettingsPage() {
               </div>
             </div>
 
-            <div className="flex flex-col items-end gap-2 pt-8 border-t border-[var(--color-border-subtle)]">
-              <Button type="submit" disabled={isSubmitting || isUsernameValid === false || isCheckingUsername}>
-                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Save Changes
-              </Button>
+            <div className="pt-6 border-t border-[var(--color-border-subtle)] flex justify-end gap-4 items-center">
               {message && message.type === 'error' && <FieldError message={message.text} />}
+              <Button type="submit" size="lg" disabled={isSubmitting || isUsernameValid === false || isCheckingUsername} className="min-w-[120px]">
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Changes'}
+              </Button>
             </div>
-
           </form>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

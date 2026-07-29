@@ -66,18 +66,16 @@ export default function SecuritySettingsPage() {
   // Or we just show the form.
 
   return (
-    <div className="max-w-2xl space-y-8">
+    <div className="max-w-4xl space-y-8">
       <h1 className="text-display-sm text-[var(--color-ink-900)] flex items-center gap-3">
-        <ShieldCheck className="w-8 h-8 text-[var(--color-terracotta-600)]" /> Security
+        <ShieldCheck className="w-8 h-8 text-[var(--color-terracotta-600)]" /> Change Password
       </h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Change Password</CardTitle>
-          <CardDescription>Update your password to keep your account secure.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="mb-10">
+        <h2 className="text-heading-lg font-semibold text-[var(--color-ink-900)] mb-1">Update Password</h2>
+        <p className="text-body-md text-[var(--color-ink-500)] mb-8">Update your password to keep your account secure.</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
             
             {message && (
               <div className={`p-4 rounded-[var(--radius-md)] text-body-md flex items-center gap-2 ${
@@ -125,16 +123,14 @@ export default function SecuritySettingsPage() {
               />
             </div>
 
-            <div className="pt-4 border-t border-[var(--color-border-subtle)]">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Update Password
+            <div className="pt-6 border-t border-[var(--color-border-subtle)] flex justify-start">
+              <Button type="submit" size="lg" disabled={isSubmitting} className="min-w-[120px]">
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
               </Button>
             </div>
 
           </form>
-        </CardContent>
-      </Card>
+      </div>
       
       {user?.google_account && (
         <Card>

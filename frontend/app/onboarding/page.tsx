@@ -44,9 +44,6 @@ export default function OnboardingPage() {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [usernameConflict, setUsernameConflict] = useState('')
   
-  const [city, setCity] = useState('')
-  const [state, setState] = useState('')
-  
   // Interests Data
   const { categories } = useCategories()
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
@@ -147,8 +144,6 @@ export default function OnboardingPage() {
     try {
       const { profile } = await updateProfile({
         username,
-        city,
-        state,
         interests: selectedInterests,
         marketplace_role: marketplaceRole,
         onboarding_completed: true
@@ -325,28 +320,6 @@ export default function OnboardingPage() {
                     {isUsernameValid === false && <FieldError message={usernameConflict} />}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">City <span className="text-[var(--color-ink-400)] font-normal ml-1">(Optional)</span></label>
-                      <input
-                        type="text"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="Mumbai"
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-body-md text-[var(--color-ink-900)] font-medium mb-1.5">State <span className="text-[var(--color-ink-400)] font-normal ml-1">(Optional)</span></label>
-                      <input
-                        type="text"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                        placeholder="Maharashtra"
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
-                      />
-                    </div>
-                  </div>
                 </div>
 
                 <div className="mt-8 flex justify-between items-center pt-6 border-t border-[var(--color-border-subtle)]">

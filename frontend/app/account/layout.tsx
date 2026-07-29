@@ -20,12 +20,10 @@ import { Loader2 } from 'lucide-react'
 
 const SIDEBAR_NAV = [
   { name: 'Overview', href: '/account', icon: UserCircle },
-  { name: 'Orders', href: '/account/orders', icon: Package },
-  { name: 'Wishlist', href: '/account/wishlist', icon: Heart },
-  { name: 'Recently Viewed', href: '/account/recently-viewed', icon: Clock },
   { name: 'Profile Settings', href: '/account/settings', icon: Settings },
   { name: 'Addresses', href: '/account/addresses', icon: MapPin },
-  { name: 'Security', href: '/account/security', icon: ShieldCheck },
+  { name: 'Orders', href: '/account/orders', icon: Package },
+  { name: 'Change Password', href: '/account/security', icon: ShieldCheck },
 ]
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
