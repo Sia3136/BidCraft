@@ -251,7 +251,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
 
         {/* 6. New Arrivals (Rebuilt) */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex items-end justify-between mb-12">
               <h2 className="text-display-lg text-[var(--color-ink-900)]">New Arrivals</h2>
@@ -276,7 +276,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
 
 
         {/* 7. Curated Collections (Clickable) */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
               Curated Collections
@@ -319,7 +319,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
 
         {/* 8. Featured Creators */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
               {user ? 'Creators You Follow' : 'Featured Creators'}
@@ -357,26 +357,26 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             
             <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-200 mb-6">01</span>
+                <span className="text-6xl font-light text-stone-400 mb-6">01</span>
                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Browse</h3>
                 <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-sm text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+                <p className="text-base text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
               </div>
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-200 mb-6">02</span>
+                <span className="text-6xl font-light text-stone-400 mb-6">02</span>
                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Bid or Buy</h3>
                 <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-sm text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+                <p className="text-base text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
               </div>
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-200 mb-6">03</span>
+                <span className="text-6xl font-light text-stone-400 mb-6">03</span>
                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Delivered</h3>
                 <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-sm text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
+                <p className="text-base text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
               </div>
             </div>
 
-            <div className="w-full text-center mt-12 text-xs text-stone-400">
+            <div className="w-full text-center mt-12 text-xs text-stone-600">
               TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; Razorpay &middot; Secure payments &nbsp;|&nbsp; Delhivery &middot; Reliable shipping
             </div>
           </div>
@@ -469,11 +469,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             {/* Right column image placeholder */}
             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
               <img 
-                src="/images/cta-craft-placeholder.jpg" 
+                src="https://res.cloudinary.com/duzlsyzwa/image/upload/a1c8a4582ca82c3995d88befe1464e8e.webp" 
                 alt="Artisan at work" 
                 className="w-full h-full object-cover opacity-60"
               />
-              {/* TODO: Replace with real artisan/workshop image */}
             </div>
           </div>
         </section>
