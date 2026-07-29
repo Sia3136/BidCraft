@@ -10,6 +10,7 @@ import { Avatar } from '@/components/ui/avatar'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCategories } from '@/hooks/useCategories'
+import { FieldError } from '@/components/ui/field-error'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -159,9 +160,9 @@ export default function OnboardingPage() {
     } catch (err: any) {
       if (err.status === 409 && err.code === 'USERNAME_TAKEN') {
         // Race condition handled
-        setError(`Username became unavailable. Suggested: ${err.suggestion}`)
+        setUsernameConflict(`Username became unavailable. Suggested: ${err.suggestion}`)
         setUsername(err.suggestion)
-        setIsUsernameValid(true)
+        setIsUsernameValid(false)
         setStep(2) // Jump back to profile step
       } else {
         setError(err.message)
@@ -245,12 +246,7 @@ export default function OnboardingPage() {
           )}
         </div>
 
-        {error && (
-          <div className="mb-6 p-3 bg-[var(--color-urgent-50)] text-[var(--color-urgent-700)] text-body-md rounded-[var(--radius-sm)] border border-[var(--color-urgent-200)] flex items-start gap-2">
-            <XCircle className="w-5 h-5 shrink-0 mt-0.5" />
-            {error}
-          </div>
-        )}
+        {/* Global error alert removed in favor of inline errors if needed */}
 
         <div className="flex-1 relative flex flex-col">
           <AnimatePresence mode="wait">
@@ -295,7 +291,7 @@ export default function OnboardingPage() {
                 <p className="text-body-md text-[var(--color-ink-700)] mb-8">This information represents you on the marketplace.</p>
                 
                 <div className="space-y-6 flex-1">
-                  <div className="flex items-center gap-4 p-4 bg-[var(--color-cream-base)] rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+                  <div className="flex items-center gap-4 p-4 bg-[var(--color-cream-base)] rounded-sm border border-[var(--color-border-subtle)]">
                     <Avatar size="large" name={user.name} identifier={user.id} />
                     <div className="text-body-sm text-[var(--color-ink-700)]">
                       <p className="font-semibold text-body-md text-[var(--color-ink-900)]">{user.name}</p>
@@ -314,7 +310,7 @@ export default function OnboardingPage() {
                         onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
                         placeholder="username"
                         maxLength={20}
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-10 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm pl-10 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
                       />
                       <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">
                         {isCheckingUsername ? (
@@ -326,9 +322,7 @@ export default function OnboardingPage() {
                         ) : null}
                       </div>
                     </div>
-                    {isUsernameValid === false && (
-                      <p className="text-caption text-[var(--color-urgent-600)] mt-1">{usernameConflict}</p>
-                    )}
+                    {isUsernameValid === false && <FieldError message={usernameConflict} />}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -339,7 +333,7 @@ export default function OnboardingPage() {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="Mumbai"
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
                       />
                     </div>
                     <div>
@@ -349,7 +343,7 @@ export default function OnboardingPage() {
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         placeholder="Maharashtra"
-                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
+                        className="w-full h-[48px] bg-[var(--color-white)] border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -360,7 +354,7 @@ export default function OnboardingPage() {
                   <button 
                     onClick={() => setStep(3)} 
                     disabled={!username || isUsernameValid === false || isCheckingUsername}
-                    className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-black disabled:opacity-50 transition-colors shadow-sm"
+                    className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-sm hover:bg-black disabled:opacity-50 transition-colors shadow-sm"
                   >
                     Continue
                   </button>
@@ -403,7 +397,7 @@ export default function OnboardingPage() {
                     <button onClick={() => setStep(2)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
                     <button 
                       onClick={() => setStep(4)} 
-                      className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-black transition-colors shadow-sm"
+                      className="h-[48px] px-8 bg-[var(--color-ink-900)] text-white text-body-md font-semibold rounded-sm hover:bg-black transition-colors shadow-sm"
                     >
                       Continue
                     </button>
@@ -438,7 +432,7 @@ export default function OnboardingPage() {
                     <div 
                       key={option.id}
                       onClick={() => setMarketplaceRole(option.id as any)}
-                      className={`p-5 rounded-[var(--radius-md)] border-2 cursor-pointer transition-all ${
+                      className={`p-5 rounded-sm border-2 cursor-pointer transition-all ${
                         marketplaceRole === option.id 
                           ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] shadow-sm' 
                           : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] hover:border-[var(--color-ink-300)]'
@@ -466,13 +460,16 @@ export default function OnboardingPage() {
                 <div className="mt-8 flex flex-col items-center pt-6 border-t border-[var(--color-border-subtle)] space-y-4">
                   <div className="w-full flex justify-between items-center">
                     <button onClick={() => setStep(3)} className="text-body-md font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] transition-colors">Back</button>
-                    <button 
-                      onClick={handleFinish}
-                      disabled={isSubmitting}
-                      className="h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2 shadow-sm min-w-[140px]"
-                    >
-                      {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Finish'}
-                    </button>
+                    <div className="flex flex-col items-end gap-2">
+                      <button 
+                        onClick={handleFinish}
+                        disabled={isSubmitting}
+                        className="h-[48px] px-8 bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] transition-colors flex items-center justify-center gap-2 shadow-sm min-w-[140px]"
+                      >
+                        {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Finish'}
+                      </button>
+                      {error && <FieldError message={error} />}
+                    </div>
                   </div>
                   <button onClick={handleFinish} disabled={isSubmitting} className="text-body-sm font-medium text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] hover:underline">
                     Skip for now
@@ -485,5 +482,6 @@ export default function OnboardingPage() {
         </div>
       </div>
     </div>
-  )
+  </div>
+)
 }

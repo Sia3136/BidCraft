@@ -10,6 +10,7 @@ import { useAuthStore } from '@/store/authStore'
 import { login as apiLogin, register as apiRegister } from '@/lib/api'
 import { mergeAnonymousData } from '@/lib/mergeAnonymousData'
 import Image from 'next/image'
+import { FieldError } from '@/components/ui/field-error'
 
 function AuthPageContent() {
   const searchParams = useSearchParams()
@@ -120,7 +121,11 @@ function AuthPageContent() {
       
       router.push('/onboarding')
     } catch (err: any) {
-      setError(err.message)
+      if (err.message === 'invalid_code' || err.message === 'code_expired' || err.message === 'code_not_found') {
+        setError(err.message)
+      } else {
+        setError(err.message)
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -249,11 +254,11 @@ function AuthPageContent() {
             
             {/* Tabs */}
             {(activeTab === 'signin' || isRegisterStep1) && (
-              <div className="flex bg-[var(--color-cream-raised)] rounded-[var(--radius-pill)] p-1 mb-10 relative">
+              <div className="flex bg-[var(--color-cream-raised)] rounded-sm p-1 mb-10 relative">
                 <button
                   onClick={() => { setActiveTab('signin'); setError(''); }}
                   className={cn(
-                    "flex-1 py-2 rounded-[var(--radius-pill)] text-body-md font-semibold transition-colors z-10",
+                    "flex-1 py-2 rounded-sm text-body-md font-semibold transition-colors z-10",
                     activeTab === 'signin' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
@@ -262,14 +267,14 @@ function AuthPageContent() {
                 <button
                   onClick={() => { setActiveTab('signup'); setError(''); }}
                   className={cn(
-                    "flex-1 py-2 rounded-[var(--radius-pill)] text-body-md font-semibold transition-colors z-10",
+                    "flex-1 py-2 rounded-sm text-body-md font-semibold transition-colors z-10",
                     activeTab === 'signup' ? "text-[var(--color-ink-900)] shadow-sm" : "text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]"
                   )}
                 >
                   Create Account
                 </button>
                 <motion.div
-                  className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[var(--color-white)] rounded-[var(--radius-pill)] shadow-sm"
+                  className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[var(--color-white)] rounded-sm shadow-sm"
                   initial={false}
                   animate={{ left: activeTab === 'signin' ? '4px' : 'calc(50%)' }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -277,13 +282,7 @@ function AuthPageContent() {
               </div>
             )}
 
-            {/* ERROR ALERT */}
-            {error && (
-              <div className="mb-8 p-4 bg-[var(--color-urgent-50)] text-[var(--color-urgent-700)] text-body-md rounded-[var(--radius-md)] border border-[var(--color-urgent-200)] flex items-start gap-3">
-                <svg className="w-5 h-5 shrink-0 mt-0.5 text-[var(--color-urgent-600)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                {error}
-              </div>
-            )}
+            {/* Error alerts removed in favor of FieldError inline components */}
 
             <div className="overflow-visible">
               <AnimatePresence mode="wait">
@@ -310,7 +309,7 @@ function AuthPageContent() {
                         value={signInEmail}
                         onChange={(e) => setSignInEmail(e.target.value)}
                         placeholder="name@example.com"
-                        className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                        className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                       />
                     </div>
 
@@ -328,7 +327,7 @@ function AuthPageContent() {
                           value={signInPassword}
                           onChange={(e) => setSignInPassword(e.target.value)}
                           placeholder="Password"
-                          className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                          className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                         />
                         <button
                           type="button"
@@ -338,12 +337,14 @@ function AuthPageContent() {
                           {showSignInPassword ? <EyeOff className="w-5 h-5" strokeWidth={1.5} /> : <Eye className="w-5 h-5" strokeWidth={1.5} />}
                         </button>
                       </div>
+                      {error === 'invalid_credentials' && <FieldError message="Incorrect email or password." />}
+                      {error !== '' && error !== 'invalid_credentials' && <FieldError message={error} />}
                     </div>
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-4 flex items-center justify-center gap-2 shadow-md"
+                      className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] transition-colors mt-4 flex items-center justify-center gap-2 shadow-md"
                     >
                       {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
                     </button>
@@ -357,7 +358,7 @@ function AuthPageContent() {
                     <button
                       type="button"
                       onClick={handleGoogleLogin}
-                      className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
+                      className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-sm hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -402,7 +403,7 @@ function AuthPageContent() {
                               value={signUpName}
                               onChange={(e) => setSignUpName(e.target.value)}
                               placeholder="John Doe"
-                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
                           </div>
 
@@ -414,8 +415,9 @@ function AuthPageContent() {
                               value={signUpEmail}
                               onChange={(e) => setSignUpEmail(e.target.value)}
                               placeholder="name@example.com"
-                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
+                            {error === 'email_taken' && <FieldError message="This email is already in use." />}
                           </div>
 
                           <div>
@@ -428,7 +430,7 @@ function AuthPageContent() {
                                 onChange={(e) => setSignUpPassword(e.target.value)}
                                 placeholder="Min. 6 characters"
                                 minLength={6}
-                                className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                                className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                               />
                               <button
                                 type="button"
@@ -443,7 +445,7 @@ function AuthPageContent() {
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors mt-6 flex items-center justify-center gap-2 shadow-md"
+                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] transition-colors mt-6 flex items-center justify-center gap-2 shadow-md"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
                           </button>
@@ -457,7 +459,7 @@ function AuthPageContent() {
                           <button
                             type="button"
                             onClick={handleGoogleLogin}
-                            className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-[var(--radius-md)] hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
+                            className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-900)] text-body-md font-medium rounded-sm hover:bg-[var(--color-slate-50)] transition-colors flex items-center justify-center gap-3 shadow-sm"
                           >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -494,20 +496,25 @@ function AuthPageContent() {
                             </p>
                           </div>
 
-                          <input
-                            type="text"
-                            required
-                            maxLength={6}
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                            placeholder="000000"
-                            className="w-full max-w-[280px] h-[64px] text-center tracking-[0.75em] font-serif text-[32px] bg-transparent border-b-2 border-[var(--color-ink-300)] focus:border-[var(--color-terracotta-600)] outline-none transition-all mx-auto placeholder:opacity-20 placeholder:tracking-normal"
-                          />
+                          <div className="w-full">
+                            <input
+                              type="text"
+                              required
+                              maxLength={6}
+                              value={otp}
+                              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                              placeholder="000000"
+                              className="w-full h-[64px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-sm text-center text-heading-lg tracking-[0.5em] text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-inner"
+                            />
+                            {error === 'invalid_code' && <FieldError message="Incorrect verification code." />}
+                            {error === 'code_expired' && <FieldError message="Your verification code has expired. Request a new code." />}
+                            {error === 'code_not_found' && <FieldError message="This verification code is invalid or has already been used." />}
+                          </div>
 
                           <button
                             type="submit"
                             disabled={isSubmitting || otp.length !== 6}
-                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-lg mt-8"
+                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-md mt-8"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify Account'}
                           </button>
@@ -568,14 +575,15 @@ function AuthPageContent() {
                               value={forgotEmail}
                               onChange={(e) => setForgotEmail(e.target.value)}
                               placeholder="name@example.com"
-                              className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                              className="w-full h-[52px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
+                            {error !== '' && <FieldError message={error} />}
                           </div>
 
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black transition-colors flex items-center justify-center gap-2 shadow-lg mt-4"
+                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] transition-colors mt-6 flex items-center justify-center gap-2 shadow-md"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Reset Code'}
                           </button>
@@ -604,8 +612,11 @@ function AuthPageContent() {
                               value={forgotOtp}
                               onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, ''))}
                               placeholder="000000"
-                              className="w-full h-[64px] text-center tracking-[0.75em] font-serif text-[32px] bg-transparent border-b-2 border-[var(--color-ink-300)] focus:border-[var(--color-terracotta-600)] outline-none transition-all mx-auto placeholder:opacity-20 placeholder:tracking-normal mb-8"
+                              className="w-full h-[64px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-sm text-center text-heading-lg tracking-[0.5em] text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-inner"
                             />
+                            {error === 'invalid_code' && <FieldError message="Incorrect verification code." />}
+                            {error === 'code_expired' && <FieldError message="Your verification code has expired. Request a new code." />}
+                            {error === 'code_not_found' && <FieldError message="This verification code is invalid or has already been used." />}
                           </div>
 
                           <div>
@@ -618,7 +629,7 @@ function AuthPageContent() {
                                 value={forgotNewPassword}
                                 onChange={(e) => setForgotNewPassword(e.target.value)}
                                 placeholder="Min. 6 characters"
-                                className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
+                                className="w-full h-[52px] bg-[var(--color-cream-base)] border border-[var(--color-border-subtle)] rounded-sm pl-4 pr-12 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                               />
                               <button
                                 type="button"
@@ -632,8 +643,8 @@ function AuthPageContent() {
 
                           <button
                             type="submit"
-                            disabled={isSubmitting || forgotOtp.length !== 6 || forgotNewPassword.length < 6}
-                            className="w-full h-[52px] bg-[var(--color-ink-900)] text-white text-body-lg font-semibold rounded-[var(--radius-md)] hover:bg-black disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            disabled={isSubmitting || forgotOtp.length < 6 || forgotNewPassword.length < 6}
+                            className="w-full h-[52px] bg-[var(--color-terracotta-600)] text-white text-body-lg font-semibold rounded-sm hover:bg-[var(--color-terracotta-700)] disabled:opacity-50 transition-colors flex items-center justify-center gap-2 shadow-md"
                           >
                             {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Set New Password'}
                           </button>

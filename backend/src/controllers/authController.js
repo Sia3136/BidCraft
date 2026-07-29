@@ -104,7 +104,7 @@ async function verifyEmail(req, res, next) {
     const vCode = codeRes.rows[0];
 
     if (!vCode) {
-      return res.status(400).json({ error: 'invalid_code' });
+      return res.status(400).json({ error: 'code_not_found' });
     }
     if (new Date() > new Date(vCode.expires_at)) {
       return res.status(400).json({ error: 'code_expired' });
@@ -375,14 +375,17 @@ async function resetPassword(req, res, next) {
     );
     const vCode = codeRes.rows[0];
     
-    if (!vCode || new Date() > new Date(vCode.expires_at)) {
-      return res.status(400).json({ error: 'Invalid or expired token' });
+    if (!vCode) {
+      return res.status(400).json({ error: 'code_not_found' });
+    }
+    if (new Date() > new Date(vCode.expires_at)) {
+      return res.status(400).json({ error: 'code_expired' });
     }
 
     const providedBuffer = Buffer.from(hashedToken);
     const storedBuffer = Buffer.from(vCode.code);
     if (providedBuffer.length !== storedBuffer.length || !crypto.timingSafeEqual(providedBuffer, storedBuffer)) {
-      return res.status(400).json({ error: 'Invalid token' });
+      return res.status(400).json({ error: 'invalid_code' });
     }
 
     const hashedPwd = await bcrypt.hash(newPassword, 10);

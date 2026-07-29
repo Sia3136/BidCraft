@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
-import { updateProfile, checkUsername } from '@/lib/api'
 import { Avatar } from '@/components/ui/avatar'
 import { useCategories } from '@/hooks/useCategories'
+import { FieldError } from '@/components/ui/field-error'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -157,13 +157,9 @@ export default function ProfileSettingsPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             
-            {message && (
-              <div className={`p-4 rounded-[var(--radius-md)] text-body-md flex items-center gap-2 ${
-                message.type === 'success' 
-                  ? 'bg-[var(--color-success-50)] text-[var(--color-success-700)] border border-[var(--color-success-200)]' 
-                  : 'bg-[var(--color-urgent-50)] text-[var(--color-urgent-700)] border border-[var(--color-urgent-200)]'
-              }`}>
-                {message.type === 'success' ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <XCircle className="w-5 h-5 shrink-0" />}
+            {message && message.type === 'success' && (
+              <div className="p-4 rounded-sm text-body-md flex items-center gap-2 bg-[var(--color-success-50)] text-[var(--color-success-700)] border border-[var(--color-success-200)]">
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
                 {message.text}
               </div>
             )}
@@ -211,9 +207,7 @@ export default function ProfileSettingsPage() {
                     ) : null}
                   </div>
                 </div>
-                {isUsernameValid === false && (
-                  <p className="text-caption text-[var(--color-urgent-600)]">{usernameConflict}</p>
-                )}
+                {isUsernameValid === false && <FieldError message={usernameConflict} />}
               </div>
             </div>
 
@@ -254,7 +248,7 @@ export default function ProfileSettingsPage() {
                     key={role.id}
                     type="button"
                     onClick={() => setMarketplaceRole(role.id as any)}
-                    className={`h-[48px] rounded-[var(--radius-md)] border-2 font-medium transition-all ${
+                    className={`h-[48px] rounded-sm border-2 font-medium transition-all ${
                       marketplaceRole === role.id 
                         ? 'border-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-900)]' 
                         : 'border-[var(--color-border-subtle)] bg-[var(--color-white)] text-[var(--color-ink-700)] hover:border-[var(--color-ink-300)]'
@@ -287,11 +281,12 @@ export default function ProfileSettingsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end pt-8 border-t border-[var(--color-border-subtle)]">
+            <div className="flex flex-col items-end gap-2 pt-8 border-t border-[var(--color-border-subtle)]">
               <Button type="submit" disabled={isSubmitting || isUsernameValid === false || isCheckingUsername}>
                 {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 Save Changes
               </Button>
+              {message && message.type === 'error' && <FieldError message={message.text} />}
             </div>
 
           </form>
