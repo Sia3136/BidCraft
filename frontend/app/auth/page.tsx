@@ -233,13 +233,7 @@ function AuthPageContent() {
         isFullScreenBg ? "w-full" : "w-full lg:w-[50%]"
       )}>
         
-        {isFullScreenBg && (
-           <div className="absolute top-8 left-8 sm:top-12 sm:left-12">
-              <Link href="/" className="text-display-md text-[var(--color-ink-900)] font-bold tracking-tight">
-                BidCraft
-              </Link>
-           </div>
-        )}
+
 
         <div className={cn(
           "w-full max-w-[460px]",
@@ -248,7 +242,7 @@ function AuthPageContent() {
           
           <div className={cn(
             "sm:p-4",
-            isFullScreenBg && "p-8 sm:p-10 bg-[var(--color-white)]/95 backdrop-blur-md rounded-[4px] border border-[var(--color-border-subtle)] shadow-sm"
+            isFullScreenBg && "p-8 sm:p-10 bg-white/80 backdrop-blur-sm rounded-[4px] border border-[var(--color-border-subtle)] shadow-sm"
           )}>
             
             {/* Tabs */}

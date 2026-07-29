@@ -346,32 +346,55 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-        {/* 9. NEW: BidCraft Guarantee / Marketplace Values */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-deep)] border-y border-[var(--color-cream-border)]">
-          <div className="max-w-[var(--container-max)] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
-                  <ShieldCheck className="w-8 h-8 text-[var(--color-terracotta-600)]" />
-                </div>
-                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Secure Escrow</h3>
-                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">Funds are held safely until you receive your item exactly as described. Shop with complete peace of mind.</p>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} transition={{ delay: 0.1 }} className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
-                  <Star className="w-8 h-8 text-[var(--color-terracotta-600)]" />
-                </div>
-                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Verified Authenticity</h3>
-                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">Every creator goes through a rigorous verification process to ensure their work is truly handcrafted and original.</p>
-              </motion.div>
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} transition={{ delay: 0.2 }} className="flex flex-col items-center">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm border border-[var(--color-border-subtle)]">
-                  <Package className="w-8 h-8 text-[var(--color-terracotta-600)]" />
-                </div>
-                <h3 className="text-display-sm font-display text-[var(--color-ink-900)] mb-3">Direct to Creator</h3>
-                <p className="text-body-md text-[var(--color-ink-700)] max-w-sm">No middlemen or hidden fees. Your purchase directly supports independent artisans and their livelihoods.</p>
-              </motion.div>
+        {/* 9. Why BidCraft / Features */}
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-stone-900 text-stone-100">
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
+            <span className="text-caption text-stone-400 tracking-widest uppercase mb-4 block">Why BidCraft</span>
+            <h2 className="text-display-lg font-display text-white mb-16 text-center max-w-2xl">Built for buyers who care about what they own.</h2>
+            
+            {/* A. How You Can Buy */}
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+              <div className="flex flex-col p-8 rounded-lg border border-white/10 bg-white/5">
+                <div className="text-3xl mb-4">🛒</div>
+                <h3 className="text-heading-lg text-white mb-2">Buy Now</h3>
+                <p className="text-body-md text-stone-300">Fixed price, instant checkout.</p>
+              </div>
+              <div className="flex flex-col p-8 rounded-lg border border-white/10 bg-white/5">
+                <div className="text-3xl mb-4">💬</div>
+                <h3 className="text-heading-lg text-white mb-2">Make an Offer</h3>
+                <p className="text-body-md text-stone-300">Negotiate directly with the seller.</p>
+              </div>
+              <div className="flex flex-col p-8 rounded-lg border border-white/10 bg-white/5">
+                <div className="text-3xl mb-4">🔨</div>
+                <h3 className="text-heading-lg text-white mb-2">Auction</h3>
+                <p className="text-body-md text-stone-300">Bid and win one-of-a-kind pieces.</p>
+              </div>
             </div>
+
+            {/* C. Escrow Protection Callout */}
+            <div className="w-full bg-stone-800 rounded-lg p-8 sm:p-12 mb-16 text-center border border-white/10 flex flex-col items-center">
+              <ShieldCheck className="w-12 h-12 text-stone-300 mb-6" />
+              <h3 className="text-display-sm font-display text-white mb-4">Your money is safe until you're satisfied.</h3>
+              <p className="text-body-lg text-stone-300 max-w-2xl mx-auto">
+                BidCraft holds your payment in escrow and releases it to the seller only after you confirm delivery.
+              </p>
+            </div>
+
+            {/* B. Trusted Infrastructure */}
+            <div className="flex flex-col items-center opacity-80">
+              <span className="text-caption text-stone-400 uppercase tracking-wider mb-6">Trusted Infrastructure</span>
+              <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl font-bold tracking-tight text-white">Razorpay</span>
+                  <span className="text-sm text-stone-400 border-l border-white/20 pl-3">Secure payments</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl font-bold tracking-tight text-white italic">Delhivery</span>
+                  <span className="text-sm text-stone-400 border-l border-white/20 pl-3">Reliable shipping</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 

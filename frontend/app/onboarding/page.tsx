@@ -182,11 +182,6 @@ export default function OnboardingPage() {
         />
       </div>
 
-      <div className="w-full flex justify-between items-center p-6 sm:p-8 relative z-20">
-        <Link href="/" className="text-display-md text-white font-bold tracking-tight drop-shadow-md">
-          BidCraft
-        </Link>
-      </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 py-8 sm:py-12 relative z-20">
         <div className="w-full max-w-[560px] relative min-h-[500px] flex flex-col">
