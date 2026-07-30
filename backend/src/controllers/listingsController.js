@@ -43,7 +43,14 @@ const BASE_LISTING_SELECT = `
   COALESCE(a.current_bid, l.current_bid) AS "currentBid",
   l.bid_count AS "bidCount",
   l.specifications, l.reviews,
-  l.status, l.created_at AS "createdAt"
+  l.status, l.created_at AS "createdAt",
+  l.ships_from AS "shipsFrom",
+  l.dispatch_days AS "dispatchDays",
+  l.estimated_min AS "estimatedMin",
+  l.estimated_max AS "estimatedMax",
+  l.returns_policy AS "returnsPolicy",
+  l.packaging_note AS "packagingNote",
+  l.seller_id AS "sellerId"
 `;
 
 const categoriesData = require('../utils/categories.js');
@@ -388,6 +395,11 @@ const getListings = async (req, res) => {
 const getListingById = async (req, res) => {
   try {
     const { id } = req.params
+
+    // Run listing query and seller review aggregate concurrently.
+    // We need seller_id from the listing first, then fetch reviews.
+    // Two-step: (1) get listing + seller_id, (2) parallel review queries.
+    // This avoids N+1: only 3 SQL queries total regardless of review count.
     const result = await db.query(`
       SELECT
         ${BASE_LISTING_SELECT},
@@ -403,7 +415,82 @@ const getListingById = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Listing not found' })
     }
-    res.json(result.rows[0])
+
+    const listing = result.rows[0];
+    const sellerId = listing.sellerId;
+
+    // Try Redis cache for seller reputation aggregate
+    const cacheKey = `seller_rep:${sellerId}`;
+    let sellerReputation = null;
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        sellerReputation = typeof cached === 'string' ? JSON.parse(cached) : cached;
+      }
+    } catch (_) {}
+
+    if (!sellerReputation) {
+      // Parallel: aggregate stats + recent 20 reviews
+      const [statsRes, recentRes] = await Promise.all([
+        db.query(`
+          SELECT
+            COUNT(*)::int                                        AS total_reviews,
+            ROUND(AVG(rating)::numeric, 1)                       AS average_rating,
+            COUNT(CASE WHEN rating = 5 THEN 1 END)::int          AS five_star,
+            COUNT(CASE WHEN rating = 4 THEN 1 END)::int          AS four_star,
+            COUNT(CASE WHEN rating = 3 THEN 1 END)::int          AS three_star,
+            COUNT(CASE WHEN rating = 2 THEN 1 END)::int          AS two_star,
+            COUNT(CASE WHEN rating = 1 THEN 1 END)::int          AS one_star
+          FROM seller_reputation_reviews
+          WHERE seller_id = $1
+        `, [sellerId]),
+        db.query(`
+          SELECT reviewer_name, rating, created_at
+          FROM seller_reputation_reviews
+          WHERE seller_id = $1
+          ORDER BY created_at DESC
+          LIMIT 20
+        `, [sellerId])
+      ]);
+
+      const stats = statsRes.rows[0];
+      const breakdown = {
+        5: stats.five_star,
+        4: stats.four_star,
+        3: stats.three_star,
+        2: stats.two_star,
+        1: stats.one_star
+      };
+
+      // Build reviewer name previews per star bucket (first 2 names per bucket)
+      const bucketNames = {};
+      for (let star = 5; star >= 1; star--) {
+        bucketNames[star] = recentRes.rows
+          .filter(r => r.rating === star)
+          .slice(0, 2)
+          .map(r => r.reviewer_name);
+      }
+
+      sellerReputation = {
+        totalReviews: stats.total_reviews,
+        averageRating: parseFloat(stats.average_rating) || 0,
+        breakdown,
+        bucketNames,
+        recentReviews: recentRes.rows.slice(0, 5).map(r => ({
+          name: r.reviewer_name,
+          rating: r.rating,
+          date: r.created_at
+        }))
+      };
+
+      // Cache for 1 hour — seller reputation changes rarely
+      try {
+        await redis.set(cacheKey, JSON.stringify(sellerReputation));
+        await redis.expire(cacheKey, 3600);
+      } catch (_) {}
+    }
+
+    res.json({ ...listing, sellerReputation })
   } catch (err) {
     console.error('[listings] Error:', err.message)
     res.status(500).json({ error: 'Internal server error' })

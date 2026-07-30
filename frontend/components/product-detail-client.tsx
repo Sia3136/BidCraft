@@ -14,17 +14,12 @@ import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-
 import { AuctionTimer } from '@/components/AuctionTimer';
+import { ImageGallery } from '@/components/pdp/ImageGallery';
+import { SellerReputationBlock } from '@/components/pdp/SellerReputationBlock';
+import { ShippingInfo } from '@/components/pdp/ShippingInfo';
 
-const GALLERY_VIEWS = [
-  { transform: 'scale(1)', objectPosition: 'center' },
-  { transform: 'scale(1.4)', objectPosition: 'top left' },
-  { transform: 'scale(1.4)', objectPosition: 'top right' },
-  { transform: 'scale(1.4)', objectPosition: 'bottom left' },
-  { transform: 'scale(1.4)', objectPosition: 'bottom right' },
-  { transform: 'scale(1.2)', objectPosition: 'center' }
-];
+
 
 export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
   return (
@@ -68,10 +63,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
   const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
   const [added, setAdded] = useState(false);
   
-  const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [bidAmount, setBidAmount] = useState('');
   const [isBidding, setIsBidding] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(true);
+
 
   const handleAuthCheck = (action: () => void) => {
     if (!isAuthenticated) {
@@ -134,69 +129,23 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
           
           {/* Left: 60% Image Gallery */}
           <div className="w-full lg:w-3/5">
-            <div className="flex flex-col md:flex-row-reverse gap-4 sticky top-24">
-              <div className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1">
-                <Image 
-                  src={product.image || '/placeholder.jpg'}
-                  fill 
-                  sizes="(max-width: 768px) 100vw, 60vw"
-                  style={{ objectFit: 'cover', ...GALLERY_VIEWS[activeImageIdx] }} 
-                  alt={product.title} 
-                  priority
-                  onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
-                />
-              </div>
-              
-              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-visible pb-2 md:pb-0 w-full md:w-[100px] shrink-0 hide-scrollbar">
-                {GALLERY_VIEWS.map((view, idx) => (
-                  <button 
-                    key={idx}
-                    onClick={() => setActiveImageIdx(idx)}
-                    className={cn(
-                      "relative w-20 h-20 md:w-full md:h-[100px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors",
-                      activeImageIdx === idx ? "border-[var(--color-terracotta-600)]" : "border-transparent hover:border-[var(--color-ink-300)]"
-                    )}
-                  >
-                    <Image 
-                      src={product.image || '/placeholder.jpg'}
-                      fill 
-                      sizes="100px"
-                      style={{ objectFit: 'cover', ...view }} 
-                      alt={`Thumbnail ${idx + 1}`} 
-                      loading="lazy"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
+            <ImageGallery
+              images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
+              alt={product.title}
+            />
           </div>
 
           {/* Right: 40% Panel */}
           <div className="w-full lg:w-2/5 flex flex-col gap-6">
             
-            {/* A. Creator block */}
-            <div className="flex items-center gap-3 bg-white p-3 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
-              <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-md text-[var(--color-terracotta-700)] shrink-0 font-display">
-                {sellerName.charAt(0)}
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
-                    <span className="hover:underline cursor-not-allowed">{sellerName}</span>
-                  </h3>
-                  {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
-                </div>
-                <div className="flex items-center gap-2 text-caption text-[var(--color-ink-700)]">
-                  <span>★ {product?.creatorRating || '4.8'}</span>
-                  <span>({product?.creatorReviewCount || '128'} reviews)</span>
-                  {product?.creatorBadges && product.creatorBadges.length > 0 && (
-                    <>
-                      <span>•</span>
-                      <span className="font-medium text-[var(--color-terracotta-600)]">{product.creatorBadges[0]}</span>
-                    </>
-                  )}
-                </div>
-              </div>
+            {/* A. Seller Reputation Block */}
+            <div className="bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+              <SellerReputationBlock
+                sellerName={sellerName}
+                verified={!!product?.verified}
+                location={product?.shipsFrom}
+                reputation={product?.sellerReputation}
+              />
             </div>
 
             {/* C. Buying method badge */}
@@ -317,6 +266,18 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
               </p>
             </div>
 
+            {/* G. Shipping & Delivery */}
+            <div className="pt-2">
+              <ShippingInfo
+                shipsFrom={product.shipsFrom}
+                dispatchDays={product.dispatchDays}
+                estimatedMin={product.estimatedMin}
+                estimatedMax={product.estimatedMax}
+                returnsPolicy={product.returnsPolicy}
+                packagingNote={product.packagingNote}
+              />
+            </div>
+
             {/* G. About this item */}
             <div className="mt-4">
               <h2 className="text-heading-md text-[var(--color-ink-900)] mb-3">About this item</h2>
@@ -350,29 +311,6 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
               </div>
             )}
 
-            {/* I. Seller reviews section */}
-            <div className="mt-4 pt-6 border-t border-[var(--color-border-subtle)]">
-              <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
-              <div className="space-y-4">
-                {(!product.reviews || product.reviews.length === 0) && (
-                  <p className="text-body-sm text-[var(--color-ink-500)] italic">No reviews yet for this seller.</p>
-                )}
-                {(product.reviews || []).map((review: any, idx: number) => (
-                  <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium text-[var(--color-ink-900)]">{review.buyer}</span>
-                      <span className="text-[var(--color-warning-500)] text-sm">
-                        {'★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)}
-                      </span>
-                      <span className="text-caption text-[var(--color-ink-500)] ml-auto">
-                        {new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                      </span>
-                    </div>
-                    <p className="text-body-sm text-[var(--color-ink-700)]">{review.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
             
           </div>
         </div>

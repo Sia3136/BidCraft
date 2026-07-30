@@ -14,6 +14,14 @@ export type AuthResponse = {
   user: User
   token: string
 }
+export type SellerReputation = {
+  totalReviews: number
+  averageRating: number
+  breakdown: { 5: number; 4: number; 3: number; 2: number; 1: number }
+  bucketNames: { [star: number]: string[] }
+  recentReviews: Array<{ name: string; rating: number; date: string }>
+}
+
 export type Listing = {
   id: string
   title: string
@@ -43,7 +51,18 @@ export type Listing = {
   createdAt: string
   auctionId?: string
   numericId?: number
+  sellerId?: number
+  // Shipping fields (added by Task 8 migration)
+  shipsFrom?: string
+  dispatchDays?: number
+  estimatedMin?: number
+  estimatedMax?: number
+  returnsPolicy?: string
+  packagingNote?: string
+  // Seller reputation (aggregated in getListingById, Task 7)
+  sellerReputation?: SellerReputation
 }
+
 
 export type ListingsResponse = {
   listings: Listing[]
