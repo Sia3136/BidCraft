@@ -266,7 +266,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </div>
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
-              <Link href="/explore?type=new-arrivals" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
+              <Link href="/explore?sort=newest" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
                 Explore More New Arrivals <span>→</span>
               </Link>
             </motion.div>
@@ -350,34 +350,34 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
 
 
         {/* 9. How It Works */}
-        <section className="py-20 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
             <span className="text-caption text-stone-500 tracking-widest uppercase mb-4 block">How It Works</span>
-            <h2 className="text-display-lg font-display text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
+            <h2 className="text-display-lg font-[family-name:var(--font-display)] text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
             
             <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-400 mb-6">01</span>
-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Browse</h3>
-                <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-base text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">01</span>
+                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Browse</h3>
+                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
               </div>
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-400 mb-6">02</span>
-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Bid or Buy</h3>
-                <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-base text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">02</span>
+                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Bid or Buy</h3>
+                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
               </div>
               <div className="flex-1 flex flex-col">
-                <span className="text-6xl font-light text-stone-400 mb-6">03</span>
-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Delivered</h3>
-                <div className="w-full border-t border-stone-200 mb-6" />
-                <p className="text-base text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
+                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">03</span>
+                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Delivered</h3>
+                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
               </div>
             </div>
 
-            <div className="w-full text-center mt-12 text-xs text-stone-600">
-              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; Razorpay &middot; Secure payments &nbsp;|&nbsp; Delhivery &middot; Reliable shipping
+            <div className="w-full text-center border-t border-stone-200 pt-10 mt-10 text-xs text-stone-600">
+              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Razorpay</span> &middot; Secure payments &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Delhivery</span> &middot; Reliable shipping
             </div>
           </div>
         </section>
@@ -469,7 +469,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             {/* Right column image placeholder */}
             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
               <img 
-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/a1c8a4582ca82c3995d88befe1464e8e.webp" 
+                src="https://res.cloudinary.com/duzlsyzwa/image/upload/bidcraft/art/paintings/864c5ce031b5e77f9a5eb9a8d506f497.jpg" 
                 alt="Artisan at work" 
                 className="w-full h-full object-cover opacity-60"
               />

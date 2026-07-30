@@ -69,7 +69,7 @@ export function NewArrivals() {
         {PRODUCTS.map((product, i) => (
           <Link 
             key={product.id}
-            href={`/listings/${product.id}`}
+            href={`/product/${product.id}`}
             className="group block rounded-[var(--radius-md)] bg-[var(--color-white)] relative animate-fade-up"
             style={{ animationDelay: `${i * 60}ms` }}
           >
