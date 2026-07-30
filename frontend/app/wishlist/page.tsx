@@ -1,4 +1,5 @@
 // app/wishlist/page.tsx
+import { Suspense } from 'react'
 import { getServerSession, authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { redirect } from 'next/navigation'
@@ -16,6 +17,21 @@ export default async function WishlistPage() {
 
   const userId = parseInt(String(session.user.id), 10)
 
+  return (
+    <main className="relative px-6 lg:px-16 py-12 min-h-screen bg-[#F5F0E8]">
+      <h1 className="text-4xl font-bold font-playfair text-[#1C1C1C] mb-8">
+        Your Wishlist
+      </h1>
+      <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
+        {[1,2,3,4].map(i => <div key={i} className="bg-[var(--color-cream-deep)] h-[300px] rounded-xl" />)}
+      </div>}>
+        <WishlistData userId={userId} />
+      </Suspense>
+    </main>
+  )
+}
+
+async function WishlistData({ userId }: { userId: number }) {
   const result = await db.query(
     `SELECT 
       w.id as wishlist_id,
@@ -37,12 +53,10 @@ export default async function WishlistPage() {
   const items = result.rows
 
   return (
-    <main className="px-6 lg:px-16 py-12 min-h-screen bg-[#F5F0E8]">
-      <h1 className="text-4xl font-bold font-playfair text-[#1C1C1C] mb-8">
-        Your Wishlist
-        <span className="text-lg font-normal text-gray-500 ml-3">({items.length} items)</span>
-      </h1>
-
+    <>
+      <div className="absolute top-12 right-6 lg:right-16 text-lg font-normal text-gray-500">
+        ({items.length} items)
+      </div>
       {items.length === 0 ? (
         <div className="text-center py-24">
           <p className="text-xl font-semibold text-[#1C1C1C] mb-2">Your wishlist is empty</p>
@@ -77,6 +91,7 @@ export default async function WishlistPage() {
           ))}
         </div>
       )}
-    </main>
+    </>
   )
 }
+

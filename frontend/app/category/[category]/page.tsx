@@ -49,13 +49,11 @@ export default async function CategoryPage({
 
   const subcategories = megaMenuData[dataKey];
 
-  const data = await fetchListings({
+  const dataPromise = fetchListings({
     category,
     ...(subcategory ? { subcategory } : {}),
     limit: 100
   });
-  
-  const filtered = data.listings;
 
   return (
     <div className="w-full">
@@ -76,7 +74,9 @@ export default async function CategoryPage({
             : categoryName}
         </h1>
         <p className="text-body-md text-[var(--color-ink-700)]">
-          {filtered.length} item{filtered.length !== 1 ? 's' : ''}
+          <Suspense fallback={<span className="opacity-50">...</span>}>
+            <CategoryCount promise={dataPromise} />
+          </Suspense>
         </p>
       </div>
 
@@ -90,26 +90,43 @@ export default async function CategoryPage({
           />
           <div className="w-full">
             <Suspense fallback={<SkeletonGrid count={8} />}>
-              {filtered.length === 0 ? (
-                <div className="col-span-full text-center py-16">
-                  <p className="text-heading-lg text-[var(--color-ink-900)] mb-2">
-                    No items found
-                  </p>
-                  <p className="text-body-md text-[var(--color-ink-500)]">
-                    Try a different subcategory or browse all {categoryName}.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                  {filtered.map((product) => (
-                    <ProductCard key={product.id} product={product as any} />
-                  ))}
-                </div>
-              )}
+              <CategoryGrid promise={dataPromise} categoryName={categoryName} />
             </Suspense>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+async function CategoryCount({ promise }: { promise: Promise<{ listings: Listing[] }> }) {
+  const data = await promise;
+  const count = data.listings.length;
+  return <>{count} item{count !== 1 ? 's' : ''}</>;
+}
+
+async function CategoryGrid({ promise, categoryName }: { promise: Promise<{ listings: Listing[] }>, categoryName: string }) {
+  const data = await promise;
+  const filtered = data.listings;
+
+  if (filtered.length === 0) {
+    return (
+      <div className="col-span-full text-center py-16">
+        <p className="text-heading-lg text-[var(--color-ink-900)] mb-2">
+          No items found
+        </p>
+        <p className="text-body-md text-[var(--color-ink-500)]">
+          Try a different subcategory or browse all {categoryName}.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+      {filtered.map((product) => (
+        <ProductCard key={product.id} product={product as any} />
+      ))}
     </div>
   );
 }
