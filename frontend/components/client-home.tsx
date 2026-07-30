@@ -350,7 +350,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
 
 
         {/* 9. Manifesto */}
-        <section className="relative overflow-hidden py-16 w-full" style={{ backgroundColor: '#F7F4EE', minHeight: '380px', borderTop: '2px solid #B06A42' }}>
+        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px', borderTop: '2px solid #B06A42', borderBottom: '2px solid #B06A42' }}>
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
             <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
             <rect width="100%" height="100%" filter="url(#paper)"/>
@@ -358,16 +358,16 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
               <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
-              <span style={{ fontFamily: 'Inter, sans-serif', textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
+              <span className="font-[family-name:var(--font-jakarta)]" style={{ textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
                 MANIFESTO
               </span>
               <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
                 We don't celebrate mass production.<br />We celebrate originality.
               </h2>
-              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
+              <p className="font-[family-name:var(--font-jakarta)]" style={{ fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
                 Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
               </p>
-              <Link href="/explore" className="group inline-flex items-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
+              <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)]" style={{ fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
                 Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
               </Link>
               <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
@@ -465,6 +465,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
                 alt="Artisan at work" 
                 className="w-full h-full object-cover opacity-60"
+                style={{ objectPosition: 'center 30%' }}
               />
             </div>
           </div>

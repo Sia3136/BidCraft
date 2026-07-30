@@ -75,12 +75,7 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Trusted Infrastructure Strip */}
-      <div className="w-full max-w-[var(--container-max)] mx-auto mb-8 pt-4 pb-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.15)' }}>
-        <p className="text-center text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.15em] text-[var(--color-ink-300)]" style={{ fontFamily: 'Inter, sans-serif' }}>
-          TRUSTED INFRASTRUCTURE &nbsp;<span className="opacity-40">|</span>&nbsp; Razorpay &middot; Secure payments &nbsp;<span className="opacity-40">|</span>&nbsp; Delhivery &middot; Reliable shipping
-        </p>
-      </div>
+
 
       <div className="w-full max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-caption text-[var(--color-ink-300)]">
