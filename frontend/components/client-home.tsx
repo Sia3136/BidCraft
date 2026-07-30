@@ -349,38 +349,29 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
 
 
-        {/* 9. How It Works */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
-            <span className="text-[#C96A3A] text-xs tracking-[0.2em] font-[family-name:var(--font-jakarta)] mb-4 block uppercase">HOW IT WORKS</span>
-            <h2 className="text-stone-800 text-4xl md:text-5xl font-[family-name:var(--font-playfair)] mb-12 text-center">Browse, bid, and bring it home.</h2>
-            
-            <div className="bg-[#1C1410] w-full px-8 md:px-24 py-16 rounded-none">
-              <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16">
-                <div className="flex-1 flex flex-col">
-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">01</span>
-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Browse</h3>
-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Explore handcrafted goods across art, collectibles & more.</p>
-                </div>
-                <div className="flex-1 flex flex-col">
-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">02</span>
-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Bid or Buy</h3>
-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
-                </div>
-                <div className="flex-1 flex flex-col">
-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">03</span>
-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Delivered</h3>
-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Your piece ships directly from the creator to your door.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="w-full text-center mt-10 pt-8 border-t border-stone-200 text-xs text-stone-600 font-[family-name:var(--font-jakarta)]">
-              <span className="text-stone-400 text-xs tracking-widest font-[family-name:var(--font-jakarta)]">TRUSTED INFRASTRUCTURE</span> &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Razorpay</span> &middot; Secure payments &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Delhivery</span> &middot; Reliable shipping
-            </div>
+        {/* 9. Manifesto */}
+        <section className="relative overflow-hidden py-16 w-full" style={{ backgroundColor: '#F7F4EE', minHeight: '380px', borderTop: '2px solid #B06A42' }}>
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
+            <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+            <rect width="100%" height="100%" filter="url(#paper)"/>
+          </svg>
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
+              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
+              <span style={{ fontFamily: 'Inter, sans-serif', textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
+                MANIFESTO
+              </span>
+              <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
+                We don't celebrate mass production.<br />We celebrate originality.
+              </h2>
+              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
+                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+              </p>
+              <Link href="/explore" className="group inline-flex items-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
+                Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
+              </Link>
+              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
+            </motion.div>
           </div>
         </section>
 
@@ -470,9 +461,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             
             {/* Right column image placeholder */}
             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
-              {/* TODO: Set Cloudinary URL for handmade/crochet & knitting/images.jpeg */}
               <img 
-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/bidcraft/art/paintings/864c5ce031b5e77f9a5eb9a8d506f497.jpg" 
+                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
                 alt="Artisan at work" 
                 className="w-full h-full object-cover opacity-60"
               />
