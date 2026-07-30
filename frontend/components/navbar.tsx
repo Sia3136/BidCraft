@@ -224,6 +224,7 @@ export const Navbar = React.memo(function Navbar() {
               </button>
 
               <div className="hidden md:flex items-center gap-6">
+                {/* Intentional hash to jump to section on homepage */}
                 <Link href={isHomepage ? "#our-story" : "/our-story"} className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
                   Our Story
                 </Link>
@@ -526,7 +527,11 @@ export const Navbar = React.memo(function Navbar() {
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">About</h3>
             <button
-              onClick={() => { router.push(isHomepage ? "#our-story" : "/our-story"); setIsMobileMenuOpen(false); }}
+              onClick={() => { 
+                // Intentional hash to jump to section on homepage
+                router.push(isHomepage ? "#our-story" : "/our-story"); 
+                setIsMobileMenuOpen(false); 
+              }}
               className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
             >
               Our Story
