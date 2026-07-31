@@ -66,7 +66,7 @@ export function ShippingInfo(props: ShippingInfoProps) {
       {/* Section label */}
       <p
         style={{
-          fontSize: 11,
+          fontSize: 14,
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
           color: '#B06A42',

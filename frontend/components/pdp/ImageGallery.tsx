@@ -8,9 +8,11 @@ import { cn } from '@/lib/utils'
 interface ImageGalleryProps {
   images: string[]
   alt: string
+  isWishlisted?: boolean
+  onWishlistToggle?: () => void
 }
 
-export function ImageGallery({ images, alt }: ImageGalleryProps) {
+export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: ImageGalleryProps) {
   // Normalise: always work with an array, filter out empties
   const imgs = (Array.isArray(images) ? images : images ? [images] : []).filter(Boolean)
   if (imgs.length === 0) imgs.push('/placeholder.jpg')
@@ -82,13 +84,14 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             {imgs.map((src, idx) => (
               <button
                 key={idx}
+                type="button"
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`View image ${idx + 1}`}
                 className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
                   activeIdx === idx
                     ? 'border-[#B06A42]'
-                    : 'border-transparent hover:border-[var(--color-ink-300)]'
+                    : 'border-transparent hover:border-[#D8C8BA]'
                 )}
               >
                 <Image
@@ -131,6 +134,29 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             className="gallery-main-img"
             onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
           />
+
+          {/* Wishlist Heart Overlay */}
+          {onWishlistToggle && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onWishlistToggle();
+              }}
+              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+              className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:scale-110 transition-transform duration-150 pointer-events-auto"
+            >
+              {isWishlisted ? (
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#B06A42]">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09 C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5 c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-[#2B211C]">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06 a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              )}
+            </button>
+          )}
 
           {/* Prev / Next arrow buttons — desktop only, sit above image */}
           {hasMultiple && (
