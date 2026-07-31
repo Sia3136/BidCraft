@@ -90,7 +90,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       : `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_500/${imageStr}`;
 
   return (
-    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
       <Link href={getProductRoute(product)} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
         <Image
           src={imageUrl}
@@ -194,7 +194,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         </div>
 
         <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
-          <h3 className="font-display text-[15px] text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
+          <h3 className="font-display font-semibold text-[15px] text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
             {product.title}
           </h3>
         </Link>

@@ -53,9 +53,9 @@ export function HeroSection() {
 
       {/* Content Container */}
       <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto pointer-events-none">
-        <div className="absolute bottom-[32px] xl:bottom-[64px] left-[32px] xl:left-[64px] max-w-[680px] flex flex-col pointer-events-auto z-10">
+        <div className="absolute bottom-[32px] xl:bottom-[64px] left-[32px] xl:left-[64px] max-w-[760px] flex flex-col pointer-events-auto z-10">
           
-          <span className="text-sm text-white uppercase tracking-[0.06em] mb-[var(--space-3)] animate-fade-up font-semibold">
+          <span className="text-base text-white uppercase tracking-[0.06em] mb-[var(--space-3)] animate-fade-up font-semibold">
             Curated this week
           </span>
           
@@ -63,7 +63,7 @@ export function HeroSection() {
             Where creativity becomes opportunity.
           </h1>
           
-          <p className="text-body-lg text-white/85 mb-[var(--space-5)] animate-fade-up [animation-delay:200ms] max-w-[560px]">
+          <p className="text-[18px] leading-[28px] text-white/85 mb-[var(--space-5)] animate-fade-up [animation-delay:200ms] max-w-[560px]">
             The premium marketplace for independent creators, handmade crafts, and rare collectibles.
           </p>
           

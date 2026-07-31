@@ -38,7 +38,7 @@ export function BuyNowButton({ listingId, price, listingTitle }: Props) {
       <button
         onClick={handleBuyNow}
         disabled={loading}
-        className="w-full h-12 rounded-[var(--radius-pill)] font-ui text-[16px] font-semibold flex items-center justify-center transition-colors bg-[var(--color-terracotta-600)] text-white hover:bg-[var(--color-terracotta-700)] disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full h-11 rounded-full font-ui text-sm font-semibold flex items-center justify-center transition-colors duration-200 bg-[#B06A42] text-white hover:bg-[#8f5435] shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {loading ? 'Processing...' : isAuthenticated ? `Buy Now — ${formatPrice(price)}` : 'Sign In to Buy'}
       </button>

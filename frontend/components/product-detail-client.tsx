@@ -145,8 +145,8 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
             </div>
           </div>
 
-          {/* RIGHT COLUMN — Item details */}
-          <div className="flex flex-col gap-8">
+          {/* RIGHT COLUMN — sticky so details/actions stay visible while user scrolls left col */}
+          <div className="flex flex-col gap-8 md:sticky md:top-24 self-start">
 
             {/* BLOCK A — Item Header */}
             <div className="flex flex-col gap-2 text-left">
@@ -252,9 +252,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                     <button
                       type="button"
                       onClick={() => toggleWishlist(product.numericId || product.id)}
-                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
+                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
                     >
-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
                     </button>
                   </div>
@@ -281,9 +281,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
-                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
+                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
                     >
-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
                     </button>
                     <button
@@ -319,7 +319,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                           alert('Failed to add to cart')
                         }
                       }}
-                      className="h-11 px-4 rounded-md border border-[#B06A42] text-[#B06A42] text-sm font-medium"
+                      className="h-11 px-5 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors duration-200"
                     >
                       Add to Cart
                     </button>

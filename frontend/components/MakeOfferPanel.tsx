@@ -56,7 +56,7 @@ export function MakeOfferPanel({ listingId, price, minimumOfferPercent }: Props)
           }
           setOpen(!open)
         }}
-        className="w-full h-12 bg-transparent border-2 border-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)] rounded-[var(--radius-md)] text-base font-bold cursor-pointer font-ui transition-colors hover:bg-[var(--color-cream-raised)]"
+        className="w-full h-11 bg-transparent border border-[#B06A42] text-[#B06A42] rounded-full text-sm font-semibold cursor-pointer font-ui transition-colors duration-200 hover:bg-[#B06A42]/10"
       >
         {isAuthenticated ? 'Make an Offer' : 'Sign In to Make an Offer'}
       </button>
