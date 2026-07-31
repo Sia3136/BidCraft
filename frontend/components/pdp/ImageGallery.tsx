@@ -76,39 +76,9 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
   return (
     <>
       {/* ─── Main Gallery ─────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col gap-4">
 
-        {/* Thumbnails — desktop only (md+), LEFT side. On mobile, dots shown below. */}
-        {hasMultiple && (
-          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
-            {imgs.map((src, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`View image ${idx + 1}`}
-                className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
-                  activeIdx === idx
-                    ? 'border-[#B06A42]'
-                    : 'border-transparent hover:border-[#D8C8BA]'
-                )}
-              >
-                <Image
-                  src={src}
-                  fill
-                  sizes="72px"
-                  style={{ objectFit: 'cover' }}
-                  alt={`Thumbnail ${idx + 1}`}
-                  loading="lazy"
-                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-                />
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Main image — flex-1 min-w-0 ensures it never shrinks into the thumbnail column */}
+        {/* Main image */}
         <div
           ref={containerRef}
           className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 min-w-0 cursor-zoom-in"
@@ -204,6 +174,36 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
                   activeIdx === idx ? 'bg-[#B06A42]' : 'bg-[#D8C8BA]'
                 )}
               />
+            ))}
+          </div>
+        )}
+
+        {/* Thumbnails — desktop only (md+), BELOW main image. */}
+        {hasMultiple && (
+          <div className="hidden md:flex md:flex-row gap-3 overflow-x-auto hide-scrollbar w-full pb-2">
+            {imgs.map((src, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveIdx(idx)}
+                aria-label={`View image ${idx + 1}`}
+                className={cn(
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  activeIdx === idx
+                    ? 'border-[#B06A42]'
+                    : 'border-transparent hover:border-[#D8C8BA]'
+                )}
+              >
+                <Image
+                  src={src}
+                  fill
+                  sizes="72px"
+                  style={{ objectFit: 'cover' }}
+                  alt={`Thumbnail ${idx + 1}`}
+                  loading="lazy"
+                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+                />
+              </button>
             ))}
           </div>
         )}

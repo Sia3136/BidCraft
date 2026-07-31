@@ -32,8 +32,14 @@ export function SellerReputationBlock({
   const [expanded, setExpanded] = useState(false)
 
   const initial = sellerName?.charAt(0)?.toUpperCase() ?? '?'
-  const avg = reputation?.averageRating ?? 0
-  const total = reputation?.totalReviews ?? 0
+  
+  // Deterministic fallback for listings without review data
+  const hash = Array.from(sellerName).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const fallbackTotal = 10 + (hash % 11) // 10 to 20
+  
+  const hasRealData = reputation && reputation.totalReviews && reputation.totalReviews > 0
+  const avg = hasRealData ? (reputation.averageRating ?? 0) : (4.5 + (hash % 6) / 10) // 4.5 to 5.0
+  const total = hasRealData ? reputation.totalReviews : fallbackTotal
 
   return (
     <div
@@ -120,13 +126,12 @@ export function SellerReputationBlock({
 
         {/* ── Representative review cards ── */}
         <div className="flex flex-col">
-          {(total > 0 && reputation?.recentReviews?.length
-            ? reputation.recentReviews.slice(0, 4)
+          {(hasRealData && reputation?.recentReviews?.length
+            ? reputation.recentReviews.slice(0, 3)
             : [
                 { name: 'Aarav M.', rating: 5, date: '2023-11-12T00:00:00.000Z' },
                 { name: 'Priya K.', rating: 5, date: '2023-10-28T00:00:00.000Z' },
-                { name: 'Rahul S.', rating: 4, date: '2023-10-15T00:00:00.000Z' },
-                { name: 'Sneha P.', rating: 5, date: '2023-09-02T00:00:00.000Z' },
+                { name: 'Rahul S.', rating: 4, date: '2023-10-15T00:00:00.000Z' }
               ]
           ).map((rev, i) => {
             // Inject body text if missing
@@ -161,22 +166,22 @@ export function SellerReputationBlock({
             return (
               <div key={i} className="py-3 border-b border-[#F0EBE3] last:border-0">
                 {/* Row 1: avatar initial + name + star rating */}
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-full bg-[#B06A42] text-white text-xs flex items-center justify-center font-medium shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-[#B06A42] text-white text-[10px] flex items-center justify-center font-medium shrink-0">
                       {rev.name?.charAt(0) || '?'}
                     </span>
-                    <span className="text-sm font-medium text-[#2B211C]">
+                    <span className="text-xs font-medium text-[#2B211C]/80">
                       {rev.name}
                     </span>
                   </div>
-                  <span className="text-xs text-[#B06A42]">
+                  <span className="text-xs text-[#B06A42] tracking-tighter">
                     {'★'.repeat(rev.rating)}
                     {'☆'.repeat(5 - rev.rating)}
                   </span>
                 </div>
                 {/* Row 2: review body */}
-                <p className="text-sm text-[#2B211C]/70 pl-9 leading-snug">
+                <p className="text-base font-medium text-[#2B211C] pl-8 leading-snug">
                   {bodyText}
                 </p>
               </div>
@@ -187,10 +192,11 @@ export function SellerReputationBlock({
         {/* Compact rating summary line */}
         <div className="mt-4 pt-3 border-t border-[#D8C8BA] flex flex-wrap gap-x-4 gap-y-1">
           {[5, 4, 3, 2, 1].map(star => {
-            let count = reputation?.breakdown?.[star] ?? 0
-            if (!reputation || total === 0) {
-              if (star === 5) count = 3
-              if (star === 4) count = 1
+            let count = hasRealData ? (reputation.breakdown?.[star] ?? 0) : 0
+            if (!hasRealData) {
+              if (star === 5) count = Math.floor(fallbackTotal * 0.75)
+              else if (star === 4) count = Math.floor(fallbackTotal * 0.15)
+              else if (star === 3) count = fallbackTotal - Math.floor(fallbackTotal * 0.75) - Math.floor(fallbackTotal * 0.15)
             }
             return (
               <span key={star} className="text-xs text-[#2B211C]/60 whitespace-nowrap">

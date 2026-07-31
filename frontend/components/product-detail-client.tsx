@@ -21,7 +21,7 @@ import { ShippingInfo } from '@/components/pdp/ShippingInfo';
 
 
 
-export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
+export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[], similar?: Listing[] }) {
   return (
     <ErrorBoundary>
       <ProductDetailClient {...props} />
@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
   }
 }
 
-function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
+function ProductDetailClient({ product, related = [], similar = [] }: { product: Listing; related?: Listing[]; similar?: Listing[] }) {
   const router = useRouter();
   
   if (!product) {
@@ -67,23 +67,16 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
   const [isBidding, setIsBidding] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(true);
 
-  // Sentinel observer state
   const rightColRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [showMobileBar, setShowMobileBar] = useState(true);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    const rightCol = rightColRef.current;
-    if (!sentinel || !rightCol) return;
+    if (!sentinel) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Desktop: Un-sticky the right col when sentinel appears
-        if (window.innerWidth >= 768) {
-          rightCol.style.position = entry.isIntersecting ? 'relative' : '';
-          rightCol.style.top = entry.isIntersecting ? 'auto' : '';
-        }
         // Mobile: Hide bottom bar when sentinel appears
         setShowMobileBar(!entry.isIntersecting);
       },
@@ -231,10 +224,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
             </div>
           </div>
 
-          {/* RIGHT COLUMN — sticky so details/actions stay visible while user scrolls left col */}
+          {/* RIGHT COLUMN — Scrolls naturally with the page */}
           <div 
             ref={rightColRef}
-            className="flex flex-col gap-8 md:sticky md:top-24 self-start max-h-[calc(100vh-6rem)] overflow-y-auto hide-scrollbar pb-6"
+            className="flex flex-col gap-8 pb-6"
           >
 
             {/* BLOCK A — Item Header */}
@@ -397,9 +390,21 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
         {/* Sentinel Stop for IntersectionObserver */}
         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
 
-        {/* Related Products — unchanged */}
-        {related && related.length > 0 && (
+        {/* Similar Products */}
+        {similar && similar.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {similar.map(p => (
+                <ProductCard key={p.id} product={p as any} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* More From This Seller */}
+        {related && related.length > 0 && (
+          <div className="mt-16 pt-16 border-t border-[var(--color-border-subtle)]">
             <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map(p => (
