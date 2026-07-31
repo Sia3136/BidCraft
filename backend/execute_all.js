@@ -22,6 +22,28 @@ async function uploadImage(localPath) {
   }
 }
 
+const transforms = [
+  '', // Original
+  'c_crop,g_center,w_0.8,h_0.8,fl_relative', // Slight zoom
+  'c_crop,g_west,w_0.5,h_1.0,fl_relative', // Left-focused crop
+  'c_crop,g_east,w_0.5,h_1.0,fl_relative', // Right-focused crop
+  'c_crop,g_auto,w_0.4,h_0.4,fl_relative', // Close-up
+  'e_improve,e_sharpen' // Enhanced variation
+];
+
+function generateVariants(originalUrl) {
+  if (!originalUrl.includes('/upload/')) return Array(6).fill(originalUrl);
+  
+  const parts = originalUrl.split('/upload/');
+  const base = parts[0] + '/upload/';
+  const path = parts[1];
+  
+  return transforms.map(t => {
+    if (!t) return originalUrl;
+    return base + t + '/' + path;
+  });
+}
+
 async function run() {
   await client.connect();
 
@@ -65,7 +87,7 @@ async function run() {
       slug,
       sub,
       "Buy Now",
-      [imgUrl, imgUrl, imgUrl, imgUrl, imgUrl, imgUrl], 
+      generateVariants(imgUrl), 
       "BidCraft Verified",
       "4.80",
       100,

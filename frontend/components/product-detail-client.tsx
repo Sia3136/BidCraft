@@ -198,30 +198,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               />
             </div>
 
-            {/* Shipping & Purchase Info */}
-            <div className="mt-6 rounded-xl border border-[#D8C8BA] bg-[#F7F4EE] px-4 py-4">
-              <div className="grid grid-cols-1 gap-2">
-                {[
-                  { icon: '🇮🇳', text: 'Made in India' },
-                  { icon: '💳', text: 'Prepaid Orders Only' },
-                  { icon: '📦', text: 'Shipping by Delhivery' },
-                ].map(({ icon, text }) => (
-                  <div key={text} className="flex items-center gap-2.5">
-                    <span className="text-base leading-none">{icon}</span>
-                    <span className="text-sm text-[#2B211C]/80">{text}</span>
-                  </div>
-                ))}
-                <div className="flex items-center gap-2.5 mt-1">
-                  <span className="text-base leading-none">📄</span>
-                  <Link
-                    href="/returns-policy"
-                    className="text-sm text-[#B06A42] underline-offset-2 hover:underline"
-                  >
-                    Read Returns & Refund Policy
-                  </Link>
-                </div>
-              </div>
-            </div>
+
           </div>
 
           {/* RIGHT COLUMN — Scrolls naturally with the page */}
@@ -387,13 +364,25 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
           </div>
         </div>
 
+        {/* Purchase Information Footer */}
+        <div className="flex flex-wrap items-center justify-center gap-3 text-sm italic text-[#8A7566] font-medium mt-16 mb-8">
+          <span className="flex items-center gap-1"><span className="not-italic text-base">🇮🇳</span> Made in India</span>
+          <span>•</span>
+          <span className="flex items-center gap-1"><span className="not-italic text-base">💳</span> Prepaid Orders Only</span>
+          <span>•</span>
+          <span className="flex items-center gap-1"><span className="not-italic text-base">📦</span> Shipping by Delhivery</span>
+          <span>•</span>
+          <Link href="/returns-policy" className="flex items-center gap-1 underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors">
+            <span className="not-italic text-base">📄</span> Read Returns & Refund Policy
+          </Link>
+        </div>
+
         {/* Sentinel Stop for IntersectionObserver */}
         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
-
-        {/* Similar Products */}
+        {/* You May Also Like */}
         {similar && similar.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">You May Also Like</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {similar.map(p => (
                 <ProductCard key={p.id} product={p as any} />

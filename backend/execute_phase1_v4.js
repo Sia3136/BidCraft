@@ -7,6 +7,27 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 const fs = require('fs');
+
+const transforms = [
+  '',
+  'c_crop,g_center,w_0.8,h_0.8,fl_relative',
+  'c_crop,g_west,w_0.5,h_1.0,fl_relative',
+  'c_crop,g_east,w_0.5,h_1.0,fl_relative',
+  'c_crop,g_auto,w_0.4,h_0.4,fl_relative',
+  'e_improve,e_sharpen'
+];
+
+function generateVariants(originalUrl) {
+  if (!originalUrl.includes('/upload/')) return Array(6).fill(originalUrl);
+  const parts = originalUrl.split('/upload/');
+  const base = parts[0] + '/upload/';
+  const path = parts[1];
+  return transforms.map(t => {
+    if (!t) return originalUrl;
+    return base + t + '/' + path;
+  });
+}
+
 const path = require('path');
 const https = require('https');
 
@@ -305,7 +326,7 @@ async function run() {
             try {
               const uploadRes = await cloudinary.uploader.upload(absolutePath, { folder: 'bidcraft_listings' });
               if (uploadRes && uploadRes.secure_url) {
-                newUrls.push(uploadRes.secure_url);
+                newUrls.push(...generateVariants(uploadRes.secure_url));
                 STATS.imagesUploaded++;
                 STATS.urlsUpdated++;
                 changed = true;

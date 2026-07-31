@@ -30,11 +30,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg"
     ],
     "newArrival": true,
@@ -74,11 +69,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg"
     ],
     "newArrival": true,
@@ -115,11 +105,6 @@ const products = [] = [
       "500+ Sales"
     ],
     "images": [
-      "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
-      "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
-      "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
-      "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
-      "/images/80891aa6bb34af3854d903c9a40bde21.jpg",
       "/images/80891aa6bb34af3854d903c9a40bde21.jpg"
     ],
     "newArrival": true,
@@ -160,11 +145,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
       "/images/p452729_2.jpg"
     ],
     "newArrival": true,
@@ -202,11 +182,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
       "/images/da73bc9b03ca4657978e673c794395f8.jpg"
     ],
     "newArrival": true,
@@ -242,11 +217,6 @@ const products = [] = [
       "500+ Sales"
     ],
     "images": [
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
       "/images/a344e75529581e9f43f2c00dc233dea4.webp"
     ],
     "newArrival": true,
@@ -283,11 +253,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
-      "/images/27c1a7020f1f1ae13757444e6e302582.jpg",
       "/images/27c1a7020f1f1ae13757444e6e302582.jpg"
     ],
     "newArrival": true,
@@ -322,11 +287,6 @@ const products = [] = [
       "500+ Sales"
     ],
     "images": [
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
       "/images/4472fc60307774b77a3457158adcd98c.webp"
     ],
     "newArrival": true,
@@ -367,11 +327,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/5ad309e5bf37d2a19670076e986021fd.webp",
-      "/images/5ad309e5bf37d2a19670076e986021fd.webp",
-      "/images/5ad309e5bf37d2a19670076e986021fd.webp",
-      "/images/5ad309e5bf37d2a19670076e986021fd.webp",
-      "/images/5ad309e5bf37d2a19670076e986021fd.webp",
       "/images/5ad309e5bf37d2a19670076e986021fd.webp"
     ],
     "newArrival": true,
@@ -409,11 +364,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
-      "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
-      "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
-      "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
-      "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp",
       "/images/5b0b8ddfd495bbd0f96f457abbf3bbd8.webp"
     ],
     "newArrival": true,
@@ -450,11 +400,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/31e38d210b5e219cf5831d51863aff83.webp",
-      "/images/31e38d210b5e219cf5831d51863aff83.webp",
-      "/images/31e38d210b5e219cf5831d51863aff83.webp",
-      "/images/31e38d210b5e219cf5831d51863aff83.webp",
-      "/images/31e38d210b5e219cf5831d51863aff83.webp",
       "/images/31e38d210b5e219cf5831d51863aff83.webp"
     ],
     "newArrival": true,
@@ -490,11 +435,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
-      "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
-      "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
-      "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
-      "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg",
       "/images/864c5ce031b5e77f9a5eb9a8d506f497.jpg"
     ],
     "newArrival": true,
@@ -534,11 +474,6 @@ const products = [] = [
       "Trusted Seller"
     ],
     "images": [
-      "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
-      "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
-      "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
-      "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
-      "/images/1289afe396aec8a3225851a4f68bf9ed.webp",
       "/images/1289afe396aec8a3225851a4f68bf9ed.webp"
     ],
     "newArrival": true,
@@ -576,11 +511,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
-      "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
-      "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
-      "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
-      "/images/a1c8a4582ca82c3995d88befe1464e8e.webp",
       "/images/a1c8a4582ca82c3995d88befe1464e8e.webp"
     ],
     "collections": [
@@ -616,11 +546,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/ae02a7936a96a8d1302dc65047499be9.webp",
-      "/images/ae02a7936a96a8d1302dc65047499be9.webp",
-      "/images/ae02a7936a96a8d1302dc65047499be9.webp",
-      "/images/ae02a7936a96a8d1302dc65047499be9.webp",
-      "/images/ae02a7936a96a8d1302dc65047499be9.webp",
       "/images/ae02a7936a96a8d1302dc65047499be9.webp"
     ],
     "collections": [
@@ -660,11 +585,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
-      "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
-      "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
-      "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
-      "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg",
       "/images/43d02cac562d82f18e18ed3a0a7266ee.jpg"
     ],
     "collections": [
@@ -701,11 +621,6 @@ const products = [] = [
       "100+ Sales"
     ],
     "images": [
-      "/images/968355308d40d83a2e1f59daa61c5089.jpg",
-      "/images/968355308d40d83a2e1f59daa61c5089.jpg",
-      "/images/968355308d40d83a2e1f59daa61c5089.jpg",
-      "/images/968355308d40d83a2e1f59daa61c5089.jpg",
-      "/images/968355308d40d83a2e1f59daa61c5089.jpg",
       "/images/968355308d40d83a2e1f59daa61c5089.jpg"
     ],
     "collections": [
@@ -742,11 +657,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
-      "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
-      "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
-      "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
-      "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg",
       "/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg"
     ],
     "collections": [
@@ -782,11 +692,6 @@ const products = [] = [
       "Trusted Seller"
     ],
     "images": [
-      "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
-      "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
-      "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
-      "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
-      "/images/ed2af0776b49fdea863a1ead90dadf19.jpg",
       "/images/ed2af0776b49fdea863a1ead90dadf19.jpg"
     ],
     "collections": [
@@ -825,11 +730,6 @@ const products = [] = [
       "Trusted Seller"
     ],
     "images": [
-      "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
-      "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
-      "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
-      "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
-      "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg",
       "/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg"
     ],
     "collections": [
@@ -864,11 +764,6 @@ const products = [] = [
       "100+ Sales"
     ],
     "images": [
-      "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
-      "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
-      "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
-      "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
-      "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg",
       "/images/1201e7eabf4c8dd5170b0a2b6203dc42.jpg"
     ],
     "collections": [
@@ -904,11 +799,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
-      "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
-      "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
-      "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
-      "/images/2594d9c77a1e73aefd4e50631968e2e0.webp",
       "/images/2594d9c77a1e73aefd4e50631968e2e0.webp"
     ],
     "collections": [
@@ -944,11 +834,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/44baf8c7320670cef2659e68cb492255.webp",
-      "/images/44baf8c7320670cef2659e68cb492255.webp",
-      "/images/44baf8c7320670cef2659e68cb492255.webp",
-      "/images/44baf8c7320670cef2659e68cb492255.webp",
-      "/images/44baf8c7320670cef2659e68cb492255.webp",
       "/images/44baf8c7320670cef2659e68cb492255.webp"
     ],
     "collections": [
@@ -984,11 +869,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/e28037264502713adb183f8523837b47.webp",
-      "/images/e28037264502713adb183f8523837b47.webp",
-      "/images/e28037264502713adb183f8523837b47.webp",
-      "/images/e28037264502713adb183f8523837b47.webp",
-      "/images/e28037264502713adb183f8523837b47.webp",
       "/images/e28037264502713adb183f8523837b47.webp"
     ],
     "collections": [
@@ -1022,11 +902,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
-      "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
-      "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
-      "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
-      "/images/e812c5346c69f143d25ef93ee4411d6b.jpg",
       "/images/e812c5346c69f143d25ef93ee4411d6b.jpg"
     ],
     "collections": [
@@ -1064,11 +939,6 @@ const products = [] = [
       "Top Rated Seller"
     ],
     "images": [
-      "/images/013d7240408456110f7fbb438010ac91.webp",
-      "/images/013d7240408456110f7fbb438010ac91.webp",
-      "/images/013d7240408456110f7fbb438010ac91.webp",
-      "/images/013d7240408456110f7fbb438010ac91.webp",
-      "/images/013d7240408456110f7fbb438010ac91.webp",
       "/images/013d7240408456110f7fbb438010ac91.webp"
     ],
     "collections": [
@@ -1103,11 +973,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
-      "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
-      "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
-      "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
-      "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp",
       "/images/fa4a00e8f54ea6c00ca7181fb7c8c100.webp"
     ],
     "collections": [
@@ -1141,11 +1006,6 @@ const products = [] = [
       "Trusted Seller"
     ],
     "images": [
-      "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
-      "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
-      "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
-      "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
-      "/images/9ecbeaf48b93b6d50ada2184177af724.webp",
       "/images/9ecbeaf48b93b6d50ada2184177af724.webp"
     ],
     "collections": [
@@ -1179,11 +1039,6 @@ const products = [] = [
       "Trusted Seller"
     ],
     "images": [
-      "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
-      "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
-      "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
-      "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
-      "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp",
       "/images/7a7a73ca6a320d1ee0350ed045b0f27f.webp"
     ],
     "collections": [
@@ -1217,11 +1072,6 @@ const products = [] = [
       "Fast Shipper"
     ],
     "images": [
-      "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
-      "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
-      "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
-      "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
-      "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg",
       "/images/dcbc212d2f73919bff59c60b9e8a7b30.jpg"
     ],
     "collections": [
@@ -1260,11 +1110,6 @@ const products = [] = [
       "500+ Sales"
     ],
     "images": [
-      "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
-      "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
-      "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
-      "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
-      "/images/bb790b3ed435f058d2b30f6fe364cacd.webp",
       "/images/bb790b3ed435f058d2b30f6fe364cacd.webp"
     ],
     "collections": [
@@ -1299,11 +1144,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
-      "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
-      "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
-      "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
-      "/images/8c5c985a4ba083010ee62d84f9fb6577.webp",
       "/images/8c5c985a4ba083010ee62d84f9fb6577.webp"
     ],
     "collections": [
@@ -1338,11 +1178,6 @@ const products = [] = [
       "100+ Sales"
     ],
     "images": [
-      "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
-      "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
-      "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
-      "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
-      "/images/f06bdeca8c31052b74db04b69bd23718.jpg",
       "/images/f06bdeca8c31052b74db04b69bd23718.jpg"
     ],
     "collections": [
@@ -1377,11 +1212,6 @@ const products = [] = [
       "100+ Sales"
     ],
     "images": [
-      "/images/470b571670ccddef91176aaaee01b23c.webp",
-      "/images/470b571670ccddef91176aaaee01b23c.webp",
-      "/images/470b571670ccddef91176aaaee01b23c.webp",
-      "/images/470b571670ccddef91176aaaee01b23c.webp",
-      "/images/470b571670ccddef91176aaaee01b23c.webp",
       "/images/470b571670ccddef91176aaaee01b23c.webp"
     ],
     "collections": [
@@ -1421,11 +1251,6 @@ const products = [] = [
       "Verified Creator"
     ],
     "images": [
-      "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
-      "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
-      "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
-      "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
-      "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg",
       "/images/3ed6521fdb9726a8cb2da3c33d81c89c.jpg"
     ],
     "collections": [
@@ -1460,11 +1285,6 @@ const products = [] = [
       "500+ Sales"
     ],
     "images": [
-      "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
-      "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
-      "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
-      "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
-      "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg",
       "/images/f3530f2aa55a74cfe8264c46ce6fe39d.jpg"
     ],
     "collections": [
@@ -1493,11 +1313,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
     "images": [
-      "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
-      "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
-      "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
-      "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
-      "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg",
       "/images/7f5e7d2df12a023b6511de3c74c586eb.jpg"
     ],
     "description": "This stunning Natural Bathing Gift Set represents the pinnacle of craftsmanship in the Candles & Soaps category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1534,11 +1349,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
     "images": [
-      "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
-      "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
-      "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
-      "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
-      "/images/17f76ad92cbb557f64169f141176e7b1.jpg",
       "/images/17f76ad92cbb557f64169f141176e7b1.jpg"
     ],
     "description": "This stunning Loofah Soap Bar represents the pinnacle of craftsmanship in the Candles & Soaps category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1577,11 +1387,6 @@ const products = [] = [
     "bidCount": 5,
     "image": "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
     "images": [
-      "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
-      "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
-      "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
-      "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
-      "/images/7575cad0c34ec572e59b53061ab42d5d.webp",
       "/images/7575cad0c34ec572e59b53061ab42d5d.webp"
     ],
     "description": "This stunning Handcrafted Red Pillar Candle represents the pinnacle of craftsmanship in the Candles & Soaps category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1618,11 +1423,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
     "images": [
-      "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
-      "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
-      "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
-      "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
-      "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg",
       "/images/a14b6eac56fde3c0ed4be6117ec5b88b.jpg"
     ],
     "description": "This stunning Rose Petal Natural Soap Set represents the pinnacle of craftsmanship in the Candles & Soaps category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1659,11 +1459,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/a344e75529581e9f43f2c00dc233dea4.webp",
     "images": [
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
-      "/images/a344e75529581e9f43f2c00dc233dea4.webp",
       "/images/a344e75529581e9f43f2c00dc233dea4.webp"
     ],
     "description": "This stunning Birthday Celebration Candle represents the pinnacle of craftsmanship in the Candles & Soaps category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1702,11 +1497,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/5f2ab26c880e06709387b842cdd1feef.webp",
     "images": [
-      "/images/5f2ab26c880e06709387b842cdd1feef.webp",
-      "/images/5f2ab26c880e06709387b842cdd1feef.webp",
-      "/images/5f2ab26c880e06709387b842cdd1feef.webp",
-      "/images/5f2ab26c880e06709387b842cdd1feef.webp",
-      "/images/5f2ab26c880e06709387b842cdd1feef.webp",
       "/images/5f2ab26c880e06709387b842cdd1feef.webp"
     ],
     "description": "This stunning Hand-painted Traditional Vase represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1746,11 +1536,6 @@ const products = [] = [
     "bidCount": 8,
     "image": "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
     "images": [
-      "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
-      "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
-      "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
-      "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
-      "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg",
       "/images/3599c4c65b94b61ec21a8d070cd401fe.jpg"
     ],
     "description": "This stunning Traditional Garba Pots represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1787,11 +1572,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/04809f445775b05edf65772b67c139d9.jpg",
     "images": [
-      "/images/04809f445775b05edf65772b67c139d9.jpg",
-      "/images/04809f445775b05edf65772b67c139d9.jpg",
-      "/images/04809f445775b05edf65772b67c139d9.jpg",
-      "/images/04809f445775b05edf65772b67c139d9.jpg",
-      "/images/04809f445775b05edf65772b67c139d9.jpg",
       "/images/04809f445775b05edf65772b67c139d9.jpg"
     ],
     "description": "This stunning Ceramic Floral Vase represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1830,11 +1610,6 @@ const products = [] = [
     "bidCount": 14,
     "image": "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
     "images": [
-      "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
-      "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
-      "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
-      "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
-      "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg",
       "/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg"
     ],
     "description": "This stunning Abstract Clay Figure Sculpture represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1872,11 +1647,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/2371958e0daab9fea35be782cfbcb66c.webp",
     "images": [
-      "/images/2371958e0daab9fea35be782cfbcb66c.webp",
-      "/images/2371958e0daab9fea35be782cfbcb66c.webp",
-      "/images/2371958e0daab9fea35be782cfbcb66c.webp",
-      "/images/2371958e0daab9fea35be782cfbcb66c.webp",
-      "/images/2371958e0daab9fea35be782cfbcb66c.webp",
       "/images/2371958e0daab9fea35be782cfbcb66c.webp"
     ],
     "description": "This stunning Floral Clay Teapot Set represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1913,11 +1683,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
     "images": [
-      "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
-      "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
-      "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
-      "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
-      "/images/d497bf30fec759fddc8ce0890f380f18.jpg",
       "/images/d497bf30fec759fddc8ce0890f380f18.jpg"
     ],
     "description": "This stunning Terracotta Vase Trio represents the pinnacle of craftsmanship in the Clay & Pottery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1954,11 +1719,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
     "images": [
-      "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
-      "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
-      "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
-      "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
-      "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg",
       "/images/80a7c1fdd769cc0d35110a438dfb6503.jpg"
     ],
     "description": "This stunning Heart Crochet Keychain Pair represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -1995,11 +1755,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/4472fc60307774b77a3457158adcd98c.webp",
     "images": [
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
-      "/images/4472fc60307774b77a3457158adcd98c.webp",
       "/images/4472fc60307774b77a3457158adcd98c.webp"
     ],
     "description": "This stunning Crochet Camera Keychain represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2037,11 +1792,6 @@ const products = [] = [
     "bidCount": 6,
     "image": "/images/crochet-flowers-blue-pot.jpeg",
     "images": [
-      "/images/crochet-flowers-blue-pot.jpeg",
-      "/images/crochet-flowers-blue-pot.jpeg",
-      "/images/crochet-flowers-blue-pot.jpeg",
-      "/images/crochet-flowers-blue-pot.jpeg",
-      "/images/crochet-flowers-blue-pot.jpeg",
       "/images/crochet-flowers-blue-pot.jpeg"
     ],
     "description": "This stunning Crochet Flower Vase represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2079,11 +1829,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
     "images": [
-      "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
-      "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
-      "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
-      "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
-      "/images/d156289ab52040263f59b16d6f3f5f2c.jpg",
       "/images/d156289ab52040263f59b16d6f3f5f2c.jpg"
     ],
     "description": "This stunning Anniversary Crochet Bouquet represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2122,11 +1867,6 @@ const products = [] = [
     "bidCount": 12,
     "image": "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
     "images": [
-      "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
-      "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
-      "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
-      "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
-      "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg",
       "/images/f428f0473bba1ebaf8b0bf015d7d4e7b.jpg"
     ],
     "description": "This stunning Handmade Crochet Jacket represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2162,11 +1902,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/crochet-sunflower-pot.jpeg",
     "images": [
-      "/images/crochet-sunflower-pot.jpeg",
-      "/images/crochet-sunflower-pot.jpeg",
-      "/images/crochet-sunflower-pot.jpeg",
-      "/images/crochet-sunflower-pot.jpeg",
-      "/images/crochet-sunflower-pot.jpeg",
       "/images/crochet-sunflower-pot.jpeg"
     ],
     "description": "This stunning Crochet Sunflower Pot represents the pinnacle of craftsmanship in the Crochet & Knitting category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2203,11 +1938,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
     "images": [
-      "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
-      "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
-      "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
-      "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
-      "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg",
       "/images/1bfd66dfc3b8642a56f32f8ed543cc3a.jpg"
     ],
     "description": "This stunning Handcrafted Paper Bookmark represents the pinnacle of craftsmanship in the Paper Crafts category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2244,11 +1974,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
     "images": [
-      "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
-      "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
-      "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
-      "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
-      "/images/2d45e55d6a95ae07c38891e3887618a2.jpg",
       "/images/2d45e55d6a95ae07c38891e3887618a2.jpg"
     ],
     "description": "This stunning Paper Craft Flower Pot represents the pinnacle of craftsmanship in the Paper Crafts category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2283,11 +2008,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/5d25e6472904da283141b4dc037eda2d.webp",
     "images": [
-      "/images/5d25e6472904da283141b4dc037eda2d.webp",
-      "/images/5d25e6472904da283141b4dc037eda2d.webp",
-      "/images/5d25e6472904da283141b4dc037eda2d.webp",
-      "/images/5d25e6472904da283141b4dc037eda2d.webp",
-      "/images/5d25e6472904da283141b4dc037eda2d.webp",
       "/images/5d25e6472904da283141b4dc037eda2d.webp"
     ],
     "description": "This stunning Floral Paper Craft Card represents the pinnacle of craftsmanship in the Paper Crafts category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2323,11 +2043,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
     "images": [
-      "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
-      "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
-      "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
-      "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
-      "/images/90340c0fe5f04ef94056bb544a98ad79.jpg",
       "/images/90340c0fe5f04ef94056bb544a98ad79.jpg"
     ],
     "description": "This stunning Resin Pendant Necklace represents the pinnacle of craftsmanship in the Resin Art category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2366,11 +2081,6 @@ const products = [] = [
     "bidCount": 18,
     "image": "/images/6825197426036f192e947bf86984bbb3.webp",
     "images": [
-      "/images/6825197426036f192e947bf86984bbb3.webp",
-      "/images/6825197426036f192e947bf86984bbb3.webp",
-      "/images/6825197426036f192e947bf86984bbb3.webp",
-      "/images/6825197426036f192e947bf86984bbb3.webp",
-      "/images/6825197426036f192e947bf86984bbb3.webp",
       "/images/6825197426036f192e947bf86984bbb3.webp"
     ],
     "description": "This stunning Resin Wall Art Hanging represents the pinnacle of craftsmanship in the Resin Art category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2406,11 +2116,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
     "images": [
-      "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
-      "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
-      "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
-      "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
-      "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg",
       "/images/ce4c6e8df736e34bd96ca50c3c6cfb11.jpg"
     ],
     "description": "This stunning Beachy Resin Earrings Set represents the pinnacle of craftsmanship in the Resin Art category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2447,11 +2152,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
     "images": [
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
-      "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg",
       "/images/e0e8112d8f5b16d5612a0e69efbae352.jpg"
     ],
     "description": "This stunning Resin Blue Mirror represents the pinnacle of craftsmanship in the Resin Art category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2487,11 +2187,6 @@ const products = [] = [
     "offersAllowed": false,
     "image": "/images/f41872e1978e36adfa877aff0029dcad.webp",
     "images": [
-      "/images/f41872e1978e36adfa877aff0029dcad.webp",
-      "/images/f41872e1978e36adfa877aff0029dcad.webp",
-      "/images/f41872e1978e36adfa877aff0029dcad.webp",
-      "/images/f41872e1978e36adfa877aff0029dcad.webp",
-      "/images/f41872e1978e36adfa877aff0029dcad.webp",
       "/images/f41872e1978e36adfa877aff0029dcad.webp"
     ],
     "description": "This stunning Resin Art Bookmarks Set represents the pinnacle of craftsmanship in the Resin Art category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2529,11 +2224,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
     "images": [
-      "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
-      "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
-      "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
-      "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
-      "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp",
       "/images/7caa33bf8eca070ee8a1dd20f86723ec.webp"
     ],
     "description": "This stunning Soft Floral Cushion represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2570,11 +2260,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
     "images": [
-      "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
-      "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
-      "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
-      "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
-      "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg",
       "/images/a5f4ca975a91906c04d6f284ddb53aca.jpg"
     ],
     "description": "This stunning Chess Set Wall Storage represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2612,11 +2297,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
     "images": [
-      "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
-      "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
-      "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
-      "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
-      "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp",
       "/images/b2577665a29cbe1b2263e4c0b1a4ee29.webp"
     ],
     "description": "This stunning Glass Bottle with Glasswork represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2654,11 +2334,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/c3f27a4077f7d8474444c2c129199224.webp",
     "images": [
-      "/images/c3f27a4077f7d8474444c2c129199224.webp",
-      "/images/c3f27a4077f7d8474444c2c129199224.webp",
-      "/images/c3f27a4077f7d8474444c2c129199224.webp",
-      "/images/c3f27a4077f7d8474444c2c129199224.webp",
-      "/images/c3f27a4077f7d8474444c2c129199224.webp",
       "/images/c3f27a4077f7d8474444c2c129199224.webp"
     ],
     "description": "This stunning Sculptural Home Décor Piece represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2697,11 +2372,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
     "images": [
-      "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
-      "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
-      "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
-      "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
-      "/images/e2174f2cb5f931e40766c959c4adc809.jpg",
       "/images/e2174f2cb5f931e40766c959c4adc809.jpg"
     ],
     "description": "This stunning Custom Sword Wall Hanging represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2739,11 +2409,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
     "images": [
-      "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
-      "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
-      "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
-      "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
-      "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg",
       "/images/1f986eedcf59a21d3352b5cc6bee2244.jpg"
     ],
     "description": "This stunning Gold Arm Cuff represents the pinnacle of craftsmanship in the Jewellery & Accessories category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2782,11 +2447,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
     "images": [
-      "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
-      "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
-      "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
-      "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
-      "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg",
       "/images/5cf84872e9e0ed2dcee303bf9e245b28.jpg"
     ],
     "description": "This stunning Crochet Case Cover represents the pinnacle of craftsmanship in the Stationery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2826,11 +2486,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/7f69e85a737d75f85a041d457c9be525.jpg",
     "images": [
-      "/images/7f69e85a737d75f85a041d457c9be525.jpg",
-      "/images/7f69e85a737d75f85a041d457c9be525.jpg",
-      "/images/7f69e85a737d75f85a041d457c9be525.jpg",
-      "/images/7f69e85a737d75f85a041d457c9be525.jpg",
-      "/images/7f69e85a737d75f85a041d457c9be525.jpg",
       "/images/7f69e85a737d75f85a041d457c9be525.jpg"
     ],
     "description": "This stunning Handcrafted Beaded Bracelet represents the pinnacle of craftsmanship in the Jewellery & Accessories category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2869,11 +2524,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
     "images": [
-      "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
-      "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
-      "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
-      "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
-      "/images/417caba42ec36fd9ba441b33afd74e7c.jpg",
       "/images/417caba42ec36fd9ba441b33afd74e7c.jpg"
     ],
     "description": "This stunning Gold-Plated Minimalist Ring represents the pinnacle of craftsmanship in the Jewellery & Accessories category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2911,11 +2561,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
     "images": [
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
-      "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg",
       "/images/454b1c36b55a7aac07a46dec81f95a6f.jpg"
     ],
     "description": "This stunning Shell Jewellery Stand represents the pinnacle of craftsmanship in the Home Decor category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -2954,11 +2599,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/629babcd420c53e76b891e70f45966ee.jpg",
     "images": [
-      "/images/629babcd420c53e76b891e70f45966ee.jpg",
-      "/images/629babcd420c53e76b891e70f45966ee.jpg",
-      "/images/629babcd420c53e76b891e70f45966ee.jpg",
-      "/images/629babcd420c53e76b891e70f45966ee.jpg",
-      "/images/629babcd420c53e76b891e70f45966ee.jpg",
       "/images/629babcd420c53e76b891e70f45966ee.jpg"
     ],
     "description": "This stunning Set of 3 Cute Rings represents the pinnacle of craftsmanship in the Jewellery & Accessories category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3000,11 +2640,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
     "images": [
-      "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
-      "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
-      "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
-      "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
-      "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg",
       "/images/2057d7b98e01e6d4671c8652e542bfbb.jpg"
     ],
     "description": "This stunning Miniature Pottery Set with Florals represents the pinnacle of craftsmanship in the Miniatures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3043,11 +2678,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
     "images": [
-      "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
-      "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
-      "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
-      "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
-      "/images/9780ce408b0eeacb2b478b53e49472f3.webp",
       "/images/9780ce408b0eeacb2b478b53e49472f3.webp"
     ],
     "description": "This stunning Wooden Miniature House represents the pinnacle of craftsmanship in the Miniatures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3084,11 +2714,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/f8e8c93f83911972060b57d5784893b9.jpg",
     "images": [
-      "/images/f8e8c93f83911972060b57d5784893b9.jpg",
-      "/images/f8e8c93f83911972060b57d5784893b9.jpg",
-      "/images/f8e8c93f83911972060b57d5784893b9.jpg",
-      "/images/f8e8c93f83911972060b57d5784893b9.jpg",
-      "/images/f8e8c93f83911972060b57d5784893b9.jpg",
       "/images/f8e8c93f83911972060b57d5784893b9.jpg"
     ],
     "description": "This stunning Miniature Food Platter Magnet represents the pinnacle of craftsmanship in the Miniatures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3126,11 +2751,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
     "images": [
-      "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
-      "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
-      "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
-      "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
-      "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg",
       "/images/85bd73f4fa6dc704d1d19c276fba84a2.jpg"
     ],
     "description": "This stunning Set of 25 Posca Markers represents the pinnacle of craftsmanship in the Stationery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3167,11 +2787,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
     "images": [
-      "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
-      "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
-      "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
-      "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
-      "/images/cd653367e75f8af84fb565e77b4fc97f.webp",
       "/images/cd653367e75f8af84fb565e77b4fc97f.webp"
     ],
     "description": "This stunning Custom Pen, Paper & Sticky Notes Gift Set represents the pinnacle of craftsmanship in the Stationery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3209,11 +2824,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
     "images": [
-      "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
-      "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
-      "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
-      "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
-      "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp",
       "/images/d8bb9900ecc6dd3dd2c62d723203a2c3.webp"
     ],
     "description": "This stunning Big Sticker Pack represents the pinnacle of craftsmanship in the Stationery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3253,11 +2863,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
     "images": [
-      "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
-      "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
-      "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
-      "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
-      "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg",
       "/images/fbc8d0c72ddf94d0a150ce1e24f19382.jpg"
     ],
     "description": "This stunning Blue Pen with Pink Bow represents the pinnacle of craftsmanship in the Stationery category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3296,11 +2901,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
     "images": [
-      "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
-      "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
-      "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
-      "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
-      "/images/5f3adde084f08eee2d3375f04d56ba04.jpg",
       "/images/5f3adde084f08eee2d3375f04d56ba04.jpg"
     ],
     "description": "This stunning Anime School Bag represents the pinnacle of craftsmanship in the Anime Merchandise category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3340,11 +2940,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
     "images": [
-      "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
-      "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
-      "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
-      "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
-      "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg",
       "/images/133ed5c3890f16eeca38eedf3bd059b5.jpg"
     ],
     "description": "This stunning Anime Keychain Set represents the pinnacle of craftsmanship in the Anime Merchandise category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3384,11 +2979,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/ee616c53d459a38d4c2122653aa94920.jpg",
     "images": [
-      "/images/ee616c53d459a38d4c2122653aa94920.jpg",
-      "/images/ee616c53d459a38d4c2122653aa94920.jpg",
-      "/images/ee616c53d459a38d4c2122653aa94920.jpg",
-      "/images/ee616c53d459a38d4c2122653aa94920.jpg",
-      "/images/ee616c53d459a38d4c2122653aa94920.jpg",
       "/images/ee616c53d459a38d4c2122653aa94920.jpg"
     ],
     "description": "This stunning Anime Figure Collectibles Set represents the pinnacle of craftsmanship in the Anime Merchandise category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3428,11 +3018,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
     "images": [
-      "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
-      "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
-      "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
-      "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
-      "/images/5139a72a8fd930206d06b40689c6e35c.jpg",
       "/images/5139a72a8fd930206d06b40689c6e35c.jpg"
     ],
     "description": "This stunning Classic Wooden Dominoes Set represents the pinnacle of craftsmanship in the Board Games category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3470,11 +3055,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
     "images": [
-      "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
-      "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
-      "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
-      "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
-      "/images/ab649b70f654625251d0c0a5ff8f6eae.webp",
       "/images/ab649b70f654625251d0c0a5ff8f6eae.webp"
     ],
     "description": "This stunning Harry Potter Edition Guess Who represents the pinnacle of craftsmanship in the Board Games category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3515,11 +3095,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/b355c24663070085652f2205eb853402.webp",
     "images": [
-      "/images/b355c24663070085652f2205eb853402.webp",
-      "/images/b355c24663070085652f2205eb853402.webp",
-      "/images/b355c24663070085652f2205eb853402.webp",
-      "/images/b355c24663070085652f2205eb853402.webp",
-      "/images/b355c24663070085652f2205eb853402.webp",
       "/images/b355c24663070085652f2205eb853402.webp"
     ],
     "description": "This stunning Clash of Clans Collector's Board Game represents the pinnacle of craftsmanship in the Board Games category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3560,11 +3135,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/p452729_2.jpg",
     "images": [
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
-      "/images/p452729_2.jpg",
       "/images/p452729_2.jpg"
     ],
     "description": "This stunning Rare Wooden Chess Set represents the pinnacle of craftsmanship in the Board Games category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3607,11 +3177,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/3b996e5246d79ef9617231779fe39bfd.webp",
     "images": [
-      "/images/3b996e5246d79ef9617231779fe39bfd.webp",
-      "/images/3b996e5246d79ef9617231779fe39bfd.webp",
-      "/images/3b996e5246d79ef9617231779fe39bfd.webp",
-      "/images/3b996e5246d79ef9617231779fe39bfd.webp",
-      "/images/3b996e5246d79ef9617231779fe39bfd.webp",
       "/images/3b996e5246d79ef9617231779fe39bfd.webp"
     ],
     "description": "This stunning Shadowmourne Battle Axe — WoW LED Replica represents the pinnacle of craftsmanship in the Cosplay Props category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3652,11 +3217,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
     "images": [
-      "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
-      "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
-      "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
-      "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
-      "/images/5c9d92c399c387829d972b3c4dd94ddb.webp",
       "/images/5c9d92c399c387829d972b3c4dd94ddb.webp"
     ],
     "description": "This stunning Shimmer Mic Set — Cosplay Performance Pack represents the pinnacle of craftsmanship in the Cosplay Props category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3695,11 +3255,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/827f63726fb2295f4704e8a2293b8076.webp",
     "images": [
-      "/images/827f63726fb2295f4704e8a2293b8076.webp",
-      "/images/827f63726fb2295f4704e8a2293b8076.webp",
-      "/images/827f63726fb2295f4704e8a2293b8076.webp",
-      "/images/827f63726fb2295f4704e8a2293b8076.webp",
-      "/images/827f63726fb2295f4704e8a2293b8076.webp",
       "/images/827f63726fb2295f4704e8a2293b8076.webp"
     ],
     "description": "This stunning Jinx Chomper Grenade — Arcane 3D Print represents the pinnacle of craftsmanship in the Cosplay Props category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3737,11 +3292,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
     "images": [
-      "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
-      "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
-      "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
-      "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
-      "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg",
       "/images/8181163cbbd1df84ebcf1ee68060e86b.jpg"
     ],
     "description": "This stunning Addams Family Thing Hand Prop represents the pinnacle of craftsmanship in the Cosplay Props category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3779,11 +3329,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
     "images": [
-      "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
-      "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
-      "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
-      "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
-      "/images/1a1bf978dcd45523d39f580eee52572f.jpg",
       "/images/1a1bf978dcd45523d39f580eee52572f.jpg"
     ],
     "description": "This stunning Mayhem in the Library — 1000pc Puzzle represents the pinnacle of craftsmanship in the Puzzle Collections category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3820,11 +3365,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/6f125dfb748d013c750f962fec969796.jpg",
     "images": [
-      "/images/6f125dfb748d013c750f962fec969796.jpg",
-      "/images/6f125dfb748d013c750f962fec969796.jpg",
-      "/images/6f125dfb748d013c750f962fec969796.jpg",
-      "/images/6f125dfb748d013c750f962fec969796.jpg",
-      "/images/6f125dfb748d013c750f962fec969796.jpg",
       "/images/6f125dfb748d013c750f962fec969796.jpg"
     ],
     "description": "This stunning Pink Edition Collector Puzzle Box represents the pinnacle of craftsmanship in the Puzzle Collections category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3862,11 +3402,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
     "images": [
-      "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
-      "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
-      "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
-      "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
-      "/images/114dba49a0cb6e275f187ab73b4c71f6.webp",
       "/images/114dba49a0cb6e275f187ab73b4c71f6.webp"
     ],
     "description": "This stunning Not Your Ordinary Jigsaw Set represents the pinnacle of craftsmanship in the Puzzle Collections category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3905,11 +3440,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
     "images": [
-      "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
-      "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
-      "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
-      "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
-      "/images/9b2adcf5396176251f6e5686a1760f48.jpg",
       "/images/9b2adcf5396176251f6e5686a1760f48.jpg"
     ],
     "description": "This stunning Batman Action Figure represents the pinnacle of craftsmanship in the Action Figures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3948,11 +3478,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
     "images": [
-      "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
-      "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
-      "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
-      "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
-      "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg",
       "/images/26e31402e0f6f219cb45dfbbaac247bc.jpg"
     ],
     "description": "This stunning Spider-Man Unique Action Figure represents the pinnacle of craftsmanship in the Action Figures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -3993,11 +3518,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/4256f8dcb8f244ba618721219f550054.jpg",
     "images": [
-      "/images/4256f8dcb8f244ba618721219f550054.jpg",
-      "/images/4256f8dcb8f244ba618721219f550054.jpg",
-      "/images/4256f8dcb8f244ba618721219f550054.jpg",
-      "/images/4256f8dcb8f244ba618721219f550054.jpg",
-      "/images/4256f8dcb8f244ba618721219f550054.jpg",
       "/images/4256f8dcb8f244ba618721219f550054.jpg"
     ],
     "description": "This stunning Spider-Man Listening to Music — Rare Figure represents the pinnacle of craftsmanship in the Action Figures category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4039,11 +3559,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
     "images": [
-      "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
-      "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
-      "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
-      "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
-      "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp",
       "/images/56f2f37fe6cde13194e0c8795c4b40ae.webp"
     ],
     "description": "This stunning Spider-Man Rare Funko Pop Set of 4 represents the pinnacle of craftsmanship in the Funko Pops category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4083,11 +3598,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/9686ec7e50b85ac5696033ccfae67227.webp",
     "images": [
-      "/images/9686ec7e50b85ac5696033ccfae67227.webp",
-      "/images/9686ec7e50b85ac5696033ccfae67227.webp",
-      "/images/9686ec7e50b85ac5696033ccfae67227.webp",
-      "/images/9686ec7e50b85ac5696033ccfae67227.webp",
-      "/images/9686ec7e50b85ac5696033ccfae67227.webp",
       "/images/9686ec7e50b85ac5696033ccfae67227.webp"
     ],
     "description": "This stunning Miranda Priestly Special Edition Funko Pop represents the pinnacle of craftsmanship in the Funko Pops category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4126,11 +3636,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/dca0a68b8d373d88caafb8802ca64371.webp",
     "images": [
-      "/images/dca0a68b8d373d88caafb8802ca64371.webp",
-      "/images/dca0a68b8d373d88caafb8802ca64371.webp",
-      "/images/dca0a68b8d373d88caafb8802ca64371.webp",
-      "/images/dca0a68b8d373d88caafb8802ca64371.webp",
-      "/images/dca0a68b8d373d88caafb8802ca64371.webp",
       "/images/dca0a68b8d373d88caafb8802ca64371.webp"
     ],
     "description": "This stunning Vincent van Gogh Funko Pop represents the pinnacle of craftsmanship in the Funko Pops category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4168,11 +3673,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/f8606ecbf401957653aa8e767871efa5.jpg",
     "images": [
-      "/images/f8606ecbf401957653aa8e767871efa5.jpg",
-      "/images/f8606ecbf401957653aa8e767871efa5.jpg",
-      "/images/f8606ecbf401957653aa8e767871efa5.jpg",
-      "/images/f8606ecbf401957653aa8e767871efa5.jpg",
-      "/images/f8606ecbf401957653aa8e767871efa5.jpg",
       "/images/f8606ecbf401957653aa8e767871efa5.jpg"
     ],
     "description": "This stunning Michael Jackson Funko Pop represents the pinnacle of craftsmanship in the Funko Pops category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4212,11 +3712,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/59c28005f07f951c988868086560ab2e.jpg",
     "images": [
-      "/images/59c28005f07f951c988868086560ab2e.jpg",
-      "/images/59c28005f07f951c988868086560ab2e.jpg",
-      "/images/59c28005f07f951c988868086560ab2e.jpg",
-      "/images/59c28005f07f951c988868086560ab2e.jpg",
-      "/images/59c28005f07f951c988868086560ab2e.jpg",
       "/images/59c28005f07f951c988868086560ab2e.jpg"
     ],
     "description": "This stunning Datsun 240Z Pink & Blue Twin Pack represents the pinnacle of craftsmanship in the Hot Wheels category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4256,11 +3751,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
     "images": [
-      "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
-      "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
-      "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
-      "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
-      "/images/586fa4c05a4543d441ec3c2bf877f807.jpg",
       "/images/586fa4c05a4543d441ec3c2bf877f807.jpg"
     ],
     "description": "This stunning Rare Blue Hot Wheels Collectible represents the pinnacle of craftsmanship in the Hot Wheels category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4300,11 +3790,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/82984d988affd58d925369d18cfc6474.jpg",
     "images": [
-      "/images/82984d988affd58d925369d18cfc6474.jpg",
-      "/images/82984d988affd58d925369d18cfc6474.jpg",
-      "/images/82984d988affd58d925369d18cfc6474.jpg",
-      "/images/82984d988affd58d925369d18cfc6474.jpg",
-      "/images/82984d988affd58d925369d18cfc6474.jpg",
       "/images/82984d988affd58d925369d18cfc6474.jpg"
     ],
     "description": "This stunning Fast & Furious Special Edition Hot Wheels represents the pinnacle of craftsmanship in the Hot Wheels category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4343,11 +3828,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
     "images": [
-      "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
-      "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
-      "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
-      "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
-      "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg",
       "/images/bab649350f00266882bb6a4c5d7c9cd0.jpg"
     ],
     "description": "This stunning Formula 1 Special Edition Hot Wheels represents the pinnacle of craftsmanship in the Hot Wheels category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4386,11 +3866,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/hw-vintage-corvette.jpg",
     "images": [
-      "/images/hw-vintage-corvette.jpg",
-      "/images/hw-vintage-corvette.jpg",
-      "/images/hw-vintage-corvette.jpg",
-      "/images/hw-vintage-corvette.jpg",
-      "/images/hw-vintage-corvette.jpg",
       "/images/hw-vintage-corvette.jpg"
     ],
     "description": "This stunning 1999 Treasure Hunt Series Hot Wheels represents the pinnacle of craftsmanship in the Hot Wheels category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4433,11 +3908,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/da73bc9b03ca4657978e673c794395f8.jpg",
     "images": [
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
-      "/images/da73bc9b03ca4657978e673c794395f8.jpg",
       "/images/da73bc9b03ca4657978e673c794395f8.jpg"
     ],
     "description": "This stunning Custom Mechanical Keyboard represents the pinnacle of craftsmanship in the Rare Collectibles category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4477,11 +3947,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
     "images": [
-      "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
-      "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
-      "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
-      "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
-      "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg",
       "/images/fd65ab6bd2b173fea7adfd27510dd72a.jpg"
     ],
     "description": "This stunning Hirono Panda Action Figure represents the pinnacle of craftsmanship in the Rare Collectibles category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4521,11 +3986,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/3e509945098af056b376472bd2b9c91c.webp",
     "images": [
-      "/images/3e509945098af056b376472bd2b9c91c.webp",
-      "/images/3e509945098af056b376472bd2b9c91c.webp",
-      "/images/3e509945098af056b376472bd2b9c91c.webp",
-      "/images/3e509945098af056b376472bd2b9c91c.webp",
-      "/images/3e509945098af056b376472bd2b9c91c.webp",
       "/images/3e509945098af056b376472bd2b9c91c.webp"
     ],
     "description": "This stunning Rare Pokémon Card represents the pinnacle of craftsmanship in the Trading Cards category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",
@@ -4563,11 +4023,6 @@ const products = [] = [
     "minimumOfferPercent": 70,
     "image": "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
     "images": [
-      "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
-      "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
-      "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
-      "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
-      "/images/4435fad5eacdcf934b4135a6709074ed.jpg",
       "/images/4435fad5eacdcf934b4135a6709074ed.jpg"
     ],
     "description": "This stunning Unique Sabrina Carpenter Trading Card represents the pinnacle of craftsmanship in the Trading Cards category. Its design captures the eye immediately, standing out as a truly unique and special piece that commands attention. The details are intricate and visually appealing, making it a proud addition to any collection.\n\nMeticulously crafted using premium, ethically sourced materials, this item guarantees both durability and aesthetic charm. To maintain its pristine condition, simply wipe it with a soft cloth and keep it away from direct sunlight. Whether you are an avid collector or searching for that perfect, unforgettable gift, this piece offers unmatched appeal.",

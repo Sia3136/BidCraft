@@ -43,84 +43,53 @@ export function SellerReputationBlock({
 
   return (
     <div
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      className="flex flex-col font-sans"
       aria-label="Seller reputation"
     >
       {/* ── Seller header row ── */}
-      <div className="flex items-center gap-3 mb-5">
+      <div className="flex items-center gap-4 mb-6">
         {/* Avatar */}
         <div
           aria-hidden
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: '50%',
-            background: '#B06A42',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 700,
-            fontSize: 18,
-            flexShrink: 0,
-          }}
+          className="w-12 h-12 rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-sm"
         >
           {initial}
         </div>
 
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontWeight: 700, fontSize: 15, color: '#2B211C' }}>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-base text-[#4A3B32]">
               {sellerName}
             </span>
             {verified && (
-              <span
-                style={{
-                  fontSize: 10,
-                  border: '1px solid #B06A42',
-                  color: '#B06A42',
-                  borderRadius: 4,
-                  padding: '1px 6px',
-                  fontWeight: 600,
-                  letterSpacing: '0.04em',
-                }}
-              >
+              <span className="text-[10px] border border-[var(--color-terracotta-500)] text-[var(--color-terracotta-600)] rounded px-1.5 py-0.5 font-semibold tracking-wider uppercase">
                 Verified
               </span>
             )}
           </div>
 
           {total > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-              <span style={{ fontSize: 13, color: '#B06A42', fontWeight: 700 }}>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="text-sm text-[var(--color-terracotta-600)] font-bold">
                 ★ {avg.toFixed(1)}
               </span>
-              <span style={{ fontSize: 13, color: '#5C4033' }}>
+              <span className="text-sm text-[#8A7566] italic">
                 ({total.toLocaleString()} Reviews)
               </span>
             </div>
           )}
 
           {location && (
-            <div style={{ fontSize: 12, color: '#8A7566', marginTop: 2 }}>
-              {location}
+            <div className="text-xs text-[#8A7566] mt-1 font-medium">
+              📍 {location}
             </div>
           )}
         </div>
       </div>
 
       {/* ── "What buyers say" block ── */}
-      {/* ── "What buyers say" block ── */}
-      <div>
-        <h3
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: 18,
-            fontWeight: 600,
-            color: '#2B211C',
-            marginBottom: 14,
-          }}
-        >
+      <div className="pt-5 border-t border-[#D8C8BA]/60">
+        <h3 className="font-serif text-lg font-semibold text-[#4A3B32] mb-4 tracking-wide">
           What buyers say
         </h3>
 
@@ -164,25 +133,25 @@ export function SellerReputationBlock({
             }
 
             return (
-              <div key={i} className="py-3 border-b border-[#F0EBE3] last:border-0">
+              <div key={i} className="py-4 border-b border-[#D8C8BA]/40 last:border-0">
                 {/* Row 1: avatar initial + name + star rating */}
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-[#B06A42] text-white text-[10px] flex items-center justify-center font-medium shrink-0">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-[#E5D7C9] text-[#4A3B32] text-[10px] flex items-center justify-center font-bold shrink-0 shadow-sm border border-[#D8C8BA]">
                       {rev.name?.charAt(0) || '?'}
                     </span>
-                    <span className="text-xs font-medium text-[#2B211C]/80">
+                    <span className="text-xs font-semibold text-[#8A7566] tracking-wide uppercase">
                       {rev.name}
                     </span>
                   </div>
-                  <span className="text-xs text-[#B06A42] tracking-tighter">
+                  <span className="text-[10px] text-[var(--color-terracotta-500)] tracking-[0.1em]">
                     {'★'.repeat(rev.rating)}
                     {'☆'.repeat(5 - rev.rating)}
                   </span>
                 </div>
                 {/* Row 2: review body */}
-                <p className="text-base font-medium text-[#2B211C] pl-8 leading-snug">
-                  {bodyText}
+                <p className="text-[15px] italic text-[#4A3B32] pl-[34px] leading-relaxed font-serif">
+                  "{bodyText}"
                 </p>
               </div>
             )
@@ -190,7 +159,7 @@ export function SellerReputationBlock({
         </div>
 
         {/* Compact rating summary line */}
-        <div className="mt-4 pt-3 border-t border-[#D8C8BA] flex flex-wrap gap-x-4 gap-y-1">
+        <div className="mt-2 pt-4 border-t border-[#D8C8BA]/60 flex flex-wrap gap-x-5 gap-y-2 justify-center">
           {[5, 4, 3, 2, 1].map(star => {
             let count = hasRealData ? (reputation.breakdown?.[star] ?? 0) : 0
             if (!hasRealData) {
@@ -198,12 +167,12 @@ export function SellerReputationBlock({
               else if (star === 4) count = Math.floor(fallbackTotal * 0.15)
               else if (star === 3) count = fallbackTotal - Math.floor(fallbackTotal * 0.75) - Math.floor(fallbackTotal * 0.15)
             }
+            if (count === 0) return null
             return (
-              <span key={star} className="text-xs text-[#2B211C]/60 whitespace-nowrap">
-                {'★'.repeat(star)}
-                {'☆'.repeat(5 - star)}{' '}
-                <span className="text-[#2B211C] font-medium">{count}</span>
-              </span>
+              <div key={star} className="flex items-center gap-1.5 text-xs text-[#8A7566] font-medium">
+                <span className="text-[var(--color-terracotta-500)] text-[10px]">★</span>
+                <span>{star} ({count})</span>
+              </div>
             )
           })}
         </div>
