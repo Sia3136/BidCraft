@@ -31,7 +31,30 @@ function initJobs() {
         }
       }
     } catch (err) {
-      console.error('[Job: AuctionSettlement] Query failed:', err.message);
+      console.error("FULL ERROR");
+      console.error(err);
+      console.error(err?.stack);
+      console.error(err?.cause);
+      console.error(require("util").inspect(err, { depth: 10 }));
+      if (err && err.errors && Array.isArray(err.errors)) {
+        console.error("AggregateError nested errors:");
+        err.errors.forEach((e, i) => console.error(`[${i}]`, e, e?.stack));
+      }
+      if (err && err.code) {
+        console.error("PG/Prisma Code:", err.code);
+        console.error("PG Severity:", err.severity);
+        console.error("PG Detail:", err.detail);
+        console.error("PG Hint:", err.hint);
+        console.error("PG Position:", err.position);
+        console.error("PG Schema:", err.schema);
+        console.error("PG Table:", err.table);
+        console.error("PG Constraint:", err.constraint);
+        console.error("PG Routine:", err.routine);
+      }
+      if (err && err.clientVersion) {
+        console.error("Prisma Meta:", err.meta);
+        console.error("Prisma clientVersion:", err.clientVersion);
+      }
     }
   });
 

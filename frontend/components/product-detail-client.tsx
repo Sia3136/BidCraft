@@ -124,22 +124,18 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
           <span className="text-[var(--color-ink-900)] font-medium line-clamp-1">{product.title}</span>
         </div>
 
-        {/* 60/40 Layout */}
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
-          
-          {/* Left: 60% Image Gallery */}
-          <div className="w-full lg:w-3/5">
+        {/* ROW 1 — Two-column grid (desktop: 55% left / 45% right, mobile: single col) */}
+        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-8 md:gap-12">
+
+          {/* LEFT COLUMN — Gallery + Seller Card + Buyer Reviews */}
+          <div className="flex flex-col">
             <ImageGallery
               images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
               alt={product.title}
             />
-          </div>
 
-          {/* Right: 40% Panel */}
-          <div className="w-full lg:w-2/5 flex flex-col gap-6">
-            
-            {/* A. Seller Reputation Block */}
-            <div className="bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+            {/* BLOCK E + G — Seller Card and Buyer Reviews (SellerReputationBlock contains both) */}
+            <div className="bg-[#F7F4EE] border border-[#D8C8BA] rounded-xl p-5 mt-6">
               <SellerReputationBlock
                 sellerName={sellerName}
                 verified={!!product?.verified}
@@ -147,40 +143,119 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                 reputation={product?.sellerReputation}
               />
             </div>
+          </div>
 
-            {/* C. Buying method badge */}
-            <div className="flex">
-              <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
-                {product.buyingMethod}
-              </span>
+          {/* RIGHT COLUMN — Item details */}
+          <div className="flex flex-col gap-8">
+
+            {/* BLOCK A — Item Header */}
+            <div className="flex flex-col gap-2 text-left">
+              {/* Category chip */}
+              {product.category && (
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
+                    {product.category}
+                  </span>
+                </div>
+              )}
+
+              {/* Title */}
+              <h1 className="text-display-lg font-display text-[var(--color-ink-900)] leading-tight">
+                {product.title}
+              </h1>
+
+              {/* Price block */}
+              <div className="flex flex-col gap-1">
+                {product.buyingMethod === 'Auction' && (
+                  <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Current Bid</p>
+                )}
+                {product.buyingMethod === 'Buy Now' && (
+                  <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Buy Now Price</p>
+                )}
+                <p className="text-display-xl font-display text-[var(--color-ink-900)]">
+                  {formatPrice(product.currentBid ?? product.price)}
+                </p>
+              </div>
+
+              {/* Listing type badge */}
+              <div className="flex">
+                <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
+                  {product.buyingMethod}
+                </span>
+              </div>
             </div>
 
-            {/* B. Title */}
-            <h1 className="text-display-lg font-display text-[var(--color-ink-900)] leading-tight">
-              {product.title}
-            </h1>
-
-            {/* D. Price block */}
-            <div className="flex flex-col gap-1">
-              {product.buyingMethod === 'Auction' && (
-                <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Current Bid</p>
-              )}
-              {product.buyingMethod === 'Buy Now' && (
-                <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Buy Now Price</p>
-              )}
-              <p className="text-display-xl font-display text-[var(--color-ink-900)]">
-                {formatPrice(product.currentBid ?? product.price)}
+            {/* BLOCK B — About this Item */}
+            <div>
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: 11,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: '#B06A42',
+                  fontWeight: 600,
+                  marginBottom: 8,
+                }}
+              >
+                About This Item
               </p>
+              <div aria-hidden style={{ borderTop: '1px solid #D8C8BA', marginBottom: 16 }} />
+
+              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
+                {(product.description || "").split('\n').map((para: string, idx: number) => (
+                  <p key={idx}>{para}</p>
+                ))}
+              </div>
+
+              {/* Specifications accordion */}
+              {product.specifications && Object.keys(product.specifications).length > 0 && (
+                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-4">
+                  <button 
+                    onClick={() => setSpecsOpen(!specsOpen)}
+                    className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+                  >
+                    Specifications
+                    {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </button>
+                  {specsOpen && (
+                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
+                      {Object.entries(product.specifications).map(([key, value]) => (
+                        <div key={key}>
+                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* E. Action buttons */}
+            {/* BLOCK C — Shipping & Delivery */}
+            <ShippingInfo
+              shipsFrom={product.shipsFrom}
+              dispatchDays={product.dispatchDays}
+              estimatedMin={product.estimatedMin}
+              estimatedMax={product.estimatedMax}
+              returnsPolicy={product.returnsPolicy}
+              packagingNote={product.packagingNote}
+            />
+
+            {/* BLOCK D — Action Buttons + Countdown + Escrow */}
             <div className="flex flex-col gap-3">
+
+              {/* AUCTION: [ ♡ Wishlist ] [ Place a Bid → ] */}
               {product.buyingMethod === 'Auction' && (
-                <div className="flex flex-col gap-2 w-full">
-                  <div className="flex items-center gap-2 mb-2">
-                    <button type="button" onClick={() => toggleWishlist(product.numericId || product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
-                      <Heart className={cn("w-5 h-5 mr-2", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
-                      <span className="font-semibold">{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleWishlist(product.numericId || product.id)}
+                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
+                    >
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
+                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
                     </button>
                   </div>
                   {product.auctionId ? (
@@ -198,13 +273,21 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                   )}
                 </div>
               )}
-              
+
+              {/* FIXED / OFFER: [ ♡ Wishlist ] [ Add to Cart ] [ Buy Now → ] [ Make an Offer ] */}
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2">
-                    <div className="flex-1 flex flex-col gap-2">
-                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
-                      <button onClick={async (e) => {
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
+                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
+                    >
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
+                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                    </button>
+                    <button
+                      onClick={async (e) => {
                         e.stopPropagation()
                         if (!useAuthStore.getState().isAuthenticated) {
                           alert('Please sign in to add to cart')
@@ -235,87 +318,41 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                           console.error(err)
                           alert('Failed to add to cart')
                         }
-                      }} className="w-full h-12 bg-transparent border-2 border-[var(--color-ink-900)] text-[var(--color-ink-900)] rounded-[var(--radius-pill)] text-[16px] font-semibold cursor-pointer font-ui transition-colors hover:bg-[var(--color-ink-900)] hover:text-white">
-                        Add to Cart
-                      </button>
-                    </div>
-                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
-                      <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                      }}
+                      className="h-11 px-4 rounded-md border border-[#B06A42] text-[#B06A42] text-sm font-medium"
+                    >
+                      Add to Cart
                     </button>
+                    <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
                   </div>
                   {product.offersAllowed && (
                     <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
                   )}
                 </div>
               )}
-            </div>
 
-            {/* Countdown for Auctions */}
-            {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
+              {/* Countdown for Auctions */}
+              {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
                 <div className="flex items-center gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
                   <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time left:</span>
                   <AuctionTimer endTime={product.auctionEndsAt} />
                 </div>
-            )}
+              )}
 
-            {/* F. Escrow trust strip */}
-            <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-4 border border-[var(--color-border-subtle)] flex gap-3 items-center">
-              <Shield className="w-5 h-5 text-[var(--color-success-600)] shrink-0" />
-              <p className="text-body-sm font-medium text-[var(--color-ink-900)]">
-                Secure Escrow — Seller only gets paid after you receive the item.
-              </p>
-            </div>
-
-            {/* G. Shipping & Delivery */}
-            <div className="pt-2">
-              <ShippingInfo
-                shipsFrom={product.shipsFrom}
-                dispatchDays={product.dispatchDays}
-                estimatedMin={product.estimatedMin}
-                estimatedMax={product.estimatedMax}
-                returnsPolicy={product.returnsPolicy}
-                packagingNote={product.packagingNote}
-              />
-            </div>
-
-            {/* G. About this item */}
-            <div className="mt-4">
-              <h2 className="text-heading-md text-[var(--color-ink-900)] mb-3">About this item</h2>
-              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
-                {(product.description || "").split('\n').map((para: string, idx: number) => (
-                  <p key={idx}>{para}</p>
-                ))}
+              {/* Escrow trust strip */}
+              <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-4 border border-[var(--color-border-subtle)] flex gap-3 items-center">
+                <Shield className="w-5 h-5 text-[var(--color-success-600)] shrink-0" />
+                <p className="text-body-sm font-medium text-[var(--color-ink-900)]">
+                  Secure Escrow — Seller only gets paid after you receive the item.
+                </p>
               </div>
+
             </div>
 
-            {/* H. Specifications accordion */}
-            {product.specifications && Object.keys(product.specifications).length > 0 && (
-              <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden">
-                <button 
-                  onClick={() => setSpecsOpen(!specsOpen)}
-                  className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
-                >
-                  Specifications
-                  {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </button>
-                {specsOpen && (
-                  <div className="p-4 bg-white grid grid-cols-2 gap-4">
-                    {Object.entries(product.specifications).map(([key, value]) => (
-                      <div key={key}>
-                        <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
-                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            
           </div>
         </div>
 
-        {/* Related Products */}
+        {/* Related Products — unchanged */}
         {related && related.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
             <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
