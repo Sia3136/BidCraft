@@ -29,7 +29,6 @@ const ROWS: Array<{
     format: (v: unknown) =>
       v ? `Within ${v} business day${Number(v) !== 1 ? 's' : ''}` : '',
   },
-  { label: 'Returns', key: 'returnsPolicy' },
   { label: 'Packaging', key: 'packagingNote' },
 ]
 
@@ -56,7 +55,6 @@ export function ShippingInfo(props: ShippingInfoProps) {
         ? `Within ${dispatchDays} business day${dispatchDays !== 1 ? 's' : ''}`
         : undefined,
     },
-    { label: 'Returns', value: returnsPolicy },
     { label: 'Packaging', value: packagingNote },
   ].filter(r => Boolean(r.value))
 

@@ -74,12 +74,12 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <>
       {/* ─── Main Gallery ─────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row-reverse gap-4 sticky top-24">
+      <div className="flex flex-col md:flex-row gap-4 sticky top-24">
 
         {/* Main image */}
         <div
           ref={containerRef}
-          className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 cursor-zoom-in"
+          className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 min-w-0 cursor-zoom-in"
           onTouchStart={hasMultiple ? onTouchStart : undefined}
           onTouchEnd={hasMultiple ? onTouchEnd : undefined}
           onClick={() => openLightbox(activeIdx)}
@@ -102,6 +102,27 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             className="gallery-main-img"
             onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
           />
+
+          {/* Prev / Next arrow buttons — desktop only, sit above image */}
+          {hasMultiple && (
+            <>
+              <button
+                onClick={e => { e.stopPropagation(); setActiveIdx(i => (i - 1 + imgs.length) % imgs.length) }}
+                aria-label="Previous image"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 transition-colors hidden md:flex"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#2B211C]" />
+              </button>
+              <button
+                onClick={e => { e.stopPropagation(); setActiveIdx(i => (i + 1) % imgs.length) }}
+                aria-label="Next image"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 transition-colors hidden md:flex"
+              >
+                <ChevronRight className="w-4 h-4 text-[#2B211C]" />
+              </button>
+            </>
+          )}
+
           {/* Zoom hint overlay (desktop only) — appears on hover */}
           <div
             aria-hidden
@@ -115,14 +136,14 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
         {/* Thumbnails — desktop only (md+). On mobile, dots are shown instead. */}
         {hasMultiple && (
-          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[88px] shrink-0 hide-scrollbar max-h-[440px]">
+          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
             {imgs.map((src, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`View image ${idx + 1}`}
                 className={cn(
-                  'relative w-full h-[88px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
                   activeIdx === idx
                     ? 'border-[#B06A42]'
                     : 'border-transparent hover:border-[var(--color-ink-300)]'
@@ -131,7 +152,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 <Image
                   src={src}
                   fill
-                  sizes="88px"
+                  sizes="72px"
                   style={{ objectFit: 'cover' }}
                   alt={`Thumbnail ${idx + 1}`}
                   loading="lazy"
