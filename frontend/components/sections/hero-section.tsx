@@ -53,17 +53,17 @@ export function HeroSection() {
 
       {/* Content Container */}
       <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto pointer-events-none">
-        <div className="absolute bottom-[32px] xl:bottom-[64px] left-[32px] xl:left-[64px] max-w-[560px] flex flex-col pointer-events-auto z-10">
+        <div className="absolute bottom-[32px] xl:bottom-[64px] left-[32px] xl:left-[64px] max-w-[680px] flex flex-col pointer-events-auto z-10">
           
-          <span className="text-caption text-white uppercase tracking-[0.04em] mb-[var(--space-3)] animate-fade-up">
+          <span className="text-sm text-white uppercase tracking-[0.06em] mb-[var(--space-3)] animate-fade-up font-semibold">
             Curated this week
           </span>
           
-          <h1 className="text-display-lg xl:text-display-xl text-white mb-[var(--space-4)] animate-fade-up [animation-delay:100ms]">
+          <h1 className="text-display-xl xl:text-[64px] xl:leading-[72px] font-semibold text-white mb-[var(--space-4)] animate-fade-up [animation-delay:100ms]">
             Where creativity becomes opportunity.
           </h1>
           
-          <p className="text-body-lg text-white/85 mb-[var(--space-5)] animate-fade-up [animation-delay:200ms]">
+          <p className="text-body-lg text-white/85 mb-[var(--space-5)] animate-fade-up [animation-delay:200ms] max-w-[560px]">
             The premium marketplace for independent creators, handmade crafts, and rare collectibles.
           </p>
           

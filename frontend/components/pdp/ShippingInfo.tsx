@@ -33,10 +33,10 @@ const ROWS: Array<{
 ]
 
 export function ShippingInfo(props: ShippingInfoProps) {
-  const { shipsFrom, dispatchDays, estimatedMin, estimatedMax, returnsPolicy, packagingNote } = props
+  const { shipsFrom, dispatchDays, estimatedMin, estimatedMax, packagingNote } = props
 
   // Only render if we have at least some shipping data
-  const hasData = shipsFrom || dispatchDays || estimatedMin || returnsPolicy
+  const hasData = shipsFrom || dispatchDays || estimatedMin
 
   if (!hasData) return null
 

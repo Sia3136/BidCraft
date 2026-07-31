@@ -323,7 +323,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                     >
                       Add to Cart
                     </button>
-                    <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+                    <div className="flex-1 min-w-0">
+                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+                    </div>
                   </div>
                   {product.offersAllowed && (
                     <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />

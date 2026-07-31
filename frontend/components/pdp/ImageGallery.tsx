@@ -74,9 +74,38 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <>
       {/* ─── Main Gallery ─────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row gap-4 sticky top-24">
+      <div className="flex flex-col md:flex-row gap-4">
 
-        {/* Main image */}
+        {/* Thumbnails — desktop only (md+), LEFT side. On mobile, dots shown below. */}
+        {hasMultiple && (
+          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
+            {imgs.map((src, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIdx(idx)}
+                aria-label={`View image ${idx + 1}`}
+                className={cn(
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  activeIdx === idx
+                    ? 'border-[#B06A42]'
+                    : 'border-transparent hover:border-[var(--color-ink-300)]'
+                )}
+              >
+                <Image
+                  src={src}
+                  fill
+                  sizes="72px"
+                  style={{ objectFit: 'cover' }}
+                  alt={`Thumbnail ${idx + 1}`}
+                  loading="lazy"
+                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Main image — flex-1 min-w-0 ensures it never shrinks into the thumbnail column */}
         <div
           ref={containerRef}
           className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 min-w-0 cursor-zoom-in"
@@ -107,16 +136,18 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           {hasMultiple && (
             <>
               <button
+                type="button"
                 onClick={e => { e.stopPropagation(); setActiveIdx(i => (i - 1 + imgs.length) % imgs.length) }}
                 aria-label="Previous image"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 transition-colors hidden md:flex"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
               >
                 <ChevronLeft className="w-4 h-4 text-[#2B211C]" />
               </button>
               <button
+                type="button"
                 onClick={e => { e.stopPropagation(); setActiveIdx(i => (i + 1) % imgs.length) }}
                 aria-label="Next image"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 transition-colors hidden md:flex"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
               >
                 <ChevronRight className="w-4 h-4 text-[#2B211C]" />
               </button>
@@ -133,35 +164,6 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             </span>
           </div>
         </div>
-
-        {/* Thumbnails — desktop only (md+). On mobile, dots are shown instead. */}
-        {hasMultiple && (
-          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
-            {imgs.map((src, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`View image ${idx + 1}`}
-                className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
-                  activeIdx === idx
-                    ? 'border-[#B06A42]'
-                    : 'border-transparent hover:border-[var(--color-ink-300)]'
-                )}
-              >
-                <Image
-                  src={src}
-                  fill
-                  sizes="72px"
-                  style={{ objectFit: 'cover' }}
-                  alt={`Thumbnail ${idx + 1}`}
-                  loading="lazy"
-                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-                />
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Dot indicators — mobile only */}
         {hasMultiple && (
