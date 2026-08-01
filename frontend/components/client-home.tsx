@@ -445,29 +445,28 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
         
         {/* 13. NEW: Become a Seller CTA */}
-        <section className="py-24 bg-[#5C3D2E] px-[var(--space-5)] xl:px-[var(--space-8)]">
-          <div className="max-w-[var(--container-max)] mx-auto md:grid md:grid-cols-2 md:gap-16 items-center">
-            {/* Left column content */}
-            <div className="flex flex-col items-start mb-12 md:mb-0">
-              <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
-              <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
-              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
-                Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
-              </p>
-              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
-                Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-            
-            {/* Right column image placeholder */}
-            <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
-              <img 
-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
-                alt="Artisan at work" 
-                className="w-full h-full object-cover opacity-60"
-                style={{ objectPosition: 'center 30%' }}
-              />
-            </div>
+        <section className="relative w-full min-h-[420px] md:min-h-[520px] flex items-center justify-center overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
+          {/* Background image */}
+          <Image
+            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg"
+            alt="Artisan at work"
+            fill
+            className="object-cover object-center"
+            priority={false}
+          />
+          {/* Dark gradient overlay for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
+
+          {/* Content — centered over image */}
+          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
+            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
+            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+            <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
+              Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+            </p>
+            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
+              Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </section>
 

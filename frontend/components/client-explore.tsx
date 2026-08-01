@@ -26,7 +26,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const searchQuery = searchParams.get('search')
   const sortQuery = searchParams.get('sort') || 'newest'
   const page = parseInt(searchParams.get('page') || '1', 10)
-  const itemsPerPage = 25
+  const itemsPerPage = 28
   const totalPages = Math.ceil(total / itemsPerPage)
   
   // Array parameters
@@ -288,27 +288,35 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
           Price Range
         </h3>
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex-1 relative">
+          <div className="flex-1 relative min-w-0">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] text-body-sm">₹</span>
             <input 
-              type="number" 
-              min={50} max={5000}
+              type="text" 
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={priceMin}
-              onChange={(e) => setPriceMin(e.target.value)}
+              onChange={(e) => {
+                const val = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0;
+                setPriceMin(String(val));
+              }}
               onBlur={() => { if (Number(priceMin) < 50) setPriceMin('50'); }}
-              className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+              className="w-full min-w-0 h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
             />
           </div>
-          <span className="text-[var(--color-ink-500)]">—</span>
-          <div className="flex-1 relative">
+          <span className="text-[var(--color-ink-500)] shrink-0">—</span>
+          <div className="flex-1 relative min-w-0">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-ink-500)] text-body-sm">₹</span>
             <input 
-              type="number" 
-              min={50} max={5000}
+              type="text" 
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={priceMax}
-              onChange={(e) => setPriceMax(e.target.value)}
+              onChange={(e) => {
+                const val = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0;
+                setPriceMax(String(val));
+              }}
               onBlur={() => { if (Number(priceMax) > 5000) setPriceMax('5000'); }}
-              className="w-full h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+              className="w-full min-w-0 h-[40px] pl-7 pr-3 border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] text-body-sm text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
             />
           </div>
         </div>
