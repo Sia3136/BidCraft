@@ -11,8 +11,9 @@ interface ShippingInfoProps {
 
 const ROWS: Array<{
   label: string
-  key: keyof ShippingInfoProps
-  format?: (v: unknown) => string
+  key?: keyof ShippingInfoProps
+  format?: (v: unknown, props?: ShippingInfoProps) => React.ReactNode
+  staticValue?: React.ReactNode
 }> = [
   { label: 'Ships From', key: 'shipsFrom' },
   {
@@ -22,21 +23,24 @@ const ROWS: Array<{
       props?.estimatedMin && props?.estimatedMax
         ? `${props.estimatedMin}–${props.estimatedMax} business days`
         : '',
-  } as any,
+  },
   {
     label: 'Dispatch Time',
     key: 'dispatchDays',
     format: (v: unknown) =>
       v ? `Within ${v} business day${Number(v) !== 1 ? 's' : ''}` : '',
   },
+  { label: 'Carrier', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">📦</span> Delhivery</span> },
+  { label: 'Payment', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">💳</span> Prepaid Orders Only</span> },
+  { label: 'Returns', staticValue: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm">📄</span> View Policy</a> },
   { label: 'Packaging', key: 'packagingNote' },
 ]
 
 export function ShippingInfo(props: ShippingInfoProps) {
   const { shipsFrom, dispatchDays, estimatedMin, estimatedMax, packagingNote } = props
 
-  // Only render if we have at least some shipping data
-  const hasData = shipsFrom || dispatchDays || estimatedMin
+  // Always render to show the static rows
+  const hasData = true
 
   if (!hasData) return null
 
@@ -54,6 +58,18 @@ export function ShippingInfo(props: ShippingInfoProps) {
       value: dispatchDays
         ? `Within ${dispatchDays} business day${dispatchDays !== 1 ? 's' : ''}`
         : undefined,
+    },
+    { 
+      label: 'Carrier', 
+      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">📦</span> Delhivery</span> 
+    },
+    { 
+      label: 'Payment', 
+      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">💳</span> Prepaid Orders Only</span> 
+    },
+    { 
+      label: 'Returns', 
+      value: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm">📄</span> View Policy</a> 
     },
     { label: 'Packaging', value: packagingNote },
   ].filter(r => Boolean(r.value))

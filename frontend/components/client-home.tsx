@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, Variants } from 'framer-motion'
-import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp } from 'lucide-react'
+import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
@@ -76,6 +76,37 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
 export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[] }) {
   const { user } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+
+  // Carousel logic for Trending
+  const trendingScrollRef = useRef<HTMLDivElement>(null)
+  const [showLeftArrow, setShowLeftArrow] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(true)
+
+  const handleScroll = useCallback(() => {
+    if (!trendingScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = trendingScrollRef.current;
+    setShowLeftArrow(scrollLeft > 10);
+    setShowRightArrow(Math.ceil(scrollLeft + clientWidth) < scrollWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    const el = trendingScrollRef.current;
+    if (el) {
+      handleScroll(); // Check initial
+      el.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+      return () => {
+        el.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+      };
+    }
+  }, [handleScroll, trendingListings]);
+
+  const scrollBy = (amount: number) => {
+    if (trendingScrollRef.current) {
+      trendingScrollRef.current.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+  };
 
   // Using realistic curated counts instead of scanning mock data
   const vintageRetroCount = 142;
@@ -173,9 +204,33 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </div>
         </section>
 
+        {/* 9. Manifesto (Moved and Redesigned as Editorial Intro) */}
+        <section className="relative overflow-hidden pt-32 pb-16 w-full bg-[var(--color-cream-base)]">
+          <svg className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" aria-hidden="true">
+            <filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+            <rect width="100%" height="100%" filter="url(#paper-texture)"/>
+          </svg>
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
+          
+          <div className="max-w-[800px] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-6 text-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true, margin: "-100px" }} className="flex flex-col items-center w-full">
+              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-8">
+                Editorial Spotlight
+              </span>
+              <h2 className="text-[40px] md:text-[56px] text-[var(--color-ink-900)] font-medium font-[family-name:var(--font-playfair)] leading-[1.1] mb-8">
+                We don't celebrate mass production.<br />We celebrate originality.
+              </h2>
+              <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[620px] mb-12">
+                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+              </p>
+              <div className="w-[80px] h-[1px] bg-[var(--color-terracotta-300)]" />
+            </motion.div>
+          </div>
+        </section>
+
         {/* NEW: Trending Now (MVP) */}
         {trendingListings && trendingListings.length > 0 && (
-          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)] border-t border-[var(--color-border-subtle)]">
+          <section className="pb-24 pt-12 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
             <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
               {/* Header Side */}
               <div className="xl:w-1/3 flex flex-col justify-center items-start">
@@ -191,16 +246,64 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
                 <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
                   Explore All Trending Items <ArrowRight className="w-5 h-5" />
                 </Link>
+                
+                {/* Desktop Navigation Arrows */}
+                <div className="hidden xl:flex items-center gap-3 mt-10">
+                  <button 
+                    onClick={() => scrollBy(-400)}
+                    disabled={!showLeftArrow}
+                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => scrollBy(400)}
+                    disabled={!showRightArrow}
+                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               
               {/* Scrolling Cards */}
-              <div className="xl:w-2/3 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4">
-                {trendingListings.map((p, idx) => (
-                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
-                    <ProductCard product={p} priority={idx < 2} />
-                  </div>
-                ))}
+              <div className="xl:w-2/3 relative group">
+                <div 
+                  ref={trendingScrollRef}
+                  className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4"
+                >
+                  {trendingListings.map((p, idx) => (
+                    <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
+                      <ProductCard product={p} priority={idx < 2} />
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Mobile/Tablet Hover Navigation Arrows (visible on hover/focus if scrollable) */}
+                {showLeftArrow && (
+                  <button
+                    onClick={() => scrollBy(-300)}
+                    className="xl:hidden absolute left-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
+                {showRightArrow && (
+                  <button
+                    onClick={() => scrollBy(300)}
+                    className="xl:hidden absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
+            </div>
+            <div className="max-w-[var(--container-max)] mx-auto mt-24">
+              <div className="w-full h-[2px] bg-[var(--color-terracotta-400)]" />
             </div>
           </section>
         )}
@@ -381,31 +484,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         </section>
 
 
-        {/* 9. Manifesto */}
-        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px', borderTop: '2px solid #B06A42', borderBottom: '2px solid #B06A42' }}>
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
-            <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
-            <rect width="100%" height="100%" filter="url(#paper)"/>
-          </svg>
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
-              <span className="font-[family-name:var(--font-jakarta)]" style={{ textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
-                MANIFESTO
-              </span>
-              <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
-                We don't celebrate mass production.<br />We celebrate originality.
-              </h2>
-              <p className="font-[family-name:var(--font-jakarta)]" style={{ fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
-                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
-              </p>
-              <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)]" style={{ fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
-                Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
-              </Link>
-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
-            </motion.div>
-          </div>
-        </section>
 
         {/* 10. Gifts With a Story */}
         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">

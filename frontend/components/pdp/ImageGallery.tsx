@@ -93,7 +93,8 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
           <Image
             src={imgs[activeIdx]}
             fill
-            sizes="(max-width: 768px) 100vw, 60vw"
+            sizes="(max-width: 768px) 100vw, 55vw"
+            quality={85}
             style={{
               objectFit: 'cover',
               // GPU-accelerated zoom on hover via CSS class below
@@ -198,6 +199,7 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
                   src={src}
                   fill
                   sizes="72px"
+                  quality={75}
                   style={{ objectFit: 'cover' }}
                   alt={`Thumbnail ${idx + 1}`}
                   loading="lazy"

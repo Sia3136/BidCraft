@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import ClientHome from '@/components/client-home';
-import { fetchLiveAuctions, fetchNewArrivals, Listing } from '@/lib/api';
+import { fetchLiveAuctions, fetchNewArrivals, fetchListings, Listing } from '@/lib/api';
 
 export const revalidate = 30;
 
@@ -16,10 +16,13 @@ export default async function Home() {
     ]);
     liveAuctions = auctionsData.auctions || [];
     
-    // Simulate Trending using a different slice of new arrivals to avoid duplication
     const allArrivals = newArrivalsData.listings || [];
     newArrivals = allArrivals.slice(0, 4);
-    trendingListings = allArrivals.slice(4, 24);
+    
+    // Import TRENDING_IDS and filter the fetched listings
+    const { TRENDING_IDS } = await import('@/lib/trending');
+    const allListings = await fetchListings({ limit: 100 }).catch(() => ({ listings: [] }));
+    trendingListings = allListings.listings.filter(l => TRENDING_IDS.includes(l.id));
   } catch (err) {
     console.error('Failed to fetch homepage data', err);
     // fallback to empty arrays or handle gracefully

@@ -268,27 +268,31 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               </div>
 
               {/* Specifications accordion */}
-              {product.specifications && Object.keys(product.specifications).length > 0 && (
-                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
-                  <button 
-                    onClick={() => setSpecsOpen(!specsOpen)}
-                    className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
-                  >
-                    Specifications
-                    {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                  </button>
-                  {specsOpen && (
-                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key}>
-                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
-                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
-                        </div>
-                      ))}
+              <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
+                <button 
+                  onClick={() => setSpecsOpen(!specsOpen)}
+                  className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+                >
+                  Specifications
+                  {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                {specsOpen && (
+                  <div className="p-4 bg-white grid grid-cols-2 gap-4">
+                    {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
+                      <div key={key}>
+                        <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+                      </div>
+                    ))}
+                    <div>
+                      <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
+                      <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
+                        <span className="not-italic text-base">🇮🇳</span> Made in India
+                      </span>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* BLOCK C — Shipping & Delivery */}
@@ -364,18 +368,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
           </div>
         </div>
 
-        {/* Purchase Information Footer */}
-        <div className="flex flex-wrap items-center justify-center gap-3 text-sm italic text-[#8A7566] font-medium mt-16 mb-8">
-          <span className="flex items-center gap-1"><span className="not-italic text-base">🇮🇳</span> Made in India</span>
-          <span>•</span>
-          <span className="flex items-center gap-1"><span className="not-italic text-base">💳</span> Prepaid Orders Only</span>
-          <span>•</span>
-          <span className="flex items-center gap-1"><span className="not-italic text-base">📦</span> Shipping by Delhivery</span>
-          <span>•</span>
-          <Link href="/returns-policy" className="flex items-center gap-1 underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors">
-            <span className="not-italic text-base">📄</span> Read Returns & Refund Policy
-          </Link>
-        </div>
+
 
         {/* Sentinel Stop for IntersectionObserver */}
         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
