@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, Variants } from 'framer-motion'
-import { ShieldCheck, CheckCircle, Package, ArrowRight, Star } from 'lucide-react'
+import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
@@ -73,7 +73,7 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
   return <span>{timeLeft}</span>
 }
 
-export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[] }) {
+export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[] }) {
   const { user } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 
@@ -117,10 +117,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top, rgba(43,42,40,0.55) 0%, rgba(43,42,40,0) 60%)' }} />
           
           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
-            <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
-              <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
-              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
-              <p className="text-body-lg text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+            <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-3xl">
+              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
+              <h1 className="text-5xl md:text-display-2xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
+              <p className="text-xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
               </p>
               <div className="flex flex-col md:flex-row gap-4">
@@ -172,6 +172,38 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </motion.div>
           </div>
         </section>
+
+        {/* NEW: Trending Now (MVP) */}
+        {trendingListings && trendingListings.length > 0 && (
+          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)] border-t border-[var(--color-border-subtle)]">
+            <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
+              {/* Header Side */}
+              <div className="xl:w-1/3 flex flex-col justify-center items-start">
+                <div className="inline-flex items-center gap-2 mb-6 border border-[var(--color-terracotta-200)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-[family-name:var(--font-jakarta)]">
+                  <TrendingUp className="w-4 h-4" /> Trending Now
+                </div>
+                <h2 className="text-display-xl text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-6 leading-tight">
+                  Currently capturing the attention of collectors and creators.
+                </h2>
+                <p className="text-body-lg text-[var(--color-ink-700)] mb-10 font-[family-name:var(--font-jakarta)] max-w-md">
+                  Discover the pieces that are driving conversations, bids, and desire across our marketplace this week.
+                </p>
+                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+                  Explore All Trending Items <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+              
+              {/* Scrolling Cards */}
+              <div className="xl:w-2/3 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4">
+                {trendingListings.map((p, idx) => (
+                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
+                    <ProductCard product={p} priority={idx < 2} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* 3. NEW: Editorial Spotlight 1 */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
@@ -226,7 +258,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 {/* 5. Our Story */}
         <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
+            <Image src="/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
           </div>
           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">

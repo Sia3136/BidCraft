@@ -379,10 +379,10 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
 
         {/* Sentinel Stop for IntersectionObserver */}
         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
-        {/* You May Also Like */}
+        {/* Similar Products */}
         {similar && similar.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">You May Also Like</h2>
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {similar.map(p => (
                 <ProductCard key={p.id} product={p as any} />

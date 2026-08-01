@@ -7,6 +7,7 @@ export const revalidate = 30;
 export default async function Home() {
   let liveAuctions: Listing[] = [];
   let newArrivals: Listing[] = [];
+  let trendingListings: Listing[] = [];
 
   try {
     const [auctionsData, newArrivalsData] = await Promise.all([
@@ -14,11 +15,15 @@ export default async function Home() {
       fetchNewArrivals(),
     ]);
     liveAuctions = auctionsData.auctions || [];
-    newArrivals = newArrivalsData.listings ? newArrivalsData.listings.slice(0, 4) : [];
+    
+    // Simulate Trending using a different slice of new arrivals to avoid duplication
+    const allArrivals = newArrivalsData.listings || [];
+    newArrivals = allArrivals.slice(0, 4);
+    trendingListings = allArrivals.slice(4, 24);
   } catch (err) {
     console.error('Failed to fetch homepage data', err);
     // fallback to empty arrays or handle gracefully
   }
 
-  return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} />;
+  return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} trendingListings={trendingListings} />;
 }
