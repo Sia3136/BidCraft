@@ -1,0 +1,1489 @@
+﻿commit fff2747dfed953b27f4f78a558985abed6351013
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Tue Aug 4 00:20:22 2026 +0530
+
+    make fixes upgrade-2
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index d39141e1..90a75422 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -387,7 +387,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+         {/* More From This Seller */}
+         {related && related.length > 0 && (
+           <div className="mt-16 pt-16 border-t border-[var(--color-border-subtle)]">
+-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
++            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {sellerName}</h2>
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               {related.map(p => (
+                 <ProductCard key={p.id} product={p as any} />
+
+commit 9ed66e14c95f9fe3c6662f23ece8f770f547b838
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sun Aug 2 05:14:08 2026 +0530
+
+    listings and home page new-1
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index dafaf11d..d39141e1 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -268,27 +268,31 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+               </div>
+ 
+               {/* Specifications accordion */}
+-              {product.specifications && Object.keys(product.specifications).length > 0 && (
+-                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
+-                  <button 
+-                    onClick={() => setSpecsOpen(!specsOpen)}
+-                    className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+-                  >
+-                    Specifications
+-                    {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+-                  </button>
+-                  {specsOpen && (
+-                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
+-                      {Object.entries(product.specifications).map(([key, value]) => (
+-                        <div key={key}>
+-                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+-                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+-                        </div>
+-                      ))}
++              <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
++                <button 
++                  onClick={() => setSpecsOpen(!specsOpen)}
++                  className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
++                >
++                  Specifications
++                  {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
++                </button>
++                {specsOpen && (
++                  <div className="p-4 bg-white grid grid-cols-2 gap-4">
++                    {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
++                      <div key={key}>
++                        <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
++                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
++                      </div>
++                    ))}
++                    <div>
++                      <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
++                      <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
++                        <span className="not-italic text-base">≡ƒç«≡ƒç│</span> Made in India
++                      </span>
+                     </div>
+-                  )}
+-                </div>
+-              )}
++                  </div>
++                )}
++              </div>
+             </div>
+ 
+             {/* BLOCK C ΓÇö Shipping & Delivery */}
+@@ -364,18 +368,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+           </div>
+         </div>
+ 
+-        {/* Purchase Information Footer */}
+-        <div className="flex flex-wrap items-center justify-center gap-3 text-sm italic text-[#8A7566] font-medium mt-16 mb-8">
+-          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒç«≡ƒç│</span> Made in India</span>
+-          <span>ΓÇó</span>
+-          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒÆ│</span> Prepaid Orders Only</span>
+-          <span>ΓÇó</span>
+-          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒôª</span> Shipping by Delhivery</span>
+-          <span>ΓÇó</span>
+-          <Link href="/returns-policy" className="flex items-center gap-1 underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors">
+-            <span className="not-italic text-base">≡ƒôä</span> Read Returns & Refund Policy
+-          </Link>
+-        </div>
++
+ 
+         {/* Sentinel Stop for IntersectionObserver */}
+         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
+
+commit 2642d06d290acac90f2cb0cfcaf48d48f80311d9
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sun Aug 2 04:34:38 2026 +0530
+
+    listings and home page new
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 323fd439..dafaf11d 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -379,10 +379,10 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+ 
+         {/* Sentinel Stop for IntersectionObserver */}
+         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
+-        {/* You May Also Like */}
++        {/* Similar Products */}
+         {similar && similar.length > 0 && (
+           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">You May Also Like</h2>
++            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               {similar.map(p => (
+                 <ProductCard key={p.id} product={p as any} />
+
+commit ce85886e01eb9782d35b0d6866a2d099d00df628
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Aug 1 03:01:58 2026 +0530
+
+    listings changes-4
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index a2c5f1cd..323fd439 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -198,30 +198,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+               />
+             </div>
+ 
+-            {/* Shipping & Purchase Info */}
+-            <div className="mt-6 rounded-xl border border-[#D8C8BA] bg-[#F7F4EE] px-4 py-4">
+-              <div className="grid grid-cols-1 gap-2">
+-                {[
+-                  { icon: '≡ƒç«≡ƒç│', text: 'Made in India' },
+-                  { icon: '≡ƒÆ│', text: 'Prepaid Orders Only' },
+-                  { icon: '≡ƒôª', text: 'Shipping by Delhivery' },
+-                ].map(({ icon, text }) => (
+-                  <div key={text} className="flex items-center gap-2.5">
+-                    <span className="text-base leading-none">{icon}</span>
+-                    <span className="text-sm text-[#2B211C]/80">{text}</span>
+-                  </div>
+-                ))}
+-                <div className="flex items-center gap-2.5 mt-1">
+-                  <span className="text-base leading-none">≡ƒôä</span>
+-                  <Link
+-                    href="/returns-policy"
+-                    className="text-sm text-[#B06A42] underline-offset-2 hover:underline"
+-                  >
+-                    Read Returns & Refund Policy
+-                  </Link>
+-                </div>
+-              </div>
+-            </div>
++
+           </div>
+ 
+           {/* RIGHT COLUMN ΓÇö Scrolls naturally with the page */}
+@@ -387,13 +364,25 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
+           </div>
+         </div>
+ 
++        {/* Purchase Information Footer */}
++        <div className="flex flex-wrap items-center justify-center gap-3 text-sm italic text-[#8A7566] font-medium mt-16 mb-8">
++          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒç«≡ƒç│</span> Made in India</span>
++          <span>ΓÇó</span>
++          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒÆ│</span> Prepaid Orders Only</span>
++          <span>ΓÇó</span>
++          <span className="flex items-center gap-1"><span className="not-italic text-base">≡ƒôª</span> Shipping by Delhivery</span>
++          <span>ΓÇó</span>
++          <Link href="/returns-policy" className="flex items-center gap-1 underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors">
++            <span className="not-italic text-base">≡ƒôä</span> Read Returns & Refund Policy
++          </Link>
++        </div>
++
+         {/* Sentinel Stop for IntersectionObserver */}
+         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
+-
+-        {/* Similar Products */}
++        {/* You May Also Like */}
+         {similar && similar.length > 0 && (
+           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
++            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">You May Also Like</h2>
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               {similar.map(p => (
+                 <ProductCard key={p.id} product={p as any} />
+
+commit d7f5021ca5c0ddbd2b8880e41b378185ff583c6d
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Aug 1 02:29:17 2026 +0530
+
+    listings changes-3
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 3c383d38..a2c5f1cd 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -21,7 +21,7 @@ import { ShippingInfo } from '@/components/pdp/ShippingInfo';
+ 
+ 
+ 
+-export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
++export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[], similar?: Listing[] }) {
+   return (
+     <ErrorBoundary>
+       <ProductDetailClient {...props} />
+@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
+   }
+ }
+ 
+-function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
++function ProductDetailClient({ product, related = [], similar = [] }: { product: Listing; related?: Listing[]; similar?: Listing[] }) {
+   const router = useRouter();
+   
+   if (!product) {
+@@ -67,23 +67,16 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   const [isBidding, setIsBidding] = useState(false);
+   const [specsOpen, setSpecsOpen] = useState(true);
+ 
+-  // Sentinel observer state
+   const rightColRef = useRef<HTMLDivElement>(null);
+   const sentinelRef = useRef<HTMLDivElement>(null);
+   const [showMobileBar, setShowMobileBar] = useState(true);
+ 
+   useEffect(() => {
+     const sentinel = sentinelRef.current;
+-    const rightCol = rightColRef.current;
+-    if (!sentinel || !rightCol) return;
++    if (!sentinel) return;
+ 
+     const observer = new IntersectionObserver(
+       ([entry]) => {
+-        // Desktop: Un-sticky the right col when sentinel appears
+-        if (window.innerWidth >= 768) {
+-          rightCol.style.position = entry.isIntersecting ? 'relative' : '';
+-          rightCol.style.top = entry.isIntersecting ? 'auto' : '';
+-        }
+         // Mobile: Hide bottom bar when sentinel appears
+         setShowMobileBar(!entry.isIntersecting);
+       },
+@@ -231,10 +224,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+             </div>
+           </div>
+ 
+-          {/* RIGHT COLUMN ΓÇö sticky so details/actions stay visible while user scrolls left col */}
++          {/* RIGHT COLUMN ΓÇö Scrolls naturally with the page */}
+           <div 
+             ref={rightColRef}
+-            className="flex flex-col gap-8 md:sticky md:top-24 self-start max-h-[calc(100vh-6rem)] overflow-y-auto hide-scrollbar pb-6"
++            className="flex flex-col gap-8 pb-6"
+           >
+ 
+             {/* BLOCK A ΓÇö Item Header */}
+@@ -397,9 +390,21 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+         {/* Sentinel Stop for IntersectionObserver */}
+         <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
+ 
+-        {/* Related Products ΓÇö unchanged */}
+-        {related && related.length > 0 && (
++        {/* Similar Products */}
++        {similar && similar.length > 0 && (
+           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
++            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
++            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
++              {similar.map(p => (
++                <ProductCard key={p.id} product={p as any} />
++              ))}
++            </div>
++          </div>
++        )}
++
++        {/* More From This Seller */}
++        {related && related.length > 0 && (
++          <div className="mt-16 pt-16 border-t border-[var(--color-border-subtle)]">
+             <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+               {related.map(p => (
+
+commit 24ecc6780b686c5aabb2ff2b141c4adc4785caaa
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Aug 1 01:55:19 2026 +0530
+
+    listings changes-2
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index f97d78ef..3c383d38 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -1,6 +1,6 @@
+ 'use client'
+ 
+-import React, { useState, useEffect } from 'react';
++import React, { useState, useEffect, useRef } from 'react';
+ import Image from 'next/image';
+ import Link from 'next/link';
+ import { formatPrice } from '@/lib/formatPrice';
+@@ -67,6 +67,32 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   const [isBidding, setIsBidding] = useState(false);
+   const [specsOpen, setSpecsOpen] = useState(true);
+ 
++  // Sentinel observer state
++  const rightColRef = useRef<HTMLDivElement>(null);
++  const sentinelRef = useRef<HTMLDivElement>(null);
++  const [showMobileBar, setShowMobileBar] = useState(true);
++
++  useEffect(() => {
++    const sentinel = sentinelRef.current;
++    const rightCol = rightColRef.current;
++    if (!sentinel || !rightCol) return;
++
++    const observer = new IntersectionObserver(
++      ([entry]) => {
++        // Desktop: Un-sticky the right col when sentinel appears
++        if (window.innerWidth >= 768) {
++          rightCol.style.position = entry.isIntersecting ? 'relative' : '';
++          rightCol.style.top = entry.isIntersecting ? 'auto' : '';
++        }
++        // Mobile: Hide bottom bar when sentinel appears
++        setShowMobileBar(!entry.isIntersecting);
++      },
++      { threshold: 0, rootMargin: '0px 0px -80px 0px' }
++    );
++    observer.observe(sentinel);
++    return () => observer.disconnect();
++  }, []);
++
+ 
+   const handleAuthCheck = (action: () => void) => {
+     if (!isAuthenticated) {
+@@ -104,6 +130,39 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+     });
+   };
+ 
++  const handleAddToCart = async (e: React.MouseEvent) => {
++    e.stopPropagation();
++    if (!useAuthStore.getState().isAuthenticated) {
++      alert('Please sign in to add to cart');
++      return;
++    }
++    try {
++      const res = await fetch(`/api/cart`, {
++        method: 'POST',
++        credentials: 'include',
++        headers: { 'Content-Type': 'application/json' },
++        body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
++      });
++      if (res.ok) {
++        alert('Added to cart!');
++        useStore.getState().loadCart();
++      } else {
++        let errMsg = 'Failed to add to cart';
++        try {
++          const err = await res.json();
++          errMsg = err.error || errMsg;
++          console.error('Cart error:', err.error);
++        } catch (e) {
++          console.error('Non-JSON error response');
++        }
++        alert(errMsg);
++      }
++    } catch (err) {
++      console.error(err);
++      alert('Failed to add to cart');
++    }
++  };
++
+   const toggleWishlist = (id?: string | number) => {
+     handleAuthCheck(() => {
+       const numericId = product.numericId || (id ? Number(id) : NaN) || Number(product.id);
+@@ -112,7 +171,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   };
+ 
+   return (
+-    <div className="bg-[var(--color-cream-base)] flex flex-col">
++    <div className="bg-[var(--color-cream-base)] flex flex-col pb-20 md:pb-0 relative">
+       <main className="flex-1 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
+         
+         {/* Breadcrumb */}
+@@ -132,6 +191,8 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+             <ImageGallery
+               images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
+               alt={product.title}
++              isWishlisted={isWishlisted}
++              onWishlistToggle={() => toggleWishlist(product.numericId || product.id)}
+             />
+ 
+             {/* BLOCK E + G ΓÇö Seller Card and Buyer Reviews (SellerReputationBlock contains both) */}
+@@ -143,10 +204,38 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                 reputation={product?.sellerReputation}
+               />
+             </div>
++
++            {/* Shipping & Purchase Info */}
++            <div className="mt-6 rounded-xl border border-[#D8C8BA] bg-[#F7F4EE] px-4 py-4">
++              <div className="grid grid-cols-1 gap-2">
++                {[
++                  { icon: '≡ƒç«≡ƒç│', text: 'Made in India' },
++                  { icon: '≡ƒÆ│', text: 'Prepaid Orders Only' },
++                  { icon: '≡ƒôª', text: 'Shipping by Delhivery' },
++                ].map(({ icon, text }) => (
++                  <div key={text} className="flex items-center gap-2.5">
++                    <span className="text-base leading-none">{icon}</span>
++                    <span className="text-sm text-[#2B211C]/80">{text}</span>
++                  </div>
++                ))}
++                <div className="flex items-center gap-2.5 mt-1">
++                  <span className="text-base leading-none">≡ƒôä</span>
++                  <Link
++                    href="/returns-policy"
++                    className="text-sm text-[#B06A42] underline-offset-2 hover:underline"
++                  >
++                    Read Returns & Refund Policy
++                  </Link>
++                </div>
++              </div>
++            </div>
+           </div>
+ 
+           {/* RIGHT COLUMN ΓÇö sticky so details/actions stay visible while user scrolls left col */}
+-          <div className="flex flex-col gap-8 md:sticky md:top-24 self-start">
++          <div 
++            ref={rightColRef}
++            className="flex flex-col gap-8 md:sticky md:top-24 self-start max-h-[calc(100vh-6rem)] overflow-y-auto hide-scrollbar pb-6"
++          >
+ 
+             {/* BLOCK A ΓÇö Item Header */}
+             <div className="flex flex-col gap-2 text-left">
+@@ -190,7 +279,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               <p
+                 style={{
+                   fontFamily: "'Plus Jakarta Sans', sans-serif",
+-                  fontSize: 11,
++                  fontSize: 14,
+                   letterSpacing: '0.2em',
+                   textTransform: 'uppercase',
+                   color: '#B06A42',
+@@ -202,7 +291,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               </p>
+               <div aria-hidden style={{ borderTop: '1px solid #D8C8BA', marginBottom: 16 }} />
+ 
+-              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
++              <div className="text-base text-[var(--color-ink-700)] space-y-2">
+                 {(product.description || "").split('\n').map((para: string, idx: number) => (
+                   <p key={idx}>{para}</p>
+                 ))}
+@@ -210,7 +299,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+ 
+               {/* Specifications accordion */}
+               {product.specifications && Object.keys(product.specifications).length > 0 && (
+-                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-4">
++                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
+                   <button 
+                     onClick={() => setSpecsOpen(!specsOpen)}
+                     className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+@@ -245,19 +334,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+             {/* BLOCK D ΓÇö Action Buttons + Countdown + Escrow */}
+             <div className="flex flex-col gap-3">
+ 
+-              {/* AUCTION: [ ΓÖí Wishlist ] [ Place a Bid ΓåÆ ] */}
++              {/* AUCTION: [ Place a Bid ΓåÆ ] */}
+               {product.buyingMethod === 'Auction' && (
+-                <div className="flex flex-col gap-3">
+-                  <div className="flex flex-wrap gap-3">
+-                    <button
+-                      type="button"
+-                      onClick={() => toggleWishlist(product.numericId || product.id)}
+-                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+-                    >
+-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+-                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+-                    </button>
+-                  </div>
++                <div id="bid-section" className="flex flex-col gap-3">
+                   {product.auctionId ? (
+                     <PlaceBidPanel 
+                       auctionId={product.auctionId}
+@@ -274,51 +353,12 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                 </div>
+               )}
+ 
+-              {/* FIXED / OFFER: [ ΓÖí Wishlist ] [ Add to Cart ] [ Buy Now ΓåÆ ] [ Make an Offer ] */}
++              {/* FIXED / OFFER: [ Add to Cart ] [ Buy Now ΓåÆ ] [ Make an Offer ] */}
+               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
+                 <div className="flex flex-col gap-3">
+                   <div className="flex flex-wrap gap-3">
+                     <button
+-                      type="button"
+-                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
+-                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+-                    >
+-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+-                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+-                    </button>
+-                    <button
+-                      onClick={async (e) => {
+-                        e.stopPropagation()
+-                        if (!useAuthStore.getState().isAuthenticated) {
+-                          alert('Please sign in to add to cart')
+-                          return
+-                        }
+-                        try {
+-                          const res = await fetch(`/api/cart`, {
+-                            method: 'POST',
+-                            credentials: 'include',
+-                            headers: { 'Content-Type': 'application/json' },
+-                            body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
+-                          })
+-                          if (res.ok) {
+-                            alert('Added to cart!')
+-                            useStore.getState().loadCart()
+-                          } else {
+-                            let errMsg = 'Failed to add to cart';
+-                            try {
+-                              const err = await res.json()
+-                              errMsg = err.error || errMsg;
+-                              console.error('Cart error:', err.error)
+-                            } catch (e) {
+-                              console.error('Non-JSON error response')
+-                            }
+-                            alert(errMsg)
+-                          }
+-                        } catch (err) {
+-                          console.error(err)
+-                          alert('Failed to add to cart')
+-                        }
+-                      }}
++                      onClick={handleAddToCart}
+                       className="h-11 px-5 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors duration-200"
+                     >
+                       Add to Cart
+@@ -354,6 +394,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+           </div>
+         </div>
+ 
++        {/* Sentinel Stop for IntersectionObserver */}
++        <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
++
+         {/* Related Products ΓÇö unchanged */}
+         {related && related.length > 0 && (
+           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+@@ -367,6 +410,33 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+         )}
+ 
+       </main>
++
++      {/* Mobile sticky purchase bar */}
++      {showMobileBar && (
++        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[var(--color-border-subtle)] px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] animate-fade-up">
++          {product.buyingMethod === 'Auction' && (
++            <button
++              onClick={() => document.getElementById('bid-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
++              className="w-full h-11 rounded-full bg-[#B06A42] text-white text-sm font-semibold hover:bg-[#8f5435] transition-colors"
++            >
++              Place a Bid
++            </button>
++          )}
++          {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
++            <div className="flex gap-3">
++              <button
++                onClick={handleAddToCart}
++                className="flex-1 h-11 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors"
++              >
++                Add to Cart
++              </button>
++              <div className="flex-1 min-w-0">
++                <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
++              </div>
++            </div>
++          )}
++        </div>
++      )}
+     </div>
+   );
+ }
+
+commit 5808388f71724edf5a6d2e58a1b2ce66011681b3
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Aug 1 00:33:55 2026 +0530
+
+    listings changes-1
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 6282c34d..f97d78ef 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -145,8 +145,8 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+             </div>
+           </div>
+ 
+-          {/* RIGHT COLUMN ΓÇö Item details */}
+-          <div className="flex flex-col gap-8">
++          {/* RIGHT COLUMN ΓÇö sticky so details/actions stay visible while user scrolls left col */}
++          <div className="flex flex-col gap-8 md:sticky md:top-24 self-start">
+ 
+             {/* BLOCK A ΓÇö Item Header */}
+             <div className="flex flex-col gap-2 text-left">
+@@ -252,9 +252,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                     <button
+                       type="button"
+                       onClick={() => toggleWishlist(product.numericId || product.id)}
+-                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
++                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                     >
+-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
++                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                     </button>
+                   </div>
+@@ -281,9 +281,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                     <button
+                       type="button"
+                       onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
+-                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
++                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                     >
+-                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
++                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                     </button>
+                     <button
+@@ -319,7 +319,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                           alert('Failed to add to cart')
+                         }
+                       }}
+-                      className="h-11 px-4 rounded-md border border-[#B06A42] text-[#B06A42] text-sm font-medium"
++                      className="h-11 px-5 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors duration-200"
+                     >
+                       Add to Cart
+                     </button>
+
+commit 84647f98b28f105c43eb8623ffe1fd5d27ff919e
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Fri Jul 31 23:13:27 2026 +0530
+
+    more phase 3 -8
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 8955f61e..6282c34d 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -323,7 +323,9 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                     >
+                       Add to Cart
+                     </button>
+-                    <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
++                    <div className="flex-1 min-w-0">
++                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
++                    </div>
+                   </div>
+                   {product.offersAllowed && (
+                     <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
+
+commit 4baef8c8ffc492a9d24d981b6932f1127ddf3852
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Fri Jul 31 12:57:55 2026 +0530
+
+    phase 3 -8
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index bdccb812..8955f61e 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -124,22 +124,18 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+           <span className="text-[var(--color-ink-900)] font-medium line-clamp-1">{product.title}</span>
+         </div>
+ 
+-        {/* 60/40 Layout */}
+-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16">
+-          
+-          {/* Left: 60% Image Gallery */}
+-          <div className="w-full lg:w-3/5">
++        {/* ROW 1 ΓÇö Two-column grid (desktop: 55% left / 45% right, mobile: single col) */}
++        <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-8 md:gap-12">
++
++          {/* LEFT COLUMN ΓÇö Gallery + Seller Card + Buyer Reviews */}
++          <div className="flex flex-col">
+             <ImageGallery
+               images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
+               alt={product.title}
+             />
+-          </div>
+ 
+-          {/* Right: 40% Panel */}
+-          <div className="w-full lg:w-2/5 flex flex-col gap-6">
+-            
+-            {/* A. Seller Reputation Block */}
+-            <div className="bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
++            {/* BLOCK E + G ΓÇö Seller Card and Buyer Reviews (SellerReputationBlock contains both) */}
++            <div className="bg-[#F7F4EE] border border-[#D8C8BA] rounded-xl p-5 mt-6">
+               <SellerReputationBlock
+                 sellerName={sellerName}
+                 verified={!!product?.verified}
+@@ -147,40 +143,119 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                 reputation={product?.sellerReputation}
+               />
+             </div>
++          </div>
++
++          {/* RIGHT COLUMN ΓÇö Item details */}
++          <div className="flex flex-col gap-8">
++
++            {/* BLOCK A ΓÇö Item Header */}
++            <div className="flex flex-col gap-2 text-left">
++              {/* Category chip */}
++              {product.category && (
++                <div className="flex flex-wrap gap-2">
++                  <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
++                    {product.category}
++                  </span>
++                </div>
++              )}
+ 
+-            {/* C. Buying method badge */}
+-            <div className="flex">
+-              <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
+-                {product.buyingMethod}
+-              </span>
++              {/* Title */}
++              <h1 className="text-display-lg font-display text-[var(--color-ink-900)] leading-tight">
++                {product.title}
++              </h1>
++
++              {/* Price block */}
++              <div className="flex flex-col gap-1">
++                {product.buyingMethod === 'Auction' && (
++                  <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Current Bid</p>
++                )}
++                {product.buyingMethod === 'Buy Now' && (
++                  <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Buy Now Price</p>
++                )}
++                <p className="text-display-xl font-display text-[var(--color-ink-900)]">
++                  {formatPrice(product.currentBid ?? product.price)}
++                </p>
++              </div>
++
++              {/* Listing type badge */}
++              <div className="flex">
++                <span className="text-caption font-bold bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1 rounded-[var(--radius-pill)] uppercase tracking-wider">
++                  {product.buyingMethod}
++                </span>
++              </div>
+             </div>
+ 
+-            {/* B. Title */}
+-            <h1 className="text-display-lg font-display text-[var(--color-ink-900)] leading-tight">
+-              {product.title}
+-            </h1>
++            {/* BLOCK B ΓÇö About this Item */}
++            <div>
++              <p
++                style={{
++                  fontFamily: "'Plus Jakarta Sans', sans-serif",
++                  fontSize: 11,
++                  letterSpacing: '0.2em',
++                  textTransform: 'uppercase',
++                  color: '#B06A42',
++                  fontWeight: 600,
++                  marginBottom: 8,
++                }}
++              >
++                About This Item
++              </p>
++              <div aria-hidden style={{ borderTop: '1px solid #D8C8BA', marginBottom: 16 }} />
+ 
+-            {/* D. Price block */}
+-            <div className="flex flex-col gap-1">
+-              {product.buyingMethod === 'Auction' && (
+-                <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Current Bid</p>
+-              )}
+-              {product.buyingMethod === 'Buy Now' && (
+-                <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Buy Now Price</p>
++              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
++                {(product.description || "").split('\n').map((para: string, idx: number) => (
++                  <p key={idx}>{para}</p>
++                ))}
++              </div>
++
++              {/* Specifications accordion */}
++              {product.specifications && Object.keys(product.specifications).length > 0 && (
++                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-4">
++                  <button 
++                    onClick={() => setSpecsOpen(!specsOpen)}
++                    className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
++                  >
++                    Specifications
++                    {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
++                  </button>
++                  {specsOpen && (
++                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
++                      {Object.entries(product.specifications).map(([key, value]) => (
++                        <div key={key}>
++                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
++                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
++                        </div>
++                      ))}
++                    </div>
++                  )}
++                </div>
+               )}
+-              <p className="text-display-xl font-display text-[var(--color-ink-900)]">
+-                {formatPrice(product.currentBid ?? product.price)}
+-              </p>
+             </div>
+ 
+-            {/* E. Action buttons */}
++            {/* BLOCK C ΓÇö Shipping & Delivery */}
++            <ShippingInfo
++              shipsFrom={product.shipsFrom}
++              dispatchDays={product.dispatchDays}
++              estimatedMin={product.estimatedMin}
++              estimatedMax={product.estimatedMax}
++              returnsPolicy={product.returnsPolicy}
++              packagingNote={product.packagingNote}
++            />
++
++            {/* BLOCK D ΓÇö Action Buttons + Countdown + Escrow */}
+             <div className="flex flex-col gap-3">
++
++              {/* AUCTION: [ ΓÖí Wishlist ] [ Place a Bid ΓåÆ ] */}
+               {product.buyingMethod === 'Auction' && (
+-                <div className="flex flex-col gap-2 w-full">
+-                  <div className="flex items-center gap-2 mb-2">
+-                    <button type="button" onClick={() => toggleWishlist(product.numericId || product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+-                      <Heart className={cn("w-5 h-5 mr-2", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+-                      <span className="font-semibold">{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
++                <div className="flex flex-col gap-3">
++                  <div className="flex flex-wrap gap-3">
++                    <button
++                      type="button"
++                      onClick={() => toggleWishlist(product.numericId || product.id)}
++                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
++                    >
++                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
++                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                     </button>
+                   </div>
+                   {product.auctionId ? (
+@@ -198,13 +273,21 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                   )}
+                 </div>
+               )}
+-              
++
++              {/* FIXED / OFFER: [ ΓÖí Wishlist ] [ Add to Cart ] [ Buy Now ΓåÆ ] [ Make an Offer ] */}
+               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
+-                <div className="flex flex-col gap-2">
+-                  <div className="flex gap-2">
+-                    <div className="flex-1 flex flex-col gap-2">
+-                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+-                      <button onClick={async (e) => {
++                <div className="flex flex-col gap-3">
++                  <div className="flex flex-wrap gap-3">
++                    <button
++                      type="button"
++                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
++                      className="h-11 px-4 rounded-md border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2"
++                    >
++                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[#2B211C]")} />
++                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
++                    </button>
++                    <button
++                      onClick={async (e) => {
+                         e.stopPropagation()
+                         if (!useAuthStore.getState().isAuthenticated) {
+                           alert('Please sign in to add to cart')
+@@ -235,87 +318,41 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                           console.error(err)
+                           alert('Failed to add to cart')
+                         }
+-                      }} className="w-full h-12 bg-transparent border-2 border-[var(--color-ink-900)] text-[var(--color-ink-900)] rounded-[var(--radius-pill)] text-[16px] font-semibold cursor-pointer font-ui transition-colors hover:bg-[var(--color-ink-900)] hover:text-white">
+-                        Add to Cart
+-                      </button>
+-                    </div>
+-                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
+-                      <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
++                      }}
++                      className="h-11 px-4 rounded-md border border-[#B06A42] text-[#B06A42] text-sm font-medium"
++                    >
++                      Add to Cart
+                     </button>
++                    <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+                   </div>
+                   {product.offersAllowed && (
+                     <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
+                   )}
+                 </div>
+               )}
+-            </div>
+ 
+-            {/* Countdown for Auctions */}
+-            {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
++              {/* Countdown for Auctions */}
++              {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
+                 <div className="flex items-center gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+                   <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time left:</span>
+                   <AuctionTimer endTime={product.auctionEndsAt} />
+                 </div>
+-            )}
+-
+-            {/* F. Escrow trust strip */}
+-            <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-4 border border-[var(--color-border-subtle)] flex gap-3 items-center">
+-              <Shield className="w-5 h-5 text-[var(--color-success-600)] shrink-0" />
+-              <p className="text-body-sm font-medium text-[var(--color-ink-900)]">
+-                Secure Escrow ΓÇö Seller only gets paid after you receive the item.
+-              </p>
+-            </div>
+-
+-            {/* G. Shipping & Delivery */}
+-            <div className="pt-2">
+-              <ShippingInfo
+-                shipsFrom={product.shipsFrom}
+-                dispatchDays={product.dispatchDays}
+-                estimatedMin={product.estimatedMin}
+-                estimatedMax={product.estimatedMax}
+-                returnsPolicy={product.returnsPolicy}
+-                packagingNote={product.packagingNote}
+-              />
+-            </div>
++              )}
+ 
+-            {/* G. About this item */}
+-            <div className="mt-4">
+-              <h2 className="text-heading-md text-[var(--color-ink-900)] mb-3">About this item</h2>
+-              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
+-                {(product.description || "").split('\n').map((para: string, idx: number) => (
+-                  <p key={idx}>{para}</p>
+-                ))}
++              {/* Escrow trust strip */}
++              <div className="bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] p-4 border border-[var(--color-border-subtle)] flex gap-3 items-center">
++                <Shield className="w-5 h-5 text-[var(--color-success-600)] shrink-0" />
++                <p className="text-body-sm font-medium text-[var(--color-ink-900)]">
++                  Secure Escrow ΓÇö Seller only gets paid after you receive the item.
++                </p>
+               </div>
+-            </div>
+ 
+-            {/* H. Specifications accordion */}
+-            {product.specifications && Object.keys(product.specifications).length > 0 && (
+-              <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden">
+-                <button 
+-                  onClick={() => setSpecsOpen(!specsOpen)}
+-                  className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+-                >
+-                  Specifications
+-                  {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+-                </button>
+-                {specsOpen && (
+-                  <div className="p-4 bg-white grid grid-cols-2 gap-4">
+-                    {Object.entries(product.specifications).map(([key, value]) => (
+-                      <div key={key}>
+-                        <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+-                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+-                      </div>
+-                    ))}
+-                  </div>
+-                )}
+-              </div>
+-            )}
++            </div>
+ 
+-            
+           </div>
+         </div>
+ 
+-        {/* Related Products */}
++        {/* Related Products ΓÇö unchanged */}
+         {related && related.length > 0 && (
+           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+             <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
+
+commit dbc028529b39c129612c6beba386b7e187023179
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Fri Jul 31 00:04:59 2026 +0530
+
+    more phase 3 -7
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 5b54da98..bdccb812 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -14,17 +14,12 @@ import { useStore } from '@/lib/store';
+ import { useAuthStore } from '@/store/authStore';
+ import { useRouter } from 'next/navigation';
+ import { cn } from '@/lib/utils';
+-
+ import { AuctionTimer } from '@/components/AuctionTimer';
++import { ImageGallery } from '@/components/pdp/ImageGallery';
++import { SellerReputationBlock } from '@/components/pdp/SellerReputationBlock';
++import { ShippingInfo } from '@/components/pdp/ShippingInfo';
++
+ 
+-const GALLERY_VIEWS = [
+-  { transform: 'scale(1)', objectPosition: 'center' },
+-  { transform: 'scale(1.4)', objectPosition: 'top left' },
+-  { transform: 'scale(1.4)', objectPosition: 'top right' },
+-  { transform: 'scale(1.4)', objectPosition: 'bottom left' },
+-  { transform: 'scale(1.4)', objectPosition: 'bottom right' },
+-  { transform: 'scale(1.2)', objectPosition: 'center' }
+-];
+ 
+ export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
+   return (
+@@ -68,11 +63,11 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
+   const [added, setAdded] = useState(false);
+   
+-  const [activeImageIdx, setActiveImageIdx] = useState(0);
+   const [bidAmount, setBidAmount] = useState('');
+   const [isBidding, setIsBidding] = useState(false);
+   const [specsOpen, setSpecsOpen] = useState(true);
+ 
++
+   const handleAuthCheck = (action: () => void) => {
+     if (!isAuthenticated) {
+       router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`);
+@@ -134,69 +129,23 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+           
+           {/* Left: 60% Image Gallery */}
+           <div className="w-full lg:w-3/5">
+-            <div className="flex flex-col md:flex-row-reverse gap-4 sticky top-24">
+-              <div className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1">
+-                <Image 
+-                  src={product.image || '/placeholder.jpg'}
+-                  fill 
+-                  sizes="(max-width: 768px) 100vw, 60vw"
+-                  style={{ objectFit: 'cover', ...GALLERY_VIEWS[activeImageIdx] }} 
+-                  alt={product.title} 
+-                  priority
+-                  onError={(e) => { e.currentTarget.src = '/placeholder.jpg' }}
+-                />
+-              </div>
+-              
+-              <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-visible pb-2 md:pb-0 w-full md:w-[100px] shrink-0 hide-scrollbar">
+-                {GALLERY_VIEWS.map((view, idx) => (
+-                  <button 
+-                    key={idx}
+-                    onClick={() => setActiveImageIdx(idx)}
+-                    className={cn(
+-                      "relative w-20 h-20 md:w-full md:h-[100px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors",
+-                      activeImageIdx === idx ? "border-[var(--color-terracotta-600)]" : "border-transparent hover:border-[var(--color-ink-300)]"
+-                    )}
+-                  >
+-                    <Image 
+-                      src={product.image || '/placeholder.jpg'}
+-                      fill 
+-                      sizes="100px"
+-                      style={{ objectFit: 'cover', ...view }} 
+-                      alt={`Thumbnail ${idx + 1}`} 
+-                      loading="lazy"
+-                    />
+-                  </button>
+-                ))}
+-              </div>
+-            </div>
++            <ImageGallery
++              images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
++              alt={product.title}
++            />
+           </div>
+ 
+           {/* Right: 40% Panel */}
+           <div className="w-full lg:w-2/5 flex flex-col gap-6">
+             
+-            {/* A. Creator block */}
+-            <div className="flex items-center gap-3 bg-white p-3 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+-              <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-md text-[var(--color-terracotta-700)] shrink-0 font-display">
+-                {sellerName.charAt(0)}
+-              </div>
+-              <div>
+-                <div className="flex items-center gap-1.5">
+-                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
+-                    <span className="hover:underline cursor-not-allowed">{sellerName}</span>
+-                  </h3>
+-                  {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+-                </div>
+-                <div className="flex items-center gap-2 text-caption text-[var(--color-ink-700)]">
+-                  <span>Γÿà {product?.creatorRating || '4.8'}</span>
+-                  <span>({product?.creatorReviewCount || '128'} reviews)</span>
+-                  {product?.creatorBadges && product.creatorBadges.length > 0 && (
+-                    <>
+-                      <span>ΓÇó</span>
+-                      <span className="font-medium text-[var(--color-terracotta-600)]">{product.creatorBadges[0]}</span>
+-                    </>
+-                  )}
+-                </div>
+-              </div>
++            {/* A. Seller Reputation Block */}
++            <div className="bg-white p-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
++              <SellerReputationBlock
++                sellerName={sellerName}
++                verified={!!product?.verified}
++                location={product?.shipsFrom}
++                reputation={product?.sellerReputation}
++              />
+             </div>
+ 
+             {/* C. Buying method badge */}
+@@ -317,6 +266,18 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               </p>
+             </div>
+ 
++            {/* G. Shipping & Delivery */}
++            <div className="pt-2">
++              <ShippingInfo
++                shipsFrom={product.shipsFrom}
++                dispatchDays={product.dispatchDays}
++                estimatedMin={product.estimatedMin}
++                estimatedMax={product.estimatedMax}
++                returnsPolicy={product.returnsPolicy}
++                packagingNote={product.packagingNote}
++              />
++            </div>
++
+             {/* G. About this item */}
+             <div className="mt-4">
+               <h2 className="text-heading-md text-[var(--color-ink-900)] mb-3">About this item</h2>
+@@ -350,29 +311,6 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               </div>
+             )}
+ 
+-            {/* I. Seller reviews section */}
+-            <div className="mt-4 pt-6 border-t border-[var(--color-border-subtle)]">
+-              <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
+-              <div className="space-y-4">
+-                {(!product.reviews || product.reviews.length === 0) && (
+-                  <p className="text-body-sm text-[var(--color-ink-500)] italic">No reviews yet for this seller.</p>
+-                )}
+-                {(product.reviews || []).map((review: any, idx: number) => (
+-                  <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+-                    <div className="flex items-center gap-2 mb-2">
+-                      <span className="font-medium text-[var(--color-ink-900)]">{review.buyer}</span>
+-                      <span className="text-[var(--color-warning-500)] text-sm">
+-                        {'Γÿà'.repeat(review.rating) + 'Γÿå'.repeat(5 - review.rating)}
+-                      </span>
+-                      <span className="text-caption text-[var(--color-ink-500)] ml-auto">
+-                        {new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+-                      </span>
+-                    </div>
+-                    <p className="text-body-sm text-[var(--color-ink-700)]">{review.text}</p>
+-                  </div>
+-                ))}
+-              </div>
+-            </div>
+             
+           </div>
+         </div>
+
+commit 5abc576cadcc1814b936a485106a5628a24ef7f5
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Mon Jul 27 01:27:37 2026 +0530
+
+    major changes done
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 39b2e923..5b54da98 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -14,7 +14,6 @@ import { useStore } from '@/lib/store';
+ import { useAuthStore } from '@/store/authStore';
+ import { useRouter } from 'next/navigation';
+ import { cn } from '@/lib/utils';
+-import { productReviews } from '@/lib/exploreProducts';
+ 
+ import { AuctionTimer } from '@/components/AuctionTimer';
+ 
+@@ -183,7 +182,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               <div>
+                 <div className="flex items-center gap-1.5">
+                   <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
+-                    <Link href={`/seller/${sellerSlug}`} className="hover:underline">{sellerName}</Link>
++                    <span className="hover:underline cursor-not-allowed">{sellerName}</span>
+                   </h3>
+                   {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                 </div>
+@@ -355,7 +354,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+             <div className="mt-4 pt-6 border-t border-[var(--color-border-subtle)]">
+               <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
+               <div className="space-y-4">
+-                {(productReviews[product.id] || []).map((review: any, idx: number) => (
++                {(!product.reviews || product.reviews.length === 0) && (
++                  <p className="text-body-sm text-[var(--color-ink-500)] italic">No reviews yet for this seller.</p>
++                )}
++                {(product.reviews || []).map((review: any, idx: number) => (
+                   <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+                     <div className="flex items-center gap-2 mb-2">
+                       <span className="font-medium text-[var(--color-ink-900)]">{review.buyer}</span>
+
+commit 762cc0de8640ad40b5f127b93fb24eeb81b3bb0f
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Jul 11 15:27:02 2026 +0530
+
+    tried to fix wishlist and add to cart
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 35504b62..39b2e923 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -63,10 +63,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
+   const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
+   
+-  const { toggleWishlist: storeToggleWishlist, wishlist, addToCart } = useStore();
++  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart } = useStore();
+   const { isAuthenticated } = useAuthStore();
+   
+-  const isWishlisted = wishlist.some(w => w.productId === product.id);
++  const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
+   const [added, setAdded] = useState(false);
+   
+   const [activeImageIdx, setActiveImageIdx] = useState(0);
+@@ -104,15 +104,16 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+   
+   const handleAdd = () => {
+     handleAuthCheck(() => {
+-      addToCart({ id: Math.random().toString(), productId: product.id, title: product.title, price: product.price, quantity: 1, image: product.image });
++      addToCart({ id: Math.random().toString(), productId: String(product.numericId || product.id), title: product.title, price: product.price, quantity: 1, image: product.image });
+       setAdded(true);
+       setTimeout(() => setAdded(false), 1200);
+     });
+   };
+ 
+-  const toggleWishlist = (id: string) => {
++  const toggleWishlist = (id?: string | number) => {
+     handleAuthCheck(() => {
+-      storeToggleWishlist(id);
++      const numericId = product.numericId || (id ? Number(id) : NaN) || Number(product.id);
++      storeToggleWishlist(Number(numericId));
+     });
+   };
+ 
+@@ -229,7 +230,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+               {product.buyingMethod === 'Auction' && (
+                 <div className="flex flex-col gap-2 w-full">
+                   <div className="flex items-center gap-2 mb-2">
+-                    <button type="button" onClick={() => toggleWishlist(product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
++                    <button type="button" onClick={() => toggleWishlist(product.numericId || product.id)} className="flex-1 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-md)] hover:border-[var(--color-ink-900)] transition-colors">
+                       <Heart className={cn("w-5 h-5 mr-2", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                       <span className="font-semibold">{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
+                     </button>
+@@ -254,7 +255,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                 <div className="flex flex-col gap-2">
+                   <div className="flex gap-2">
+                     <div className="flex-1 flex flex-col gap-2">
+-                      <BuyNowButton listingId={product.id} price={product.price} listingTitle={product.title} />
++                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+                       <button onClick={async (e) => {
+                         e.stopPropagation()
+                         if (!useAuthStore.getState().isAuthenticated) {
+@@ -262,13 +263,26 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                           return
+                         }
+                         try {
+-                          await fetch(`/api/cart`, {
++                          const res = await fetch(`/api/cart`, {
+                             method: 'POST',
+                             credentials: 'include',
+                             headers: { 'Content-Type': 'application/json' },
+-                            body: JSON.stringify({ listing_id: product.id })
++                            body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
+                           })
+-                          alert('Added to cart!')
++                          if (res.ok) {
++                            alert('Added to cart!')
++                            useStore.getState().loadCart()
++                          } else {
++                            let errMsg = 'Failed to add to cart';
++                            try {
++                              const err = await res.json()
++                              errMsg = err.error || errMsg;
++                              console.error('Cart error:', err.error)
++                            } catch (e) {
++                              console.error('Non-JSON error response')
++                            }
++                            alert(errMsg)
++                          }
+                         } catch (err) {
+                           console.error(err)
+                           alert('Failed to add to cart')
+@@ -277,7 +291,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+                         Add to Cart
+                       </button>
+                     </div>
+-                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
++                    <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }} className="w-12 h-12 shrink-0 bg-white border border-[var(--color-border-subtle)] flex items-center justify-center rounded-[var(--radius-pill)] hover:border-[var(--color-ink-900)] transition-colors">
+                       <Heart className={cn("w-5 h-5", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-[var(--color-ink-700)]")} />
+                     </button>
+                   </div>
+
+commit 458eb98586eac1bdea8c0fc0d440506c1208d886
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Wed Jul 8 23:45:48 2026 +0530
+
+    sprint 5c
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index bc13590e..35504b62 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -16,53 +16,7 @@ import { useRouter } from 'next/navigation';
+ import { cn } from '@/lib/utils';
+ import { productReviews } from '@/lib/exploreProducts';
+ 
+-const DetailAuctionTimer = ({ endTime }: { endTime: string }) => {
+-  const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
+-  const [isUrgent, setIsUrgent] = useState(false);
+-
+-  useEffect(() => {
+-    const target = new Date(endTime).getTime();
+-    const update = () => {
+-      const remaining = target - Date.now();
+-      if (remaining <= 0) {
+-        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
+-        setIsUrgent(false);
+-        return;
+-      }
+-      
+-      setIsUrgent(remaining < 60 * 60 * 1000); // under 1 hour
+-
+-      setTimeLeft({
+-        d: Math.floor(remaining / (1000 * 60 * 60 * 24)),
+-        h: Math.floor((remaining / (1000 * 60 * 60)) % 24),
+-        m: Math.floor((remaining / 1000 / 60) % 60),
+-        s: Math.floor((remaining / 1000) % 60)
+-      });
+-    };
+-    
+-    update();
+-    const timer = setInterval(update, 1000);
+-    return () => clearInterval(timer);
+-  }, [endTime]);
+-
+-  if (!timeLeft) return null;
+-
+-  return (
+-    <div className="flex gap-3 my-4">
+-      {[
+-        { label: 'Days', value: timeLeft.d },
+-        { label: 'Hours', value: timeLeft.h },
+-        { label: 'Minutes', value: timeLeft.m },
+-        { label: 'Seconds', value: timeLeft.s }
+-      ].map((item, idx) => (
+-        <div key={idx} className={cn("flex flex-col items-center justify-center bg-white border rounded-[var(--radius-md)] p-3 min-w-[70px] shadow-sm", isUrgent ? "border-[var(--color-urgent-600)] text-[var(--color-urgent-600)] bg-[var(--color-urgent-100)]" : "border-[var(--color-border-subtle)] text-[var(--color-ink-900)]")}>
+-          <span className="text-display-md font-display font-bold leading-none mb-1">{String(item.value).padStart(2, '0')}</span>
+-          <span className="text-caption font-semibold uppercase tracking-wider opacity-70">{item.label}</span>
+-        </div>
+-      ))}
+-    </div>
+-  );
+-};
++import { AuctionTimer } from '@/components/AuctionTimer';
+ 
+ const GALLERY_VIEWS = [
+   { transform: 'scale(1)', objectPosition: 'center' },
+@@ -336,10 +290,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
+ 
+             {/* Countdown for Auctions */}
+             {product.buyingMethod === 'Auction' && product.auctionEndsAt && (
+-              <div className="flex flex-col gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+-                <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time Remaining</span>
+-                <DetailAuctionTimer endTime={product.auctionEndsAt} />
+-              </div>
++                <div className="flex items-center gap-2 p-4 bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
++                  <span className="text-body-sm font-bold text-[var(--color-ink-900)] uppercase tracking-wider">Time left:</span>
++                  <AuctionTimer endTime={product.auctionEndsAt} />
++                </div>
+             )}
+ 
+             {/* F. Escrow trust strip */}
+
+commit 239a27596f3a35a8b99d667d7df0e29d5fe15654
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Wed Jul 8 23:32:32 2026 +0530
+
+    sprint 5b
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 70841c02..bc13590e 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -73,10 +73,44 @@ const GALLERY_VIEWS = [
+   { transform: 'scale(1.2)', objectPosition: 'center' }
+ ];
+ 
+-export default function ProductDetailClient({ product, related }: { product: Listing, related: Listing[] }) {
++export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
++  return (
++    <ErrorBoundary>
++      <ProductDetailClient {...props} />
++    </ErrorBoundary>
++  )
++}
++
++class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
++  constructor(props: {children: React.ReactNode}) {
++    super(props);
++    this.state = { hasError: false };
++  }
++  static getDerivedStateFromError() {
++    return { hasError: true };
++  }
++  componentDidCatch(error: any, errorInfo: any) {
++    console.error('ProductDetailClient error:', error, errorInfo);
++  }
++  render() {
++    if (this.state.hasError) {
++      return <div className="p-10 text-center">Something went wrong loading this product.</div>;
++    }
++    return this.props.children;
++  }
++}
++
++function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
++  const router = useRouter();
++  
++  if (!product) {
++    return <div className="p-10 text-center">Product not found.</div>;
++  }
++  const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
++  const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
++  
+   const { toggleWishlist: storeToggleWishlist, wishlist, addToCart } = useStore();
+   const { isAuthenticated } = useAuthStore();
+-  const router = useRouter();
+   
+   const isWishlisted = wishlist.some(w => w.productId === product.id);
+   const [added, setAdded] = useState(false);
+@@ -189,17 +223,19 @@ export default function ProductDetailClient({ product, related }: { product: Lis
+             {/* A. Creator block */}
+             <div className="flex items-center gap-3 bg-white p-3 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)]">
+               <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-100)] flex items-center justify-center text-heading-md text-[var(--color-terracotta-700)] shrink-0 font-display">
+-                {product.creator.charAt(0)}
++                {sellerName.charAt(0)}
+               </div>
+               <div>
+                 <div className="flex items-center gap-1.5">
+-                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">{product.creator}</h3>
+-                  {product.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
++                  <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
++                    <Link href={`/seller/${sellerSlug}`} className="hover:underline">{sellerName}</Link>
++                  </h3>
++                  {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                 </div>
+                 <div className="flex items-center gap-2 text-caption text-[var(--color-ink-700)]">
+-                  <span>Γÿà {product.creatorRating || '4.8'}</span>
+-                  <span>({product.creatorReviewCount || '128'} reviews)</span>
+-                  {product.creatorBadges && product.creatorBadges.length > 0 && (
++                  <span>Γÿà {product?.creatorRating || '4.8'}</span>
++                  <span>({product?.creatorReviewCount || '128'} reviews)</span>
++                  {product?.creatorBadges && product.creatorBadges.length > 0 && (
+                     <>
+                       <span>ΓÇó</span>
+                       <span className="font-medium text-[var(--color-terracotta-600)]">{product.creatorBadges[0]}</span>
+
+commit ab354f5af532b8bc9185ffc74408c94f47fa3716
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Wed Jul 8 23:21:22 2026 +0530
+
+    sprint 5a
+
+diff --git a/frontend/components/product-detail-client.tsx b/frontend/components/product-detail-client.tsx
+index 3c99a8cd..70841c02 100644
+--- a/frontend/components/product-detail-client.tsx
++++ b/frontend/components/product-detail-client.tsx
+@@ -272,9 +272,11 @@ export default function ProductDetailClient({ product, related }: { product: Lis
+                           return
+                         }
+                         try {
+-                          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart/${product.id}`, {
++                          await fetch(`/api/cart`, {
+                             method: 'POST',
+-                            headers: { 'Authorization': `Bearer ${useAuthStore.getState().token}` }
++                            credentials: 'include',
++                            headers: { 'Content-Type': 'application/json' },
++                            body: JSON.stringify({ listing_id: product.id })
+                           })
+                           alert('Added to cart!')
+                         } catch (err) {

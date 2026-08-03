@@ -90,21 +90,25 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
           tabIndex={0}
           onKeyDown={e => { if (e.key === 'Enter') openLightbox(activeIdx) }}
         >
-          <Image
-            src={imgs[activeIdx]}
-            fill
-            sizes="(max-width: 768px) 100vw, 55vw"
-            quality={85}
-            style={{
-              objectFit: 'cover',
-              // GPU-accelerated zoom on hover via CSS class below
-              transition: 'transform 0.32s ease',
-            }}
-            alt={alt}
-            priority={activeIdx === 0}
-            className="gallery-main-img"
-            onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-          />
+          {imgs.map((src, idx) => (
+            <Image
+              key={idx}
+              src={src}
+              fill
+              sizes="(max-width: 768px) 100vw, 55vw"
+              quality={85}
+              style={{
+                objectFit: 'cover',
+                opacity: activeIdx === idx ? 1 : 0,
+                transition: 'opacity 0.4s ease, transform 0.32s ease',
+                pointerEvents: activeIdx === idx ? 'auto' : 'none'
+              }}
+              alt={`${alt} view ${idx + 1}`}
+              priority={idx === 0}
+              className="gallery-main-img absolute inset-0"
+              onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+            />
+          ))}
 
           {/* Wishlist Heart Overlay */}
           {onWishlistToggle && (
@@ -234,11 +238,11 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
           aria-label={`Image lightbox: ${alt}`}
           onClick={e => { if (e.target === e.currentTarget) setLightboxOpen(false) }}
         >
-          {/* Close button */}
+          {/* Close button - high z-index and inside dialog but outside image container */}
           <button
             onClick={() => setLightboxOpen(false)}
             aria-label="Close image viewer"
-            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="absolute top-4 right-4 w-10 h-10 z-[10000] flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white pointer-events-auto"
           >
             <X className="w-5 h-5" />
           </button>

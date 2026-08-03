@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
 import { slugify } from '@/lib/slugify'
-import { TrendingSection } from '@/components/TrendingSection'
+
 const heroImages = [
   '/images/crochet-flowers-blue-pot.jpeg',
   '/images/968355308d40d83a2e1f59daa61c5089.jpg',
@@ -235,7 +235,37 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
         </section>
 
-        <TrendingSection listings={trendingListings} />
+        {/* NEW: Trending Now (MVP) */}
+        {trendingListings && trendingListings.length > 0 && (
+          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)] border-t border-[var(--color-border-subtle)]">
+            <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
+              {/* Header Side */}
+              <div className="xl:w-1/3 flex flex-col justify-center items-start">
+                <div className="inline-flex items-center gap-2 mb-6 border border-[var(--color-terracotta-200)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-[family-name:var(--font-jakarta)]">
+                  <TrendingUp className="w-4 h-4" /> Trending Now
+                </div>
+                <h2 className="text-display-xl text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-6 leading-tight">
+                  Currently capturing the attention of collectors and creators.
+                </h2>
+                <p className="text-body-lg text-[var(--color-ink-700)] mb-10 font-[family-name:var(--font-jakarta)] max-w-md">
+                  Discover the pieces that are driving conversations, bids, and desire across our marketplace this week.
+                </p>
+                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+                  Explore All Trending Items <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+              
+              {/* Scrolling Cards */}
+              <div className="xl:w-2/3 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4">
+                {trendingListings.map((p, idx) => (
+                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
+                    <ProductCard product={p} priority={idx < 2} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* 3. NEW: Editorial Spotlight 1 */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
@@ -484,25 +514,23 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         </section>
         
         {/* 13. NEW: Become a Seller CTA */}
-        <section className="relative w-full min-h-[440px] md:min-h-[540px] flex items-center justify-start overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
+        <section className="relative w-full min-h-[420px] md:min-h-[520px] flex items-center justify-center overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
           {/* Background image */}
           <Image
-            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/painting-workspace"
+            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785784387/bidcraft_homepage/craft-livelihood-hero.jpg"
             alt="Artisan at work"
             fill
             className="object-cover object-center"
             priority={false}
-            quality={90}
-            sizes="100vw"
           />
-          {/* Gradient overlay for text legibility (stronger for left alignment) */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+          {/* Dark gradient overlay for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
 
-          {/* Content — left aligned */}
-          <div className="relative z-10 px-6 max-w-xl flex flex-col items-start ml-0 md:ml-12 lg:ml-24">
-            <span className="text-xs text-[var(--color-terracotta-400)] tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
-            <h2 className="text-3xl md:text-5xl text-white mb-6 font-semibold font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
-            <p className="text-lg text-white/90 mb-10 leading-relaxed font-[family-name:var(--font-jakarta)]">
+          {/* Content — centered over image */}
+          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
+            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
+            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+            <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
               Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
             </p>
             <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)] shadow-xl">

@@ -4,21 +4,7 @@ const notificationService = require('../services/notificationService');
 const redis = require('../utils/redis');
 const { validateImageFile } = require('../utils/fileValidator');
 
-// Helper to remove Cloudinary variant duplicates (same base image cropped differently)
-// This ensures the frontend receives a genuinely unique array of images from the data source
-function cleanVariants(urls) {
-  if (!urls || !Array.isArray(urls)) return urls;
-  const seen = new Set();
-  const cleaned = [];
-  for (const url of urls) {
-    const filename = url.split('/').pop();
-    if (!seen.has(filename)) {
-      seen.add(filename);
-      cleaned.push(url);
-    }
-  }
-  return cleaned;
-}
+
 
 const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
 
@@ -397,7 +383,7 @@ const getListings = async (req, res) => {
     // Ensure data layer deduplication of image variants
     const processedRows = result.rows.map(row => ({
       ...row,
-      images: cleanVariants(row.images)
+      images: row.images
     }));
 
     res.json({
@@ -544,7 +530,7 @@ const getListingById = async (req, res) => {
 
     // Ensure data layer deduplication of image variants
     if (listing.images) {
-      listing.images = cleanVariants(listing.images);
+      listing.images = listing.images;
     }
 
     res.json({ ...listing, sellerReputation })
@@ -594,7 +580,7 @@ const getLiveAuctions = async (req, res) => {
     
     const processedRows = result.rows.map(row => ({
       ...row,
-      images: cleanVariants(row.images)
+      images: row.images
     }));
 
     res.json({ auctions: processedRows })
@@ -620,7 +606,7 @@ const getNewArrivals = async (req, res) => {
     
     const processedRows = result.rows.map(row => ({
       ...row,
-      images: cleanVariants(row.images)
+      images: row.images
     }));
 
     res.json({ listings: processedRows })

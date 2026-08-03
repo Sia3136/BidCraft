@@ -1,0 +1,1338 @@
+﻿commit ad4d19b31d5ef7f3e209f4afd8fdd25ca457a836
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Mon Aug 3 22:46:40 2026 +0530
+
+    make fixes upgrade-1
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index 000f94d0..ab8a0208 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
+ import { ProductCard } from '@/components/product-card'
+ import { Listing } from '@/lib/api'
+ import { slugify } from '@/lib/slugify'
+-
++import { TrendingSection } from '@/components/TrendingSection'
+ const heroImages = [
+   '/images/crochet-flowers-blue-pot.jpeg',
+   '/images/968355308d40d83a2e1f59daa61c5089.jpg',
+@@ -149,7 +149,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+           
+           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
+             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-3xl">
+-              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
++              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">India's Premier Artisan Marketplace</span>
+               <h1 className="text-5xl md:text-display-2xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
+               <p className="text-xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
+@@ -223,90 +223,19 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+               <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[620px] mb-12">
+                 Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+               </p>
+-              <div className="w-[80px] h-[1px] bg-[var(--color-terracotta-300)]" />
+             </motion.div>
+           </div>
++          
++          {/* Corner Accents */}
++          <div className="absolute top-6 left-6 w-8 h-8 border-t border-l border-[var(--color-terracotta-300)] opacity-60" />
++          <div className="absolute top-6 right-6 w-8 h-8 border-t border-r border-[var(--color-terracotta-300)] opacity-60" />
++          <div className="absolute bottom-6 left-6 w-8 h-8 border-b border-l border-[var(--color-terracotta-300)] opacity-60" />
++          <div className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-[var(--color-terracotta-300)] opacity-60" />
++          
++          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
+         </section>
+ 
+-        {/* NEW: Trending Now (MVP) */}
+-        {trendingListings && trendingListings.length > 0 && (
+-          <section className="pb-24 pt-12 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+-            <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
+-              {/* Header Side */}
+-              <div className="xl:w-1/3 flex flex-col justify-center items-start">
+-                <div className="inline-flex items-center gap-2 mb-6 border border-[var(--color-terracotta-200)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-[family-name:var(--font-jakarta)]">
+-                  <TrendingUp className="w-4 h-4" /> Trending Now
+-                </div>
+-                <h2 className="text-display-xl text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-6 leading-tight">
+-                  Currently capturing the attention of collectors and creators.
+-                </h2>
+-                <p className="text-body-lg text-[var(--color-ink-700)] mb-10 font-[family-name:var(--font-jakarta)] max-w-md">
+-                  Discover the pieces that are driving conversations, bids, and desire across our marketplace this week.
+-                </p>
+-                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+-                  Explore All Trending Items <ArrowRight className="w-5 h-5" />
+-                </Link>
+-                
+-                {/* Desktop Navigation Arrows */}
+-                <div className="hidden xl:flex items-center gap-3 mt-10">
+-                  <button 
+-                    onClick={() => scrollBy(-400)}
+-                    disabled={!showLeftArrow}
+-                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+-                    aria-label="Scroll left"
+-                  >
+-                    <ChevronLeft className="w-5 h-5" />
+-                  </button>
+-                  <button 
+-                    onClick={() => scrollBy(400)}
+-                    disabled={!showRightArrow}
+-                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+-                    aria-label="Scroll right"
+-                  >
+-                    <ChevronRight className="w-5 h-5" />
+-                  </button>
+-                </div>
+-              </div>
+-              
+-              {/* Scrolling Cards */}
+-              <div className="xl:w-2/3 relative group">
+-                <div 
+-                  ref={trendingScrollRef}
+-                  className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4"
+-                >
+-                  {trendingListings.map((p, idx) => (
+-                    <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
+-                      <ProductCard product={p} priority={idx < 2} />
+-                    </div>
+-                  ))}
+-                </div>
+-                
+-                {/* Mobile/Tablet Hover Navigation Arrows (visible on hover/focus if scrollable) */}
+-                {showLeftArrow && (
+-                  <button
+-                    onClick={() => scrollBy(-300)}
+-                    className="xl:hidden absolute left-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+-                    aria-label="Scroll left"
+-                  >
+-                    <ChevronLeft className="w-5 h-5" />
+-                  </button>
+-                )}
+-                {showRightArrow && (
+-                  <button
+-                    onClick={() => scrollBy(300)}
+-                    className="xl:hidden absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+-                    aria-label="Scroll right"
+-                  >
+-                    <ChevronRight className="w-5 h-5" />
+-                  </button>
+-                )}
+-              </div>
+-            </div>
+-            <div className="max-w-[var(--container-max)] mx-auto mt-24">
+-              <div className="w-full h-[2px] bg-[var(--color-terracotta-400)]" />
+-            </div>
+-          </section>
+-        )}
++        <TrendingSection listings={trendingListings} />
+ 
+         {/* 3. NEW: Editorial Spotlight 1 */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+@@ -555,26 +484,28 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+         </section>
+         
+         {/* 13. NEW: Become a Seller CTA */}
+-        <section className="relative w-full min-h-[420px] md:min-h-[520px] flex items-center justify-center overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
++        <section className="relative w-full min-h-[440px] md:min-h-[540px] flex items-center justify-start overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
+           {/* Background image */}
+           <Image
+-            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg"
++            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/painting-workspace"
+             alt="Artisan at work"
+             fill
+             className="object-cover object-center"
+             priority={false}
++            quality={90}
++            sizes="100vw"
+           />
+-          {/* Dark gradient overlay for text legibility */}
+-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
+-
+-          {/* Content ΓÇö centered over image */}
+-          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
+-            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
+-            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+-            <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
++          {/* Gradient overlay for text legibility (stronger for left alignment) */}
++          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
++
++          {/* Content ΓÇö left aligned */}
++          <div className="relative z-10 px-6 max-w-xl flex flex-col items-start ml-0 md:ml-12 lg:ml-24">
++            <span className="text-xs text-[var(--color-terracotta-400)] tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
++            <h2 className="text-3xl md:text-5xl text-white mb-6 font-semibold font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
++            <p className="text-lg text-white/90 mb-10 leading-relaxed font-[family-name:var(--font-jakarta)]">
+               Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+             </p>
+-            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
++            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)] shadow-xl">
+               Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+             </Link>
+           </div>
+
+commit 9ed66e14c95f9fe3c6662f23ece8f770f547b838
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sun Aug 2 05:14:08 2026 +0530
+
+    listings and home page new-1
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index aae1f494..000f94d0 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -1,10 +1,10 @@
+ 'use client'
+ 
+-import React, { useState, useEffect, useMemo } from 'react'
++import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+ import Link from 'next/link'
+ import Image from 'next/image'
+ import { motion, Variants } from 'framer-motion'
+-import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp } from 'lucide-react'
++import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react'
+ import { useAuthStore } from '@/store/authStore'
+ import { cn } from '@/lib/utils'
+ import { ProductCard } from '@/components/product-card'
+@@ -77,6 +77,37 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+   const { user } = useAuthStore()
+   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+ 
++  // Carousel logic for Trending
++  const trendingScrollRef = useRef<HTMLDivElement>(null)
++  const [showLeftArrow, setShowLeftArrow] = useState(false)
++  const [showRightArrow, setShowRightArrow] = useState(true)
++
++  const handleScroll = useCallback(() => {
++    if (!trendingScrollRef.current) return;
++    const { scrollLeft, scrollWidth, clientWidth } = trendingScrollRef.current;
++    setShowLeftArrow(scrollLeft > 10);
++    setShowRightArrow(Math.ceil(scrollLeft + clientWidth) < scrollWidth - 10);
++  }, []);
++
++  useEffect(() => {
++    const el = trendingScrollRef.current;
++    if (el) {
++      handleScroll(); // Check initial
++      el.addEventListener('scroll', handleScroll);
++      window.addEventListener('resize', handleScroll);
++      return () => {
++        el.removeEventListener('scroll', handleScroll);
++        window.removeEventListener('resize', handleScroll);
++      };
++    }
++  }, [handleScroll, trendingListings]);
++
++  const scrollBy = (amount: number) => {
++    if (trendingScrollRef.current) {
++      trendingScrollRef.current.scrollBy({ left: amount, behavior: 'smooth' });
++    }
++  };
++
+   // Using realistic curated counts instead of scanning mock data
+   const vintageRetroCount = 142;
+   const modernMinimalistCount = 86;
+@@ -173,9 +204,33 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+           </div>
+         </section>
+ 
++        {/* 9. Manifesto (Moved and Redesigned as Editorial Intro) */}
++        <section className="relative overflow-hidden pt-32 pb-16 w-full bg-[var(--color-cream-base)]">
++          <svg className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" aria-hidden="true">
++            <filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
++            <rect width="100%" height="100%" filter="url(#paper-texture)"/>
++          </svg>
++          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
++          
++          <div className="max-w-[800px] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-6 text-center">
++            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true, margin: "-100px" }} className="flex flex-col items-center w-full">
++              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-8">
++                Editorial Spotlight
++              </span>
++              <h2 className="text-[40px] md:text-[56px] text-[var(--color-ink-900)] font-medium font-[family-name:var(--font-playfair)] leading-[1.1] mb-8">
++                We don't celebrate mass production.<br />We celebrate originality.
++              </h2>
++              <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[620px] mb-12">
++                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
++              </p>
++              <div className="w-[80px] h-[1px] bg-[var(--color-terracotta-300)]" />
++            </motion.div>
++          </div>
++        </section>
++
+         {/* NEW: Trending Now (MVP) */}
+         {trendingListings && trendingListings.length > 0 && (
+-          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)] border-t border-[var(--color-border-subtle)]">
++          <section className="pb-24 pt-12 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+             <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
+               {/* Header Side */}
+               <div className="xl:w-1/3 flex flex-col justify-center items-start">
+@@ -191,17 +246,65 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+                 <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+                   Explore All Trending Items <ArrowRight className="w-5 h-5" />
+                 </Link>
++                
++                {/* Desktop Navigation Arrows */}
++                <div className="hidden xl:flex items-center gap-3 mt-10">
++                  <button 
++                    onClick={() => scrollBy(-400)}
++                    disabled={!showLeftArrow}
++                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
++                    aria-label="Scroll left"
++                  >
++                    <ChevronLeft className="w-5 h-5" />
++                  </button>
++                  <button 
++                    onClick={() => scrollBy(400)}
++                    disabled={!showRightArrow}
++                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
++                    aria-label="Scroll right"
++                  >
++                    <ChevronRight className="w-5 h-5" />
++                  </button>
++                </div>
+               </div>
+               
+               {/* Scrolling Cards */}
+-              <div className="xl:w-2/3 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4">
+-                {trendingListings.map((p, idx) => (
+-                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
+-                    <ProductCard product={p} priority={idx < 2} />
+-                  </div>
+-                ))}
++              <div className="xl:w-2/3 relative group">
++                <div 
++                  ref={trendingScrollRef}
++                  className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4"
++                >
++                  {trendingListings.map((p, idx) => (
++                    <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
++                      <ProductCard product={p} priority={idx < 2} />
++                    </div>
++                  ))}
++                </div>
++                
++                {/* Mobile/Tablet Hover Navigation Arrows (visible on hover/focus if scrollable) */}
++                {showLeftArrow && (
++                  <button
++                    onClick={() => scrollBy(-300)}
++                    className="xl:hidden absolute left-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
++                    aria-label="Scroll left"
++                  >
++                    <ChevronLeft className="w-5 h-5" />
++                  </button>
++                )}
++                {showRightArrow && (
++                  <button
++                    onClick={() => scrollBy(300)}
++                    className="xl:hidden absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
++                    aria-label="Scroll right"
++                  >
++                    <ChevronRight className="w-5 h-5" />
++                  </button>
++                )}
+               </div>
+             </div>
++            <div className="max-w-[var(--container-max)] mx-auto mt-24">
++              <div className="w-full h-[2px] bg-[var(--color-terracotta-400)]" />
++            </div>
+           </section>
+         )}
+ 
+@@ -381,31 +484,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
+         </section>
+ 
+ 
+-        {/* 9. Manifesto */}
+-        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px', borderTop: '2px solid #B06A42', borderBottom: '2px solid #B06A42' }}>
+-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
+-            <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+-            <rect width="100%" height="100%" filter="url(#paper)"/>
+-          </svg>
+-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
+-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
+-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
+-              <span className="font-[family-name:var(--font-jakarta)]" style={{ textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
+-                MANIFESTO
+-              </span>
+-              <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
+-                We don't celebrate mass production.<br />We celebrate originality.
+-              </h2>
+-              <p className="font-[family-name:var(--font-jakarta)]" style={{ fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
+-                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+-              </p>
+-              <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)]" style={{ fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
+-                Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
+-              </Link>
+-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
+-            </motion.div>
+-          </div>
+-        </section>
+ 
+         {/* 10. Gifts With a Story */}
+         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+
+commit 2642d06d290acac90f2cb0cfcaf48d48f80311d9
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sun Aug 2 04:34:38 2026 +0530
+
+    listings and home page new
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index 063adfdb..aae1f494 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
+ import Link from 'next/link'
+ import Image from 'next/image'
+ import { motion, Variants } from 'framer-motion'
+-import { ShieldCheck, CheckCircle, Package, ArrowRight, Star } from 'lucide-react'
++import { ShieldCheck, CheckCircle, Package, ArrowRight, Star, TrendingUp } from 'lucide-react'
+ import { useAuthStore } from '@/store/authStore'
+ import { cn } from '@/lib/utils'
+ import { ProductCard } from '@/components/product-card'
+@@ -73,7 +73,7 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
+   return <span>{timeLeft}</span>
+ }
+ 
+-export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[] }) {
++export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[] }) {
+   const { user } = useAuthStore()
+   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+ 
+@@ -117,10 +117,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top, rgba(43,42,40,0.55) 0%, rgba(43,42,40,0) 60%)' }} />
+           
+           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
+-            <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
+-              <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
+-              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
+-              <p className="text-body-lg text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
++            <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-3xl">
++              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
++              <h1 className="text-5xl md:text-display-2xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
++              <p className="text-xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
+               </p>
+               <div className="flex flex-col md:flex-row gap-4">
+@@ -173,6 +173,38 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           </div>
+         </section>
+ 
++        {/* NEW: Trending Now (MVP) */}
++        {trendingListings && trendingListings.length > 0 && (
++          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)] border-t border-[var(--color-border-subtle)]">
++            <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
++              {/* Header Side */}
++              <div className="xl:w-1/3 flex flex-col justify-center items-start">
++                <div className="inline-flex items-center gap-2 mb-6 border border-[var(--color-terracotta-200)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-[family-name:var(--font-jakarta)]">
++                  <TrendingUp className="w-4 h-4" /> Trending Now
++                </div>
++                <h2 className="text-display-xl text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-6 leading-tight">
++                  Currently capturing the attention of collectors and creators.
++                </h2>
++                <p className="text-body-lg text-[var(--color-ink-700)] mb-10 font-[family-name:var(--font-jakarta)] max-w-md">
++                  Discover the pieces that are driving conversations, bids, and desire across our marketplace this week.
++                </p>
++                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
++                  Explore All Trending Items <ArrowRight className="w-5 h-5" />
++                </Link>
++              </div>
++              
++              {/* Scrolling Cards */}
++              <div className="xl:w-2/3 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4">
++                {trendingListings.map((p, idx) => (
++                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
++                    <ProductCard product={p} priority={idx < 2} />
++                  </div>
++                ))}
++              </div>
++            </div>
++          </section>
++        )}
++
+         {/* 3. NEW: Editorial Spotlight 1 */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+@@ -226,7 +258,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                 {/* 5. Our Story */}
+         <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
+           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
+-            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
++            <Image src="/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
+           </div>
+           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
+
+commit 9f7fb6dcc18f00d965306505afa3db1b013926ec
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Sat Aug 1 14:17:45 2026 +0530
+
+    multiple changes-1
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index ad06458d..063adfdb 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -445,29 +445,28 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+         
+         {/* 13. NEW: Become a Seller CTA */}
+-        <section className="py-24 bg-[#5C3D2E] px-[var(--space-5)] xl:px-[var(--space-8)]">
+-          <div className="max-w-[var(--container-max)] mx-auto md:grid md:grid-cols-2 md:gap-16 items-center">
+-            {/* Left column content */}
+-            <div className="flex flex-col items-start mb-12 md:mb-0">
+-              <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
+-              <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+-              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
+-                Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+-              </p>
+-              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
+-                Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+-              </Link>
+-            </div>
+-            
+-            {/* Right column image placeholder */}
+-            <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
+-              <img 
+-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
+-                alt="Artisan at work" 
+-                className="w-full h-full object-cover opacity-60"
+-                style={{ objectPosition: 'center 30%' }}
+-              />
+-            </div>
++        <section className="relative w-full min-h-[420px] md:min-h-[520px] flex items-center justify-center overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
++          {/* Background image */}
++          <Image
++            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg"
++            alt="Artisan at work"
++            fill
++            className="object-cover object-center"
++            priority={false}
++          />
++          {/* Dark gradient overlay for text legibility */}
++          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
++
++          {/* Content ΓÇö centered over image */}
++          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
++            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
++            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
++            <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
++              Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
++            </p>
++            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
++              Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
++            </Link>
+           </div>
+         </section>
+ 
+
+commit b05636b85afd6860363e9582f242334e3cd2a7e6
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 21:23:18 2026 +0530
+
+    phase 3 -5
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index f6312fc2..ad06458d 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -350,7 +350,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+ 
+ 
+         {/* 9. Manifesto */}
+-        <section className="relative overflow-hidden py-16 w-full" style={{ backgroundColor: '#F7F4EE', minHeight: '380px', borderTop: '2px solid #B06A42' }}>
++        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px', borderTop: '2px solid #B06A42', borderBottom: '2px solid #B06A42' }}>
+           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
+             <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+             <rect width="100%" height="100%" filter="url(#paper)"/>
+@@ -358,16 +358,16 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
+             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
+               <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
+-              <span style={{ fontFamily: 'Inter, sans-serif', textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
++              <span className="font-[family-name:var(--font-jakarta)]" style={{ textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
+                 MANIFESTO
+               </span>
+               <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
+                 We don't celebrate mass production.<br />We celebrate originality.
+               </h2>
+-              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
++              <p className="font-[family-name:var(--font-jakarta)]" style={{ fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
+                 Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+               </p>
+-              <Link href="/explore" className="group inline-flex items-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
++              <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)]" style={{ fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
+                 Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
+               </Link>
+               <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
+@@ -465,6 +465,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                 src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
+                 alt="Artisan at work" 
+                 className="w-full h-full object-cover opacity-60"
++                style={{ objectPosition: 'center 30%' }}
+               />
+             </div>
+           </div>
+
+commit 98fa2ad7d768dd3072f5e4dd33b3fd07e5b7dc5b
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 21:09:36 2026 +0530
+
+    phase 3 -4
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index ae423e3a..f6312fc2 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -349,38 +349,29 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+ 
+ 
+-        {/* 9. How It Works */}
+-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
+-            <span className="text-[#C96A3A] text-xs tracking-[0.2em] font-[family-name:var(--font-jakarta)] mb-4 block uppercase">HOW IT WORKS</span>
+-            <h2 className="text-stone-800 text-4xl md:text-5xl font-[family-name:var(--font-playfair)] mb-12 text-center">Browse, bid, and bring it home.</h2>
+-            
+-            <div className="bg-[#1C1410] w-full px-8 md:px-24 py-16 rounded-none">
+-              <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16">
+-                <div className="flex-1 flex flex-col">
+-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">01</span>
+-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Browse</h3>
+-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
+-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+-                </div>
+-                <div className="flex-1 flex flex-col">
+-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">02</span>
+-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Bid or Buy</h3>
+-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
+-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+-                </div>
+-                <div className="flex-1 flex flex-col">
+-                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">03</span>
+-                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Delivered</h3>
+-                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
+-                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Your piece ships directly from the creator to your door.</p>
+-                </div>
+-              </div>
+-            </div>
+-
+-            <div className="w-full text-center mt-10 pt-8 border-t border-stone-200 text-xs text-stone-600 font-[family-name:var(--font-jakarta)]">
+-              <span className="text-stone-400 text-xs tracking-widest font-[family-name:var(--font-jakarta)]">TRUSTED INFRASTRUCTURE</span> &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Razorpay</span> &middot; Secure payments &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Delhivery</span> &middot; Reliable shipping
+-            </div>
++        {/* 9. Manifesto */}
++        <section className="relative overflow-hidden py-16 w-full" style={{ backgroundColor: '#F7F4EE', minHeight: '380px', borderTop: '2px solid #B06A42' }}>
++          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
++            <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
++            <rect width="100%" height="100%" filter="url(#paper)"/>
++          </svg>
++          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
++            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
++              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
++              <span style={{ fontFamily: 'Inter, sans-serif', textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
++                MANIFESTO
++              </span>
++              <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
++                We don't celebrate mass production.<br />We celebrate originality.
++              </h2>
++              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
++                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
++              </p>
++              <Link href="/explore" className="group inline-flex items-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
++                Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
++              </Link>
++              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
++            </motion.div>
+           </div>
+         </section>
+ 
+@@ -470,9 +461,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             
+             {/* Right column image placeholder */}
+             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
+-              {/* TODO: Set Cloudinary URL for handmade/crochet & knitting/images.jpeg */}
+               <img 
+-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/bidcraft/art/paintings/864c5ce031b5e77f9a5eb9a8d506f497.jpg" 
++                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
+                 alt="Artisan at work" 
+                 className="w-full h-full object-cover opacity-60"
+               />
+
+commit adc507e0ac33a1fd4cf04819656f925b9358f245
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 20:25:40 2026 +0530
+
+    phase 3 -2
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index c1720766..ae423e3a 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -118,16 +118,16 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           
+           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
+             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
+-              <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block">Curated this week</span>
+-              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight">Where creativity becomes opportunity.</h1>
+-              <p className="text-body-lg text-white/85 mb-8 max-w-xl">
++              <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
++              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
++              <p className="text-body-lg text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
+               </p>
+               <div className="flex flex-col md:flex-row gap-4">
+-                <Link href="/explore" className="bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast text-center">
++                <Link href="/explore" className="bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast text-center font-[family-name:var(--font-jakarta)]">
+                   Explore Collection
+                 </Link>
+-                <Link href="/explore?type=auction" className="h-12 px-6 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg text-center">
++                <Link href="/explore?type=auction" className="h-12 px-6 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg text-center font-[family-name:var(--font-jakarta)]">
+                   Watch Live Auctions
+                 </Link>
+               </div>
+@@ -138,7 +138,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 2. Explore by Category */}
+         <section className="py-20 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12">
++            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12 font-[family-name:var(--font-playfair)]">
+               Explore by Category
+             </motion.h2>
+             <motion.div 
+@@ -163,7 +163,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                     />
+                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(43,42,40,0.70) 0%, rgba(43,42,40,0) 55%)' }} />
+                     <div className="absolute bottom-0 left-0 p-[var(--space-4)] z-10">
+-                      <h3 className="text-heading-lg font-[var(--font-display)] font-semibold text-white">{cat.name}</h3>
++                      <h3 className="text-heading-lg font-[var(--)] font-semibold text-white font-[family-name:var(--font-playfair)]">{cat.name}</h3>
+                       <div className="w-0 h-[1.5px] bg-white mt-1 transition-all duration-[250ms] ease-out group-hover:w-[24px]" />
+                     </div>
+                   </Link>
+@@ -177,12 +177,12 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full lg:w-1/2 flex flex-col items-start pr-0 lg:pr-8">
+-              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block">HANDPICKED FOR YOU</span>
+-              <h2 className="text-display-lg font-display text-[var(--color-ink-900)] mb-6 leading-tight">Art that tells a story before you say a word</h2>
+-              <p className="text-body-lg text-[var(--color-ink-700)] mb-8">
++              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block font-[family-name:var(--font-jakarta)]">HANDPICKED FOR YOU</span>
++              <h2 className="text-display-lg text-[var(--color-ink-900)] mb-6 leading-tight font-[family-name:var(--font-playfair)]">Art that tells a story before you say a word</h2>
++              <p className="text-body-lg text-[var(--color-ink-700)] mb-8 font-[family-name:var(--font-jakarta)]">
+                 Every piece on BidCraft is made by hand, by someone with a story. From Rajasthani block prints to Bangalore ceramicists ΓÇö discover work that carries the weight of its making. No mass production. No middlemen. Just craft.
+               </p>
+-              <Link href="/explore?category=handmade-crafts" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group">
++              <Link href="/explore?category=handmade-crafts" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group font-[family-name:var(--font-jakarta)]">
+                 Explore Handmade & Crafts <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+               </Link>
+             </motion.div>
+@@ -197,8 +197,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {liveAuctions.length > 0 && (
+           <section className="px-6 lg:px-16 py-14">
+             <div className="flex items-center justify-between mb-8">
+-              <h2 className="text-3xl font-bold font-playfair text-[#1C1C1C]">Live Auctions</h2>
+-              <span className="flex items-center gap-2 text-sm font-medium">
++              <h2 className="text-3xl font-bold text-[#1C1C1C] font-[family-name:var(--font-playfair)]">Live Auctions</h2>
++              <span className="flex items-center gap-2 text-sm font-medium font-[family-name:var(--font-jakarta)]">
+                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                 Live Now
+               </span>
+@@ -230,20 +230,20 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           </div>
+           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
+-              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6">Our Story</h2>
+-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
++              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6 font-[family-name:var(--font-playfair)]">Our Story</h2>
++              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
+                 Every creation has a story. Every creator deserves a platform that values it.
+               </p>
+-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
++              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
+                 BidCraft was built to bridge the gap between talented creators and people who truly appreciate their work. In a world where selling online often means uncertainty, we envisioned a marketplace where creativity is backed by trust, transparency, and opportunityΓÇönot risk.
+               </p>
+-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
++              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
+                 Whether it's an artist's first handmade piece, a student's passion project, or a collector searching for something rare, BidCraft brings them together in one secure ecosystem. With verified creators, protected transactions, and a marketplace designed for discovery, we make buying, selling, and auctioning unique creations simple and reliable.
+               </p>
+-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10">
++              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10 font-[family-name:var(--font-jakarta)]">
+                 Our vision is to become the home of India's creative economyΓÇöwhere every creator, regardless of size or experience, has the confidence to showcase their talent, build their identity, and turn passion into lasting opportunity.
+               </p>
+-              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast">
++              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast font-[family-name:var(--font-jakarta)]">
+                 Read Our Full Story
+               </Link>
+             </motion.div>
+@@ -254,7 +254,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex items-end justify-between mb-12">
+-              <h2 className="text-display-lg text-[var(--color-ink-900)]">New Arrivals</h2>
++              <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">New Arrivals</h2>
+             </motion.div>
+             
+             <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 lg:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
+@@ -278,7 +278,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 7. Curated Collections (Clickable) */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
++            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
+               Curated Collections
+             </motion.h2>
+             
+@@ -288,8 +288,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                 <Image src="/images/ed2af0776b49fdea863a1ead90dadf19.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage & Retro" className="transition-transform duration-slow group-hover:scale-105" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                 <div className="absolute bottom-8 left-8 z-20">
+-                  <h3 className="text-display-md text-white mb-2">Vintage & Retro</h3>
+-                  <p className="text-body-md text-white/80">{vintageRetroCount} Items</p>
++                  <h3 className="text-display-md text-white mb-2 font-[family-name:var(--font-playfair)]">Vintage & Retro</h3>
++                  <p className="text-body-md text-white/80 font-[family-name:var(--font-jakarta)]">{vintageRetroCount} Items</p>
+                 </div>
+               </motion.div>
+               
+@@ -299,8 +299,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                   <Image src="/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg" fill style={{ objectFit: 'cover' }} alt="Modern Minimalist" className="transition-transform duration-slow group-hover:scale-105" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                   <div className="absolute bottom-6 left-6 z-20">
+-                    <h3 className="text-heading-lg text-white mb-1">Modern Minimalist</h3>
+-                    <p className="text-caption text-white/80">{modernMinimalistCount} Items</p>
++                    <h3 className="text-heading-lg text-white mb-1 font-[family-name:var(--font-playfair)]">Modern Minimalist</h3>
++                    <p className="text-caption text-white/80 font-[family-name:var(--font-jakarta)]">{modernMinimalistCount} Items</p>
+                   </div>
+                 </motion.div>
+                 
+@@ -309,8 +309,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                   <Image src="/images/3599c4c65b94b61ec21a8d070cd401fe.jpg" fill style={{ objectFit: 'cover' }} alt="Traditional Arts" className="transition-transform duration-slow group-hover:scale-105" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+                   <div className="absolute bottom-6 left-6 z-20">
+-                    <h3 className="text-heading-lg text-white mb-1">Traditional Arts</h3>
+-                    <p className="text-caption text-white/80">{traditionalArtsCount} Items</p>
++                    <h3 className="text-heading-lg text-white mb-1 font-[family-name:var(--font-playfair)]">Traditional Arts</h3>
++                    <p className="text-caption text-white/80 font-[family-name:var(--font-jakarta)]">{traditionalArtsCount} Items</p>
+                   </div>
+                 </motion.div>
+               </div>
+@@ -321,7 +321,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 8. Featured Creators */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
++            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
+               {user ? 'Creators You Follow' : 'Featured Creators'}
+             </motion.h2>
+             <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] md:mx-0 md:px-0 md:pb-0 mb-8 md:mb-0">
+@@ -330,18 +330,18 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                   <div className="h-40 bg-[var(--color-cream-deep)] relative">
+                     <Image src={creator.cover} fill style={{ objectFit: 'cover' }} alt="Cover" />
+                   </div>
+-                  <h3 className="text-heading-lg mt-6 mb-1 flex items-center justify-center gap-1">
++                  <h3 className="text-heading-lg mt-6 mb-1 flex items-center justify-center gap-1 font-[family-name:var(--font-playfair)]">
+                     {creator.name}
+                     {creator.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" strokeWidth={2} />}
+                   </h3>
+-                  <p className="text-caption text-[var(--color-terracotta-600)] mb-3 uppercase tracking-wider">{creator.specialty}</p>
+-                  <p className="text-body-md text-[var(--color-ink-500)] px-6 line-clamp-3 mb-4 h-[66px]">{creator.bio}</p>
++                  <p className="text-caption text-[var(--color-terracotta-600)] mb-3 uppercase tracking-wider font-[family-name:var(--font-jakarta)]">{creator.specialty}</p>
++                  <p className="text-body-md text-[var(--color-ink-500)] px-6 line-clamp-3 mb-4 h-[66px] font-[family-name:var(--font-jakarta)]">{creator.bio}</p>
+                   <div className="flex justify-center items-center gap-1 text-[var(--color-ink-900)] mb-2">
+-                    <span className="text-caption font-bold">{creator.rating}</span>
+-                    <span className="text-[var(--color-terracotta-600)] text-sm">ΓÿàΓÿàΓÿàΓÿàΓÿà</span>
+-                    <span className="text-caption text-[var(--color-ink-300)]">({creator.reviews})</span>
++                    <span className="text-caption font-bold font-[family-name:var(--font-jakarta)]">{creator.rating}</span>
++                    <span className="text-[var(--color-terracotta-600)] text-sm font-[family-name:var(--font-jakarta)]">ΓÿàΓÿàΓÿàΓÿàΓÿà</span>
++                    <span className="text-caption text-[var(--color-ink-300)] font-[family-name:var(--font-jakarta)]">({creator.reviews})</span>
+                   </div>
+-                  <p className="text-caption text-[var(--color-ink-500)]">{creator.followers} followers</p>
++                  <p className="text-caption text-[var(--color-ink-500)] font-[family-name:var(--font-jakarta)]">{creator.followers} followers</p>
+                 </motion.div>
+               ))}
+             </div>
+@@ -352,32 +352,34 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 9. How It Works */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
+-            <span className="text-caption text-stone-500 tracking-widest uppercase mb-4 block">How It Works</span>
+-            <h2 className="text-display-lg font-[family-name:var(--font-display)] text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
++            <span className="text-[#C96A3A] text-xs tracking-[0.2em] font-[family-name:var(--font-jakarta)] mb-4 block uppercase">HOW IT WORKS</span>
++            <h2 className="text-stone-800 text-4xl md:text-5xl font-[family-name:var(--font-playfair)] mb-12 text-center">Browse, bid, and bring it home.</h2>
+             
+-            <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
+-              <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">01</span>
+-                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Browse</h3>
+-                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+-                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+-              </div>
+-              <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">02</span>
+-                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Bid or Buy</h3>
+-                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+-                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+-              </div>
+-              <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">03</span>
+-                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Delivered</h3>
+-                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
+-                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
++            <div className="bg-[#1C1410] w-full px-8 md:px-24 py-16 rounded-none">
++              <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16">
++                <div className="flex-1 flex flex-col">
++                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">01</span>
++                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Browse</h3>
++                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
++                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Explore handcrafted goods across art, collectibles & more.</p>
++                </div>
++                <div className="flex-1 flex flex-col">
++                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">02</span>
++                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Bid or Buy</h3>
++                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
++                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
++                </div>
++                <div className="flex-1 flex flex-col">
++                  <span className="text-[#C96A3A]/40 text-7xl font-light font-[family-name:var(--font-playfair)] mb-6">03</span>
++                  <h3 className="text-white text-xl font-semibold font-[family-name:var(--font-playfair)] mb-4">Delivered</h3>
++                  <div className="w-full border-t border-[#C96A3A]/40 mt-3 mb-5" />
++                  <p className="text-stone-300 text-base font-[family-name:var(--font-jakarta)] leading-relaxed pr-4">Your piece ships directly from the creator to your door.</p>
++                </div>
+               </div>
+             </div>
+ 
+-            <div className="w-full text-center border-t border-stone-200 pt-10 mt-10 text-xs text-stone-600">
+-              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Razorpay</span> &middot; Secure payments &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Delhivery</span> &middot; Reliable shipping
++            <div className="w-full text-center mt-10 pt-8 border-t border-stone-200 text-xs text-stone-600 font-[family-name:var(--font-jakarta)]">
++              <span className="text-stone-400 text-xs tracking-widest font-[family-name:var(--font-jakarta)]">TRUSTED INFRASTRUCTURE</span> &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Razorpay</span> &middot; Secure payments &nbsp;<span className="text-stone-300">|</span>&nbsp; <span className="text-stone-700 font-semibold font-[family-name:var(--font-jakarta)]">Delhivery</span> &middot; Reliable shipping
+             </div>
+           </div>
+         </section>
+@@ -385,7 +387,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 10. Gifts With a Story */}
+         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+           <div className="max-w-[var(--container-max)] mx-auto">
+-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12">
++            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12 font-[family-name:var(--font-playfair)]">
+               Gifts With a Story
+             </motion.h2>
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+@@ -400,7 +402,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                   <Link href={item.occ === 'All Occasions' ? '/explore' : `/explore?occasion=${item.slug}`} className="absolute inset-0 z-20"></Link>
+                   <Image src={item.image} fill style={{ objectFit: 'cover' }} alt={item.occ} className="transition-transform duration-slow group-hover:scale-105" loading="lazy" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
+-                  <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20">{item.occ}</h3>
++                  <h3 className="absolute bottom-6 w-full text-center text-heading-lg text-white px-2 z-20 font-[family-name:var(--font-playfair)]">{item.occ}</h3>
+                 </motion.div>
+               ))}
+             </div>
+@@ -412,15 +414,15 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         {/* 12. Community Voices */}
+         <section className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
++            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
+               Community Voices
+             </motion.h2>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               {[1, 2, 3].map((i) => (
+                 <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-[var(--color-cream-raised)] p-8 rounded-[var(--radius-md)] flex flex-col justify-between">
+                   <div>
+-                    <span className="text-display-xl text-[var(--color-terracotta-600)] font-display leading-none mb-2 block">"</span>
+-                    <p className="text-body-lg font-display italic text-[var(--color-ink-900)] mb-8">
++                    <span className="text-display-xl text-[var(--color-terracotta-600)] leading-none mb-2 block font-[family-name:var(--font-playfair)]">"</span>
++                    <p className="text-body-lg italic text-[var(--color-ink-900)] mb-8 font-[family-name:var(--font-jakarta)]">
+                       {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
+                     </p>
+                   </div>
+@@ -436,10 +438,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                         className="rounded-full bg-[var(--color-ink-300)] border-[2px] border-solid border-[var(--color-terracotta-600)] w-[96px] h-[96px] min-w-[96px]"
+                       />
+                       <div>
+-                        <p className="text-heading-sm text-[var(--color-ink-900)]">
++                        <p className="text-heading-sm text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">
+                           {i === 1 ? "Priya S." : i === 2 ? "Arjun M." : "Nandita R."}
+                         </p>
+-                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold font-ui">
++                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-sm mt-1 font-bold font-[family-name:var(--font-jakarta)]">
+                           {i === 1 ? "4.5 Γÿà" : i === 2 ? "4.0 Γÿà" : "5.0 Γÿà"}
+                         </div>
+                       </div>
+@@ -456,18 +458,19 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           <div className="max-w-[var(--container-max)] mx-auto md:grid md:grid-cols-2 md:gap-16 items-center">
+             {/* Left column content */}
+             <div className="flex flex-col items-start mb-12 md:mb-0">
+-              <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold">FOR CREATORS</span>
+-              <h2 className="text-3xl md:text-4xl font-display text-white mb-4">Turn your craft into a livelihood</h2>
+-              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md">
++              <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
++              <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
++              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
+                 Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+               </p>
+-              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
++              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
+                 Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+               </Link>
+             </div>
+             
+             {/* Right column image placeholder */}
+             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
++              {/* TODO: Set Cloudinary URL for handmade/crochet & knitting/images.jpeg */}
+               <img 
+                 src="https://res.cloudinary.com/duzlsyzwa/image/upload/bidcraft/art/paintings/864c5ce031b5e77f9a5eb9a8d506f497.jpg" 
+                 alt="Artisan at work" 
+
+commit 3375385af590b90974b3fb29c1813d62a5e1f5fd
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 20:15:12 2026 +0530
+
+    phase 3 -1
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index 1b7f2ace..c1720766 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -266,7 +266,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             </div>
+             
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex justify-center">
+-              <Link href="/explore?type=new-arrivals" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
++              <Link href="/explore?sort=newest" className="inline-flex items-center gap-2 text-[#C4501A] font-semibold hover:gap-3 transition-all">
+                 Explore More New Arrivals <span>ΓåÆ</span>
+               </Link>
+             </motion.div>
+@@ -350,34 +350,34 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+ 
+ 
+         {/* 9. How It Works */}
+-        <section className="py-20 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
++        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
+             <span className="text-caption text-stone-500 tracking-widest uppercase mb-4 block">How It Works</span>
+-            <h2 className="text-display-lg font-display text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
++            <h2 className="text-display-lg font-[family-name:var(--font-display)] text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
+             
+             <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-400 mb-6">01</span>
+-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Browse</h3>
+-                <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-base text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
++                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">01</span>
++                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Browse</h3>
++                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
++                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+               </div>
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-400 mb-6">02</span>
+-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Bid or Buy</h3>
+-                <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-base text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
++                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">02</span>
++                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Bid or Buy</h3>
++                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
++                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+               </div>
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-400 mb-6">03</span>
+-                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Delivered</h3>
+-                <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-base text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
++                <span className="text-6xl font-light text-[#C96A3A]/20 mb-6">03</span>
++                <h3 className="text-lg font-semibold font-[family-name:var(--font-display)] text-stone-800 mb-4">Delivered</h3>
++                <div className="w-full border-t border-[#C96A3A]/30 mb-6" />
++                <p className="text-base font-[family-name:var(--font-ui)] text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
+               </div>
+             </div>
+ 
+-            <div className="w-full text-center mt-12 text-xs text-stone-600">
+-              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; Razorpay &middot; Secure payments &nbsp;|&nbsp; Delhivery &middot; Reliable shipping
++            <div className="w-full text-center border-t border-stone-200 pt-10 mt-10 text-xs text-stone-600">
++              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Razorpay</span> &middot; Secure payments &nbsp;|&nbsp; <span className="text-stone-700 font-medium">Delhivery</span> &middot; Reliable shipping
+             </div>
+           </div>
+         </section>
+@@ -469,7 +469,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             {/* Right column image placeholder */}
+             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
+               <img 
+-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/a1c8a4582ca82c3995d88befe1464e8e.webp" 
++                src="https://res.cloudinary.com/duzlsyzwa/image/upload/bidcraft/art/paintings/864c5ce031b5e77f9a5eb9a8d506f497.jpg" 
+                 alt="Artisan at work" 
+                 className="w-full h-full object-cover opacity-60"
+               />
+
+commit 494edadbc2e6409a21e3b02141166311f0a8f54f
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 04:07:19 2026 +0530
+
+    more phase 3
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index c4871e8f..1b7f2ace 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -251,7 +251,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+ 
+         {/* 6. New Arrivals (Rebuilt) */}
+-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
++        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="flex items-end justify-between mb-12">
+               <h2 className="text-display-lg text-[var(--color-ink-900)]">New Arrivals</h2>
+@@ -276,7 +276,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+ 
+ 
+         {/* 7. Curated Collections (Clickable) */}
+-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
++        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
+               Curated Collections
+@@ -319,7 +319,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+ 
+         {/* 8. Featured Creators */}
+-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
++        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+           <div className="max-w-[var(--container-max)] mx-auto">
+             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
+               {user ? 'Creators You Follow' : 'Featured Creators'}
+@@ -357,26 +357,26 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             
+             <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-200 mb-6">01</span>
++                <span className="text-6xl font-light text-stone-400 mb-6">01</span>
+                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Browse</h3>
+                 <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-sm text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
++                <p className="text-base text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
+               </div>
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-200 mb-6">02</span>
++                <span className="text-6xl font-light text-stone-400 mb-6">02</span>
+                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Bid or Buy</h3>
+                 <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-sm text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
++                <p className="text-base text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
+               </div>
+               <div className="flex-1 flex flex-col">
+-                <span className="text-6xl font-light text-stone-200 mb-6">03</span>
++                <span className="text-6xl font-light text-stone-400 mb-6">03</span>
+                 <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Delivered</h3>
+                 <div className="w-full border-t border-stone-200 mb-6" />
+-                <p className="text-sm text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
++                <p className="text-base text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
+               </div>
+             </div>
+ 
+-            <div className="w-full text-center mt-12 text-xs text-stone-400">
++            <div className="w-full text-center mt-12 text-xs text-stone-600">
+               TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; Razorpay &middot; Secure payments &nbsp;|&nbsp; Delhivery &middot; Reliable shipping
+             </div>
+           </div>
+@@ -469,11 +469,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             {/* Right column image placeholder */}
+             <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
+               <img 
+-                src="/images/cta-craft-placeholder.jpg" 
++                src="https://res.cloudinary.com/duzlsyzwa/image/upload/a1c8a4582ca82c3995d88befe1464e8e.webp" 
+                 alt="Artisan at work" 
+                 className="w-full h-full object-cover opacity-60"
+               />
+-              {/* TODO: Replace with real artisan/workshop image */}
+             </div>
+           </div>
+         </section>
+
+commit 99fc896406964a71a2aed56c4eb629e45fdb685d
+Author: Siya Rozani <siarozani3136@gmail.com>
+Date:   Thu Jul 30 03:52:52 2026 +0530
+
+    more phase 2 changes-3
+
+diff --git a/frontend/components/client-home.tsx b/frontend/components/client-home.tsx
+index a8b1fd06..c4871e8f 100644
+--- a/frontend/components/client-home.tsx
++++ b/frontend/components/client-home.tsx
+@@ -119,15 +119,15 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
+             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
+               <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block">Curated this week</span>
+-              <h1 className="text-display-xl text-white mb-6">Where creativity becomes opportunity.</h1>
++              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight">Where creativity becomes opportunity.</h1>
+               <p className="text-body-lg text-white/85 mb-8 max-w-xl">
+                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
+               </p>
+-              <div className="flex gap-4">
+-                <Link href="/explore" className="bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast">
++              <div className="flex flex-col md:flex-row gap-4">
++                <Link href="/explore" className="bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast text-center">
+                   Explore Collection
+                 </Link>
+-                <Link href="/explore?type=auction" className="h-12 px-6 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg">
++                <Link href="/explore?type=auction" className="h-12 px-6 bg-white text-[var(--color-ink-900)] text-body-lg font-bold rounded-[var(--radius-md)] flex items-center justify-center hover:bg-opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg text-center">
+                   Watch Live Auctions
+                 </Link>
+               </div>
+@@ -273,48 +273,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+           </div>
+         </section>
+ 
+-        {/* 6.5 Why BidCraft / Features */}
+-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-deep)] text-stone-800">
+-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
+-            <span className="text-caption text-stone-500 tracking-widest uppercase mb-4 block">Why BidCraft</span>
+-            <h2 className="text-display-lg font-display text-stone-800 mb-16 text-center max-w-2xl">Built for buyers who care about what they own.</h2>
+-            
+-            {/* A. How You Can Buy */}
+-            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+-              <div className="flex flex-col p-8 rounded-xl border border-stone-200 bg-white shadow-sm">
+-                <div className="text-3xl mb-4 text-[var(--color-terracotta-600)]">≡ƒ¢Æ</div>
+-                <h3 className="text-heading-lg text-stone-800 font-semibold mb-2">Buy Now</h3>
+-                <p className="text-sm text-stone-500">Fixed price, instant checkout.</p>
+-              </div>
+-              <div className="flex flex-col p-8 rounded-xl border border-stone-200 bg-white shadow-sm">
+-                <div className="text-3xl mb-4 text-[var(--color-terracotta-600)]">≡ƒÆ¼</div>
+-                <h3 className="text-heading-lg text-stone-800 font-semibold mb-2">Make an Offer</h3>
+-                <p className="text-sm text-stone-500">Negotiate directly with the seller.</p>
+-              </div>
+-              <div className="flex flex-col p-8 rounded-xl border border-stone-200 bg-white shadow-sm">
+-                <div className="text-3xl mb-4 text-[var(--color-terracotta-600)]">≡ƒö¿</div>
+-                <h3 className="text-heading-lg text-stone-800 font-semibold mb-2">Auction</h3>
+-                <p className="text-sm text-stone-500">Bid and win one-of-a-kind pieces.</p>
+-              </div>
+-            </div>
+-
+-            {/* B. Trusted Infrastructure */}
+-            <div className="flex flex-col items-center opacity-80">
+-              <span className="text-caption text-stone-400 uppercase tracking-wider mb-6">Trusted Infrastructure</span>
+-              <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+-                <div className="flex items-center gap-3">
+-                  <span className="text-xl font-bold tracking-tight text-stone-400">Razorpay</span>
+-                  <span className="text-sm text-stone-400 border-l border-stone-300 pl-3">Secure payments</span>
+-                </div>
+-                <div className="flex items-center gap-3">
+-                  <span className="text-xl font-bold tracking-tight text-stone-400 italic">Delhivery</span>
+-                  <span className="text-sm text-stone-400 border-l border-stone-300 pl-3">Reliable shipping</span>
+-                </div>
+-              </div>
+-            </div>
+ 
+-          </div>
+-        </section>
+ 
+         {/* 7. Curated Collections (Clickable) */}
+         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+@@ -323,8 +282,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+               Curated Collections
+             </motion.h2>
+             
+-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 h-auto lg:h-[600px]">
+-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="lg:col-span-2 relative rounded-[var(--radius-lg)] overflow-hidden group h-[300px] lg:h-full cursor-pointer bg-[var(--color-cream-deep)]">
++            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 h-auto lg:h-[600px]">
++              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="md:col-span-2 lg:col-span-2 relative rounded-[var(--radius-lg)] overflow-hidden group h-[300px] lg:h-full cursor-pointer bg-[var(--color-cream-deep)]">
+                 <Link href="/explore?collection=vintage-retro" className="absolute inset-0 z-20"></Link>
+                 <Image src="/images/ed2af0776b49fdea863a1ead90dadf19.jpg" fill style={{ objectFit: 'cover' }} alt="Vintage & Retro" className="transition-transform duration-slow group-hover:scale-105" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+@@ -334,7 +293,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+                 </div>
+               </motion.div>
+               
+-              <div className="flex flex-col gap-4 lg:gap-6 h-full">
++              <div className="md:col-span-2 lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:flex lg:flex-col gap-4 lg:gap-6 h-full">
+                 <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="relative rounded-[var(--radius-lg)] overflow-hidden group h-[250px] lg:h-[calc(50%-12px)] cursor-pointer bg-[var(--color-cream-deep)]">
+                   <Link href="/explore?collection=modern-minimalist" className="absolute inset-0 z-20"></Link>
+                   <Image src="/images/1572725d1d0bf7fa3ab6b92974a3fdfd.jpg" fill style={{ objectFit: 'cover' }} alt="Modern Minimalist" className="transition-transform duration-slow group-hover:scale-105" />
+@@ -365,9 +324,9 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16">
+               {user ? 'Creators You Follow' : 'Featured Creators'}
+             </motion.h2>
+-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
++            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] md:mx-0 md:px-0 md:pb-0 mb-8 md:mb-0">
+               {featuredCreators.map((creator) => (
+-                <motion.div key={creator.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white rounded-[var(--radius-lg)] overflow-hidden shadow-sm border border-[var(--color-border-subtle)] text-center pb-6">
++                <motion.div key={creator.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="shrink-0 w-[280px] sm:w-[320px] md:w-auto snap-start bg-white rounded-[var(--radius-lg)] overflow-hidden shadow-sm border border-[var(--color-border-subtle)] text-center pb-6">
+                   <div className="h-40 bg-[var(--color-cream-deep)] relative">
+                     <Image src={creator.cover} fill style={{ objectFit: 'cover' }} alt="Cover" />
+                   </div>
+@@ -390,6 +349,39 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+ 
+ 
++        {/* 9. How It Works */}
++        <section className="py-20 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
++          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center">
++            <span className="text-caption text-stone-500 tracking-widest uppercase mb-4 block">How It Works</span>
++            <h2 className="text-display-lg font-display text-stone-800 mb-16 text-center">Browse, bid, and bring it home.</h2>
++            
++            <div className="w-full flex flex-col md:flex-row gap-8 lg:gap-16 mb-16">
++              <div className="flex-1 flex flex-col">
++                <span className="text-6xl font-light text-stone-200 mb-6">01</span>
++                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Browse</h3>
++                <div className="w-full border-t border-stone-200 mb-6" />
++                <p className="text-sm text-stone-500 pr-4">Explore handcrafted goods across art, collectibles & more.</p>
++              </div>
++              <div className="flex-1 flex flex-col">
++                <span className="text-6xl font-light text-stone-200 mb-6">02</span>
++                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Bid or Buy</h3>
++                <div className="w-full border-t border-stone-200 mb-6" />
++                <p className="text-sm text-stone-500 pr-4">Place a bid, make an offer, or buy instantly at a fixed price.</p>
++              </div>
++              <div className="flex-1 flex flex-col">
++                <span className="text-6xl font-light text-stone-200 mb-6">03</span>
++                <h3 className="text-lg font-semibold font-display text-stone-800 mb-4">Delivered</h3>
++                <div className="w-full border-t border-stone-200 mb-6" />
++                <p className="text-sm text-stone-500 pr-4">Your piece ships directly from the creator to your door.</p>
++              </div>
++            </div>
++
++            <div className="w-full text-center mt-12 text-xs text-stone-400">
++              TRUSTED INFRASTRUCTURE &nbsp;|&nbsp; Razorpay &middot; Secure payments &nbsp;|&nbsp; Delhivery &middot; Reliable shipping
++            </div>
++          </div>
++        </section>
++
+         {/* 10. Gifts With a Story */}
+         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+           <div className="max-w-[var(--container-max)] mx-auto">
+@@ -460,18 +452,29 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
+         </section>
+         
+         {/* 13. NEW: Become a Seller CTA */}
+-        <section className="py-24 bg-[#5C3D2E] text-center px-[var(--space-5)] relative overflow-hidden">
+-          {/* TODO: Replace src with a real artisan/craft image */}
+-          <img src="/images/cta-bg-placeholder.jpg" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-overlay" />
+-          <div className="max-w-2xl mx-auto flex flex-col items-center relative z-10">
+-            <span className="text-caption text-[var(--color-terracotta-400)] tracking-widest uppercase mb-4 block">FOR CREATORS</span>
+-            <h2 className="text-display-xl font-display text-white mb-6">Turn your craft into a livelihood</h2>
+-            <p className="text-body-lg text-white/80 mb-10">
+-              Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+-            </p>
+-            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
+-              Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+-            </Link>
++        <section className="py-24 bg-[#5C3D2E] px-[var(--space-5)] xl:px-[var(--space-8)]">
++          <div className="max-w-[var(--container-max)] mx-auto md:grid md:grid-cols-2 md:gap-16 items-center">
++            {/* Left column content */}
++            <div className="flex flex-col items-start mb-12 md:mb-0">
++              <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold">FOR CREATORS</span>
++              <h2 className="text-3xl md:text-4xl font-display text-white mb-4">Turn your craft into a livelihood</h2>
++              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md">
++                Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
++              </p>
++              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group">
++                Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
++              </Link>
++            </div>
++            
++            {/* Right column image placeholder */}
++            <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
++              <img 
++                src="/images/cta-craft-placeholder.jpg" 
++                alt="Artisan at work" 
++                className="w-full h-full object-cover opacity-60"
++              />
++              {/* TODO: Replace with real artisan/workshop image */}
++            </div>
+           </div>
+         </section>
+ 
