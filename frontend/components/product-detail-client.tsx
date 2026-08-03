@@ -387,7 +387,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
         {/* More From This Seller */}
         {related && related.length > 0 && (
           <div className="mt-16 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {sellerName}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map(p => (
                 <ProductCard key={p.id} product={p as any} />

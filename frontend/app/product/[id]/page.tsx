@@ -51,7 +51,7 @@ async function ProductDetailData({ id }: { id: string }) {
   
   // 1. More From This Seller
   const sellerListings = moreData.listings
-    .filter((l) => l.creator === listing.creator && l.id !== listing.id);
+    .filter((l) => (l.sellerId === listing.sellerId || l.creator === listing.creator) && l.id !== listing.id);
   
   const related = sellerListings.slice(0, 4);
 

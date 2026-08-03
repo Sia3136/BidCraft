@@ -10,7 +10,7 @@ import { slugify } from '@/lib/slugify'
 import { CATEGORIES, COLLECTIONS, OCCASIONS, resolveDisplayTitle } from '@/lib/categories'
 
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
-const TYPES = [{ label: '🔥 Trending', value: 'trending' }, { label: 'New Arrivals', value: 'new-arrivals' }, { label: 'Live Auctions', value: 'auction' }]
+const TYPES = [{ label: 'Trending', value: 'trending' }, { label: 'New Arrivals', value: 'new-arrivals' }, { label: 'Live Auctions', value: 'auction' }]
 
 const SORT_OPTIONS = [
   { label: 'Newest', value: 'newest' },
