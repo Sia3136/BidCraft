@@ -22,7 +22,8 @@ export default async function Home() {
     // Import filterTrendingListings and filter the fetched listings
     const { filterTrendingListings } = await import('@/lib/trending');
     const allListings = await fetchListings({ limit: 100 }).catch(() => ({ listings: [] }));
-    trendingListings = filterTrendingListings(allListings.listings);
+    const allTrending = filterTrendingListings(allListings.listings);
+    trendingListings = allTrending.slice(0, 4);
   } catch (err) {
     console.error('Failed to fetch homepage data', err);
     // fallback to empty arrays or handle gracefully

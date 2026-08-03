@@ -54,7 +54,7 @@ export default function ReturnsPolicyPage() {
 
                 <div aria-hidden className="border-t border-[#D8C8BA] mb-6" />
                 <p className="text-body-lg text-[var(--color-ink-700)]">
-                  For disputes or questions: <a href="mailto:support@bidcraft.in" className="text-[#B06A42] hover:underline">support@bidcraft.in</a>
+                  For disputes or questions: <a href="mailto:support@bidcraft.in" className="text-[var(--color-terracotta-600)] font-semibold hover:underline">Contact Support</a>
                 </p>
               </div>
             </div>

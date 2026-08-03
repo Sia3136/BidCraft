@@ -1,5 +1,4 @@
 import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { ContactForm } from '@/components/contact-form'
 
 export const metadata = {
@@ -20,20 +19,19 @@ export default function ContactPage() {
           <div className="w-full lg:w-1/2 flex flex-col justify-center gap-6">
             <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
               <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">General</h3>
-              <a href="mailto:support@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">support@bidcraft.in</a>
+              <a href="mailto:support@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">Support Team</a>
             </div>
             <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
               <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Sellers</h3>
-              <a href="mailto:sellers@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">sellers@bidcraft.in</a>
+              <a href="mailto:sellers@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">Seller Support</a>
             </div>
             <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
               <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Disputes</h3>
-              <a href="mailto:disputes@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">disputes@bidcraft.in</a>
+              <a href="mailto:disputes@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">Resolution Center</a>
             </div>
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }
