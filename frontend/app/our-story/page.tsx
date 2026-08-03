@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Our Story | BidCraft',
@@ -33,11 +34,9 @@ export default function OurStoryPage() {
               </p>
             </div>
 
-            {/* Placeholder Image 1 */}
-            <div className="w-full h-80 bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)]">
-              <span className="text-body-sm text-[var(--color-ink-500)] font-medium tracking-wide uppercase">
-                [ Placeholder: Creators making products ]
-              </span>
+            {/* Image 1: Creators making products */}
+            <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/pottery-artisan" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creator making pottery" />
             </div>
 
             <div className="space-y-6">
@@ -47,11 +46,9 @@ export default function OurStoryPage() {
               </p>
             </div>
 
-            {/* Placeholder Image 2 */}
-            <div className="w-full h-80 bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)]">
-              <span className="text-body-sm text-[var(--color-ink-500)] font-medium tracking-wide uppercase">
-                [ Placeholder: Packaging/Trust interaction ]
-              </span>
+            {/* Image 2: Packaging/Trust interaction */}
+            <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/crochet-craft" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Handmade crochet craftsmanship" />
             </div>
 
             <div className="space-y-6">
@@ -70,6 +67,11 @@ export default function OurStoryPage() {
                   <strong className="text-[var(--color-ink-900)] font-medium">Make an Offer (Negotiable):</strong> A collaborative approach that allows buyers and sellers to respectfully negotiate a price that works for both.
                 </li>
               </ul>
+            </div>
+
+            {/* Image 3: Painting Workspace */}
+            <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/painting-workspace" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creative painting workspace" />
             </div>
 
             <div className="pt-12 border-t border-[var(--color-cream-dark)] text-center">

@@ -30,9 +30,9 @@ const ROWS: Array<{
     format: (v: unknown) =>
       v ? `Within ${v} business day${Number(v) !== 1 ? 's' : ''}` : '',
   },
-  { label: 'Carrier', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">📦</span> Delhivery</span> },
-  { label: 'Payment', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">💳</span> Prepaid Orders Only</span> },
-  { label: 'Returns', staticValue: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm">📄</span> View Policy</a> },
+  { label: 'Carrier', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm"></span> Delhivery</span> },
+  { label: 'Payment', staticValue: <span className="flex items-center gap-1.5"><span className="not-italic text-sm"></span> Prepaid Orders Only</span> },
+  { label: 'Returns', staticValue: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm"></span> View Policy</a> },
   { label: 'Packaging', key: 'packagingNote' },
 ]
 
@@ -61,15 +61,15 @@ export function ShippingInfo(props: ShippingInfoProps) {
     },
     { 
       label: 'Carrier', 
-      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">📦</span> Delhivery</span> 
+      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm"></span> Delhivery</span> 
     },
     { 
       label: 'Payment', 
-      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm">💳</span> Prepaid Orders Only</span> 
+      value: <span className="flex items-center gap-1.5"><span className="not-italic text-sm"></span> Prepaid Orders Only</span> 
     },
     { 
       label: 'Returns', 
-      value: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm">📄</span> View Policy</a> 
+      value: <a href="/returns-policy" className="underline-offset-2 hover:underline hover:text-[#B06A42] transition-colors flex items-center gap-1.5"><span className="not-italic text-sm"></span> View Policy</a> 
     },
     { label: 'Packaging', value: packagingNote },
   ].filter(r => Boolean(r.value))

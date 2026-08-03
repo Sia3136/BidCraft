@@ -3,4 +3,3 @@ AggregateError [ETIMEDOUT]:
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     at async Promise.all (index 0)
     at async getListings (C:\Users\Dell\Documents\Siya\BidCraft\backend\src\controllers\listingsController.js:366:35)
-    at async run (C:\Users\Dell\Documents\Siya\BidCraft\backend\run_getListings.js:9:3)

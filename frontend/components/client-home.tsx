@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
 import { slugify } from '@/lib/slugify'
-
+import { TrendingSection } from '@/components/TrendingSection'
 const heroImages = [
   '/images/crochet-flowers-blue-pot.jpeg',
   '/images/968355308d40d83a2e1f59daa61c5089.jpg',
@@ -149,7 +149,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           
           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-3xl">
-              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
+              <span className="text-sm font-semibold tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">India's Premier Artisan Marketplace</span>
               <h1 className="text-5xl md:text-display-2xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
               <p className="text-xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
@@ -223,90 +223,19 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
               <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[620px] mb-12">
                 Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
               </p>
-              <div className="w-[80px] h-[1px] bg-[var(--color-terracotta-300)]" />
             </motion.div>
           </div>
+          
+          {/* Corner Accents */}
+          <div className="absolute top-6 left-6 w-8 h-8 border-t border-l border-[var(--color-terracotta-300)] opacity-60" />
+          <div className="absolute top-6 right-6 w-8 h-8 border-t border-r border-[var(--color-terracotta-300)] opacity-60" />
+          <div className="absolute bottom-6 left-6 w-8 h-8 border-b border-l border-[var(--color-terracotta-300)] opacity-60" />
+          <div className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-[var(--color-terracotta-300)] opacity-60" />
+          
+          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
         </section>
 
-        {/* NEW: Trending Now (MVP) */}
-        {trendingListings && trendingListings.length > 0 && (
-          <section className="pb-24 pt-12 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
-            <div className="max-w-[var(--container-max)] mx-auto flex flex-col xl:flex-row gap-12 xl:gap-16">
-              {/* Header Side */}
-              <div className="xl:w-1/3 flex flex-col justify-center items-start">
-                <div className="inline-flex items-center gap-2 mb-6 border border-[var(--color-terracotta-200)] bg-[var(--color-terracotta-50)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase font-[family-name:var(--font-jakarta)]">
-                  <TrendingUp className="w-4 h-4" /> Trending Now
-                </div>
-                <h2 className="text-display-xl text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-6 leading-tight">
-                  Currently capturing the attention of collectors and creators.
-                </h2>
-                <p className="text-body-lg text-[var(--color-ink-700)] mb-10 font-[family-name:var(--font-jakarta)] max-w-md">
-                  Discover the pieces that are driving conversations, bids, and desire across our marketplace this week.
-                </p>
-                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
-                  Explore All Trending Items <ArrowRight className="w-5 h-5" />
-                </Link>
-                
-                {/* Desktop Navigation Arrows */}
-                <div className="hidden xl:flex items-center gap-3 mt-10">
-                  <button 
-                    onClick={() => scrollBy(-400)}
-                    disabled={!showLeftArrow}
-                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                    aria-label="Scroll left"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button 
-                    onClick={() => scrollBy(400)}
-                    disabled={!showRightArrow}
-                    className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-ink-700)] hover:bg-white transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
-                    aria-label="Scroll right"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-              
-              {/* Scrolling Cards */}
-              <div className="xl:w-2/3 relative group">
-                <div 
-                  ref={trendingScrollRef}
-                  className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-6 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 pt-4"
-                >
-                  {trendingListings.map((p, idx) => (
-                    <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[340px] min-w-[280px]">
-                      <ProductCard product={p} priority={idx < 2} />
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Mobile/Tablet Hover Navigation Arrows (visible on hover/focus if scrollable) */}
-                {showLeftArrow && (
-                  <button
-                    onClick={() => scrollBy(-300)}
-                    className="xl:hidden absolute left-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
-                    aria-label="Scroll left"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                )}
-                {showRightArrow && (
-                  <button
-                    onClick={() => scrollBy(300)}
-                    className="xl:hidden absolute right-2 top-[40%] -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-[var(--color-ink-900)] z-10 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
-                    aria-label="Scroll right"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="max-w-[var(--container-max)] mx-auto mt-24">
-              <div className="w-full h-[2px] bg-[var(--color-terracotta-400)]" />
-            </div>
-          </section>
-        )}
+        <TrendingSection listings={trendingListings} />
 
         {/* 3. NEW: Editorial Spotlight 1 */}
         <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
@@ -555,26 +484,28 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         </section>
         
         {/* 13. NEW: Become a Seller CTA */}
-        <section className="relative w-full min-h-[420px] md:min-h-[520px] flex items-center justify-center overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
+        <section className="relative w-full min-h-[440px] md:min-h-[540px] flex items-center justify-start overflow-hidden py-24 px-[var(--space-5)] xl:px-[var(--space-8)]">
           {/* Background image */}
           <Image
-            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg"
+            src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/painting-workspace"
             alt="Artisan at work"
             fill
             className="object-cover object-center"
             priority={false}
+            quality={90}
+            sizes="100vw"
           />
-          {/* Dark gradient overlay for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
+          {/* Gradient overlay for text legibility (stronger for left alignment) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
 
-          {/* Content — centered over image */}
-          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
-            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
-            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
-            <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
+          {/* Content — left aligned */}
+          <div className="relative z-10 px-6 max-w-xl flex flex-col items-start ml-0 md:ml-12 lg:ml-24">
+            <span className="text-xs text-[var(--color-terracotta-400)] tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
+            <h2 className="text-3xl md:text-5xl text-white mb-6 font-semibold font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+            <p className="text-lg text-white/90 mb-10 leading-relaxed font-[family-name:var(--font-jakarta)]">
               Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
             </p>
-            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
+            <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)] shadow-xl">
               Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
