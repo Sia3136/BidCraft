@@ -21,7 +21,7 @@ export default async function Home() {
     
     // Import filterTrendingListings and filter the fetched listings
     const { filterTrendingListings } = await import('@/lib/trending');
-    const allListings = await fetchListings({ limit: 100 }).catch(() => ({ listings: [] }));
+    const allListings = await fetchListings({ limit: 200 }).catch(() => ({ listings: [] }));
     const allTrending = filterTrendingListings(allListings.listings);
     trendingListings = allTrending.slice(0, 4);
   } catch (err) {

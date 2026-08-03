@@ -52,7 +52,7 @@ export default async function ExplorePage({
     const apiParams = { ...params };
     delete apiParams.type; // Don't send trending to API as it would map to listing_type
     
-    data = await fetchListings({ ...apiParams, limit: 100, offset: 0 });
+    data = await fetchListings({ ...apiParams, limit: 200, offset: 0 });
     data.listings = filterTrendingListings(data.listings);
     data.total = data.listings.length;
     data.listings = data.listings.slice(offset, offset + limit);
