@@ -204,36 +204,154 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </div>
         </section>
 
-        {/* 9. Manifesto (Moved and Redesigned as Editorial Intro) */}
-        <section className="relative overflow-hidden pt-32 pb-16 w-full bg-[var(--color-cream-base)]">
-          <svg className="absolute inset-0 w-full h-full opacity-[0.035] pointer-events-none" aria-hidden="true">
-            <filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+
+        {/* 3. Live Auctions Rail */}
+        {liveAuctions.length > 0 && (
+          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+            <div className="max-w-[var(--container-max)] mx-auto">
+              <div className="flex items-end justify-between mb-12">
+                <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">Live Auctions</h2>
+                <span className="hidden md:flex items-center gap-2 text-sm font-medium font-[family-name:var(--font-jakarta)] bg-red-100 text-red-700 px-3 py-1 rounded-full border border-red-200">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  Live Now
+                </span>
+              </div>
+              
+              <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 lg:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
+                {liveAuctions.map((p, idx) => (
+                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[calc(25%-24px)] min-w-[280px]">
+                    <ProductCard product={p} priority={idx < 4} />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center">
+                <Link href="/explore?type=auction" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+                  Explore More Live Auctions <span>→</span>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4. The Manifesto (Philosophy) */}
+        <section className="relative overflow-hidden py-32 w-full bg-[var(--color-cream-base)] border-y border-[var(--color-border-subtle)]">
+          {/* Subtle paper texture (using CSS SVG filter) */}
+          <svg className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none" aria-hidden="true">
+            <filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
             <rect width="100%" height="100%" filter="url(#paper-texture)"/>
           </svg>
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
-          
-          <div className="max-w-[800px] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-6 text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} viewport={{ once: true, margin: "-100px" }} className="flex flex-col items-center w-full">
-              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-8">
-                Editorial Spotlight
-              </span>
-              <h2 className="text-[40px] md:text-[56px] text-[var(--color-ink-900)] font-medium font-[family-name:var(--font-playfair)] leading-[1.1] mb-8">
-                We don't celebrate mass production.<br />We celebrate originality.
-              </h2>
-              <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[620px] mb-12">
-                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
-              </p>
-            </motion.div>
+          {/* Subtle Oversized Background Artwork / Logo Mark */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 pointer-events-none select-none">
+            <span className="text-[400px] font-serif italic text-black font-bold">B</span>
           </div>
           
-          {/* Corner Accents */}
-          <div className="absolute top-6 left-6 w-8 h-8 border-t border-l border-[var(--color-terracotta-300)] opacity-60" />
-          <div className="absolute top-6 right-6 w-8 h-8 border-t border-r border-[var(--color-terracotta-300)] opacity-60" />
-          <div className="absolute bottom-6 left-6 w-8 h-8 border-b border-l border-[var(--color-terracotta-300)] opacity-60" />
-          <div className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-[var(--color-terracotta-300)] opacity-60" />
-          
-          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--color-terracotta-400)]" />
+          <div className="max-w-[800px] mx-auto flex flex-col items-center justify-center relative z-10 px-6 text-center">
+            <div className="w-12 h-[2px] bg-[var(--color-terracotta-400)] mb-8" />
+            
+            <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-10 font-bold">
+              THE BIDCRAFT PHILOSOPHY
+            </span>
+            
+            <h2 className="text-[40px] md:text-[56px] lg:text-[64px] text-[var(--color-ink-900)] leading-[1.1] mb-12 flex flex-col">
+              <span className="font-[family-name:var(--font-playfair)] italic text-[var(--color-ink-600)] font-normal mb-2 text-[32px] md:text-[48px] lg:text-[52px]">
+                We don't celebrate mass production.
+              </span>
+              <span className="font-[family-name:var(--font-playfair)] font-bold tracking-tight">
+                We celebrate originality.
+              </span>
+            </h2>
+            
+            <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[640px] mb-6">
+              Whether it's an original painting, handcrafted jewellery, home décor, a vintage timepiece or a rare collectible, every listing exists because someone cared enough to create it—or preserve it.
+            </p>
+            <p className="font-[family-name:var(--font-jakarta)] text-lg md:text-[20px] text-[var(--color-ink-700)] leading-relaxed max-w-[640px] mb-16">
+              BidCraft brings creators, collectors and meaningful objects together in one curated marketplace.
+            </p>
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 text-sm font-[family-name:var(--font-jakarta)] text-[var(--color-ink-600)] tracking-wide uppercase font-semibold w-full">
+              <span>Original Creations</span>
+              <span className="hidden md:inline-block text-[var(--color-terracotta-300)]">•</span>
+              <span>Rare Collectibles</span>
+              <span className="hidden md:inline-block text-[var(--color-terracotta-300)]">•</span>
+              <span>Verified Creators & Curators</span>
+            </div>
+          </div>
         </section>
+
+        {/* 5. Trending Now (Full-width rail) */}
+        {trendingListings && trendingListings.length > 0 && (
+          <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
+            <div className="max-w-[var(--container-max)] mx-auto">
+              <div className="flex items-end justify-between mb-12">
+                <div>
+                  <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)] mb-2">Trending Now</h2>
+                  <p className="text-body-lg text-[var(--color-ink-700)] font-[family-name:var(--font-jakarta)]">Discover the pieces resonating with our community this week.</p>
+                </div>
+              </div>
+              
+              <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 lg:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
+                {trendingListings.map((p, idx) => (
+                  <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[calc(25%-24px)] min-w-[280px]">
+                    <ProductCard product={p} priority={idx < 4} />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex justify-center">
+                <Link href="/explore?type=trending" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-lg font-[family-name:var(--font-jakarta)]">
+                  Explore All Trending Items <span>→</span>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 6. Editorial Split: Choose Your Journey */}
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+          <div className="max-w-[var(--container-max)] mx-auto">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
+              
+              {/* Left Card: The Maker */}
+              <div className="flex-1 relative rounded-[var(--radius-lg)] overflow-hidden group min-h-[480px] md:min-h-[560px] lg:min-h-[640px] bg-[var(--color-slate-900)] shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
+                {/* TODO: Replace with final Cloudinary editorial image */}
+                <Image src="/images/d400a85bd9cd68c5a2d8cda063dac7e0.jpg" fill style={{ objectFit: 'cover' }} alt="Crafted with Intention" className="transition-transform duration-[1200ms] ease-out group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+                
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end z-20">
+                  <h3 className="text-[32px] md:text-[40px] text-white mb-4 font-[family-name:var(--font-playfair)] leading-tight">Crafted with Intention</h3>
+                  <p className="text-body-lg text-white/90 mb-8 max-w-sm font-[family-name:var(--font-jakarta)] leading-relaxed">
+                    Discover original art, handcrafted jewellery, ceramics, home décor and unique creations made by independent makers who value quality over quantity.
+                  </p>
+                  <Link href="/explore?category=handmade-crafts" className="inline-flex items-center justify-center w-fit px-8 py-3.5 bg-white text-[var(--color-ink-900)] font-semibold rounded-[var(--radius-sm)] hover:bg-opacity-95 transition-all text-sm font-[family-name:var(--font-jakarta)]">
+                    Explore Handmade
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right Card: The Collector */}
+              <div className="flex-1 relative rounded-[var(--radius-lg)] overflow-hidden group min-h-[480px] md:min-h-[560px] lg:min-h-[640px] bg-[var(--color-slate-900)] shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
+                {/* TODO: Replace with final Cloudinary editorial image */}
+                <Image src="/images/1f92888deb74023c26ec86c954a18188.jpg" fill style={{ objectFit: 'cover' }} alt="Preserved with Purpose" className="transition-transform duration-[1200ms] ease-out group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+                
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end z-20">
+                  <h3 className="text-[32px] md:text-[40px] text-white mb-4 font-[family-name:var(--font-playfair)] leading-tight">Preserved with Purpose</h3>
+                  <p className="text-body-lg text-white/90 mb-8 max-w-sm font-[family-name:var(--font-jakarta)] leading-relaxed">
+                    Discover vintage treasures, timeless décor, rare memorabilia and collectible pieces that continue their journey with someone new.
+                  </p>
+                  <Link href="/explore?category=collectibles-vintage" className="inline-flex items-center justify-center w-fit px-8 py-3.5 bg-white text-[var(--color-ink-900)] font-semibold rounded-[var(--radius-sm)] hover:bg-opacity-95 transition-all text-sm font-[family-name:var(--font-jakarta)]">
+                    Explore Collectibles
+                  </Link>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </section>
+
+
+        
 
         {/* NEW: Trending Now (MVP) */}
         {trendingListings && trendingListings.length > 0 && (
@@ -267,25 +385,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </section>
         )}
 
-        {/* 3. NEW: Editorial Spotlight 1 */}
-        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-raised)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="w-full lg:w-1/2 flex flex-col items-start pr-0 lg:pr-8">
-              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 block font-[family-name:var(--font-jakarta)]">HANDPICKED FOR YOU</span>
-              <h2 className="text-display-lg text-[var(--color-ink-900)] mb-6 leading-tight font-[family-name:var(--font-playfair)]">Art that tells a story before you say a word</h2>
-              <p className="text-body-lg text-[var(--color-ink-700)] mb-8 font-[family-name:var(--font-jakarta)]">
-                Every piece on BidCraft is made by hand, by someone with a story. From Rajasthani block prints to Bangalore ceramicists — discover work that carries the weight of its making. No mass production. No middlemen. Just craft.
-              </p>
-              <Link href="/explore?category=handmade-crafts" className="flex items-center gap-2 text-body-md font-semibold text-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-700)] transition-colors group font-[family-name:var(--font-jakarta)]">
-                Explore Handmade & Crafts <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="w-full lg:w-1/2 relative h-[400px] md:h-[500px] lg:h-[600px]">
-              <div className="absolute inset-0 bg-[#C4501A]/10 z-10 mix-blend-multiply" />
-              <Image src="/images/04809f445775b05edf65772b67c139d9.jpg" fill style={{ objectFit: 'cover' }} alt="Editorial Spotlight" />
-            </motion.div>
-          </div>
-        </section>
+        
 
         {/* 4. Live Auctions Rail */}
         {liveAuctions.length > 0 && (
@@ -445,7 +545,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
 
 
         {/* 10. Gifts With a Story */}
-        <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+        <section className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12 font-[family-name:var(--font-playfair)]">
               Gifts With a Story
@@ -472,7 +572,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
 
 
         {/* 12. Community Voices */}
-        <section className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)]">
+        <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)]">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
               Community Voices
@@ -528,10 +628,10 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
 
           {/* Content — centered over image */}
           <div className="relative z-10 text-center px-6 max-w-2xl mx-auto flex flex-col items-center">
-            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
-            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
+            <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS & CURATORS</span>
+            <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your passion into a livelihood</h2>
             <p className="text-sm text-white/85 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
-              Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
+              Join independent creators, curators, and collectors selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value the rare and original.
             </p>
             <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)] shadow-xl">
               Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
