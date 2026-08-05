@@ -1,0 +1,52 @@
+version: '3.8'
+
+# --------------------------------------------------
+# PRODUCTION DOCKER COMPOSE
+# Run: docker compose -f docker-compose.prod.yml up -d
+# --------------------------------------------------
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./frontend/.env
+    networks:
+      - bidcraft_network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      target: production
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./backend/.env
+    networks:
+      - bidcraft_network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    # In production, we assume cloud database and redis are used (Neon/Upstash).
+    # If a local db is required in production, it should be defined here, but
+    # the plan specifies Neon and Upstash are used for production.
+
+networks:
+  bidcraft_network:
+    driver: bridge
