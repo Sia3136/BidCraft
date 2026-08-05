@@ -1,4 +1,6 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || ''
+const API_BASE = typeof window === 'undefined'
+  ? (process.env.INTERNAL_API_URL || 'http://backend:8000')
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000')
 
 export type User = {
   id: string
@@ -78,7 +80,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
       .filter(([, v]) => v !== undefined && v !== null && v !== '')
       .map(([k, v]) => [k, String(v)])
   ).toString()
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings?${qs}`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings?${qs}`, { credentials: 'include',
     next: { revalidate: 60 }   // ISR: re-fetch every 60s
   })
   if (!res.ok) throw new Error(`fetchListings failed: ${res.status}`)
@@ -87,7 +89,7 @@ export async function fetchListings(params: Record<string, string | number> = {}
 }
 
 export async function fetchListingById(id: string): Promise<Listing> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/${id}`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/${id}`, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchListingById failed: ${res.status}`)
@@ -95,7 +97,7 @@ export async function fetchListingById(id: string): Promise<Listing> {
 }
 
 export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[] }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/auctions/live?limit=${limit}`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/auctions/live?limit=${limit}`, { credentials: 'include',
     next: { revalidate: 30 }  // shorter cache — auctions change fast
   })
   if (!res.ok) throw new Error(`fetchLiveAuctions failed: ${res.status}`)
@@ -103,7 +105,7 @@ export async function fetchLiveAuctions(limit = 4): Promise<{ auctions: Listing[
 }
 
 export async function fetchNewArrivals(): Promise<{ listings: Listing[] }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings?sort=newest`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings?sort=newest`, { credentials: 'include',
     next: { revalidate: 120 }
   })
   if (!res.ok) throw new Error(`fetchNewArrivals failed: ${res.status}`)
@@ -116,7 +118,7 @@ export async function register(data: {
   email: string
   password: string
 }): Promise<AuthResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auth/register`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -131,7 +133,7 @@ export async function login(data: {
   email: string
   password: string
 }): Promise<AuthResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auth/login`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -143,7 +145,7 @@ export async function login(data: {
 
 // Get current user (requires token)
 export async function getMe(token: string): Promise<User> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })
@@ -161,7 +163,7 @@ export type CreateOrderResponse = {
 }
 
 export async function createOrder(listingId: string, token: string): Promise<{ order: { id: string } }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/orders`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -178,7 +180,7 @@ export async function createPaymentOrder(
   orderId: string,
   token: string
 ): Promise<CreateOrderResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-order`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/payments/create-order`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -197,7 +199,7 @@ export async function verifyPayment(data: {
   razorpay_signature: string
   order_id: number
 }, token: string): Promise<{ success: boolean; order_id: string; status: string }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/payments/verify`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -211,7 +213,7 @@ export async function verifyPayment(data: {
 }
 
 export async function fetchOrderById(id: string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/` + id, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/orders/` + id, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   })
@@ -233,7 +235,7 @@ export async function placeBid(
   amount: number,
   token: string
 ): Promise<BidResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auctions/` + auctionId + `/bids`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auctions/` + auctionId + `/bids`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -247,7 +249,7 @@ export async function placeBid(
 }
 
 export async function createBidDeposit(auctionId: string, amount: number, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auctions/` + auctionId + `/deposit`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auctions/` + auctionId + `/deposit`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -261,7 +263,7 @@ export async function createBidDeposit(auctionId: string, amount: number, token:
 }
 
 export async function verifyBidDeposit(auctionId: string, data: any, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auctions/` + auctionId + `/deposit/verify`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/auctions/` + auctionId + `/deposit/verify`, { credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -277,7 +279,7 @@ export async function verifyBidDeposit(auctionId: string, data: any, token: stri
 export async function uploadListingImage(file: File, token: string): Promise<{ url: string; publicId: string }> {
   const form = new FormData()
   form.append('image', file)
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/upload`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/upload`, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: form,
@@ -294,7 +296,7 @@ export async function createListing(data: {
   imageUrls: string[]; specifications: Record<string, string>;
   auctionEndsAt?: string; collections?: string[]; occasions?: string[];
 }, token: string): Promise<{ listingId: string, slug?: string }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
@@ -305,21 +307,21 @@ export async function createListing(data: {
 }
 
 export async function fetchSellerListings(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/listings`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/seller/listings`, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()
 }
 
 export async function fetchSellerOrders(token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/orders`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/seller/orders`, { credentials: 'include',
     headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
   })
   return res.json()
 }
 
 export async function deleteListing(listingId: string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/` + listingId, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/` + listingId, { credentials: 'include',
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   })
@@ -327,7 +329,7 @@ export async function deleteListing(listingId: string, token: string) {
 }
 
 export async function submitOffer(listingId: string, offerAmount: number, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/listings/` + listingId + `/offers`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/` + listingId + `/offers`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ listingId, offerAmount }),
@@ -338,7 +340,7 @@ export async function submitOffer(listingId: string, offerAmount: number, token:
 }
 
 export async function shipOrder(orderId: string, data: { trackingNumber: string; carrier: string }, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/` + orderId + `/ship`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/ship`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
@@ -349,7 +351,7 @@ export async function shipOrder(orderId: string, data: { trackingNumber: string;
 }
 
 export async function confirmDelivery(orderId: string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/` + orderId + `/deliver`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/deliver`, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -359,7 +361,7 @@ export async function confirmDelivery(orderId: string, token: string) {
 }
 
 export async function disputeOrder(orderId: string, reason: string, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/` + orderId + `/dispute`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/dispute`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ reason }),
@@ -371,7 +373,7 @@ export async function disputeOrder(orderId: string, reason: string, token: strin
 
 export async function fetchCreators(sort: string = 'followers', limit: number = 20, offset: number = 0) {
   const qs = new URLSearchParams({ sort, limit: String(limit), offset: String(offset) }).toString();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/creators?` + qs, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/users/creators?` + qs, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchCreators failed: ${res.status}`)
@@ -379,7 +381,7 @@ export async function fetchCreators(sort: string = 'followers', limit: number = 
 }
 
 export async function checkUsername(username: string, signal?: AbortSignal): Promise<{ available: boolean }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check-username?username=${encodeURIComponent(username)}`, { 
+  const res = await fetch(`${API_BASE}/api/profile/check-username?username=${encodeURIComponent(username)}`, { 
     credentials: 'include',
     signal 
   })
@@ -388,7 +390,7 @@ export async function checkUsername(username: string, signal?: AbortSignal): Pro
 }
 
 export async function suggestUsername(name: string): Promise<{ suggestion: string, available: boolean }> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/suggest-username`, { 
+  const res = await fetch(`${API_BASE}/api/profile/suggest-username`, { 
     credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -399,7 +401,7 @@ export async function suggestUsername(name: string): Promise<{ suggestion: strin
 }
 
 export async function updateProfile(data: any, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/profile`, { credentials: 'include',
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
