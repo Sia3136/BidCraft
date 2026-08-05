@@ -138,8 +138,10 @@
   --radius-pill: var(--radius-pill);
 
   /* Typography */
-  --font-display: var(--font-display);
-  --font-ui: var(--font-ui);
+  --font-display: var(--font-playfair);
+  --font-ui: var(--font-jakarta);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
 
 @layer base {
@@ -147,8 +149,28 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-display);
+    @apply bg-background text-foreground font-sans tracking-normal leading-relaxed;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight text-[var(--color-ink-900)];
+  }
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
+  }
+  h2 {
+    @apply text-3xl md:text-4xl font-semibold leading-tight;
+  }
+  h3 {
+    @apply text-2xl md:text-3xl font-medium leading-snug;
+  }
+  h4 {
+    @apply text-xl md:text-2xl font-medium leading-snug;
+  }
+  p {
+    @apply leading-relaxed text-[var(--color-ink-700)];
+  }
+  button, input, select, textarea, label {
+    @apply font-sans tracking-wide;
   }
 }
 

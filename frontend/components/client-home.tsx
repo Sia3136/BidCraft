@@ -180,7 +180,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         {/* 8. Our Story */}
         <section id="our-story" className="w-full flex flex-col lg:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-[560px] relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill className="object-cover object-center" alt="Our Story" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785910327/bidcraft_homepage/vleothtzrxgybsvw0fsx.webp" fill className="object-cover object-center" alt="Our Story" sizes="(max-width: 1024px) 100vw, 50vw" />
           </div>
           <div className="w-full lg:w-1/2 p-12 lg:py-24 lg:px-20 xl:px-32 flex flex-col justify-center text-left">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-lg mx-auto lg:mx-0">

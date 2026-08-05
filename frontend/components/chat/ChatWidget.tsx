@@ -13,52 +13,40 @@ interface Message {
     label: string
     href: string
   }
+  chips?: string[]
 }
 
-// Simple rule-based intent mapping
 const FAQS = [
-  {
-    keywords: ['shipping', 'delivery', 'track', 'when will my', 'arrive'],
-    response: 'Shipping typically takes 3-7 business days depending on your location. You can track your order in your dashboard.',
-    action: { label: 'Track Order', href: '/dashboard/buyer-orders' }
-  },
-  {
-    keywords: ['return', 'refund', 'exchange', 'back'],
-    response: 'We accept returns within 14 days for most items. Custom and made-to-order items are non-refundable. Please review our full policy.',
-    action: { label: 'Returns Policy', href: '/returns' }
-  },
-  {
-    keywords: ['payment', 'pay', 'razorpay', 'emi', 'credit card'],
-    response: 'We accept all major credit cards, UPI, and net banking via Razorpay. Your payment is held securely in escrow until you confirm delivery.',
-  },
-  {
-    keywords: ['authentic', 'real', 'original', 'verify', 'certificate'],
-    response: 'Every artisan on BidCraft undergoes a strict KYC process. High-value items come with a Certificate of Authenticity verified by our team.',
-    action: { label: 'Our Guarantee', href: '/authenticity' }
-  },
-  {
-    keywords: ['sell', 'creator', 'artisan', 'how to sell', 'join'],
-    response: 'We are always looking for talented creators! You can apply to become a seller through our creator portal.',
-    action: { label: 'Apply to Sell', href: '/creators/apply' }
-  }
+  { keywords: ['hi', 'hello', 'hey', 'greetings', 'morning', 'afternoon'], response: 'Hello there! How can I help you today?', chips: ['Shipping', 'Returns', 'Auctions'] },
+  { keywords: ['thank', 'thanks', 'appreciate'], response: "You're very welcome! Let me know if there's anything else you need.", chips: ['Explore Marketplace'] },
+  { keywords: ['bye', 'goodbye', 'cya', 'see you'], response: "Goodbye! Have a great day!" },
+  { keywords: ['shipping', 'delivery', 'track', 'when will my', 'arrive', 'courier', 'dispatch'], response: 'Shipping typically takes 3-7 business days depending on your location. You can track your order in your dashboard.', action: { label: 'Track Order', href: '/dashboard/buyer/orders' } },
+  { keywords: ['return', 'refund', 'exchange', 'back', 'money back'], response: 'We accept returns within 14 days for most items. Custom and made-to-order items are non-refundable. Please review our full policy.', action: { label: 'Returns Policy', href: '/returns' } },
+  { keywords: ['payment', 'pay', 'razorpay', 'emi', 'credit card', 'upi', 'wallet'], response: 'We accept all major credit cards, UPI, and net banking via Razorpay. Your payment is held securely in escrow until you confirm delivery.', chips: ['Buyer Protection'] },
+  { keywords: ['auction', 'bid', 'bidding', 'win', 'snipe', 'sniping'], response: 'Live auctions allow you to bid on rare items in real-time. We use anti-sniping protection, meaning any bid in the last 2 minutes extends the auction by 2 minutes.', action: { label: 'View Live Auctions', href: '/explore?type=auction' } },
+  { keywords: ['offer', 'negotiate', 'bargain', 'discount'], response: 'If an item has "Make an Offer" enabled, you can propose a price to the creator. They have 48 hours to accept, decline, or counter.', chips: ['Auctions', 'Payments'] },
+  { keywords: ['protect', 'safe', 'scam', 'escrow', 'trust', 'authentic', 'real', 'original'], response: 'Every artisan on BidCraft undergoes a strict KYC process. High-value items come with a Certificate of Authenticity. Your funds are held securely in escrow until delivery is confirmed.', action: { label: 'Buyer Protection', href: '/buyer-protection' } },
+  { keywords: ['sell', 'creator', 'artisan', 'how to sell', 'join', 'vendor', 'dashboard', 'listing'], response: 'We are always looking for talented creators! Once approved, you get access to a full dashboard to manage listings, orders, and auctions.', action: { label: 'Apply to Sell', href: '/creator' } },
+  { keywords: ['account', 'login', 'password', 'email', 'profile'], response: 'You can manage your account settings, including password and email, from your profile page.', action: { label: 'Account Settings', href: '/account' } },
+  { keywords: ['support', 'contact', 'help', 'human', 'agent'], response: 'Need more help? Our support team is available Monday through Friday.', action: { label: 'Contact Support', href: '/contact' } }
 ]
 
-function getBotResponse(query: string) {
+function getBotResponse(query: string, history: Message[]) {
   const normalizedQuery = query.toLowerCase()
   
-  // Fuzzy match logic: check if any keyword exists in the query
   for (const faq of FAQS) {
     if (faq.keywords.some(kw => normalizedQuery.includes(kw))) {
       return {
         text: faq.response,
-        action: faq.action
+        action: faq.action,
+        chips: faq.chips
       }
     }
   }
 
   return {
-    text: "I'm a simple FAQ bot and I'm not quite sure how to answer that. Could you try rephrasing, or reach out to our support team?",
-    action: { label: 'Contact Support', href: '/contact' }
+    text: "I'm here to help with orders, shipping, returns, auctions, seller support, and payments. You can choose one of the suggestions below or ask another question.",
+    chips: ['Shipping', 'Returns', 'Auctions', 'Payments', 'Contact Support']
   }
 }
 
@@ -70,7 +58,8 @@ export function ChatWidget() {
     {
       id: '1',
       type: 'bot',
-      text: 'Hello! I am the BidCraft Assistant. How can I help you today? You can ask me about shipping, returns, authenticity, or payments.'
+      text: 'Hello! I am the BidCraft Assistant. How can I help you today?',
+      chips: ['Shipping Info', 'Returns & Refunds', 'How Bidding Works']
     }
   ])
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -89,30 +78,36 @@ export function ChatWidget() {
     }
   }, [messages, isOpen])
 
-  const handleSend = (e?: React.FormEvent) => {
-    if (e) e.preventDefault()
-    if (!input.trim()) return
+  const handleSendText = (text: string) => {
+    if (!text.trim()) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
-      text: input.trim()
+      text: text.trim()
     }
 
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
-    // Simulate slight delay for bot response
     setTimeout(() => {
-      const response = getBotResponse(userMessage.text)
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'bot',
-        text: response.text,
-        action: response.action
-      }
-      setMessages(prev => [...prev, botMessage])
-    }, 600)
+      setMessages(prev => {
+        const response = getBotResponse(userMessage.text, prev)
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'bot',
+          text: response.text,
+          action: response.action,
+          chips: response.chips
+        }
+        return [...prev, botMessage]
+      })
+    }, 500)
+  }
+
+  const handleSend = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    handleSendText(input)
   }
 
   if (!mounted) return null
@@ -128,15 +123,14 @@ export function ChatWidget() {
             transition={{ duration: 0.2 }}
             className="bg-white border border-[var(--color-border-subtle)] rounded-2xl shadow-xl w-80 sm:w-96 h-[500px] max-h-[80vh] mb-4 flex flex-col overflow-hidden"
           >
-            {/* Header */}
             <div className="bg-[var(--color-slate-900)] text-white p-4 flex justify-between items-center shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--color-terracotta-600)] flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-body-md">BidCraft Assistant</h3>
-                  <p className="text-xs text-white/70">Typically replies instantly</p>
+                  <h3 className="font-semibold text-body-md font-[family-name:var(--font-jakarta)]">BidCraft Assistant</h3>
+                  <p className="text-xs text-white/70 font-[family-name:var(--font-jakarta)]">Typically replies instantly</p>
                 </div>
               </div>
               <button 
@@ -148,7 +142,6 @@ export function ChatWidget() {
               </button>
             </div>
 
-            {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-cream-base)] scrollbar-hide">
               {messages.map((msg) => (
                 <div 
@@ -167,7 +160,7 @@ export function ChatWidget() {
                     </div>
                     
                     <div className="flex flex-col gap-2">
-                      <div className={`p-3 rounded-2xl text-body-sm ${
+                      <div className={`p-3 rounded-2xl text-body-sm font-[family-name:var(--font-jakarta)] leading-relaxed ${
                         msg.type === 'user' 
                           ? 'bg-[var(--color-ink-900)] text-white rounded-tr-sm' 
                           : 'bg-white text-[var(--color-ink-900)] border border-[var(--color-border-subtle)] rounded-tl-sm shadow-sm'
@@ -178,11 +171,25 @@ export function ChatWidget() {
                       {msg.action && (
                         <Link 
                           href={msg.action.href}
-                          className="self-start inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] px-3 py-2 rounded-full border border-[var(--color-terracotta-200)] hover:bg-[var(--color-terracotta-100)] transition-colors"
+                          className="self-start inline-flex items-center gap-1.5 text-xs font-semibold font-[family-name:var(--font-jakarta)] text-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] px-3 py-2 rounded-full border border-[var(--color-terracotta-200)] hover:bg-[var(--color-terracotta-100)] transition-colors"
                         >
                           {msg.action.label}
                           <ArrowRight className="w-3 h-3" />
                         </Link>
+                      )}
+
+                      {msg.chips && msg.chips.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {msg.chips.map(chip => (
+                            <button
+                              key={chip}
+                              onClick={() => handleSendText(chip)}
+                              className="text-xs font-medium font-[family-name:var(--font-jakarta)] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-700)] px-3 py-1.5 rounded-full hover:bg-[var(--color-cream-soft)] transition-colors text-left"
+                            >
+                              {chip}
+                            </button>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -191,7 +198,6 @@ export function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
             <div className="p-3 bg-white border-t border-[var(--color-border-subtle)] shrink-0">
               <form onSubmit={handleSend} className="flex items-center gap-2">
                 <input
@@ -199,7 +205,7 @@ export function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask a question..."
-                  className="flex-1 bg-[var(--color-cream-soft)] border border-[var(--color-border-subtle)] rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[var(--color-terracotta-600)] focus:ring-1 focus:ring-[var(--color-terracotta-600)] transition-all"
+                  className="flex-1 bg-[var(--color-cream-soft)] font-[family-name:var(--font-jakarta)] border border-[var(--color-border-subtle)] rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[var(--color-terracotta-600)] focus:ring-1 focus:ring-[var(--color-terracotta-600)] transition-all"
                 />
                 <button
                   type="submit"

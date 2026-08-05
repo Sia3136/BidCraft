@@ -36,7 +36,7 @@ export default function OurStoryPage() {
 
             {/* Image 1: Creators making products */}
             <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
-              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/pottery-artisan" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creator making pottery" />
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785910327/bidcraft_homepage/vleothtzrxgybsvw0fsx.webp" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creator making pottery" />
             </div>
 
             <div className="space-y-6">
@@ -48,7 +48,7 @@ export default function OurStoryPage() {
 
             {/* Image 2: Packaging/Trust interaction */}
             <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
-              <Image src="https://res.cloudinary.com/duzlsyzwa/image/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/crochet-craft" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Handmade crochet craftsmanship" />
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785910328/bidcraft_homepage/w3psq5cxxuugl6bn2086.jpg" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Handmade crochet craftsmanship" />
             </div>
 
             <div className="space-y-6">
@@ -71,7 +71,7 @@ export default function OurStoryPage() {
 
             {/* Image 3: Painting Workspace */}
             <div className="w-full h-[400px] bg-[var(--color-cream-dark)] rounded-2xl flex items-center justify-center border border-[var(--color-cream-border)] relative overflow-hidden">
-              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1722704153/bidcraft/static/painting-workspace" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creative painting workspace" />
+              <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/v1785910330/bidcraft_homepage/aetwfouct5hgdfgebllo.jpg" fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 800px" alt="Creative painting workspace" />
             </div>
 
             <div className="pt-12 border-t border-[var(--color-cream-dark)] text-center">

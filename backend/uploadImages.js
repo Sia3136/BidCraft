@@ -1,31 +1,26 @@
-require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
 const images = [
-  { path: 'C:\\Bidcraft\\images\\a256e2ac9d75854adb286f65a2587887.jpg', name: 'crochet_pouch' },
-  { path: 'C:\\Bidcraft\\images\\406e9dec721dd84771f1f68f8c888acf.jpg', name: 'minimal_dog' },
-  { path: 'C:\\Bidcraft\\images\\4b856905f3c2c93617775edd2fc27ead.webp', name: 'pottery_artwork' }
+  'C:\\Users\\Dell\\Documents\\Siya\\BidCraft\\images\\4b856905f3c2c93617775edd2fc27ead.webp',
+  'C:\\Users\\Dell\\Documents\\Siya\\BidCraft\\images\\handmade & crafts\\crochet & knitting\\images.jpeg',
+  'C:\\Users\\Dell\\Documents\\Siya\\BidCraft\\images\\e966528b52608962bd21f8abdeafbe0a.jpg'
 ];
 
-async function uploadAll() {
+async function run() {
   for (const img of images) {
     try {
-      const result = await cloudinary.uploader.upload(img.path, {
-        folder: 'bidcraft/auth',
-        public_id: img.name,
-        overwrite: true
-      });
-      console.log(`[UPLOADED] ${img.name}: ${result.secure_url}`);
-    } catch (err) {
-      console.error(`[FAILED] ${img.name}:`, err);
+      const res = await cloudinary.uploader.upload(img, { folder: 'bidcraft_homepage' });
+      console.log('UPLOADED:', res.secure_url);
+    } catch (e) {
+      console.error('FAILED:', img, e.message);
     }
   }
 }
-
-uploadAll();
+run();

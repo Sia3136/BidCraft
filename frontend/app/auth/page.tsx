@@ -187,7 +187,7 @@ function AuthPageContent() {
   const isRegisterStep1 = activeTab === 'signup' && signUpStep === 1
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row items-stretch bg-[var(--color-cream-base)] relative overflow-hidden">
+    <div className="flex-1 flex flex-col lg:flex-row items-stretch bg-[var(--color-cream-base)] relative overflow-hidden">
       {/* BRANDING / IMAGE */}
       <div className={cn(
         "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)]",

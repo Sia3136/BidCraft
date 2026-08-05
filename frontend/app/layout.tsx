@@ -62,7 +62,7 @@ export default function RootLayout({
               <Suspense fallback={<div className="h-[128px] md:h-[136px] bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)]" />}>
                 <Navbar />
               </Suspense>
-              <main className="flex-1 w-full">
+              <main className="flex-1 w-full flex flex-col">
                 {children}
               </main>
               <Footer />
