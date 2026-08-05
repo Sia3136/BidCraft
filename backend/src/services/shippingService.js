@@ -3,7 +3,8 @@
  * Pluggable abstraction for shipping providers (Shiprocket, Delhivery, etc).
  */
 
-const MOCK_MODE = !process.env.SHIPROCKET_API_KEY || process.env.NODE_ENV === 'test';
+const MOCK_MODE = !process.env.SHIPROCKET_API_KEY && !process.env.DELIVERY_API_KEY && process.env.NODE_ENV === 'test';
+const delhiveryService = require('./delhiveryService');
 
 /**
  * Generate a mock or real tracking number and label for an order.
@@ -35,6 +36,10 @@ async function getTrackingStatus(trackingNumber, carrier) {
       location: 'Sorting Facility',
       timestamp: new Date()
     };
+  }
+  
+  if (carrier === 'Delhivery') {
+    return await delhiveryService.trackShipment(trackingNumber);
   }
   
   throw new Error('shipping_provider_not_configured');

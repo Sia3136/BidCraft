@@ -38,7 +38,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
     return { hasError: true };
   }
   componentDidCatch(error: any, errorInfo: any) {
-    console.error('ProductDetailClient error:', error, errorInfo);
+
   }
   render() {
     if (this.state.hasError) {
@@ -144,14 +144,14 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
         try {
           const err = await res.json();
           errMsg = err.error || errMsg;
-          console.error('Cart error:', err.error);
+
         } catch (e) {
-          console.error('Non-JSON error response');
+
         }
         alert(errMsg);
       }
     } catch (err) {
-      console.error(err);
+
       alert('Failed to add to cart');
     }
   };

@@ -7,11 +7,9 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--color-cream-base)]">
-      <Navbar />
-      <main className="flex-1 py-24 px-[var(--space-5)]">
-        <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16">
-          <div className="w-full lg:w-1/2">
+    <div className="w-full py-24 px-[var(--space-5)]">
+      <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16">
+        <div className="w-full lg:w-1/2">
             <h1 className="text-display-lg text-[var(--color-ink-900)] mb-8">Contact Us</h1>
             <ContactForm />
           </div>
@@ -31,7 +29,6 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   )
 }

@@ -16,7 +16,7 @@ export function CollectorsPicksSection() {
         const data = await fetchListings({ status: 'active' })
         setListings(data.listings?.slice(0, 8) || [])
       } catch (err) {
-        console.error('Failed to load picks:', err)
+
       } finally {
         setLoading(false)
       }

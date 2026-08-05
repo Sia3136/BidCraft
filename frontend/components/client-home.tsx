@@ -301,24 +301,51 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         </section>
 
 
-        {/* 8. Our Story */}
-        <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
-          <div className="w-full md:w-1/2 h-[320px] md:h-auto relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
+        {/* 7.5 Editorial Feature: Behind the Craft */}
+        <section className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+            <div className="w-full lg:w-1/2 order-2 lg:order-1 relative aspect-[4/5] bg-[var(--color-cream-deep)] rounded-[var(--radius-md)] overflow-hidden shadow-lg">
+              {/* TODO: Replace with Cloudinary URL — behind the scenes artisan at work */}
+              <Image src="/images/8891723f370ddd55a88b322a622406a2.jpg" fill className="object-cover object-center sepia-[0.1]" alt="Behind the Craft" sizes="(max-width: 1024px) 100vw, 50vw" />
+            </div>
+            <div className="w-full lg:w-1/2 order-1 lg:order-2 flex flex-col items-start text-left">
+              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-6 font-bold">
+                BEHIND THE CRAFT
+              </span>
+              <h2 className="text-display-md text-[var(--color-ink-900)] leading-tight mb-8 font-[family-name:var(--font-playfair)]">
+                The patience behind the polish.
+              </h2>
+              <p className="font-[family-name:var(--font-jakarta)] text-body-lg text-[var(--color-ink-700)] leading-relaxed mb-6">
+                Before a piece reaches BidCraft, it lives in a studio. It begins as raw clay, unspun silk, or a blank canvas. We celebrate the hours of meticulous work, the passed-down techniques, and the quiet dedication that transforms raw materials into heirloom-quality creations.
+              </p>
+              <p className="font-[family-name:var(--font-jakarta)] text-body-lg text-[var(--color-ink-700)] leading-relaxed mb-10">
+                Explore works that carry the fingerprints of their makers—crafted slowly, intentionally, and beautifully.
+              </p>
+              <Link href="/explore?category=handmade-crafts" className="inline-flex items-center justify-center h-12 px-8 bg-[var(--color-ink-900)] text-white font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-ink-800)] transition-colors font-[family-name:var(--font-jakarta)]">
+                Discover Handmade
+              </Link>
+            </div>
           </div>
-          <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
-              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6 font-[family-name:var(--font-playfair)]">Our Story</h2>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
+        </section>
+
+        {/* 8. Our Story */}
+        <section id="our-story" className="w-full flex flex-col lg:flex-row bg-[var(--color-slate-900)]">
+          <div className="w-full lg:w-1/2 min-h-[400px] lg:min-h-[560px] relative bg-[var(--color-cream-deep)]">
+            <Image src="/images/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill className="object-cover object-center" alt="Our Story" sizes="(max-width: 1024px) 100vw, 50vw" />
+          </div>
+          <div className="w-full lg:w-1/2 p-12 lg:py-24 lg:px-20 xl:px-32 flex flex-col justify-center text-left">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-lg mx-auto lg:mx-0">
+              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-8 font-[family-name:var(--font-playfair)]">Our Story</h2>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)] leading-relaxed">
                 Every creation has a story. Every creator deserves a platform that values it.
               </p>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)] leading-relaxed">
                 BidCraft was built to bridge the gap between talented creators and people who truly appreciate their work. In a world where selling online often means uncertainty, we envisioned a marketplace where creativity is backed by trust, transparency, and opportunity—not risk.
               </p>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10 font-[family-name:var(--font-jakarta)]">
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10 font-[family-name:var(--font-jakarta)] leading-relaxed">
                 Whether it's an artist's first handmade piece, a student's passion project, or a collector searching for something rare, BidCraft brings them together in one secure ecosystem.
               </p>
-              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast font-[family-name:var(--font-jakarta)]">
+              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors font-[family-name:var(--font-jakarta)] shadow-lg hover:-translate-y-0.5">
                 Read Our Full Story
               </Link>
             </motion.div>
@@ -431,9 +458,9 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
               Community Voices
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
               {[1, 2, 3].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-10 rounded-[var(--radius-md)] shadow-sm border border-[var(--color-border-subtle)] flex flex-col justify-between">
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-10 rounded-[var(--radius-md)] shadow-sm border border-[var(--color-border-subtle)] flex flex-col justify-between h-full">
                   <div>
                     <span className="text-display-xl text-[var(--color-terracotta-600)] leading-none mb-2 block font-[family-name:var(--font-playfair)]">"</span>
                     <p className="text-body-lg italic text-[var(--color-ink-900)] mb-8 font-[family-name:var(--font-jakarta)] leading-relaxed">

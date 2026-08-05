@@ -159,7 +159,7 @@ export default function CheckoutPage() {
                     <div className="flex justify-between items-start border-b border-[var(--color-border-subtle)] pb-[var(--space-4)]">
                       <div>
                         <h4 className="text-heading-sm text-[var(--color-ink-900)] mb-1">Shipping</h4>
-                        <p className="text-body-md text-[var(--color-ink-700)]">John Doe<br/>123 Creative Lane<br/>Austin, TX 78704</p>
+                        <p className="text-body-md text-[var(--color-ink-700)]">Siya Rozani<br/>123 Creative Lane<br/>Austin, TX 78704</p>
                       </div>
                       <button onClick={() => setCurrentStep('shipping')} className="text-caption text-[var(--color-terracotta-600)] hover:underline">Edit</button>
                     </div>

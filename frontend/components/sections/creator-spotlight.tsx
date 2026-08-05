@@ -15,7 +15,7 @@ export function CreatorSpotlightSection() {
         const data = await fetchCreators('followers', 1, 0)
         setCreators(data.creators || [])
       } catch (e) {
-        console.error('Failed to load creators', e)
+
       } finally {
         setLoading(false)
       }

@@ -182,7 +182,7 @@ export default function ProfileSettingsPage() {
                 <Input 
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
-                  placeholder="John Doe" 
+                  placeholder="Your Name" 
                   required
                 />
               </div>

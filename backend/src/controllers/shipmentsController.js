@@ -90,4 +90,47 @@ async function getShipment(req, res, next) {
   }
 }
 
-module.exports = { addTracking, getShipment };
+/**
+ * GET /api/shipments/:orderId/tracking
+ * Get real-time tracking from carrier
+ */
+async function getTrackingStatus(req, res, next) {
+  try {
+    const { orderId } = req.params;
+    const userId = req.userId;
+
+    const orderRes = await db.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+    const order = orderRes.rows[0];
+    if (!order) return res.status(404).json({ error: 'order_not_found' });
+    if (order.buyer_id !== userId && order.seller_id !== userId) {
+      return res.status(403).json({ error: 'unauthorized_action' });
+    }
+
+    const shipmentRes = await db.query('SELECT * FROM shipments WHERE order_id = $1', [orderId]);
+    const shipment = shipmentRes.rows[0];
+    if (!shipment) return res.status(404).json({ error: 'shipment_not_found' });
+
+    if (!shipment.tracking_number || !shipment.carrier) {
+       return res.status(400).json({ error: 'missing_tracking_info' });
+    }
+
+    try {
+      const trackingData = await shippingService.getTrackingStatus(shipment.tracking_number, shipment.carrier);
+      res.json({ tracking: trackingData });
+    } catch (err) {
+      // Graceful error handling for API failures
+      if (err.message === 'api_timeout') {
+         return res.status(504).json({ error: 'Carrier tracking API timeout. Please try again later.' });
+      }
+      if (err.message === 'shipment_not_found') {
+         return res.status(404).json({ error: 'Shipment not found on carrier side yet.' });
+      }
+      console.error('[Delhivery] Tracking Error:', err.message);
+      return res.status(500).json({ error: 'Failed to fetch tracking data from carrier.' });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { addTracking, getShipment, getTrackingStatus };

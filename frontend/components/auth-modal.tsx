@@ -87,7 +87,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
+                  placeholder="Your Name"
                   className="w-full px-4 py-2.5 bg-[var(--color-cream-deep)] text-[var(--color-ink-900)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-terracotta-600)] focus:border-transparent text-sm placeholder:text-[var(--color-ink-500)]"
                 />
               </div>

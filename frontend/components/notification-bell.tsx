@@ -39,7 +39,7 @@ export function NotificationBell() {
       })
       mutate()
     } catch (err) {
-      console.error('Failed to mark notification as read', err)
+
     }
   }
 
@@ -51,7 +51,7 @@ export function NotificationBell() {
       })
       mutate()
     } catch (err) {
-      console.error('Failed to mark all as read', err)
+
     }
   }
 

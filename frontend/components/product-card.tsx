@@ -56,7 +56,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         alert('Failed to add to cart')
       }
     } catch (err) {
-      console.error(err)
+
       // TODO: Replace with proper transient toast system
       alert('Failed to add to cart')
     }
@@ -90,7 +90,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       : `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_500/${imageStr}`;
 
   return (
-    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300">
       <Link href={getProductRoute(product)} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
         <Image
           src={imageUrl}
@@ -111,16 +111,17 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         {/* Top Left Badge */}
         <div style={{
           position: 'absolute',
-          top: '12px',
-          left: '12px',
+          top: '16px',
+          left: '16px',
           background: badgeBg,
           color: badgeColor,
-          padding: '4px 10px',
+          padding: '6px 12px',
           borderRadius: 'var(--radius-pill)',
-          fontSize: '11px',
-          fontWeight: 700,
+          fontSize: '10px',
+          fontWeight: 800,
           textTransform: 'uppercase',
-          letterSpacing: '0.02em',
+          letterSpacing: '0.05em',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           zIndex: 10
         }}>
           {badgeText}
@@ -131,11 +132,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
           onClick={toggleWishlist}
           style={{
             position: 'absolute',
-            top: '10px',
-            right: '10px',
+            top: '16px',
+            right: '16px',
             height: '36px', 
             width: '36px',
-            background: 'rgba(255, 255, 255, 0.9)', 
+            background: 'rgba(255, 255, 255, 0.95)', 
             color: isWishlisted ? 'var(--color-terracotta-600)' : 'var(--color-ink-500)',
             border: 'none', 
             borderRadius: '50%',
@@ -157,11 +158,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             onClick={handleAddToCart}
             style={{
               position: 'absolute',
-              bottom: '10px',
-              right: '10px',
+              bottom: '16px',
+              right: '16px',
               height: '36px', 
               width: '36px',
-              background: 'rgba(255, 255, 255, 0.9)', 
+              background: 'rgba(255, 255, 255, 0.95)', 
               color: 'var(--color-ink-900)',
               border: 'none', 
               borderRadius: '50%',

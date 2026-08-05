@@ -389,7 +389,7 @@ function AuthPageContent() {
                               required
                               value={signUpName}
                               onChange={(e) => setSignUpName(e.target.value)}
-                              placeholder="John Doe"
+                              placeholder="Your Name"
                               className="w-full h-[52px] bg-white border border-[var(--color-border-subtle)] rounded-sm px-4 text-body-md text-[var(--color-ink-900)] focus:border-[var(--color-terracotta-600)] focus:shadow-[0_0_0_3px_rgba(200,100,58,0.12)] outline-none transition-all shadow-sm"
                             />
                           </div>

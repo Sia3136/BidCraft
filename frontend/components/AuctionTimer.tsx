@@ -13,7 +13,12 @@ export function AuctionTimer({ endTime }: { endTime: string }) {
       const h = Math.floor((diff % 86400000) / 3600000)
       const m = Math.floor((diff % 3600000) / 60000)
       const s = Math.floor((diff % 60000) / 1000)
-      setTimeLeft(`${d}d ${h}h ${m}m ${s}s`)
+      
+      if (d > 0) {
+        setTimeLeft(`${d}d ${h}h ${m}m`)
+      } else {
+        setTimeLeft(`${h}h ${m}m ${s}s`)
+      }
     }
     calc()
     const interval = setInterval(calc, 1000)
@@ -23,8 +28,9 @@ export function AuctionTimer({ endTime }: { endTime: string }) {
   if (!timeLeft) return null;
 
   return (
-    <span className="font-mono text-sm text-[#C4501A] font-semibold">
-      ⏱ {timeLeft}
+    <span className="font-[family-name:var(--font-jakarta)] text-[11px] bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-2 py-0.5 rounded-[var(--radius-sm)] font-bold flex items-center gap-1 w-fit">
+      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-terracotta-500)] animate-pulse" />
+      {timeLeft}
     </span>
   )
 }

@@ -420,11 +420,11 @@ export const Navbar = React.memo(function Navbar() {
                           <button
                             key={sub.slug}
                             onClick={() => {
-                              console.log(`[Nav Flow - Desktop] 1. Click fired for ${sub.name}`);
-                              console.log(`[Nav Flow - Desktop] 2. Generated href: ${href}`);
-                              console.log(`[Nav Flow - Desktop] 3. Calling router.push()`);
+
+
+
                               router.push(href);
-                              console.log(`[Nav Flow - Desktop] 4. router.push called, closing dropdown`);
+
                               setOpenDropdown(null);
                             }}
                             className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
@@ -495,11 +495,11 @@ export const Navbar = React.memo(function Navbar() {
                           <button
                             key={subSlug}
                             onClick={() => {
-                              console.log(`[Nav Flow - Mobile] 1. Click fired for ${sub.name}`);
-                              console.log(`[Nav Flow - Mobile] 2. Generated href: ${href}`);
-                              console.log(`[Nav Flow - Mobile] 3. Calling router.push()`);
+
+
+
                               router.push(href);
-                              console.log(`[Nav Flow - Mobile] 4. router.push called, closing dropdown`);
+
                               setOpenDropdown(null);
                               setIsMobileMenuOpen(false);
                             }}
