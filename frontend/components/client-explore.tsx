@@ -215,7 +215,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
     <div className="space-y-6">
       {/* Category */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Category</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Category</h3>
         <div className="space-y-2">
           {CATEGORIES.map(cat => {
             const slug = slugify(cat.name)
@@ -238,7 +238,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Subcategory */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Subcategory</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Subcategory</h3>
         <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
           {visibleSubcategories.map(sub => {
             const slug = slugify(sub)
@@ -261,7 +261,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Buying Method */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Buying Method</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Buying Method</h3>
         <div className="space-y-2">
           {BUYING_METHODS.map(method => {
             const slug = slugify(method)
@@ -284,7 +284,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Price Range */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)] flex justify-between items-center">
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)] flex justify-between items-center">
           Price Range
         </h3>
         <div className="flex items-center gap-2 mb-3">
@@ -332,7 +332,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Collection */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Collection</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Collection</h3>
         <div className="space-y-2">
           {COLLECTIONS.map(col => {
             const slug = slugify(col)
@@ -356,7 +356,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Occasion */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Occasion</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Occasion</h3>
         <div className="space-y-2">
           {OCCASIONS.map(occ => {
             const slug = slugify(occ)
@@ -380,7 +380,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Type */}
       <div>
-        <h3 className="text-heading-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Type</h3>
+        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Type</h3>
         <div className="space-y-2">
           {TYPES.map(type => (
             <label key={type.value} className="flex items-center gap-2 cursor-pointer">
@@ -415,7 +415,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
           
           {/* Mobile Filter Toggle */}
           <div className="lg:hidden mb-[var(--space-5)] flex items-center justify-between">
-            <h2 className="text-heading-md text-[var(--color-ink-900)]">{filteredProducts.length} items</h2>
+            <h2 className="text-sm text-[#2B211C]/60 font-[family-name:var(--font-jakarta)]">{filteredProducts.length} items</h2>
             <button 
               onClick={() => setIsMobileFilterOpen(true)}
               className="flex items-center gap-2 px-4 py-2 border border-[var(--color-border-subtle)] rounded-[var(--radius-pill)] bg-[var(--color-white)] text-body-md font-medium text-[var(--color-ink-900)]"
@@ -457,15 +457,15 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
             <div className="flex flex-col gap-[var(--space-6)]">
               
               <div className="hidden lg:flex items-center justify-between">
-                <h2 className="text-heading-md text-[var(--color-ink-900)]">
+                <h2 className="text-sm text-[#2B211C]/60 font-[family-name:var(--font-jakarta)]">
                   Showing {Math.min((page - 1) * 24 + 1, total)}–{Math.min(page * 24, total)} of {total} listings
                 </h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-body-md text-[var(--color-ink-700)]">Sort by:</span>
+                  <span className="text-sm font-[family-name:var(--font-jakarta)] text-[#2B211C]/80">Sort by:</span>
                   <select 
                     value={sortQuery}
                     onChange={(e) => updateUrl({ sort: e.target.value })}
-                    className="h-[36px] bg-transparent border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-2 text-body-md font-medium text-[var(--color-ink-900)] outline-none cursor-pointer"
+                    className="h-[36px] bg-transparent border border-[var(--color-border-subtle)] rounded-[var(--radius-sm)] px-2 text-sm font-[family-name:var(--font-jakarta)] text-[#2B211C] outline-none cursor-pointer"
                   >
                     {SORT_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -477,7 +477,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   {activeFilters.map((filter, i) => (
                     <div key={i} className="flex items-center gap-1.5 bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-3 py-1.5 rounded-[var(--radius-pill)]">
-                      <span className="text-body-md font-medium">{filter.label}</span>
+                      <span className="text-sm font-[family-name:var(--font-jakarta)]">{filter.label}</span>
                       <button onClick={filter.onRemove} className="hover:text-[var(--color-terracotta-900)] transition-colors"><X className="w-3.5 h-3.5" /></button>
                     </div>
                   ))}
@@ -555,10 +555,10 @@ function ClientExploreInner({ initialListings = [], total = 0 }: { initialListin
     <div className="bg-[var(--color-cream-base)] flex flex-col">
       <main className="flex-1 w-full">
         <section className="w-full h-[280px] bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] flex flex-col items-center justify-center text-center px-[var(--space-5)]">
-          <h1 className="text-display-xl font-display text-[var(--color-ink-900)] mb-[var(--space-2)] capitalize">
+          <h1 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#2B211C] mb-[var(--space-2)] capitalize">
             {title}
           </h1>
-          <p className="text-body-lg text-[var(--color-ink-700)] max-w-[600px]">
+          <p className="text-body-lg text-[var(--color-ink-700)] max-w-[600px] font-[family-name:var(--font-jakarta)]">
             Discover handcrafted goods, rare collectibles, and live auctions — all in one place.
           </p>
         </section>

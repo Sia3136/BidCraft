@@ -151,28 +151,45 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </section>
         )}
 
-        {/* 4. Our Story (Base Cream) */}
-        <section id="our-story" className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col md:flex-row items-center justify-between gap-12 lg:gap-20">
-            <div className="w-full md:w-[45%] relative aspect-[4/5] rounded-[var(--radius-lg)] overflow-hidden shadow-sm">
-              <Image 
-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939323/bidcraft_homepage/qkvjdhmeswpujgongm1t.jpg"
-                fill
-                alt="The story behind the craft"
-                className="object-cover object-center"
-              />
-            </div>
-            <div className="w-full md:w-[55%] flex flex-col items-start text-left">
-              <span className="text-sm font-bold tracking-widest text-[var(--color-terracotta-600)] uppercase mb-4 block font-[family-name:var(--font-montserrat)]">Our Story</span>
-              <h2 className="text-3xl md:text-4xl font-[family-name:var(--font-playfair)] text-[var(--color-ink-900)] mb-6">The story behind the craft.</h2>
-              <p className="text-body-md text-[var(--color-ink-700)] font-[family-name:var(--font-montserrat)] leading-relaxed mb-6">
-                We believe that every handcrafted object carries a piece of its maker's soul. BidCraft was founded to connect discerning collectors with India's finest artisans, cutting out the middlemen to ensure creators earn what they deserve.
+        {/* 4. Our Story (Image 2) */}
+        <section id="our-story" className="w-full flex flex-col md:flex-row min-h-[460px]">
+          {/* Left: Image */}
+          <div className="relative w-full md:w-[45%] min-h-[300px] md:min-h-[460px]">
+            <Image
+              src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939323/bidcraft_homepage/qkvjdhmeswpujgongm1t.jpg"
+              alt="BidCraft artwork"
+              fill
+              className="object-cover object-left"
+              quality={90}
+              sizes="45vw"
+            />
+          </div>
+
+          {/* Right: Dark navy panel */}
+          <div className="w-full md:w-[55%] bg-[#2B3244] flex items-center">
+            <div className="px-10 md:px-16 py-14 md:py-20 max-w-xl">
+              <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-semibold text-white mb-6 leading-tight">
+                Our Story
+              </h2>
+              <p className="text-white/80 text-sm leading-relaxed mb-4 font-[family-name:var(--font-jakarta)]">
+                Every creation has a story. Every creator deserves a platform
+                that values it.
               </p>
-              <p className="text-body-md text-[var(--color-ink-700)] font-[family-name:var(--font-montserrat)] leading-relaxed mb-10">
-                BidCraft exists because great work deserves to be seen. Every purchase directly supports an independent creator.
+              <p className="text-white/80 text-sm leading-relaxed mb-4 font-[family-name:var(--font-jakarta)]">
+                BidCraft was built to bridge the gap between talented creators
+                and people who truly appreciate their work. In a world where
+                selling online often means uncertainty, we envisioned a
+                marketplace where creativity is backed by trust, transparency,
+                and opportunity — not risk.
               </p>
-              <Link href="/about" className="inline-flex items-center gap-2 text-[var(--color-terracotta-600)] font-semibold hover:gap-3 transition-all text-body-md font-[family-name:var(--font-montserrat)]">
-                Learn more about our mission <ArrowRight className="w-5 h-5" />
+              <p className="text-white/80 text-sm leading-relaxed mb-10 font-[family-name:var(--font-jakarta)]">
+                Whether it's an artist's first handmade piece, a student's
+                passion project, or a collector searching for something rare,
+                BidCraft brings them together in one secure ecosystem.
+              </p>
+              
+              <Link href="/our-story" className="inline-block bg-[#B06A42] text-white text-sm font-semibold px-7 py-3 rounded-md hover:bg-[#8f5435] transition-colors font-[family-name:var(--font-jakarta)]">
+                Read Our Full Story
               </Link>
             </div>
           </div>
@@ -294,39 +311,39 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </div>
         </section>
 
-        {/* 9. Community Voices (Deep Cream) */}
-        <section className="py-24 bg-[var(--color-cream-deep)] px-[var(--space-5)] xl:px-[var(--space-8)]">
+        {/* 9. Community Voices */}
+        <section className="py-16 bg-[#F2EDE6] px-[var(--space-5)] xl:px-[var(--space-8)]">
           <div className="max-w-[var(--container-max)] mx-auto">
-            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-md text-[var(--color-ink-900)] text-center mb-16 font-[family-name:var(--font-playfair)]">
+            <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-3xl font-[family-name:var(--font-playfair)] text-[#2B211C] text-center mb-10">
               Community Voices
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[1, 2, 3].map((i) => (
-                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-8 rounded-[var(--radius-md)] shadow-sm border border-[var(--color-border-subtle)] h-auto flex flex-col">
-                  <div className="mb-8">
-                    <span className="text-4xl text-[var(--color-terracotta-600)] leading-none mb-4 block font-[family-name:var(--font-playfair)]">"</span>
-                    <p className="text-body-md italic text-[var(--color-ink-900)] font-[family-name:var(--font-montserrat)] leading-relaxed">
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="bg-white p-6 rounded-xl border border-[#E8DDD5] h-auto flex flex-col">
+                  <div className="mb-4">
+                    <span className="text-3xl text-[#B06A42] font-serif leading-none mb-3 block">"</span>
+                    <p className="text-sm italic text-[#2B211C]/80 leading-relaxed font-[family-name:var(--font-jakarta)]">
                       {i === 1 ? "I finally found a platform that values the time it takes to handcraft furniture." : i === 2 ? "The live auctions are thrilling. Won an amazing antique clock last week!" : "Best place to discover hidden artistic talent across India."}
                     </p>
                   </div>
                   <div className="mt-auto">
-                    <div className="h-px w-full bg-[var(--color-border-subtle)] mb-6" />
+                    <div className="border-t border-[#E8DDD5] my-4" />
                     <div className="flex items-center gap-4">
                       <Image 
                         src={i === 1 ? "https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939452/bidcraft_homepage/mlt57z6msgvdskvjssoi.jpg" : i === 2 ? "https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939454/bidcraft_homepage/btrciggwjxirtiatizgt.jpg" : "https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939455/bidcraft_homepage/fczu06ikkfxvdtqmb8zi.webp"}
-                        width={48} 
-                        height={48} 
+                        width={40} 
+                        height={40} 
                         style={{ objectFit: 'cover' }}
                         alt={`User ${i}`}
-                        className="rounded-full bg-[var(--color-ink-300)] w-[48px] h-[48px] min-w-[48px]"
+                        className="rounded-full bg-[var(--color-ink-300)] w-10 h-10 min-w-10"
                       />
                       <div>
-                        <p className="text-sm font-semibold text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">
+                        <p className="text-sm font-medium text-[#2B211C] font-[family-name:var(--font-jakarta)]">
                           {i === 1 ? "Priya S." : i === 2 ? "Arjun M." : "Nandita R."}
                         </p>
-                        <div className="flex gap-1 text-[var(--color-terracotta-600)] text-xs mt-1 font-bold font-[family-name:var(--font-montserrat)]">
+                        <div className="flex gap-1 text-[#B06A42] text-xs mt-1 font-[family-name:var(--font-jakarta)]">
                           {i === 1 ? "4.5" : i === 2 ? "4.0" : "5.0"}
-                          <Star className="w-3.5 h-3.5 fill-[var(--color-terracotta-600)] -translate-y-px" />
+                          <Star className="w-3.5 h-3.5 fill-[#B06A42] -translate-y-px" />
                         </div>
                       </div>
                     </div>

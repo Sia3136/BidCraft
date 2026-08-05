@@ -13,9 +13,14 @@ interface ImageGalleryProps {
 }
 
 export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: ImageGalleryProps) {
-  // Normalise: always work with an array, filter out empties
-  const imgs = (Array.isArray(images) ? images : images ? [images] : []).filter(Boolean)
-  if (imgs.length === 0) imgs.push('/placeholder.jpg')
+  const safeImages = React.useMemo(() => {
+    const arr = Array.isArray(images) ? images : [images].filter(Boolean);
+    const valid = arr.filter(Boolean); // remove nulls/empty strings
+    return [...new Set(valid)]; // dedup guard
+  }, [images]);
+  
+  const imgs = [...safeImages];
+  if (imgs.length === 0) imgs.push('/placeholder.jpg');
 
   const [activeIdx, setActiveIdx] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
