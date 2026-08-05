@@ -28,7 +28,7 @@ export function AuctionTimer({ endTime }: { endTime: string }) {
   if (!timeLeft) return null;
 
   return (
-    <span className="font-[family-name:var(--font-jakarta)] text-[11px] bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-2 py-0.5 rounded-[var(--radius-sm)] font-bold flex items-center gap-1 w-fit">
+    <span className="font-[family-name:var(--font-montserrat)] text-[11px] bg-[var(--color-terracotta-100)] text-[var(--color-terracotta-700)] px-2 py-0.5 rounded-[var(--radius-sm)] font-bold flex items-center gap-1 w-fit">
       <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-terracotta-500)] animate-pulse" />
       {timeLeft}
     </span>

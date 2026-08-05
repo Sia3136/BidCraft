@@ -190,8 +190,8 @@ function AuthPageContent() {
     <div className="flex-1 flex flex-col lg:flex-row items-stretch bg-[var(--color-cream-base)] relative overflow-hidden">
       {/* BRANDING / IMAGE */}
       <div className={cn(
-        "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)]",
-        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-[50%] h-56 sm:h-64 lg:h-auto lg:min-h-full"
+        "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)] flex",
+        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-1/2 min-h-[250px] lg:min-h-0"
       )}>
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)]/40 to-[var(--color-ink-900)]/70 mix-blend-multiply z-10" />
         
@@ -229,8 +229,8 @@ function AuthPageContent() {
 
       {/* RIGHT COLUMN - Auth Form */}
       <div className={cn(
-        "flex flex-col items-center justify-center p-6 sm:p-12 flex-1 relative z-30",
-        isFullScreenBg ? "w-full" : "w-full lg:w-[50%]"
+        "flex flex-col items-center justify-center p-6 sm:p-12 relative z-30",
+        isFullScreenBg ? "w-full" : "w-full lg:w-1/2 flex-1 py-12 lg:py-24"
       )}>
         
 

@@ -5,9 +5,9 @@
 
 :root {
   /* Neutral / Surface */
-  --color-cream-base: #FDFBF7;
+  --color-cream-base: #F7F4EE;
   --color-cream-raised: #F7F3EB;
-  --color-cream-deep: #F0EBE0;
+  --color-cream-deep: #F0EBE3;
   --color-white: #FFFFFF;
 
   --bc-cream-light: #FAF7F2;
@@ -139,8 +139,8 @@
 
   /* Typography */
   --font-display: var(--font-playfair);
-  --font-ui: var(--font-jakarta);
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-montserrat);
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
 

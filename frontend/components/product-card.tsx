@@ -183,9 +183,9 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
 
       </Link>
 
-      <div className="p-4 flex flex-col flex-1 bg-white z-10 relative">
+      <div className="p-5 flex flex-col flex-1 bg-white z-10 relative">
         <div className="flex items-center gap-1.5 mb-2">
-          <p className="text-[12px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider line-clamp-1">
+          <p className="text-[12px] font-[family-name:var(--font-montserrat)] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider line-clamp-1">
             {product.creator}
           </p>
           {product.verified && (
@@ -196,7 +196,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         </div>
 
         <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
-          <h3 className="font-display font-semibold text-heading-sm text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
+          <h3 className="font-[family-name:var(--font-playfair)] font-medium text-heading-sm text-[var(--color-ink-900)] mb-2 leading-relaxed line-clamp-2 tracking-wide">
             {product.title}
           </h3>
         </Link>
@@ -207,13 +207,13 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
               {/* Added mini timer for auction item on explore page as requested */}
               <div className="flex items-end justify-between">
                 <div>
-                  <p className="text-[10px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Current Bid</p>
-                  <p className="text-[18px] font-bold text-[var(--color-ink-900)]">
+                  <p className="text-[10px] font-[family-name:var(--font-montserrat)] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Current Bid</p>
+                  <p className="text-[18px] font-bold text-[var(--color-ink-900)] font-[family-name:var(--font-montserrat)]">
                     {formatPrice(product.currentBid ?? product.price)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[11px] font-medium text-[var(--color-ink-500)] mt-0.5">
+                  <p className="text-[11px] font-[family-name:var(--font-montserrat)] font-medium text-[var(--color-ink-500)] mt-0.5">
                     {product.bidCount ? `${product.bidCount} bids` : '0 bids'}
                   </p>
                 </div>
@@ -226,8 +226,8 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             </div>
           ) : (
             <div>
-              <p className="text-[10px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Price</p>
-              <p className="text-[18px] font-bold text-[var(--color-ink-900)]">
+              <p className="text-[10px] font-[family-name:var(--font-montserrat)] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Price</p>
+              <p className="text-[18px] font-bold text-[var(--color-ink-900)] font-[family-name:var(--font-montserrat)]">
                 {formatPrice(product.price)}
               </p>
             </div>

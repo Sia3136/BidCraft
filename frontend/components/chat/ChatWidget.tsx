@@ -129,8 +129,8 @@ export function ChatWidget() {
                   <Bot className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-body-md font-[family-name:var(--font-jakarta)]">BidCraft Assistant</h3>
-                  <p className="text-xs text-white/70 font-[family-name:var(--font-jakarta)]">Typically replies instantly</p>
+                  <h3 className="font-semibold text-body-md font-[family-name:var(--font-montserrat)]">BidCraft Assistant</h3>
+                  <p className="text-xs text-white/70 font-[family-name:var(--font-montserrat)]">Typically replies instantly</p>
                 </div>
               </div>
               <button 
@@ -160,7 +160,7 @@ export function ChatWidget() {
                     </div>
                     
                     <div className="flex flex-col gap-2">
-                      <div className={`p-3 rounded-2xl text-body-sm font-[family-name:var(--font-jakarta)] leading-relaxed ${
+                      <div className={`p-3 rounded-2xl text-body-sm font-[family-name:var(--font-montserrat)] leading-relaxed ${
                         msg.type === 'user' 
                           ? 'bg-[var(--color-ink-900)] text-white rounded-tr-sm' 
                           : 'bg-white text-[var(--color-ink-900)] border border-[var(--color-border-subtle)] rounded-tl-sm shadow-sm'
@@ -171,7 +171,7 @@ export function ChatWidget() {
                       {msg.action && (
                         <Link 
                           href={msg.action.href}
-                          className="self-start inline-flex items-center gap-1.5 text-xs font-semibold font-[family-name:var(--font-jakarta)] text-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] px-3 py-2 rounded-full border border-[var(--color-terracotta-200)] hover:bg-[var(--color-terracotta-100)] transition-colors"
+                          className="self-start inline-flex items-center gap-1.5 text-xs font-semibold font-[family-name:var(--font-montserrat)] text-[var(--color-terracotta-600)] bg-[var(--color-terracotta-50)] px-3 py-2 rounded-full border border-[var(--color-terracotta-200)] hover:bg-[var(--color-terracotta-100)] transition-colors"
                         >
                           {msg.action.label}
                           <ArrowRight className="w-3 h-3" />
@@ -184,7 +184,7 @@ export function ChatWidget() {
                             <button
                               key={chip}
                               onClick={() => handleSendText(chip)}
-                              className="text-xs font-medium font-[family-name:var(--font-jakarta)] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-700)] px-3 py-1.5 rounded-full hover:bg-[var(--color-cream-soft)] transition-colors text-left"
+                              className="text-xs font-medium font-[family-name:var(--font-montserrat)] bg-white border border-[var(--color-border-subtle)] text-[var(--color-ink-700)] px-3 py-1.5 rounded-full hover:bg-[var(--color-cream-soft)] transition-colors text-left"
                             >
                               {chip}
                             </button>
@@ -205,7 +205,7 @@ export function ChatWidget() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask a question..."
-                  className="flex-1 bg-[var(--color-cream-soft)] font-[family-name:var(--font-jakarta)] border border-[var(--color-border-subtle)] rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[var(--color-terracotta-600)] focus:ring-1 focus:ring-[var(--color-terracotta-600)] transition-all"
+                  className="flex-1 bg-[var(--color-cream-soft)] font-[family-name:var(--font-montserrat)] border border-[var(--color-border-subtle)] rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[var(--color-terracotta-600)] focus:ring-1 focus:ring-[var(--color-terracotta-600)] transition-all"
                 />
                 <button
                   type="submit"

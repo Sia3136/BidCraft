@@ -15,7 +15,19 @@ export default async function Home() {
       fetchNewArrivals(),
     ]);
     
-    const fetchedAuctions = auctionsData.auctions || [];
+    const fetchedAuctions = (auctionsData.auctions || []).sort((a, b) => {
+      const bidA = a.bidCount || 0;
+      const bidB = b.bidCount || 0;
+      if (bidA !== bidB) return bidB - bidA;
+      
+      const priceA = a.currentBid || a.price || 0;
+      const priceB = b.currentBid || b.price || 0;
+      if (priceA !== priceB) return priceB - priceA;
+
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return dateB - dateA;
+    });
     
     // Dynamically pick up to 4 visually diverse auctions based on category/subcategory
     const selected = new Map<string, Listing>();

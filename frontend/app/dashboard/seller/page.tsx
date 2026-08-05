@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils'
 
 export default function SellerDashboard() {
   return (
-    <div className="space-y-8 font-[family-name:var(--font-jakarta)] pb-12">
+    <div className="space-y-8 font-[family-name:var(--font-montserrat)] pb-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
