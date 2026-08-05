@@ -45,7 +45,7 @@ If you prefer to connect to Neon PostgreSQL and Upstash Redis instead of running
 make up-cloud
 
 # Or using Docker directly
-docker compose --profile cloud up -d
+docker compose up -d
 ```
 
 ## Accessing the Services

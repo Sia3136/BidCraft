@@ -10,19 +10,19 @@ up:
 
 # Start only Frontend and Backend (connects to Cloud DB/Redis)
 up-cloud:
-	docker compose --profile cloud up -d
+	docker compose up -d
 
 # Stop all services and remove containers
 down:
-	docker compose --profile local --profile cloud down
+	docker compose --profile local down
 
 # View logs for all running services
 logs:
-	docker compose --profile local --profile cloud logs -f
+	docker compose --profile local logs -f
 
 # Force rebuild of containers
 build:
-	docker compose --profile local --profile cloud build
+	docker compose --profile local build
 
 # Open a shell in the frontend container
 shell-frontend:

@@ -1,9 +1,7 @@
-version: '3.8'
-
 # --------------------------------------------------
 # DEVELOPMENT DOCKER COMPOSE
-# Run: docker compose --profile local up
-# Run: docker compose --profile cloud up
+# Run default (Cloud Mode): docker compose up
+# Run Local DB Mode: docker compose --profile local up
 # --------------------------------------------------
 
 services:
@@ -23,9 +21,6 @@ services:
       - ./frontend/.env
     networks:
       - bidcraft_network
-    profiles:
-      - local
-      - cloud
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
       interval: 10s
@@ -47,9 +42,6 @@ services:
       - ./backend/.env
     networks:
       - bidcraft_network
-    profiles:
-      - local
-      - cloud
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8000/api/health"] # Assuming a health route exists or checking root
       interval: 10s
