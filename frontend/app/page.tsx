@@ -11,10 +11,30 @@ export default async function Home() {
 
   try {
     const [auctionsData, newArrivalsData] = await Promise.all([
-      fetchLiveAuctions(4),
+      fetchLiveAuctions(20),
       fetchNewArrivals(),
     ]);
-    liveAuctions = auctionsData.auctions || [];
+    
+    const fetchedAuctions = auctionsData.auctions || [];
+    
+    // Dynamically pick up to 4 visually diverse auctions based on category/subcategory
+    const selected = new Map<string, Listing>();
+    for (const auction of fetchedAuctions) {
+      if (selected.size >= 4) break;
+      const cat = auction.category || 'Other';
+      if (!selected.has(cat)) {
+        selected.set(cat, auction);
+      }
+    }
+    
+    liveAuctions = Array.from(selected.values());
+    
+    // Fallback if we didn't get 4 distinct categories
+    if (liveAuctions.length < 4) {
+      const missing = 4 - liveAuctions.length;
+      const otherAuctions = fetchedAuctions.filter(a => !liveAuctions.find(l => l.id === a.id)).slice(0, missing);
+      liveAuctions = [...liveAuctions, ...otherAuctions];
+    }
     
     const allArrivals = newArrivalsData.listings || [];
     newArrivals = allArrivals.slice(0, 4);

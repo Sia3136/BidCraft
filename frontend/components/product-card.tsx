@@ -5,7 +5,7 @@ import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import { Listing } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
-import { Heart, ShoppingCart } from 'lucide-react'
+import { Heart, ShoppingCart, CheckCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
@@ -81,7 +81,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   }
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'duzlsyzwa'
-  const FALLBACK_IMAGE = "/placeholder.jpg";
+  const FALLBACK_IMAGE = "/images/80891aa6bb34af3854d903c9a40bde21.jpg";
   const imageStr = product.image?.trim();
   const imageUrl = !imageStr
     ? FALLBACK_IMAGE
@@ -92,6 +92,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   return (
     <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300">
       <Link href={getProductRoute(product)} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
+        {/* TODO: Replace with correct Cloudinary URL — fallback product image */}
         <Image
           src={imageUrl}
           alt={product.title}
@@ -188,14 +189,14 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             {product.creator}
           </p>
           {product.verified && (
-            <span className="text-[10px] bg-[var(--color-success-100)] text-[var(--color-success-700)] px-1.5 py-0.5 rounded-[var(--radius-pill)] font-bold shrink-0">
-              ✓
+            <span className="text-[10px] bg-[var(--color-success-100)] text-[var(--color-success-700)] p-[2px] rounded-full font-bold shrink-0 flex items-center justify-center" title="Verified Creator">
+              <CheckCircle size={12} strokeWidth={3} />
             </span>
           )}
         </div>
 
         <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
-          <h3 className="font-display font-semibold text-[15px] text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
+          <h3 className="font-display font-semibold text-heading-sm text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
             {product.title}
           </h3>
         </Link>

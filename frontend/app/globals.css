@@ -10,6 +10,10 @@
   --color-cream-deep: #F0EBE0;
   --color-white: #FFFFFF;
 
+  --bc-cream-light: #FAF7F2;
+  --bc-cream-mid: #F5F0E8;
+  --bc-cream-dark: #EDE8DF;
+
   /* Ink / Text & Structural */
   --color-ink-900: #2B2A28;
   --color-ink-700: #56524A;
@@ -100,6 +104,9 @@
   --color-cream-raised: var(--color-cream-raised);
   --color-cream-deep: var(--color-cream-deep);
   --color-white: var(--color-white);
+  --color-bc-cream-light: var(--bc-cream-light);
+  --color-bc-cream-mid: var(--bc-cream-mid);
+  --color-bc-cream-dark: var(--bc-cream-dark);
   --color-ink-900: var(--color-ink-900);
   --color-ink-700: var(--color-ink-700);
   --color-ink-500: var(--color-ink-500);
