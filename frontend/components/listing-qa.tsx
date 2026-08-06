@@ -34,7 +34,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
       const data = await res.json()
       if (res.ok) setQuestions(data.questions || [])
     } catch (err) {
-
+      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -65,7 +65,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
         alert(data.error || 'Failed to ask question')
       }
     } catch (err) {
-
+      console.error(err)
     }
   }
 
@@ -88,7 +88,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
         fetchQuestions()
       }
     } catch (err) {
-
+      console.error(err)
     }
   }
 

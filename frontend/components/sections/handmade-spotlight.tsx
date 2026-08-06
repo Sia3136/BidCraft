@@ -17,7 +17,7 @@ export function HandmadeSpotlightSection() {
         // Mocking a different set of products for handmade
         setListings(data.listings?.slice(0, 8).reverse() || [])
       } catch (err) {
-
+        console.error('Failed to load handmade:', err)
       } finally {
         setLoading(false)
       }

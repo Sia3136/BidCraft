@@ -1,6 +1,4 @@
-const API_BASE = typeof window === 'undefined'
-  ? (process.env.INTERNAL_API_URL || 'http://backend:8000')
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000')
+const getApiUrl = () => { if (typeof window === 'undefined') { return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || '' } return process.env.NEXT_PUBLIC_API_URL || '' }; const API_BASE = getApiUrl()
 
 export type User = {
   id: string
@@ -10,6 +8,7 @@ export type User = {
   role: 'buyer' | 'seller' | 'admin'
   avatar?: string
   createdAt: string
+  [key: string]: any
 }
 
 export type AuthResponse = {
@@ -279,7 +278,7 @@ export async function verifyBidDeposit(auctionId: string, data: any, token: stri
 export async function uploadListingImage(file: File, token: string): Promise<{ url: string; publicId: string }> {
   const form = new FormData()
   form.append('image', file)
-  const res = await fetch(`${API_BASE}/api/listings/upload`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/listings/upload-image`, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: form,
@@ -340,7 +339,7 @@ export async function submitOffer(listingId: string, offerAmount: number, token:
 }
 
 export async function shipOrder(orderId: string, data: { trackingNumber: string; carrier: string }, token: string) {
-  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/ship`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/escrow/` + orderId + `/ship`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify(data),
@@ -351,7 +350,7 @@ export async function shipOrder(orderId: string, data: { trackingNumber: string;
 }
 
 export async function confirmDelivery(orderId: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/deliver`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/escrow/` + orderId + `/confirm-delivery`, { credentials: 'include',
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -361,7 +360,7 @@ export async function confirmDelivery(orderId: string, token: string) {
 }
 
 export async function disputeOrder(orderId: string, reason: string, token: string) {
-  const res = await fetch(`${API_BASE}/api/orders/` + orderId + `/dispute`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/escrow/` + orderId + `/dispute`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ reason }),
@@ -373,7 +372,7 @@ export async function disputeOrder(orderId: string, reason: string, token: strin
 
 export async function fetchCreators(sort: string = 'followers', limit: number = 20, offset: number = 0) {
   const qs = new URLSearchParams({ sort, limit: String(limit), offset: String(offset) }).toString();
-  const res = await fetch(`${API_BASE}/api/users/creators?` + qs, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/creators?` + qs, { credentials: 'include',
     next: { revalidate: 60 }
   })
   if (!res.ok) throw new Error(`fetchCreators failed: ${res.status}`)

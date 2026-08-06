@@ -18,6 +18,8 @@ const buttonVariants = cva(
           "bg-transparent border-[1.5px] border-[var(--color-urgent-600)] text-[var(--color-urgent-700)] hover:bg-[var(--color-urgent-100)] rounded-[var(--radius-md)]",
         icon:
           "bg-transparent text-[var(--color-ink-700)] hover:bg-[var(--color-cream-deep)] rounded-[var(--radius-sm)]",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-[44px] px-[28px]",
@@ -25,6 +27,8 @@ const buttonVariants = cva(
         large: "h-[52px] px-[32px] text-[16px]",
         icon: "h-[44px] w-[44px] p-[8px]",
         iconSm: "h-[36px] w-[36px] p-[6px]",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
       },
     },
     compoundVariants: [

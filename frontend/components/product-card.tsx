@@ -5,7 +5,7 @@ import Image from 'next/image'
 import React, { useState, useEffect } from 'react'
 import { Listing } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
-import { Heart, ShoppingCart, CheckCircle } from 'lucide-react'
+import { Heart, ShoppingCart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
@@ -56,7 +56,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         alert('Failed to add to cart')
       }
     } catch (err) {
-
+      console.error(err)
       // TODO: Replace with proper transient toast system
       alert('Failed to add to cart')
     }
@@ -81,7 +81,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
   }
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'duzlsyzwa'
-  const FALLBACK_IMAGE = "/images/80891aa6bb34af3854d903c9a40bde21.jpg";
+  const FALLBACK_IMAGE = "/placeholder.jpg";
   const imageStr = product.image?.trim();
   const imageUrl = !imageStr
     ? FALLBACK_IMAGE
@@ -90,9 +90,8 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       : `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_500/${imageStr}`;
 
   return (
-    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_12px_28px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300">
+    <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
       <Link href={getProductRoute(product)} className="block relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
-        {/* TODO: Replace with correct Cloudinary URL — fallback product image */}
         <Image
           src={imageUrl}
           alt={product.title}
@@ -112,17 +111,16 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         {/* Top Left Badge */}
         <div style={{
           position: 'absolute',
-          top: '16px',
-          left: '16px',
+          top: '12px',
+          left: '12px',
           background: badgeBg,
           color: badgeColor,
-          padding: '6px 12px',
+          padding: '4px 10px',
           borderRadius: 'var(--radius-pill)',
-          fontSize: '10px',
-          fontWeight: 800,
+          fontSize: '11px',
+          fontWeight: 700,
           textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          letterSpacing: '0.02em',
           zIndex: 10
         }}>
           {badgeText}
@@ -133,11 +131,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
           onClick={toggleWishlist}
           style={{
             position: 'absolute',
-            top: '16px',
-            right: '16px',
+            top: '10px',
+            right: '10px',
             height: '36px', 
             width: '36px',
-            background: 'rgba(255, 255, 255, 0.95)', 
+            background: 'rgba(255, 255, 255, 0.9)', 
             color: isWishlisted ? 'var(--color-terracotta-600)' : 'var(--color-ink-500)',
             border: 'none', 
             borderRadius: '50%',
@@ -159,11 +157,11 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             onClick={handleAddToCart}
             style={{
               position: 'absolute',
-              bottom: '16px',
-              right: '16px',
+              bottom: '10px',
+              right: '10px',
               height: '36px', 
               width: '36px',
-              background: 'rgba(255, 255, 255, 0.95)', 
+              background: 'rgba(255, 255, 255, 0.9)', 
               color: 'var(--color-ink-900)',
               border: 'none', 
               borderRadius: '50%',
@@ -183,20 +181,20 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
 
       </Link>
 
-      <div className="p-5 flex flex-col flex-1 bg-white z-10 relative">
+      <div className="p-4 flex flex-col flex-1 bg-white z-10 relative">
         <div className="flex items-center gap-1.5 mb-2">
-          <p className="text-xs uppercase tracking-[0.12em] text-[#2B211C]/55 font-medium line-clamp-1">
+          <p className="text-[12px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider line-clamp-1">
             {product.creator}
           </p>
           {product.verified && (
-            <span className="text-[10px] bg-[var(--color-success-100)] text-[var(--color-success-700)] p-[2px] rounded-full font-bold shrink-0 flex items-center justify-center" title="Verified Creator">
-              <CheckCircle size={12} strokeWidth={3} />
+            <span className="text-[10px] bg-[var(--color-success-100)] text-[var(--color-success-700)] px-1.5 py-0.5 rounded-[var(--radius-pill)] font-bold shrink-0">
+              ✓
             </span>
           )}
         </div>
 
         <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
-          <h3 className="text-sm font-playfair font-medium text-[#2B211C] leading-snug mb-2 line-clamp-2">
+          <h3 className="font-display font-semibold text-[15px] text-[var(--color-ink-900)] mb-3 leading-tight line-clamp-2">
             {product.title}
           </h3>
         </Link>
@@ -207,13 +205,13 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
               {/* Added mini timer for auction item on explore page as requested */}
               <div className="flex items-end justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-[#2B211C]/50 mb-0.5">Current Bid</p>
-                  <p className="text-base font-bold text-[#2B211C]">
+                  <p className="text-[10px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Current Bid</p>
+                  <p className="text-[18px] font-bold text-[var(--color-ink-900)]">
                     {formatPrice(product.currentBid ?? product.price)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-[#2B211C]/50 mt-0.5">
+                  <p className="text-[11px] font-medium text-[var(--color-ink-500)] mt-0.5">
                     {product.bidCount ? `${product.bidCount} bids` : '0 bids'}
                   </p>
                 </div>
@@ -226,8 +224,8 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
             </div>
           ) : (
             <div>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-[#2B211C]/50 mb-0.5">Price</p>
-              <p className="text-base font-bold text-[#2B211C]">
+              <p className="text-[10px] font-semibold text-[var(--color-ink-500)] uppercase tracking-wider mb-0.5">Price</p>
+              <p className="text-[18px] font-bold text-[var(--color-ink-900)]">
                 {formatPrice(product.price)}
               </p>
             </div>

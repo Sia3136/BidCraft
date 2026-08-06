@@ -52,7 +52,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
 
     newSocket.on('connect_error', (err) => {
-
+      console.error('[SocketProvider] Connection error:', err.message);
     });
 
     // Global listeners

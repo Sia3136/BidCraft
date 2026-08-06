@@ -1,6 +1,6 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Playfair_Display, Montserrat } from 'next/font/google'
+import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -11,10 +11,10 @@ const playfair = Playfair_Display({
   display: 'swap',
 })
 
-const montserrat = Montserrat({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-montserrat',
+  variable: '--font-jakarta',
   display: 'swap',
 })
 
@@ -53,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${jakarta.variable}`}>
       <body className="font-sans antialiased">
         <AuthProvider>
           <SocketProvider>
@@ -62,7 +62,7 @@ export default function RootLayout({
               <Suspense fallback={<div className="h-[128px] md:h-[136px] bg-[var(--color-cream-base)] border-b border-[var(--color-border-subtle)]" />}>
                 <Navbar />
               </Suspense>
-              <main className="flex-1 w-full flex flex-col">
+              <main className="flex-1 w-full">
                 {children}
               </main>
               <Footer />

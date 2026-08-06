@@ -21,7 +21,7 @@ export function BuyerDisputes() {
         setDisputes(data.disputes || [])
       }
     } catch (err) {
-
+      console.error(err)
     } finally {
       setLoading(false)
     }

@@ -96,6 +96,10 @@ async function closeAuction(auctionId) {
         `UPDATE auctions SET status = 'active', current_bid = start_bid, total_bids = 0, end_time = $1, updated_at = NOW() WHERE id = $2`,
         [newEndTime, auctionId]
       );
+      await client.query(
+        `UPDATE listings SET auction_ends_at = $1, updated_at = NOW() WHERE id = $2`,
+        [newEndTime, auction.listing_id]
+      );
       await client.query(`DELETE FROM bids WHERE auction_id = $1`, [auctionId]);
       await client.query('COMMIT');
       cacheService.invalidateCache(['/', '/explore', `/product/${auction.listing_id}`]).catch(() => {});
@@ -110,6 +114,10 @@ async function closeAuction(auctionId) {
       await client.query(
         `UPDATE auctions SET status = 'active', current_bid = start_bid, total_bids = 0, end_time = $1, updated_at = NOW() WHERE id = $2`,
         [newEndTime, auctionId]
+      );
+      await client.query(
+        `UPDATE listings SET auction_ends_at = $1, updated_at = NOW() WHERE id = $2`,
+        [newEndTime, auction.listing_id]
       );
       await client.query(`DELETE FROM bids WHERE auction_id = $1`, [auctionId]);
       await client.query('COMMIT');

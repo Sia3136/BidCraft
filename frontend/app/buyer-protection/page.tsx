@@ -15,7 +15,7 @@ export default function BuyerProtectionPage() {
             <li>If the item is significantly not as described, you can raise a dispute within 7 days of delivery.</li>
             <li>We do not guarantee authenticity of collectibles at this stage — for items like Trading Cards, Hot Wheels, and Funko Pops, BidCraft relies on seller verification and community reporting.</li>
             <li>BidCraft's "Verified Creator" badge means the seller's identity has been confirmed, not that individual items have been authenticated.</li>
-            <li>Contact <a href="mailto:disputes@bidcraft.in" className="text-[var(--color-terracotta-600)] hover:underline font-semibold">our Resolution Center</a> for any open order issue.</li>
+            <li>Contact <a href="mailto:disputes@bidcraft.in" className="text-[var(--color-terracotta-600)] hover:underline font-semibold">disputes@bidcraft.in</a> for any open order issue.</li>
           </ul>
         </div>
       </main>

@@ -33,7 +33,7 @@ export const CategoryFilters = React.memo(function CategoryFilters({
   return (
     <aside>
       <div className="mb-8">
-        <p className="font-playfair font-medium text-heading-sm text-[var(--color-ink-900)] mb-3">
+        <p className="font-display text-heading-sm font-semibold text-[var(--color-ink-900)] mb-3">
           Subcategories
         </p>
         {activeSubcategory && (
@@ -69,7 +69,7 @@ export const CategoryFilters = React.memo(function CategoryFilters({
       <div className="h-px bg-[var(--color-border-subtle)] mb-8" />
 
       <div>
-        <p className="font-playfair font-medium text-heading-sm text-[var(--color-ink-900)] mb-3">
+        <p className="font-display text-heading-sm font-semibold text-[var(--color-ink-900)] mb-3">
           Browse explore page for full filtering
         </p>
         <a

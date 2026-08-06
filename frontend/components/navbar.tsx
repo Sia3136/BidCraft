@@ -205,7 +205,7 @@ export const Navbar = React.memo(function Navbar() {
           "w-full fixed top-0 z-50 transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] border-b",
           (isHomepage && !isScrolled)
             ? "bg-transparent border-transparent"
-            : "bg-[#FAF8F4] backdrop-blur-[12px] saturate-[1.4] shadow-[0_1px_0_var(--color-border-subtle),0_4px_16px_rgba(43,42,40,0.08)] border-transparent"
+            : "bg-[rgba(253,251,247,0.92)] backdrop-blur-[12px] saturate-[1.4] shadow-[0_1px_0_var(--color-border-subtle),0_4px_16px_rgba(43,42,40,0.08)] border-transparent"
         )}
       >
         {/* Row 1 */}
@@ -236,7 +236,7 @@ export const Navbar = React.memo(function Navbar() {
 
             {/* Center Zone */}
             <div className="justify-self-center">
-              <Link href="/" className="text-display-lg font-playfair font-bold text-[#2B211C] transition-colors">
+              <Link href="/" className="text-display-lg font-display text-[var(--color-ink-900)] transition-colors">
                 BidCraft
               </Link>
             </div>
@@ -353,43 +353,32 @@ export const Navbar = React.memo(function Navbar() {
           <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between h-[56px] px-[var(--space-5)]">
             <div className="flex items-center gap-[32px] h-full pl-[48px]">
 
-              {/* Category navigation row */}
-              <nav className="flex items-center gap-6 md:gap-8">
-                {categories.map((cat) => (
-                  <div key={cat.name} className="relative group h-full flex items-center">
-                    <Link
-                      href={`/explore?category=${cat.slug}`}
-                      className="text-sm font-medium text-[#2B211C]/70 hover:text-[#B06A42] transition-colors duration-150 py-4"
-                    >
-                      {cat.name}
-                    </Link>
-                    <div className="absolute top-full left-0 w-56 bg-[var(--color-white)] shadow-lg rounded-b-[var(--radius-md)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[var(--color-border-subtle)] overflow-hidden">
-                      <div className="py-2 flex flex-col">
-                        {cat.subcategories.map(sub => (
-                          <Link 
-                            key={sub.name}
-                            href={`/explore?category=${cat.slug}&subcategory=${sub.slug}`}
-                            className="px-4 py-2.5 text-sm font-medium text-[var(--color-ink-700)] hover:bg-[var(--color-cream-base)] hover:text-[var(--color-terracotta-600)] transition-colors"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {/* Categories */}
+              {categories.map((category) => (
+                <div key={category.slug} className="relative h-full flex items-center">
+                  <button
+                    onClick={(e) => {
+                      setOpenDropdown(openDropdown === category.slug ? null : category.slug);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setOpenDropdown(openDropdown === category.slug ? null : category.slug);
+                      }
+                    }}
+                    aria-expanded={openDropdown === category.slug}
+                    className={cn("h-full flex items-center text-body-md font-medium transition-colors relative cursor-pointer", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
+                  >
+                    {category.name}
+                  </button>
+                </div>
+              ))}
 
-                {/* Divider */}
-                <span className="text-[#D8C8BA]">|</span>
+              <div className="h-[16px] w-[1px] bg-[var(--color-border-subtle)]" />
 
-                {/* Explore All */}
-                <Link
-                  href="/explore"
-                  className="text-sm font-medium text-[#B06A42] hover:underline underline-offset-2 transition-colors"
-                >
-                  Explore All →
-                </Link>
-              </nav>
+              <Link href="/explore" className="text-caption font-medium text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)] transition-colors">
+                Explore All →
+              </Link>
             </div>
 
             {/* Search Bar (Row 2 Desktop) */}
@@ -411,7 +400,45 @@ export const Navbar = React.memo(function Navbar() {
             </div>
           </div>
 
-
+          {/* 3-Column Grid Subcategory Panel */}
+          <AnimatePresence>
+            {openDropdown && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
+              >
+                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
+                  <div className="grid grid-cols-3 gap-y-4 gap-x-8">
+                    {(() => {
+                      const activeCat = categories.find(c => c.slug === openDropdown);
+                      if (!activeCat) return null;
+                      return activeCat.subcategories.map(sub => {
+                        const href = `/explore?category=${activeCat.slug}&subcategory=${sub.slug}`;
+                        return (
+                          <button
+                            key={sub.slug}
+                            onClick={() => {
+                              console.log(`[Nav Flow - Desktop] 1. Click fired for ${sub.name}`);
+                              console.log(`[Nav Flow - Desktop] 2. Generated href: ${href}`);
+                              console.log(`[Nav Flow - Desktop] 3. Calling router.push()`);
+                              router.push(href);
+                              console.log(`[Nav Flow - Desktop] 4. router.push called, closing dropdown`);
+                              setOpenDropdown(null);
+                            }}
+                            className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
+                          >
+                            {sub.name}
+                          </button>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
         </div>
       </header>
@@ -445,25 +472,46 @@ export const Navbar = React.memo(function Navbar() {
         <div className="p-4 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">Shop</h3>
-            {categories.map((cat) => (
-              <div key={cat.name} className="flex flex-col gap-1 mb-2">
+            {categories.map((category) => (
+              <div key={category.slug} className="flex flex-col">
                 <button
-                  onClick={() => { router.push(`/explore?category=${cat.slug}`); setIsMobileMenuOpen(false); }}
-                  className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full border-b border-[var(--color-border-subtle)]"
+                  onClick={() => setOpenDropdown(openDropdown === category.slug ? null : category.slug)}
+                  className="flex items-center justify-between text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
                 >
-                  {cat.name}
+                  {category.name}
+                  <span className="text-xl leading-none">{openDropdown === category.slug ? '−' : '+'}</span>
                 </button>
-                <div className="flex flex-col pl-4 mt-1 border-l-2 border-[var(--color-cream-deep)]">
-                  {cat.subcategories.map(sub => (
-                    <button
-                      key={sub.name}
-                      onClick={() => { router.push(`/explore?category=${cat.slug}&subcategory=${sub.slug}`); setIsMobileMenuOpen(false); }}
-                      className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
+                <AnimatePresence>
+                  {openDropdown === category.slug && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
                     >
-                      {sub.name}
-                    </button>
-                  ))}
-                </div>
+                      {category.subcategories.map(sub => {
+                        const href = `/explore?category=${category.slug}&subcategory=${sub.slug}`;
+                        return (
+                          <button
+                            key={sub.slug}
+                            onClick={() => {
+                              console.log(`[Nav Flow - Mobile] 1. Click fired for ${sub.name}`);
+                              console.log(`[Nav Flow - Mobile] 2. Generated href: ${href}`);
+                              console.log(`[Nav Flow - Mobile] 3. Calling router.push()`);
+                              router.push(href);
+                              console.log(`[Nav Flow - Mobile] 4. router.push called, closing dropdown`);
+                              setOpenDropdown(null);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
+                          >
+                            {sub.name}
+                          </button>
+                        )
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
             <button

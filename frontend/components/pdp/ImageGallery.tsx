@@ -8,19 +8,12 @@ import { cn } from '@/lib/utils'
 interface ImageGalleryProps {
   images: string[]
   alt: string
-  isWishlisted?: boolean
-  onWishlistToggle?: () => void
 }
 
-export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: ImageGalleryProps) {
-  const safeImages = React.useMemo(() => {
-    const arr = Array.isArray(images) ? images : [images].filter(Boolean);
-    const valid = arr.filter(Boolean); // remove nulls/empty strings
-    return [...new Set(valid)]; // dedup guard
-  }, [images]);
-  
-  const imgs = [...safeImages];
-  if (imgs.length === 0) imgs.push('/placeholder.jpg');
+export function ImageGallery({ images, alt }: ImageGalleryProps) {
+  // Normalise: always work with an array, filter out empties
+  const imgs = (Array.isArray(images) ? images : images ? [images] : []).filter(Boolean)
+  if (imgs.length === 0) imgs.push('/placeholder.jpg')
 
   const [activeIdx, setActiveIdx] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -81,9 +74,38 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
   return (
     <>
       {/* ─── Main Gallery ─────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
 
-        {/* Main image */}
+        {/* Thumbnails — desktop only (md+), LEFT side. On mobile, dots shown below. */}
+        {hasMultiple && (
+          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
+            {imgs.map((src, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIdx(idx)}
+                aria-label={`View image ${idx + 1}`}
+                className={cn(
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  activeIdx === idx
+                    ? 'border-[#B06A42]'
+                    : 'border-transparent hover:border-[var(--color-ink-300)]'
+                )}
+              >
+                <Image
+                  src={src}
+                  fill
+                  sizes="72px"
+                  style={{ objectFit: 'cover' }}
+                  alt={`Thumbnail ${idx + 1}`}
+                  loading="lazy"
+                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Main image — flex-1 min-w-0 ensures it never shrinks into the thumbnail column */}
         <div
           ref={containerRef}
           className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 min-w-0 cursor-zoom-in"
@@ -95,48 +117,20 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
           tabIndex={0}
           onKeyDown={e => { if (e.key === 'Enter') openLightbox(activeIdx) }}
         >
-          {imgs.map((src, idx) => (
-            <Image
-              key={idx}
-              src={src}
-              fill
-              sizes="(max-width: 768px) 100vw, 55vw"
-              quality={85}
-              style={{
-                objectFit: 'cover',
-                opacity: activeIdx === idx ? 1 : 0,
-                transition: 'opacity 0.4s ease, transform 0.32s ease',
-                pointerEvents: activeIdx === idx ? 'auto' : 'none'
-              }}
-              alt={`${alt} view ${idx + 1}`}
-              priority={idx === 0}
-              className="gallery-main-img absolute inset-0"
-              onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-            />
-          ))}
-
-          {/* Wishlist Heart Overlay */}
-          {onWishlistToggle && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onWishlistToggle();
-              }}
-              aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              className="absolute top-4 right-4 z-20 flex items-center justify-center hover:scale-110 transition-transform duration-150 pointer-events-auto"
-            >
-              {isWishlisted ? (
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 text-[var(--color-terracotta-600)] drop-shadow-md">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09 C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5 c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06 a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-              )}
-            </button>
-          )}
+          <Image
+            src={imgs[activeIdx]}
+            fill
+            sizes="(max-width: 768px) 100vw, 60vw"
+            style={{
+              objectFit: 'cover',
+              // GPU-accelerated zoom on hover via CSS class below
+              transition: 'transform 0.32s ease',
+            }}
+            alt={alt}
+            priority={activeIdx === 0}
+            className="gallery-main-img"
+            onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+          />
 
           {/* Prev / Next arrow buttons — desktop only, sit above image */}
           {hasMultiple && (
@@ -187,37 +181,6 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
             ))}
           </div>
         )}
-
-        {/* Thumbnails — desktop only (md+), BELOW main image. */}
-        {hasMultiple && (
-          <div className="hidden md:flex md:flex-row gap-3 overflow-x-auto hide-scrollbar w-full pb-2">
-            {imgs.map((src, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`View image ${idx + 1}`}
-                className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
-                  activeIdx === idx
-                    ? 'border-[#B06A42]'
-                    : 'border-transparent hover:border-[#D8C8BA]'
-                )}
-              >
-                <Image
-                  src={src}
-                  fill
-                  sizes="72px"
-                  quality={75}
-                  style={{ objectFit: 'cover' }}
-                  alt={`Thumbnail ${idx + 1}`}
-                  loading="lazy"
-                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-                />
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* ─── Hover zoom CSS (injected via style tag) ───────────────────── */}
@@ -243,11 +206,11 @@ export function ImageGallery({ images, alt, isWishlisted, onWishlistToggle }: Im
           aria-label={`Image lightbox: ${alt}`}
           onClick={e => { if (e.target === e.currentTarget) setLightboxOpen(false) }}
         >
-          {/* Close button - high z-index and inside dialog but outside image container */}
+          {/* Close button */}
           <button
             onClick={() => setLightboxOpen(false)}
             aria-label="Close image viewer"
-            className="absolute top-4 right-4 w-10 h-10 z-[10000] flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white pointer-events-auto"
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             <X className="w-5 h-5" />
           </button>

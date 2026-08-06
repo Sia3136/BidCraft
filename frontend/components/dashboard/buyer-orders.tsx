@@ -24,7 +24,7 @@ export function BuyerOrders() {
         setOrders(data.orders || [])
       }
     } catch (err) {
-
+      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -65,20 +65,12 @@ export function BuyerOrders() {
             {order.status === 'shipped' && (
               <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg">
                 <p className="text-xs text-blue-800 dark:text-blue-400 mb-2 font-semibold">Your item has been shipped!</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleConfirmDelivery(order.id)}
-                    className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition-colors"
-                  >
-                    Confirm Delivery
-                  </button>
-                  <a
-                    href={`/orders/${order.id}/tracking`}
-                    className="px-4 py-2 bg-[var(--color-terracotta-600)] text-white text-xs font-bold rounded hover:bg-[var(--color-terracotta-700)] transition-colors"
-                  >
-                    Track Order
-                  </a>
-                </div>
+                <button
+                  onClick={() => handleConfirmDelivery(order.id)}
+                  className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition-colors"
+                >
+                  Confirm Delivery
+                </button>
               </div>
             )}
           </div>

@@ -7,12 +7,14 @@ export async function POST(req: NextRequest) {
 
     if (paths.length > 0) {
       for (const path of paths) {
+        // @ts-ignore
         revalidatePath(path);
       }
     }
     
     if (tags.length > 0) {
       for (const tag of tags) {
+        // @ts-ignore
         revalidateTag(tag);
       }
     }

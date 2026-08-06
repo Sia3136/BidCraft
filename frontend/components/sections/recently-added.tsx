@@ -16,7 +16,7 @@ export function RecentlyAddedSection() {
         // For now, we'll just reverse the array to simulate newest first
         setListings((data.listings || []).reverse())
       } catch (err) {
-
+        console.error('Failed to load recent products:', err)
       } finally {
         setLoading(false)
       }

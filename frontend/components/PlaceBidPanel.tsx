@@ -41,7 +41,7 @@ export function PlaceBidPanel({
   }, [auction.auctionEndsAt])
 
   const minimumNextBid = (auction.currentBid || listingPrice) + 10 // min increment 10
-  const [bidAmount, setBidAmount] = useState<number | ''>(minimumNextBid)
+  const [bidAmount, setBidAmount] = useState(minimumNextBid)
   const [panelOpen, setPanelOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -57,7 +57,7 @@ export function PlaceBidPanel({
   const handleDepositPayment = async () => {
     try {
       setLoading(true)
-      const depositAmount = Math.min(Math.max((typeof bidAmount === 'number' ? bidAmount : 0) * 0.1, 99), 2000)
+      const depositAmount = Math.min(Math.max(bidAmount * 0.1, 99), 2000)
       const orderData = await createBidDeposit(auctionId, depositAmount, token!)
       
       const options = {
@@ -172,31 +172,13 @@ export function PlaceBidPanel({
             Minimum next bid: <span className="font-bold text-[var(--color-ink-900)]">{formatPrice(minimumNextBid)}</span>
           </p>
           <div className="flex gap-2">
-            <div className="flex items-center border border-[var(--color-border-strong)] rounded-[var(--radius-md)] overflow-hidden bg-white flex-1">
-              <button type="button" onClick={() => {
-                const INCREMENT = (auction.currentBid || listingPrice) < 1000 ? 50 : (auction.currentBid || listingPrice) < 5000 ? 100 : (auction.currentBid || listingPrice) < 20000 ? 250 : 500;
-                setBidAmount(prev => Math.max(minimumNextBid, (typeof prev === 'number' ? prev : minimumNextBid) - INCREMENT))
-              }} className="px-4 h-11 text-[var(--color-ink-900)] hover:bg-[var(--color-cream-deep)] text-lg font-medium transition-colors">
-                −
-              </button>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={bidAmount}
-                onChange={e => {
-                  const raw = e.target.value.replace(/\D/g, '')
-                  setBidAmount(raw === '' ? '' : parseInt(raw, 10))
-                }}
-                className="flex-1 min-w-0 h-11 text-center font-ui text-[16px] font-semibold text-[var(--color-ink-900)] outline-none border-x border-[var(--color-border-strong)] focus:border-[var(--color-terracotta-600)]"
-              />
-              <button type="button" onClick={() => {
-                const INCREMENT = (auction.currentBid || listingPrice) < 1000 ? 50 : (auction.currentBid || listingPrice) < 5000 ? 100 : (auction.currentBid || listingPrice) < 20000 ? 250 : 500;
-                setBidAmount(prev => (typeof prev === 'number' ? prev : minimumNextBid) + INCREMENT)
-              }} className="px-4 h-11 text-[var(--color-ink-900)] hover:bg-[var(--color-cream-deep)] text-lg font-medium transition-colors">
-                +
-              </button>
-            </div>
+            <input
+              type="number"
+              value={bidAmount}
+              min={minimumNextBid}
+              onChange={e => setBidAmount(parseInt(e.target.value) || 0)}
+              className="flex-1 h-11 px-4 rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-white font-ui text-[16px] font-semibold text-[var(--color-ink-900)] outline-none focus:border-[var(--color-terracotta-600)]"
+            />
             <button
               onClick={handlePlaceBid}
               disabled={loading}

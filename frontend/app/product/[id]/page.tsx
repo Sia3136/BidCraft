@@ -45,46 +45,12 @@ async function ProductDetailData({ id }: { id: string }) {
     redirect(`/auction/ended/${id}`);
   }
 
-  // Fetch candidate listings for similar and seller products
-  // We use limit 100 to cast a reasonably wide net without hardcoding multiple pagination calls.
-  const moreData = await fetchListings({ limit: 100 });
-  
-  // 1. More From This Seller
-  const sellerListings = moreData.listings
-    .filter((l) => (l.sellerId === listing.sellerId || l.creator === listing.creator) && l.id !== listing.id);
-  
-  const related = sellerListings.slice(0, 4);
-
-  // 2. Similar Products
-  const excludeIds = new Set([listing.id, ...related.map(l => l.id)]);
-  const similarCandidates = moreData.listings.filter(l => !excludeIds.has(l.id));
-  
-  const scoreSimilarity = (l: any) => {
-    let score = 0;
-    if (l.category === listing.category && l.subcategory === listing.subcategory) score += 40;
-    else if (l.category === listing.category) score += 30;
-    
-    if (l.buyingMethod === listing.buyingMethod) score += 10;
-    
-    // Title keywords overlap (words > 3 chars)
-    const getTokens = (t: string) => t.toLowerCase().split(/\W+/).filter(w => w.length > 3);
-    const keywords1 = new Set(getTokens(listing.title));
-    const keywords2 = new Set(getTokens(l.title));
-    let matches = 0;
-    for (const kw of keywords1) if (keywords2.has(kw)) matches++;
-    score += (matches * 5);
-    
-    // Recent active fallback naturally happens via order if scores tie, 
-    // but we can add a slight boost for newer items if we had timestamps.
-    return score;
-  };
-
-  const similarListings = similarCandidates
-    .map(l => ({ listing: l, score: scoreSimilarity(l) }))
-    .sort((a, b) => b.score - a.score)
-    .map(item => item.listing)
+  // Fetch all products to find related ones from the same creator
+  const moreData = await fetchListings({ limit: 50 });
+  const related = moreData.listings
+    .filter((l) => l.creator === listing.creator && l.id !== listing.id)
     .slice(0, 4);
 
-  return <ProductDetailClient product={listing} related={related} similar={similarListings} />;
+  return <ProductDetailClient product={listing} related={related} />;
 }
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { chromium } from 'playwright';
 
 (async () => {
@@ -9,12 +10,12 @@ import { chromium } from 'playwright';
   page.on('pageerror', err => console.log(`[Browser Error] ${err.message}`));
 
   await page.addInitScript(() => {
-    const logEvent = (type, details) => {
+    const logEvent = (type: any, details: any) => {
       const msg = `[${performance.now().toFixed(2)}ms] ${type} | ${JSON.stringify(details)}`;
       console.log(msg);
     };
 
-    window.reportHeight = () => {
+    (window as any).reportHeight = () => {
        logEvent('DocumentHeight', { 
          height: document.documentElement.scrollHeight,
          scrollY: window.scrollY,
@@ -48,7 +49,7 @@ import { chromium } from 'playwright';
   });
   await page.waitForTimeout(500);
 
-  await page.evaluate(() => window.reportHeight());
+  await page.evaluate(() => (window as any).reportHeight());
 
   console.log("Clicking Explore...");
   await page.evaluate(() => {
@@ -60,7 +61,7 @@ import { chromium } from 'playwright';
   });
 
   await page.waitForTimeout(4000);
-  await page.evaluate(() => window.reportHeight());
+  await page.evaluate(() => (window as any).reportHeight());
   
   console.log("Navigating back to home to try another route...");
   await page.goto('http://localhost:3000');
@@ -72,7 +73,7 @@ import { chromium } from 'playwright';
   });
   await page.waitForTimeout(500);
 
-  await page.evaluate(() => window.reportHeight());
+  await page.evaluate(() => (window as any).reportHeight());
 
   console.log("Clicking a product...");
   await page.evaluate(() => {
@@ -84,7 +85,8 @@ import { chromium } from 'playwright';
   });
 
   await page.waitForTimeout(4000);
-  await page.evaluate(() => window.reportHeight());
+  await page.evaluate(() => (window as any).reportHeight());
 
   await browser.close();
 })();
+

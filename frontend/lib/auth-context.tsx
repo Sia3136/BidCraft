@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (credentials: any) => {
-    const { user, token } = await apiLogin({ emailOrMobile: credentials.email, password: credentials.password })
+    const { user, token } = await apiLogin({ email: credentials.email, password: credentials.password })
     setAuth(user, token)
   }
 

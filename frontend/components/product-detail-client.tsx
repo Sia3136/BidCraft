@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/formatPrice';
@@ -21,7 +21,7 @@ import { ShippingInfo } from '@/components/pdp/ShippingInfo';
 
 
 
-export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[], similar?: Listing[] }) {
+export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
   return (
     <ErrorBoundary>
       <ProductDetailClient {...props} />
@@ -38,7 +38,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
     return { hasError: true };
   }
   componentDidCatch(error: any, errorInfo: any) {
-
+    console.error('ProductDetailClient error:', error, errorInfo);
   }
   render() {
     if (this.state.hasError) {
@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
   }
 }
 
-function ProductDetailClient({ product, related = [], similar = [] }: { product: Listing; related?: Listing[]; similar?: Listing[] }) {
+function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
   const router = useRouter();
   
   if (!product) {
@@ -57,7 +57,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
   const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
   const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
   
-  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart, addRecentlyViewed } = useStore();
+  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart } = useStore();
   const { isAuthenticated } = useAuthStore();
   
   const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
@@ -66,33 +66,6 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
   const [bidAmount, setBidAmount] = useState('');
   const [isBidding, setIsBidding] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(true);
-
-  const rightColRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const [showMobileBar, setShowMobileBar] = useState(true);
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Mobile: Hide bottom bar when sentinel appears
-        setShowMobileBar(!entry.isIntersecting);
-      },
-      { threshold: 0, rootMargin: '0px 0px -80px 0px' }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (product && product.numericId) {
-      addRecentlyViewed(Number(product.numericId));
-    } else if (product && product.id) {
-      addRecentlyViewed(Number(product.id));
-    }
-  }, [product, addRecentlyViewed]);
 
 
   const handleAuthCheck = (action: () => void) => {
@@ -131,39 +104,6 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
     });
   };
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!useAuthStore.getState().isAuthenticated) {
-      alert('Please sign in to add to cart');
-      return;
-    }
-    try {
-      const res = await fetch(`/api/cart`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
-      });
-      if (res.ok) {
-        alert('Added to cart!');
-        useStore.getState().loadCart();
-      } else {
-        let errMsg = 'Failed to add to cart';
-        try {
-          const err = await res.json();
-          errMsg = err.error || errMsg;
-
-        } catch (e) {
-
-        }
-        alert(errMsg);
-      }
-    } catch (err) {
-
-      alert('Failed to add to cart');
-    }
-  };
-
   const toggleWishlist = (id?: string | number) => {
     handleAuthCheck(() => {
       const numericId = product.numericId || (id ? Number(id) : NaN) || Number(product.id);
@@ -172,7 +112,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
   };
 
   return (
-    <div className="bg-[var(--color-cream-base)] flex flex-col pb-20 md:pb-0 relative">
+    <div className="bg-[var(--color-cream-base)] flex flex-col">
       <main className="flex-1 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-[var(--space-8)]">
         
         {/* Breadcrumb */}
@@ -192,8 +132,6 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
             <ImageGallery
               images={product.images?.length ? product.images : [product.image || '/placeholder.jpg']}
               alt={product.title}
-              isWishlisted={isWishlisted}
-              onWishlistToggle={() => toggleWishlist(product.numericId || product.id)}
             />
 
             {/* BLOCK E + G — Seller Card and Buyer Reviews (SellerReputationBlock contains both) */}
@@ -205,15 +143,10 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                 reputation={product?.sellerReputation}
               />
             </div>
-
-
           </div>
 
-          {/* RIGHT COLUMN — Scrolls naturally with the page */}
-          <div 
-            ref={rightColRef}
-            className="flex flex-col gap-8 pb-6"
-          >
+          {/* RIGHT COLUMN — sticky so details/actions stay visible while user scrolls left col */}
+          <div className="flex flex-col gap-8 md:sticky md:top-24 self-start">
 
             {/* BLOCK A — Item Header */}
             <div className="flex flex-col gap-2 text-left">
@@ -257,7 +190,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               <p
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontSize: 14,
+                  fontSize: 11,
                   letterSpacing: '0.2em',
                   textTransform: 'uppercase',
                   color: '#B06A42',
@@ -269,38 +202,34 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               </p>
               <div aria-hidden style={{ borderTop: '1px solid #D8C8BA', marginBottom: 16 }} />
 
-              <div className="text-base text-[var(--color-ink-700)] space-y-2">
+              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
                 {(product.description || "").split('\n').map((para: string, idx: number) => (
                   <p key={idx}>{para}</p>
                 ))}
               </div>
 
               {/* Specifications accordion */}
-              <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
-                <button 
-                  onClick={() => setSpecsOpen(!specsOpen)}
-                  className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
-                >
-                  Specifications
-                  {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                </button>
-                {specsOpen && (
-                  <div className="p-4 bg-white grid grid-cols-2 gap-4">
-                    {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                      <div key={key}>
-                        <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
-                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
-                      </div>
-                    ))}
-                    <div>
-                      <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
-                      <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
-                        <span className="not-italic text-base">🇮🇳</span> Made in India
-                      </span>
+              {product.specifications && Object.keys(product.specifications).length > 0 && (
+                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-4">
+                  <button 
+                    onClick={() => setSpecsOpen(!specsOpen)}
+                    className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
+                  >
+                    Specifications
+                    {specsOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </button>
+                  {specsOpen && (
+                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
+                      {Object.entries(product.specifications).map(([key, value]) => (
+                        <div key={key}>
+                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* BLOCK C — Shipping & Delivery */}
@@ -316,9 +245,19 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
             {/* BLOCK D — Action Buttons + Countdown + Escrow */}
             <div className="flex flex-col gap-3">
 
-              {/* AUCTION: [ Place a Bid → ] */}
+              {/* AUCTION: [ ♡ Wishlist ] [ Place a Bid → ] */}
               {product.buyingMethod === 'Auction' && (
-                <div id="bid-section" className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleWishlist(product.numericId || product.id)}
+                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                    >
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                    </button>
+                  </div>
                   {product.auctionId ? (
                     <PlaceBidPanel 
                       auctionId={product.auctionId}
@@ -335,12 +274,51 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                 </div>
               )}
 
-              {/* FIXED / OFFER: [ Add to Cart ] [ Buy Now → ] [ Make an Offer ] */}
+              {/* FIXED / OFFER: [ ♡ Wishlist ] [ Add to Cart ] [ Buy Now → ] [ Make an Offer ] */}
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-wrap gap-3">
                     <button
-                      onClick={handleAddToCart}
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
+                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                    >
+                      <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
+                      {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+                    </button>
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation()
+                        if (!useAuthStore.getState().isAuthenticated) {
+                          alert('Please sign in to add to cart')
+                          return
+                        }
+                        try {
+                          const res = await fetch(`/api/cart`, {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
+                          })
+                          if (res.ok) {
+                            alert('Added to cart!')
+                            useStore.getState().loadCart()
+                          } else {
+                            let errMsg = 'Failed to add to cart';
+                            try {
+                              const err = await res.json()
+                              errMsg = err.error || errMsg;
+                              console.error('Cart error:', err.error)
+                            } catch (e) {
+                              console.error('Non-JSON error response')
+                            }
+                            alert(errMsg)
+                          }
+                        } catch (err) {
+                          console.error(err)
+                          alert('Failed to add to cart')
+                        }
+                      }}
                       className="h-11 px-5 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors duration-200"
                     >
                       Add to Cart
@@ -376,26 +354,10 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
           </div>
         </div>
 
-
-
-        {/* Sentinel Stop for IntersectionObserver */}
-        <div ref={sentinelRef} id="sticky-stop" className="h-px w-full" />
-        {/* Similar Products */}
-        {similar && similar.length > 0 && (
-          <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {similar.map(p => (
-                <ProductCard key={p.id} product={p as any} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* More From This Seller */}
+        {/* Related Products — unchanged */}
         {related && related.length > 0 && (
-          <div className="mt-16 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {sellerName}</h2>
+          <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map(p => (
                 <ProductCard key={p.id} product={p as any} />
@@ -405,33 +367,6 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
         )}
 
       </main>
-
-      {/* Mobile sticky purchase bar */}
-      {showMobileBar && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[var(--color-border-subtle)] px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] animate-fade-up">
-          {product.buyingMethod === 'Auction' && (
-            <button
-              onClick={() => document.getElementById('bid-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-              className="w-full h-11 rounded-full bg-[#B06A42] text-white text-sm font-semibold hover:bg-[#8f5435] transition-colors"
-            >
-              Place a Bid
-            </button>
-          )}
-          {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
-            <div className="flex gap-3">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 h-11 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors"
-              >
-                Add to Cart
-              </button>
-              <div className="flex-1 min-w-0">
-                <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

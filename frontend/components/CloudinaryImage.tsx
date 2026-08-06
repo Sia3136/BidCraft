@@ -34,7 +34,7 @@ export function CloudinaryImage({ publicId, width, height, alt, ...props }: Clou
         }
       })
       .catch((err) => {
-
+        console.warn('Image resolution failed, using fallback.', err.message)
         if (isMounted) setSrc(fallbackUrl)
       })
 

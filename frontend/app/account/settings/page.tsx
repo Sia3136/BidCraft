@@ -9,7 +9,7 @@ import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { useCategories } from '@/hooks/useCategories'
 import { FieldError } from '@/components/ui/field-error'
-import { updateProfile } from '@/lib/api'
+import { updateProfile, checkUsername } from '@/lib/api'
 
 function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: number) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -182,7 +182,7 @@ export default function ProfileSettingsPage() {
                 <Input 
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
-                  placeholder="Your Name" 
+                  placeholder="John Doe" 
                   required
                 />
               </div>

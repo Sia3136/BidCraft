@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
 @import 'tailwindcss';
 
 
@@ -6,14 +5,10 @@
 
 :root {
   /* Neutral / Surface */
-  --color-cream-base: #F7F4EE;
+  --color-cream-base: #FDFBF7;
   --color-cream-raised: #F7F3EB;
-  --color-cream-deep: #F0EBE3;
+  --color-cream-deep: #F0EBE0;
   --color-white: #FFFFFF;
-
-  --bc-cream-light: #FAF7F2;
-  --bc-cream-mid: #F5F0E8;
-  --bc-cream-dark: #EDE8DF;
 
   /* Ink / Text & Structural */
   --color-ink-900: #2B2A28;
@@ -81,8 +76,6 @@
   /* Default background setup mapping */
   --background: var(--color-cream-base);
   --foreground: var(--color-ink-900);
-  --font-playfair: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-display: 'Playfair Display', Georgia, serif;
 }
 
@@ -107,9 +100,6 @@
   --color-cream-raised: var(--color-cream-raised);
   --color-cream-deep: var(--color-cream-deep);
   --color-white: var(--color-white);
-  --color-bc-cream-light: var(--bc-cream-light);
-  --color-bc-cream-mid: var(--bc-cream-mid);
-  --color-bc-cream-dark: var(--bc-cream-dark);
   --color-ink-900: var(--color-ink-900);
   --color-ink-700: var(--color-ink-700);
   --color-ink-500: var(--color-ink-500);
@@ -141,11 +131,8 @@
   --radius-pill: var(--radius-pill);
 
   /* Typography */
-  --font-playfair: var(--font-playfair);
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-playfair);
-  --font-ui: var(--font-montserrat);
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-display: var(--font-display);
+  --font-ui: var(--font-ui);
 }
 
 @layer base {
@@ -153,28 +140,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans tracking-normal leading-relaxed;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif tracking-tight text-[var(--color-ink-900)];
-  }
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
-  }
-  h2 {
-    @apply text-3xl md:text-4xl font-semibold leading-tight;
-  }
-  h3 {
-    @apply text-2xl md:text-3xl font-medium leading-snug;
-  }
-  h4 {
-    @apply text-xl md:text-2xl font-medium leading-snug;
-  }
-  p {
-    @apply leading-relaxed text-[var(--color-ink-700)];
-  }
-  button, input, select, textarea, label {
-    @apply font-sans tracking-wide;
+    @apply bg-background text-foreground;
+    font-family: var(--font-display);
   }
 }
 

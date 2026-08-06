@@ -40,8 +40,6 @@ export const useAuthStore = create<AuthStore>()(
       },
       clearAuth: () => {
         set({ user: null, token: null, isAuthenticated: false });
-        useStore.getState().clearCart();
-        localStorage.removeItem('bidcraft-storage');
       },
     }),
     {

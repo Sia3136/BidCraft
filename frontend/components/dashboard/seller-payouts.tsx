@@ -21,7 +21,7 @@ export function SellerPayouts() {
         setOrders(data.orders || [])
       }
     } catch (err) {
-
+      console.error(err)
     } finally {
       setLoading(false)
     }
