@@ -55,7 +55,7 @@ async function createCheckout(req, res, next) {
       provider_order_id: rpOrder.id,
       amount: amount,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+      key_id: process.env.RAZORPAY_KEY_ID
     });
   } catch (err) {
     next(err);
@@ -77,7 +77,7 @@ async function verifyCheckout(req, res, next) {
     });
 
     if (!valid) {
-      if (process.env.NODE_ENV === 'test' && razorpay_signature === 'test_mock_signature') {
+    if (require('../utils/mockHelper').isDevelopmentMockEnabled('payment') && razorpay_signature === 'test_mock_signature') {
         // mock logic strictly bounded to test env
       } else {
         return res.status(400).json({ error: 'invalid_signature' });
@@ -183,7 +183,7 @@ async function createPaymentOrder(req, res, next) {
       provider_order_id: rpOrder.id,
       amount: order.total_amount,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+      key_id: process.env.RAZORPAY_KEY_ID
     });
   } catch (err) {
     next(err);
@@ -205,7 +205,7 @@ async function createSetupOrder(req, res, next) {
       provider_order_id: rpOrder.id,
       amount: 100,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+      key_id: process.env.RAZORPAY_KEY_ID
     });
   } catch (err) {
     next(err);

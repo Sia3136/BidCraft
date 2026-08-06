@@ -57,7 +57,7 @@ describe('Notifications API Integration Tests', () => {
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)
       .send({
-        title: 'Test Listing 1',
+        title: 'Test Notification Listing',
           description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
           category: 'Art',
           subcategory: 'Paintings',
@@ -111,6 +111,10 @@ describe('Notifications API Integration Tests', () => {
       [listingId, sellerId, startTime.toISOString(), endTime.toISOString()]
     );
     auctionId = auctionRes.rows[0].id;
+ 
+    // Insert bid deposits so they can place bids
+    await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [auctionId, buyerAId]);
+    await db.query(`INSERT INTO bid_deposits (auction_id, user_id, amount, status, razorpay_payment_id, created_at, updated_at) VALUES ($1, $2, 50.00, 'held', 'pay_mock', NOW(), NOW())`, [auctionId, buyerBId]);
 
     // Buyer A places first bid ($115)
     const bid1 = await request(app)

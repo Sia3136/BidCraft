@@ -23,7 +23,8 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
 }
 
 async function sendEmail({ to, subject, text, html, ctaLink, ctaText }) {
-  if (process.env.NODE_ENV === 'test') {
+  const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
+  if (isDevelopmentMockEnabled('email')) {
     console.log(`[EMAIL SENT]
 To: ${to}
 Subject: ${subject}

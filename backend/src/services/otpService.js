@@ -6,11 +6,11 @@
  */
 
 const SMS_API_KEY = process.env.SMS_API_KEY || '';
-const MOCK_MODE = !SMS_API_KEY || process.env.NODE_ENV === 'test';
 
 async function sendPhoneOtp({ phone, code }) {
-  if (MOCK_MODE) {
-    console.log(`[OTP SENT]
+  const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
+  if (isDevelopmentMockEnabled('otp')) {
+    console.log(`[DEV MOCK][OTP]
 To: ${phone}
 Code: ${code}
 -----------------------------------------`);
@@ -35,4 +35,4 @@ Code: ${code}
   }
 }
 
-module.exports = { sendPhoneOtp, MOCK_MODE };
+module.exports = { sendPhoneOtp };

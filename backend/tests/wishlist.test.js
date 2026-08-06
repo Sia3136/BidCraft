@@ -37,7 +37,7 @@ describe('Wishlist API Integration Tests', () => {
       .post('/api/listings')
       .set('Authorization', `Bearer ${sellerToken}`)
       .send({
-        title: 'Test Listing 1',
+        title: 'Test Wishlist Item',
           description: 'This is a highly detailed description of the test item that meets the minimum length requirement. ' + 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
           category: 'Art',
           subcategory: 'Paintings',

@@ -12,6 +12,9 @@ let razorpayInstance = null;
 
 function getRazorpay() {
   if (!razorpayInstance) {
+    if (!KEY_ID || !KEY_SECRET) {
+      throw new Error('RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is not configured. Set it in .env.');
+    }
     const Razorpay = require('razorpay');
     razorpayInstance = new Razorpay({ key_id: KEY_ID, key_secret: KEY_SECRET });
   }

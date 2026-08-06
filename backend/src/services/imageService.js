@@ -6,9 +6,9 @@
 const cloudinary = require('cloudinary').v2;
 
 const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-const MOCK_MODE = !CLOUDINARY_CLOUD_NAME || process.env.NODE_ENV === 'test';
+const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
 
-if (!MOCK_MODE) {
+if (!isDevelopmentMockEnabled('image')) {
   cloudinary.config({
     cloud_name: CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -24,7 +24,8 @@ if (!MOCK_MODE) {
  * @returns {Promise<{url: string, public_id: string}>}
  */
 function uploadToCloudinary(buffer, mimetype) {
-  if (MOCK_MODE) {
+  const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
+  if (isDevelopmentMockEnabled('image')) {
     const mockId = `mock_image_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     return Promise.resolve({
       url: `https://via.placeholder.com/600?text=${mockId}`,
@@ -62,4 +63,4 @@ async function uploadMany(files) {
   return Promise.all(files.map((f) => uploadToCloudinary(f.buffer, f.mimetype)));
 }
 
-module.exports = { uploadToCloudinary, uploadMany, MOCK_MODE };
+module.exports = { uploadToCloudinary, uploadMany };

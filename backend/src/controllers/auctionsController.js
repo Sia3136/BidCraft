@@ -176,9 +176,9 @@ async function createDeposit(req, res, next) {
 
     res.json({
       provider_order_id: rpOrder.id,
-      amount: value.amount,
+      amount: value.amount * 100,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID || 'mock_key'
+      key_id: process.env.RAZORPAY_KEY_ID
     });
   } catch(err) { next(err); }
 }

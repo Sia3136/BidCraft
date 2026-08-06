@@ -1,18 +1,7 @@
 require('dotenv').config();
 
-if (process.env.NODE_ENV !== 'test') {
-  const requiredEnvVars = ['JWT_SECRET', 'CRON_SECRET', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET'];
-  for (const envVar of requiredEnvVars) {
-    if (!process.env[envVar]) {
-      throw new Error(`FATAL: ${envVar} environment variable is missing.`);
-    }
-  }
-} else {
-  process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret';
-  process.env.CRON_SECRET = process.env.CRON_SECRET || 'test_cron_secret';
-  process.env.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'test_razor_key';
-  process.env.RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || 'test_razor_webhook';
-}
+const { validateEnvironment } = require('./utils/envValidator');
+validateEnvironment();
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -78,7 +67,9 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
   credentials: true
 }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+}
 
 app.get('/', (req, res) => {
   res.json({

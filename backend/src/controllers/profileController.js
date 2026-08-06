@@ -10,7 +10,10 @@ const updateProfileSchema = Joi.object({
   state: Joi.string().max(100).allow('', null),
   interests: Joi.array().items(Joi.string()).allow(null),
   marketplace_role: Joi.string().valid('buyer', 'seller', 'both').allow('', null),
-  phone: Joi.string().max(30).allow('', null)
+  phone: Joi.string().max(30).allow('', null),
+  bio: Joi.string().max(500).allow('', null),
+  avatar_url: Joi.string().uri().allow('', null),
+  social_links: Joi.object().allow(null)
 });
 
 async function ensureProfileExists(userId) {
@@ -70,9 +73,9 @@ async function getMyProfile(req, res, next) {
 
     const result = await db.query(
       `SELECT
-         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at,
+         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at, u.avatar_url,
          p.city, p.state, p.interests, p.marketplace_role, p.phone, p.is_verified, p.trust_score,
-         p.total_sales, p.total_revenue, p.razorpay_customer_id, p.razorpay_card_token
+         p.total_sales, p.total_revenue, p.razorpay_customer_id, p.razorpay_card_token, p.bio, p.social_links
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,
@@ -138,12 +141,15 @@ async function updateMyProfile(req, res, next) {
     if (value.name !== undefined) userFields.name = value.name;
     if (value.username !== undefined) userFields.username = value.username;
     if (value.onboarding_completed !== undefined) userFields.onboarding_completed = value.onboarding_completed;
+    if (value.avatar_url !== undefined) userFields.avatar_url = value.avatar_url;
 
     if (value.city !== undefined) profileFields.city = value.city;
     if (value.state !== undefined) profileFields.state = value.state;
     if (value.interests !== undefined) profileFields.interests = value.interests;
     if (value.marketplace_role !== undefined) profileFields.marketplace_role = value.marketplace_role;
     if (value.phone !== undefined) profileFields.phone = value.phone;
+    if (value.bio !== undefined) profileFields.bio = value.bio;
+    if (value.social_links !== undefined) profileFields.social_links = value.social_links;
 
     if (Object.keys(userFields).length > 0) {
       const setClauses = [];
@@ -159,7 +165,7 @@ async function updateMyProfile(req, res, next) {
       const setClauses = [];
       const params = [userId];
       Object.entries(profileFields).forEach(([key, val]) => {
-        params.push(key === 'interests' ? JSON.stringify(val) : val);
+        params.push(key === 'interests' || key === 'social_links' ? JSON.stringify(val) : val);
         setClauses.push(`${key} = $${params.length}`);
       });
       await db.query(`UPDATE profiles SET ${setClauses.join(', ')}, updated_at = NOW() WHERE user_id = $1`, params);
@@ -167,9 +173,9 @@ async function updateMyProfile(req, res, next) {
 
     const result = await db.query(
       `SELECT
-         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at,
+         u.id, u.email, u.name, u.username, u.onboarding_completed, u.role, u.created_at, u.avatar_url,
          p.city, p.state, p.interests, p.marketplace_role, p.phone, p.is_verified, p.trust_score,
-         p.total_sales, p.total_revenue
+         p.total_sales, p.total_revenue, p.bio, p.social_links
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.id = $1`,

@@ -3,14 +3,14 @@
  * Pluggable abstraction for shipping providers (Shiprocket, Delhivery, etc).
  */
 
-const MOCK_MODE = !process.env.SHIPROCKET_API_KEY && !process.env.DELIVERY_API_KEY && process.env.NODE_ENV === 'test';
 const delhiveryService = require('./delhiveryService');
 
 /**
  * Generate a mock or real tracking number and label for an order.
  */
 async function createShipment(orderDetails) {
-  if (MOCK_MODE) {
+  const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
+  if (isDevelopmentMockEnabled('shipping')) {
     const trackingNumber = `MOCK_TRK_${Date.now()}`;
     return {
       success: true,
@@ -29,7 +29,8 @@ async function createShipment(orderDetails) {
  * Check tracking status (could be called via webhook or polling).
  */
 async function getTrackingStatus(trackingNumber, carrier) {
-  if (MOCK_MODE) {
+  const { isDevelopmentMockEnabled } = require('../utils/mockHelper');
+  if (isDevelopmentMockEnabled('shipping')) {
     // In mock mode, we just say it's in transit or delivered randomly if polled
     return {
       status: 'in_transit',
@@ -47,6 +48,5 @@ async function getTrackingStatus(trackingNumber, carrier) {
 
 module.exports = {
   createShipment,
-  getTrackingStatus,
-  MOCK_MODE
+  getTrackingStatus
 };
