@@ -196,7 +196,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
         </div>
 
         <Link href={getProductRoute(product)} className="block hover:underline decoration-[var(--color-ink-300)] decoration-2 underline-offset-2">
-          <h3 className="text-sm font-medium text-[#2B211C] leading-snug mb-2 line-clamp-2">
+          <h3 className="text-sm font-playfair font-medium text-[#2B211C] leading-snug mb-2 line-clamp-2">
             {product.title}
           </h3>
         </Link>

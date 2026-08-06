@@ -205,7 +205,7 @@ export const Navbar = React.memo(function Navbar() {
           "w-full fixed top-0 z-50 transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] border-b",
           (isHomepage && !isScrolled)
             ? "bg-transparent border-transparent"
-            : "bg-[rgba(253,251,247,0.92)] backdrop-blur-[12px] saturate-[1.4] shadow-[0_1px_0_var(--color-border-subtle),0_4px_16px_rgba(43,42,40,0.08)] border-transparent"
+            : "bg-[#FAF8F4] backdrop-blur-[12px] saturate-[1.4] shadow-[0_1px_0_var(--color-border-subtle),0_4px_16px_rgba(43,42,40,0.08)] border-transparent"
         )}
       >
         {/* Row 1 */}
@@ -236,7 +236,7 @@ export const Navbar = React.memo(function Navbar() {
 
             {/* Center Zone */}
             <div className="justify-self-center">
-              <Link href="/" className="text-display-lg font-display text-[var(--color-ink-900)] transition-colors">
+              <Link href="/" className="text-display-lg font-playfair font-bold text-[#2B211C] transition-colors">
                 BidCraft
               </Link>
             </div>
@@ -353,32 +353,35 @@ export const Navbar = React.memo(function Navbar() {
           <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between h-[56px] px-[var(--space-5)]">
             <div className="flex items-center gap-[32px] h-full pl-[48px]">
 
-              {/* Categories */}
-              {categories.map((category) => (
-                <div key={category.slug} className="relative h-full flex items-center">
-                  <button
-                    onClick={(e) => {
-                      setOpenDropdown(openDropdown === category.slug ? null : category.slug);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setOpenDropdown(openDropdown === category.slug ? null : category.slug);
-                      }
-                    }}
-                    aria-expanded={openDropdown === category.slug}
-                    className={cn("h-full flex items-center text-body-md font-medium transition-colors relative cursor-pointer", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
+              {/* Category navigation row */}
+              <nav className="flex items-center gap-6 md:gap-8">
+                {[
+                  { label: 'Art',               href: '/explore?category=art' },
+                  { label: 'Collectibles',      href: '/explore?category=collectibles' },
+                  { label: 'Gaming & Hobby',    href: '/explore?category=gaming-hobby' },
+                  { label: 'Handmade & Crafts', href: '/explore?category=handmade-crafts' },
+                  { label: 'Lifestyle & Gifts', href: '/explore?category=lifestyle-gifts' },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className="text-sm font-medium text-[#2B211C]/70 hover:text-[#B06A42] transition-colors duration-150"
                   >
-                    {category.name}
-                  </button>
-                </div>
-              ))}
+                    {label}
+                  </Link>
+                ))}
 
-              <div className="h-[16px] w-[1px] bg-[var(--color-border-subtle)]" />
+                {/* Divider */}
+                <span className="text-[#D8C8BA]">|</span>
 
-              <Link href="/explore" className="text-caption font-medium text-[var(--color-ink-500)] hover:text-[var(--color-terracotta-600)] transition-colors">
-                Explore All →
-              </Link>
+                {/* Explore All */}
+                <Link
+                  href="/explore"
+                  className="text-sm font-medium text-[#B06A42] hover:underline underline-offset-2 transition-colors"
+                >
+                  Explore All →
+                </Link>
+              </nav>
             </div>
 
             {/* Search Bar (Row 2 Desktop) */}
@@ -400,45 +403,7 @@ export const Navbar = React.memo(function Navbar() {
             </div>
           </div>
 
-          {/* 3-Column Grid Subcategory Panel */}
-          <AnimatePresence>
-            {openDropdown && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="absolute top-full left-0 w-full bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)] shadow-sm z-40 overflow-hidden"
-              >
-                <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] py-6 pl-[48px]">
-                  <div className="grid grid-cols-3 gap-y-4 gap-x-8">
-                    {(() => {
-                      const activeCat = categories.find(c => c.slug === openDropdown);
-                      if (!activeCat) return null;
-                      return activeCat.subcategories.map(sub => {
-                        const href = `/explore?category=${activeCat.slug}&subcategory=${sub.slug}`;
-                        return (
-                          <button
-                            key={sub.slug}
-                            onClick={() => {
 
-
-
-                              router.push(href);
-
-                              setOpenDropdown(null);
-                            }}
-                            className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
-                          >
-                            {sub.name}
-                          </button>
-                        );
-                      });
-                    })()}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
         </div>
       </header>
@@ -472,47 +437,20 @@ export const Navbar = React.memo(function Navbar() {
         <div className="p-4 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">Shop</h3>
-            {categories.map((category) => (
-              <div key={category.slug} className="flex flex-col">
-                <button
-                  onClick={() => setOpenDropdown(openDropdown === category.slug ? null : category.slug)}
-                  className="flex items-center justify-between text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
-                >
-                  {category.name}
-                  <span className="text-xl leading-none">{openDropdown === category.slug ? '−' : '+'}</span>
-                </button>
-                <AnimatePresence>
-                  {openDropdown === category.slug && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
-                    >
-                      {category.subcategories.map(sub => {
-                        const href = `/explore?category=${category.slug}&subcategory=${subSlug}`;
-                        return (
-                          <button
-                            key={subSlug}
-                            onClick={() => {
-
-
-
-                              router.push(href);
-
-                              setOpenDropdown(null);
-                              setIsMobileMenuOpen(false);
-                            }}
-                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
-                          >
-                            {sub.name}
-                          </button>
-                        )
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+            {[
+              { label: 'Art',               href: '/explore?category=art' },
+              { label: 'Collectibles',      href: '/explore?category=collectibles' },
+              { label: 'Gaming & Hobby',    href: '/explore?category=gaming-hobby' },
+              { label: 'Handmade & Crafts', href: '/explore?category=handmade-crafts' },
+              { label: 'Lifestyle & Gifts', href: '/explore?category=lifestyle-gifts' },
+            ].map(({ label, href }) => (
+              <button
+                key={label}
+                onClick={() => { router.push(href); setIsMobileMenuOpen(false); }}
+                className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
+              >
+                {label}
+              </button>
             ))}
             <button
               onClick={() => { router.push('/explore'); setIsMobileMenuOpen(false); }}

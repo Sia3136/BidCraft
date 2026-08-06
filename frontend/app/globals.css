@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
 @import 'tailwindcss';
 
 
@@ -80,6 +81,8 @@
   /* Default background setup mapping */
   --background: var(--color-cream-base);
   --foreground: var(--color-ink-900);
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-display: 'Playfair Display', Georgia, serif;
 }
 
@@ -138,9 +141,10 @@
   --radius-pill: var(--radius-pill);
 
   /* Typography */
+  --font-playfair: var(--font-playfair);
+  --font-sans: var(--font-sans);
   --font-display: var(--font-playfair);
   --font-ui: var(--font-montserrat);
-  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
 }
 

@@ -215,7 +215,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
     <div className="space-y-6">
       {/* Category */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Category</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Category</h3>
         <div className="space-y-2">
           {CATEGORIES.map(cat => {
             const slug = slugify(cat.name)
@@ -238,7 +238,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Subcategory */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Subcategory</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Subcategory</h3>
         <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
           {visibleSubcategories.map(sub => {
             const slug = slugify(sub)
@@ -261,7 +261,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Buying Method */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Buying Method</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Buying Method</h3>
         <div className="space-y-2">
           {BUYING_METHODS.map(method => {
             const slug = slugify(method)
@@ -284,7 +284,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Price Range */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)] flex justify-between items-center">
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)] flex justify-between items-center">
           Price Range
         </h3>
         <div className="flex items-center gap-2 mb-3">
@@ -332,7 +332,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Collection */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Collection</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Collection</h3>
         <div className="space-y-2">
           {COLLECTIONS.map(col => {
             const slug = slugify(col)
@@ -356,7 +356,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Occasion */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Occasion</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Occasion</h3>
         <div className="space-y-2">
           {OCCASIONS.map(occ => {
             const slug = slugify(occ)
@@ -380,7 +380,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 
       {/* Type */}
       <div>
-        <h3 className="font-[family-name:var(--font-jakarta)] text-sm font-semibold text-[var(--color-ink-900)] mb-[var(--space-3)]">Type</h3>
+        <h3 className="font-playfair font-medium text-sm text-[var(--color-ink-900)] mb-[var(--space-3)]">Type</h3>
         <div className="space-y-2">
           {TYPES.map(type => (
             <label key={type.value} className="flex items-center gap-2 cursor-pointer">
