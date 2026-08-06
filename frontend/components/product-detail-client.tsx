@@ -187,20 +187,10 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
 
             {/* BLOCK B — About this Item */}
             <div>
-              <p
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontSize: 11,
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: '#B06A42',
-                  fontWeight: 600,
-                  marginBottom: 8,
-                }}
-              >
+              <p className="font-[family-name:var(--font-ui)] text-[11px] tracking-[0.2em] uppercase text-[var(--color-terracotta-600)] font-semibold mb-2">
                 About This Item
               </p>
-              <div aria-hidden style={{ borderTop: '1px solid #D8C8BA', marginBottom: 16 }} />
+              <div aria-hidden className="border-t border-[var(--color-border-strong)] mb-4" />
 
               <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
                 {(product.description || "").split('\n').map((para: string, idx: number) => (
@@ -252,7 +242,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                     <button
                       type="button"
                       onClick={() => toggleWishlist(product.numericId || product.id)}
-                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                      className="h-11 px-5 rounded-full border border-[var(--color-border-strong)] text-[var(--color-ink-900)] text-sm font-medium flex items-center gap-2 hover:border-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-600)] transition-colors duration-200"
                     >
                       <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
@@ -281,7 +271,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
-                      className="h-11 px-5 rounded-full border border-[#D8C8BA] text-[#2B211C] text-sm font-medium flex items-center gap-2 hover:border-[#B06A42] hover:text-[#B06A42] transition-colors duration-200"
+                      className="h-11 px-5 rounded-full border border-[var(--color-border-strong)] text-[var(--color-ink-900)] text-sm font-medium flex items-center gap-2 hover:border-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-600)] transition-colors duration-200"
                     >
                       <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
                       {isWishlisted ? 'Wishlisted' : 'Wishlist'}
@@ -319,7 +309,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                           alert('Failed to add to cart')
                         }
                       }}
-                      className="h-11 px-5 rounded-full border border-[#B06A42] text-[#B06A42] text-sm font-semibold hover:bg-[#B06A42]/10 transition-colors duration-200"
+                      className="h-11 px-5 rounded-full border border-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)] text-sm font-semibold hover:bg-[var(--color-terracotta-100)] transition-colors duration-200"
                     >
                       Add to Cart
                     </button>

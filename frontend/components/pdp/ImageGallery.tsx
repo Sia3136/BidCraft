@@ -85,9 +85,9 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`View image ${idx + 1}`}
                 className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B06A42]',
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-terracotta-600)]',
                   activeIdx === idx
-                    ? 'border-[#B06A42]'
+                    ? 'border-[var(--color-terracotta-600)]'
                     : 'border-transparent hover:border-[var(--color-ink-300)]'
                 )}
               >
@@ -141,7 +141,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 aria-label="Previous image"
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
               >
-                <ChevronLeft className="w-4 h-4 text-[#2B211C]" />
+                <ChevronLeft className="w-4 h-4 text-[var(--color-ink-900)]" />
               </button>
               <button
                 type="button"
@@ -149,7 +149,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 aria-label="Next image"
                 className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
               >
-                <ChevronRight className="w-4 h-4 text-[#2B211C]" />
+                <ChevronRight className="w-4 h-4 text-[var(--color-ink-900)]" />
               </button>
             </>
           )}
@@ -175,7 +175,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 aria-label={`Go to image ${idx + 1}`}
                 className={cn(
                   'w-[6px] h-[6px] rounded-full transition-colors focus:outline-none',
-                  activeIdx === idx ? 'bg-[#B06A42]' : 'bg-[#D8C8BA]'
+                  activeIdx === idx ? 'bg-[var(--color-terracotta-600)]' : 'bg-[var(--color-border-strong)]'
                 )}
               />
             ))}

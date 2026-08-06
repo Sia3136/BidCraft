@@ -60,19 +60,12 @@ export function ShippingInfo(props: ShippingInfoProps) {
 
   return (
     <div
-      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      className="font-[family-name:var(--font-ui)]"
       aria-label="Shipping and delivery information"
     >
       {/* Section label */}
       <p
-        style={{
-          fontSize: 11,
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          color: '#B06A42',
-          fontWeight: 600,
-          marginBottom: 8,
-        }}
+        className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-terracotta-600)] font-semibold mb-2"
       >
         Shipping &amp; Delivery
       </p>
@@ -80,7 +73,7 @@ export function ShippingInfo(props: ShippingInfoProps) {
       {/* Thin divider */}
       <div
         aria-hidden
-        style={{ borderTop: '1px solid #D8C8BA', marginBottom: 0 }}
+        className="border-t border-[var(--color-border-strong)] mb-0"
       />
 
       {/* Rows */}
@@ -88,31 +81,12 @@ export function ShippingInfo(props: ShippingInfoProps) {
         {rows.map((row, i) => (
           <div
             key={row.label}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '130px 1fr',
-              alignItems: 'start',
-              padding: '10px 0',
-              borderBottom: i < rows.length - 1 ? '1px solid #F0EBE3' : 'none',
-            }}
+            className={`grid grid-cols-[130px_1fr] items-start py-2.5 ${i < rows.length - 1 ? 'border-b border-[var(--color-border-subtle)]' : ''}`}
           >
-            <dt
-              style={{
-                fontSize: 13,
-                color: 'rgba(43, 33, 28, 0.55)',
-                fontWeight: 500,
-              }}
-            >
+            <dt className="text-[13px] text-[var(--color-ink-500)] font-medium">
               {row.label}
             </dt>
-            <dd
-              style={{
-                fontSize: 13,
-                color: '#2B211C',
-                fontWeight: 500,
-                margin: 0,
-              }}
-            >
+            <dd className="text-[13px] text-[var(--color-ink-900)] font-medium m-0">
               {row.value}
             </dd>
           </div>
