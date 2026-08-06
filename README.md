@@ -63,6 +63,8 @@ The repository is designed around a simple product goal: make unique-item commer
 | `frontend/` | Next.js client application, UI components, client state, Prisma-backed route handlers |
 | `backend/` | Express API, controllers, services, middleware, migrations, tests |
 | `docs/` | Architecture notes, audits, decision records, and planning documents |
+| `tools/` | Reusable developer utility scripts, maintenance, and audits |
+| `archive/` | Legacy components, old pages, and historical artifacts |
 | `scripts/` | Maintenance, seed, and data migration scripts |
 | `shared/` | Shared data and category definitions |
 | `images/` | Asset and media files |
@@ -372,7 +374,6 @@ BidCraft is a broad late-MVP codebase with many real marketplace flows implement
 - No `.env.example` files are present in the repo.
 - The frontend and backend both contain API surfaces, so business logic is split across two layers.
 - Some services fall back to mock behavior when external credentials are missing or when running in test/development.
-- Several historical audit and patch files remain in the repository root.
 
 ## Contributing
 
