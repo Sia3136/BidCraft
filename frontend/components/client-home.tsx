@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
 import { slugify } from '@/lib/slugify'
+import { TrendingSection } from '@/components/TrendingSection'
 
 const heroImages = [
   '/images/crochet-flowers-blue-pot.jpeg',
@@ -73,7 +74,7 @@ const LiveTimer = ({ endTime, onUrgent }: { endTime?: string, onUrgent?: (urgent
   return <span>{timeLeft}</span>
 }
 
-export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[] }) {
+export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[] }) {
   const { user } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
 
@@ -223,27 +224,24 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </section>
         )}
 
-                {/* 5. Our Story */}
+        {/* 5. Our Story */}
         <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
             <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/bidcraft/art/sketches-and-drawings/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
           </div>
           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
-              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6 font-[family-name:var(--font-playfair)]">Our Story</h2>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
-                Every creation has a story. Every creator deserves a platform that values it.
+              <h2 className="text-display-lg text-[var(--color-cream-base)] mb-6">Our Story</h2>
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
+                BidCraft was built because a gap existed that no one in India had filled. Student creators, independent artists, and hobbyist collectors had nowhere safe to transact. Instagram generated interest but no trust. OLX and Facebook Marketplace moved money but enabled fraud. Etsy ignored the Indian context entirely. And every auction house in the country was designed for established names, not emerging ones.
               </p>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
-                BidCraft was built to bridge the gap between talented creators and people who truly appreciate their work. In a world where selling online often means uncertainty, we envisioned a marketplace where creativity is backed by trust, transparency, and opportunity—not risk.
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6">
+                India's creator economy is projected to cross $1 trillion in consumer spending influence by 2030. Yet fewer than 10% of India's 3.5 to 4.5 million creators are monetizing effectively today — compared to 40% or more in mature markets. The under-served segment is not a niche. It is the majority. BidCraft exists to close that gap: a trust-first, auction-capable, escrow-protected marketplace built specifically for the ₹200–₹5,000 price range where most Indian creators actually operate.
               </p>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-6 font-[family-name:var(--font-jakarta)]">
-                Whether it's an artist's first handmade piece, a student's passion project, or a collector searching for something rare, BidCraft brings them together in one secure ecosystem. With verified creators, protected transactions, and a marketplace designed for discovery, we make buying, selling, and auctioning unique creations simple and reliable.
+              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10">
+                Our single biggest moat is not features. It is trust. Escrow-protected payments, verified creator profiles, buyer-confirmed delivery — these are not add-ons. They are the foundation. Everything else is built on top of them.
               </p>
-              <p className="text-body-lg text-[var(--color-cream-base)]/80 mb-10 font-[family-name:var(--font-jakarta)]">
-                Our vision is to become the home of India's creative economy—where every creator, regardless of size or experience, has the confidence to showcase their talent, build their identity, and turn passion into lasting opportunity.
-              </p>
-              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast font-[family-name:var(--font-jakarta)]">
+              <Link href="/our-story" className="inline-block bg-[var(--color-terracotta-600)] text-white text-body-md font-semibold px-8 py-3.5 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors duration-fast">
                 Read Our Full Story
               </Link>
             </motion.div>
@@ -272,6 +270,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
             </motion.div>
           </div>
         </section>
+
+        <TrendingSection listings={trendingListings} />
 
 
 
@@ -472,7 +472,59 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
           </div>
         </section>
 
-      
+        {/* 14. Contact Us */}
+        <section id="contact" className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16">
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-display-lg text-[var(--color-ink-900)] mb-8">Contact Us</h2>
+              <form className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Name</label>
+                  <input type="text" className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)]" required />
+                </div>
+                <div>
+                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Email</label>
+                  <input type="email" className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)]" required />
+                </div>
+                <div>
+                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Subject</label>
+                  <select className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)] bg-white cursor-pointer" required defaultValue="">
+                    <option value="" disabled>Select an option</option>
+                    <option>General Enquiry</option>
+                    <option>Seller Support</option>
+                    <option>Buyer Issue</option>
+                    <option>Report a Listing</option>
+                    <option>Press & Media</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Message</label>
+                  <textarea rows={4} className="w-full p-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)] resize-none" required></textarea>
+                </div>
+                <button type="submit" className="mt-2 h-12 bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors">
+                  Send Message
+                </button>
+              </form>
+            </div>
+            
+            <div className="w-full lg:w-1/2 flex flex-col justify-center gap-6">
+              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">General</h3>
+                <a href="mailto:support@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">support@bidcraft.in</a>
+              </div>
+              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Sellers</h3>
+                <a href="mailto:sellers@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">sellers@bidcraft.in</a>
+              </div>
+              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
+                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Disputes</h3>
+                <a href="mailto:disputes@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">disputes@bidcraft.in</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         </main>
     </div>
   )

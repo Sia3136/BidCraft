@@ -415,7 +415,7 @@ export const Navbar = React.memo(function Navbar() {
                       const activeCat = categories.find(c => c.slug === openDropdown);
                       if (!activeCat) return null;
                       return activeCat.subcategories.map(sub => {
-                        const href = `/explore?category=${activeCat.slug}&subcategory=${sub.slug}`;
+                        const href = `/explore?category=${encodeURIComponent(activeCat.name)}&subcategory=${encodeURIComponent(sub.name)}`;
                         return (
                           <button
                             key={sub.slug}
@@ -490,7 +490,7 @@ export const Navbar = React.memo(function Navbar() {
                       className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
                     >
                       {category.subcategories.map(sub => {
-                        const href = `/explore?category=${category.slug}&subcategory=${sub.slug}`;
+                        const href = `/explore?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(sub.name)}`;
                         return (
                           <button
                             key={sub.slug}
