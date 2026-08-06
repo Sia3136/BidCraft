@@ -61,5 +61,5 @@ export default async function Home() {
     // fallback to empty arrays or handle gracefully
   }
 
-  return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} trendingListings={trendingListings} />;
+  return <ClientHome newArrivals={newArrivals} liveAuctions={liveAuctions} trendingListings={trendingListings} allListings={allListings.listings} />;
 }

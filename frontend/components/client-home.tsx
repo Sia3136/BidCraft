@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/product-card'
 import { Listing } from '@/lib/api'
+import ClientHomeAuthenticated from '@/components/client-home-authenticated'
 
 const heroImages = [
   'https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785939436/bidcraft_homepage/tnh13yhuimkuemtdazgx.jpg',
@@ -29,9 +30,13 @@ const revealVariant: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
 }
 
-export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[] }) {
-  const { user } = useAuthStore()
+export default function ClientHome({ newArrivals = [], liveAuctions = [], trendingListings = [], allListings = [] }: { newArrivals?: Listing[], liveAuctions?: Listing[], trendingListings?: Listing[], allListings?: Listing[] }) {
+  const { user, isAuthenticated } = useAuthStore()
   const [activeHeroIndex, setActiveHeroIndex] = useState(0)
+
+  if (isAuthenticated && user) {
+    return <ClientHomeAuthenticated user={user} newArrivals={newArrivals} liveAuctions={liveAuctions} trendingListings={trendingListings} allListings={allListings} />
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {

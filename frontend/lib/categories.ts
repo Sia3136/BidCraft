@@ -17,29 +17,30 @@ export const CATEGORIES: CategoryData[] = [
   {
     name: "Collectibles",
     subcategories: [
-      "Action Figures",
-      "Funko Pops",
-      "Hot Wheels",
-      "Rare Collectibles",
+      "Coins & Currency",
+      "Comics & Books",
+      "Memorabilia",
+      "Stamps",
       "Trading Cards"
     ]
   },
   {
     name: "Gaming & Hobby",
     subcategories: [
-      "Anime Merchandise",
       "Board Games",
-      "Cosplay Props",
-      "Puzzle Collections"
+      "Gaming Accessories",
+      "Miniatures & Models",
+      "Puzzles",
+      "Vintage Games"
     ]
   },
   {
     name: "Handmade & Crafts",
     subcategories: [
-      "Clay & Pottery",
       "Candles & Soaps",
-      "Crochet & Knitting",
-      "Paper Crafts",
+      "Ceramics & Pottery",
+      "Fiber & Textile Art",
+      "Jewelry",
       "Resin Art"
     ]
   },
@@ -47,9 +48,10 @@ export const CATEGORIES: CategoryData[] = [
     name: "Lifestyle & Gifts",
     subcategories: [
       "Home Decor",
-      "Jewellery & Accessories",
-      "Miniatures",
-      "Stationery"
+      "Personalized Gifts",
+      "Plants & Terrariums",
+      "Stationery",
+      "Wellness & Self-care"
     ]
   }
 ];

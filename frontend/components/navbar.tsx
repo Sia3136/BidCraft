@@ -355,20 +355,28 @@ export const Navbar = React.memo(function Navbar() {
 
               {/* Category navigation row */}
               <nav className="flex items-center gap-6 md:gap-8">
-                {[
-                  { label: 'Art',               href: '/explore?category=art' },
-                  { label: 'Collectibles',      href: '/explore?category=collectibles' },
-                  { label: 'Gaming & Hobby',    href: '/explore?category=gaming-hobby' },
-                  { label: 'Handmade & Crafts', href: '/explore?category=handmade-crafts' },
-                  { label: 'Lifestyle & Gifts', href: '/explore?category=lifestyle-gifts' },
-                ].map(({ label, href }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className="text-sm font-medium text-[#2B211C]/70 hover:text-[#B06A42] transition-colors duration-150"
-                  >
-                    {label}
-                  </Link>
+                {categories.map((cat) => (
+                  <div key={cat.name} className="relative group h-full flex items-center">
+                    <Link
+                      href={`/explore?category=${cat.slug}`}
+                      className="text-sm font-medium text-[#2B211C]/70 hover:text-[#B06A42] transition-colors duration-150 py-4"
+                    >
+                      {cat.name}
+                    </Link>
+                    <div className="absolute top-full left-0 w-56 bg-[var(--color-white)] shadow-lg rounded-b-[var(--radius-md)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-[var(--color-border-subtle)] overflow-hidden">
+                      <div className="py-2 flex flex-col">
+                        {cat.subcategories.map(sub => (
+                          <Link 
+                            key={sub.name}
+                            href={`/explore?category=${cat.slug}&subcategory=${sub.slug}`}
+                            className="px-4 py-2.5 text-sm font-medium text-[var(--color-ink-700)] hover:bg-[var(--color-cream-base)] hover:text-[var(--color-terracotta-600)] transition-colors"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 ))}
 
                 {/* Divider */}
@@ -437,20 +445,26 @@ export const Navbar = React.memo(function Navbar() {
         <div className="p-4 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h3 className="text-caption font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-2">Shop</h3>
-            {[
-              { label: 'Art',               href: '/explore?category=art' },
-              { label: 'Collectibles',      href: '/explore?category=collectibles' },
-              { label: 'Gaming & Hobby',    href: '/explore?category=gaming-hobby' },
-              { label: 'Handmade & Crafts', href: '/explore?category=handmade-crafts' },
-              { label: 'Lifestyle & Gifts', href: '/explore?category=lifestyle-gifts' },
-            ].map(({ label, href }) => (
-              <button
-                key={label}
-                onClick={() => { router.push(href); setIsMobileMenuOpen(false); }}
-                className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
-              >
-                {label}
-              </button>
+            {categories.map((cat) => (
+              <div key={cat.name} className="flex flex-col gap-1 mb-2">
+                <button
+                  onClick={() => { router.push(`/explore?category=${cat.slug}`); setIsMobileMenuOpen(false); }}
+                  className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full border-b border-[var(--color-border-subtle)]"
+                >
+                  {cat.name}
+                </button>
+                <div className="flex flex-col pl-4 mt-1 border-l-2 border-[var(--color-cream-deep)]">
+                  {cat.subcategories.map(sub => (
+                    <button
+                      key={sub.name}
+                      onClick={() => { router.push(`/explore?category=${cat.slug}&subcategory=${sub.slug}`); setIsMobileMenuOpen(false); }}
+                      className="text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left w-full"
+                    >
+                      {sub.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
             <button
               onClick={() => { router.push('/explore'); setIsMobileMenuOpen(false); }}

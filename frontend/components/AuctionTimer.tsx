@@ -7,18 +7,16 @@ export function AuctionTimer({ endTime }: { endTime: string }) {
   useEffect(() => {
     const calc = () => {
       if (!endTime) return;
-      const diff = new Date(endTime).getTime() - Date.now()
-      if (diff <= 0) { setTimeLeft('Ended'); return }
+      let diff = new Date(endTime).getTime() - Date.now()
+      if (diff <= 0) diff = 0;
+      
       const d = Math.floor(diff / 86400000)
       const h = Math.floor((diff % 86400000) / 3600000)
       const m = Math.floor((diff % 3600000) / 60000)
       const s = Math.floor((diff % 60000) / 1000)
       
-      if (d > 0) {
-        setTimeLeft(`${d}d ${h}h ${m}m`)
-      } else {
-        setTimeLeft(`${h}h ${m}m ${s}s`)
-      }
+      const pad = (num: number) => num.toString().padStart(2, '0')
+      setTimeLeft(`${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`)
     }
     calc()
     const interval = setInterval(calc, 1000)

@@ -9,6 +9,7 @@
  */
 const db = require('../utils/db');
 const { getIo } = require('../socket');
+const cacheService = require('./cacheService');
 
 /**
  * Close an auction and create the resulting order.
@@ -87,25 +88,33 @@ async function closeAuction(auctionId) {
 
     const winningBid = bidRes.rows[0];
 
-    // No bids — close with no order
+    // No bids — restart auction (RELIST)
     if (!winningBid) {
+      const durationMs = new Date(auction.end_time).getTime() - new Date(auction.start_time).getTime();
+      const newEndTime = new Date(Date.now() + durationMs);
       await client.query(
-        `UPDATE auctions SET status = 'closed', updated_at = NOW() WHERE id = $1`,
-        [auctionId]
+        `UPDATE auctions SET status = 'active', current_bid = start_bid, total_bids = 0, end_time = $1, updated_at = NOW() WHERE id = $2`,
+        [newEndTime, auctionId]
       );
+      await client.query(`DELETE FROM bids WHERE auction_id = $1`, [auctionId]);
       await client.query('COMMIT');
-      return { settled: true, order: null, reason: 'no_bids' };
+      cacheService.invalidateCache(['/', '/explore', `/product/${auction.listing_id}`]).catch(() => {});
+      return { settled: true, order: null, reason: 'relisted_no_bids' };
     }
 
-    // Reserve price not met
+    // Reserve price not met — restart auction (RELIST)
     if (auction.reserve_price !== null &&
         Number(winningBid.bid_amount) < Number(auction.reserve_price)) {
+      const durationMs = new Date(auction.end_time).getTime() - new Date(auction.start_time).getTime();
+      const newEndTime = new Date(Date.now() + durationMs);
       await client.query(
-        `UPDATE auctions SET status = 'closed', updated_at = NOW() WHERE id = $1`,
-        [auctionId]
+        `UPDATE auctions SET status = 'active', current_bid = start_bid, total_bids = 0, end_time = $1, updated_at = NOW() WHERE id = $2`,
+        [newEndTime, auctionId]
       );
+      await client.query(`DELETE FROM bids WHERE auction_id = $1`, [auctionId]);
       await client.query('COMMIT');
-      return { settled: true, order: null, reason: 'reserve_not_met' };
+      cacheService.invalidateCache(['/', '/explore', `/product/${auction.listing_id}`]).catch(() => {});
+      return { settled: true, order: null, reason: 'relisted_reserve_not_met' };
     }
 
     // Create the order
@@ -215,6 +224,7 @@ async function closeAuction(auctionId) {
     }
 
     await client.query('COMMIT');
+    cacheService.invalidateCache(['/', '/explore', `/product/${auction.listing_id}`]).catch(() => {});
     return { settled: true, order, reason: 'settled' };
   } catch (err) {
     await client.query('ROLLBACK');

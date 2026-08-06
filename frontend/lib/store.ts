@@ -28,6 +28,7 @@ interface StoreState {
   cart: CartItem[];
   wishlistIds: number[];
   wishlistCount: number;
+  recentlyViewedIds: number[];
   notifications: Notification[];
   
   // Auth Actions removed (handled by authStore)
@@ -42,6 +43,9 @@ interface StoreState {
   // Wishlist Actions
   toggleWishlist: (listingId: number) => Promise<void>;
   loadWishlist: () => Promise<void>;
+  
+  // Recent Actions
+  addRecentlyViewed: (listingId: number) => void;
   
   // Cart load
   loadCart: () => Promise<void>;
@@ -63,6 +67,7 @@ export const useStore = create<StoreState>()(
       cart: [],
       wishlistIds: [],
       wishlistCount: 0,
+      recentlyViewedIds: [],
       notifications: staticNotifications,
       
       // Auth actions removed to avoid duplication with authStore
@@ -174,6 +179,14 @@ export const useStore = create<StoreState>()(
         }
       },
 
+      addRecentlyViewed: (listingId: number) => {
+        set((state) => {
+          const filtered = state.recentlyViewedIds.filter(id => id !== listingId);
+          filtered.unshift(listingId);
+          return { recentlyViewedIds: filtered.slice(0, 20) };
+        });
+      },
+
       loadCart: async () => {
         try {
           const res = await fetch('/api/cart', {
@@ -243,7 +256,8 @@ export const useStore = create<StoreState>()(
       partialize: (state) => ({
         cart: state.cart,
         wishlistIds: state.wishlistIds,
-        wishlistCount: state.wishlistCount
+        wishlistCount: state.wishlistCount,
+        recentlyViewedIds: state.recentlyViewedIds
       }),
     }
   )

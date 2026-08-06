@@ -57,7 +57,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
   const sellerName = typeof product?.creator === 'object' ? (product?.creator as any)?.name ?? 'Unknown Seller' : (product?.creator ?? 'Unknown Seller');
   const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
   
-  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart } = useStore();
+  const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart, addRecentlyViewed } = useStore();
   const { isAuthenticated } = useAuthStore();
   
   const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
@@ -85,6 +85,14 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (product && product.numericId) {
+      addRecentlyViewed(Number(product.numericId));
+    } else if (product && product.id) {
+      addRecentlyViewed(Number(product.id));
+    }
+  }, [product, addRecentlyViewed]);
 
 
   const handleAuthCheck = (action: () => void) => {
