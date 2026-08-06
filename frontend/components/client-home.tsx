@@ -226,7 +226,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
                 {/* 5. Our Story */}
         <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
-            <Image src="/images/5f2ab26c880e06709387b842cdd1feef.webp" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
+            <Image src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/bidcraft/art/sketches-and-drawings/4cf20961ee9c8dccc7dfb51c2f561af8.jpg" fill style={{ objectFit: 'cover', borderRadius: '0' }} alt="Our Story" />
           </div>
           <div className="w-full md:w-1/2 p-12 lg:p-24 flex flex-col justify-center text-left">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="max-w-md mx-auto md:mx-0">
@@ -445,28 +445,29 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [] }: { ne
         </section>
         
         {/* 13. NEW: Become a Seller CTA */}
-        <section className="py-24 bg-[#5C3D2E] px-[var(--space-5)] xl:px-[var(--space-8)]">
-          <div className="max-w-[var(--container-max)] mx-auto md:grid md:grid-cols-2 md:gap-16 items-center">
-            {/* Left column content */}
-            <div className="flex flex-col items-start mb-12 md:mb-0">
+        <section className="relative py-24 px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image 
+              src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/bidcraft_homepage/craft-livelihood-hero.jpg"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+              alt="Turn your craft into a livelihood background"
+            />
+            {/* Tasteful dark overlay/gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
+          </div>
+          
+          <div className="relative z-10 max-w-[var(--container-max)] mx-auto md:w-2/3 lg:w-1/2">
+            <div className="flex flex-col items-start">
               <span className="text-xs text-orange-300 tracking-widest uppercase mb-4 block font-semibold font-[family-name:var(--font-jakarta)]">FOR CREATORS</span>
               <h2 className="text-3xl md:text-4xl text-white mb-4 font-[family-name:var(--font-playfair)]">Turn your craft into a livelihood</h2>
-              <p className="text-sm text-stone-300 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
+              <p className="text-sm text-stone-200 mb-10 leading-relaxed max-w-md font-[family-name:var(--font-jakarta)]">
                 Join Indian artists and makers already selling on BidCraft. List for free. Set your own prices. Reach buyers who truly value handmade.
               </p>
-              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)]">
+              <Link href="/sell" className="bg-[var(--color-terracotta-600)] text-white text-body-lg font-bold px-10 py-4 rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-flex items-center gap-2 group font-[family-name:var(--font-jakarta)] shadow-lg">
                 Start Selling <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
-            </div>
-            
-            {/* Right column image placeholder */}
-            <div className="relative rounded-lg overflow-hidden bg-stone-700 aspect-[4/3] w-full">
-              <img 
-                src="https://res.cloudinary.com/duzlsyzwa/image/upload/f_auto,q_auto/v1785425296/bidcraft/homepage/craft-livelihood-hero.jpg" 
-                alt="Artisan at work" 
-                className="w-full h-full object-cover opacity-60"
-                style={{ objectPosition: 'center 30%' }}
-              />
             </div>
           </div>
         </section>
