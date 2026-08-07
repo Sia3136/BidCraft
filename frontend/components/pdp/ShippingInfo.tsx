@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 interface ShippingInfoProps {
   shipsFrom?: string
@@ -57,7 +58,16 @@ export function ShippingInfo(props: ShippingInfoProps) {
         : undefined,
     },
     { label: 'Packaging', value: packagingNote },
-    { label: 'Returns', value: props.returnsPolicy },
+    { label: 'Returns', value: props.returnsPolicy ? (
+        <div className="flex flex-col gap-1">
+          <span>{props.returnsPolicy}</span>
+          <Link href="/returns-policy" className="text-[11px] font-semibold text-[var(--color-terracotta-600)] underline-offset-2 hover:underline">
+            Read Returns & Refund Policy
+          </Link>
+        </div>
+      ) : undefined },
+    { label: 'Payment', value: '💳 Prepaid Orders Only' },
+    { label: 'Partner', value: '📦 Shipping by Delhivery' },
   ].filter(r => Boolean(r.value))
 
   return (
@@ -89,7 +99,7 @@ export function ShippingInfo(props: ShippingInfoProps) {
               {row.label}
             </dt>
             <dd className="text-[13px] text-[var(--color-ink-900)] font-medium m-0">
-              {row.value}
+              {row.value as React.ReactNode}
             </dd>
           </div>
         ))}

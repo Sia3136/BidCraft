@@ -211,18 +211,32 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                   </button>
                   {specsOpen && (
                     <div className="p-4 bg-white grid grid-cols-2 gap-4">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key}>
-                          <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
-                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+                      {Object.entries(product.specifications).map(([key, value]) => {
+                        if (key.toLowerCase() === 'origin') {
+                          return (
+                            <div key={key}>
+                              <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+                              <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
+                                <span className="not-italic text-base">🇮🇳</span> Made in India
+                              </span>
+                            </div>
+                          )
+                        }
+                        return (
+                          <div key={key}>
+                            <span className="block text-caption text-[var(--color-ink-500)]">{key}</span>
+                            <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
+                          </div>
+                        )
+                      })}
+                      {!Object.keys(product.specifications).some(k => k.toLowerCase() === 'origin') && (
+                        <div key="origin">
+                          <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
+                          <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
+                            <span className="not-italic text-base">🇮🇳</span> Made in India
+                          </span>
                         </div>
-                      ))}
-                      <div key="origin">
-                        <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
-                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
-                          <span className="not-italic text-base">🇮🇳</span> Made in India
-                        </span>
-                      </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -238,31 +252,6 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               returnsPolicy={product.returnsPolicy}
               packagingNote={product.packagingNote}
             />
-
-            {/* Purchase Information Footer */}
-            <div className="mt-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-cream-deep)] px-4 py-4">
-              <div className="grid grid-cols-1 gap-2">
-                {[
-                  { icon: '🇮🇳', text: 'Made in India' },
-                  { icon: '💳', text: 'Prepaid Orders Only' },
-                  { icon: '📦', text: 'Shipping by Delhivery' },
-                ].map(({ icon, text }) => (
-                  <div key={text} className="flex items-center gap-2.5">
-                    <span className="text-base leading-none">{icon}</span>
-                    <span className="text-body-sm font-medium text-[var(--color-ink-900)]">{text}</span>
-                  </div>
-                ))}
-                <div className="flex items-center gap-2.5 mt-1">
-                  <span className="text-base leading-none">📄</span>
-                  <Link
-                    href="/returns-policy"
-                    className="text-body-sm font-semibold text-[var(--color-terracotta-600)] underline-offset-2 hover:underline"
-                  >
-                    Read Returns & Refund Policy
-                  </Link>
-                </div>
-              </div>
-            </div>
 
             {/* BLOCK D — Action Buttons + Countdown + Escrow */}
             <div className="flex flex-col gap-3">

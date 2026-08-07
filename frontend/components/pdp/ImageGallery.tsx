@@ -78,7 +78,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         {/* Main image — w-full ensures it takes full width */}
         <div
           ref={containerRef}
-          className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden w-full cursor-zoom-in"
+          className="relative aspect-square md:aspect-[4/3] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden w-full cursor-zoom-in"
           onTouchStart={hasMultiple ? onTouchStart : undefined}
           onTouchEnd={hasMultiple ? onTouchEnd : undefined}
           onClick={() => openLightbox(activeIdx)}
@@ -92,7 +92,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             fill
             sizes="(max-width: 768px) 100vw, 60vw"
             style={{
-              objectFit: 'cover',
+              objectFit: 'contain',
               // GPU-accelerated zoom on hover via CSS class below
               transition: 'transform 0.32s ease',
             }}

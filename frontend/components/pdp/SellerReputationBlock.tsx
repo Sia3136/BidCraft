@@ -151,8 +151,8 @@ export function SellerReputationBlock({
           {/* ── Recent reviews list ── */}
           {reputation.recentReviews.length > 0 && (
             <div>
-              {/* Show first 5, rest expandable */}
-              {(expanded ? reputation.recentReviews : reputation.recentReviews.slice(0, 5)).map(
+              {/* Show first 3, rest expandable */}
+              {(expanded ? reputation.recentReviews : reputation.recentReviews.slice(0, 3)).map(
                 (rev, i) => (
                   <div
                     key={i}
@@ -185,7 +185,7 @@ export function SellerReputationBlock({
                 )
               )}
 
-              {total > 5 && (
+              {total > 3 && (
                 <button
                   onClick={() => setExpanded(e => !e)}
                   className="mt-3 text-[13px] text-[var(--color-terracotta-600)] font-semibold bg-transparent border-none cursor-pointer p-0 flex items-center gap-1 hover:text-[var(--color-terracotta-700)] transition-colors"
