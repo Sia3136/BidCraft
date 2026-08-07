@@ -21,7 +21,7 @@ import { ShippingInfo } from '@/components/pdp/ShippingInfo';
 
 
 
-export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[] }) {
+export default function ProductDetailClientErrorBoundary(props: { product: Listing, related?: Listing[], similar?: Listing[] }) {
   return (
     <ErrorBoundary>
       <ProductDetailClient {...props} />
@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
   }
 }
 
-function ProductDetailClient({ product, related = [] }: { product: Listing; related?: Listing[] }) {
+function ProductDetailClient({ product, related = [], similar = [] }: { product: Listing; related?: Listing[]; similar?: Listing[] }) {
   const router = useRouter();
   
   if (!product) {
@@ -141,6 +141,7 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                 verified={!!product?.verified}
                 location={product?.shipsFrom}
                 reputation={product?.sellerReputation}
+                badges={product?.creatorBadges}
               />
             </div>
           </div>
@@ -216,6 +217,12 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
                           <span className="block text-body-sm font-medium text-[var(--color-ink-900)]">{value as string}</span>
                         </div>
                       ))}
+                      <div key="origin">
+                        <span className="block text-caption text-[var(--color-ink-500)]">Origin</span>
+                        <span className="block text-body-sm font-medium text-[var(--color-ink-900)] flex items-center gap-1.5">
+                          <span className="not-italic text-base">🇮🇳</span> Made in India
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -231,6 +238,31 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
               returnsPolicy={product.returnsPolicy}
               packagingNote={product.packagingNote}
             />
+
+            {/* Purchase Information Footer */}
+            <div className="mt-4 rounded-[var(--radius-md)] border border-[var(--color-border-subtle)] bg-[var(--color-cream-deep)] px-4 py-4">
+              <div className="grid grid-cols-1 gap-2">
+                {[
+                  { icon: '🇮🇳', text: 'Made in India' },
+                  { icon: '💳', text: 'Prepaid Orders Only' },
+                  { icon: '📦', text: 'Shipping by Delhivery' },
+                ].map(({ icon, text }) => (
+                  <div key={text} className="flex items-center gap-2.5">
+                    <span className="text-base leading-none">{icon}</span>
+                    <span className="text-body-sm font-medium text-[var(--color-ink-900)]">{text}</span>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2.5 mt-1">
+                  <span className="text-base leading-none">📄</span>
+                  <Link
+                    href="/returns-policy"
+                    className="text-body-sm font-semibold text-[var(--color-terracotta-600)] underline-offset-2 hover:underline"
+                  >
+                    Read Returns & Refund Policy
+                  </Link>
+                </div>
+              </div>
+            </div>
 
             {/* BLOCK D — Action Buttons + Countdown + Escrow */}
             <div className="flex flex-col gap-3">
@@ -343,6 +375,18 @@ function ProductDetailClient({ product, related = [] }: { product: Listing; rela
 
           </div>
         </div>
+
+        {/* Similar Products */}
+        {similar && similar.length > 0 && (
+          <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">Similar Products</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {similar.map(p => (
+                <ProductCard key={p.id} product={p as any} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Related Products — unchanged */}
         {related && related.length > 0 && (

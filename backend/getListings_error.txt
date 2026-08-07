@@ -2,4 +2,4 @@ AggregateError [ETIMEDOUT]:
     at /app/node_modules/pg-pool/index.js:45:11
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async Promise.all (index 1)
-    at async getListings (/app/src/controllers/listingsController.js:368:35)
+    at async getListings (/app/src/controllers/listingsController.js:424:35)

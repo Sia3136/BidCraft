@@ -8,7 +8,7 @@ const { validateImageFile } = require('../utils/fileValidator');
 
 const EDITABLE_AUCTION_FIELDS = ['specifications', 'collections', 'occasions', 'photos', 'imageUrls'];
 
-const DEFAULT_PAGE_SIZE = 25;
+const DEFAULT_PAGE_SIZE = 28;
 const MAX_PAGE_SIZE = 500;
 
 const UPDATE_FIELD_MAP = {

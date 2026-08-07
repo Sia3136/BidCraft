@@ -472,58 +472,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </div>
         </section>
 
-        {/* 14. Contact Us */}
-        <section id="contact" className="py-24 px-[var(--space-5)] xl:px-[var(--space-8)] bg-[var(--color-cream-base)]">
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16">
-            <div className="w-full lg:w-1/2">
-              <h2 className="text-display-lg text-[var(--color-ink-900)] mb-8">Contact Us</h2>
-              <form className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Name</label>
-                  <input type="text" className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)]" required />
-                </div>
-                <div>
-                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Email</label>
-                  <input type="email" className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)]" required />
-                </div>
-                <div>
-                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Subject</label>
-                  <select className="w-full h-12 px-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)] bg-white cursor-pointer" required defaultValue="">
-                    <option value="" disabled>Select an option</option>
-                    <option>General Enquiry</option>
-                    <option>Seller Support</option>
-                    <option>Buyer Issue</option>
-                    <option>Report a Listing</option>
-                    <option>Press & Media</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-body-md font-semibold text-[var(--color-ink-900)] mb-2">Message</label>
-                  <textarea rows={4} className="w-full p-4 border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] outline-none focus:border-[var(--color-terracotta-600)] resize-none" required></textarea>
-                </div>
-                <button type="submit" className="mt-2 h-12 bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors">
-                  Send Message
-                </button>
-              </form>
-            </div>
-            
-            <div className="w-full lg:w-1/2 flex flex-col justify-center gap-6">
-              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">General</h3>
-                <a href="mailto:support@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">support@bidcraft.in</a>
-              </div>
-              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Sellers</h3>
-                <a href="mailto:sellers@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">sellers@bidcraft.in</a>
-              </div>
-              <div className="p-6 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)]">
-                <h3 className="text-heading-md text-[var(--color-ink-900)] mb-1">Disputes</h3>
-                <a href="mailto:disputes@bidcraft.in" className="text-body-lg text-[var(--color-terracotta-600)] font-semibold hover:underline">disputes@bidcraft.in</a>
-              </div>
-            </div>
-          </div>
-        </section>
+
 
         </main>
     </div>

@@ -17,7 +17,6 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
   const [activeIdx, setActiveIdx] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [lightboxIdx, setLightboxIdx] = useState(0)
 
   // Touch / swipe state (mobile main image)
   const touchStartX = useRef<number | null>(null)
@@ -28,8 +27,8 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
     if (!lightboxOpen) return
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setLightboxOpen(false)
-      if (e.key === 'ArrowRight') setLightboxIdx(i => (i + 1) % imgs.length)
-      if (e.key === 'ArrowLeft') setLightboxIdx(i => (i - 1 + imgs.length) % imgs.length)
+      if (e.key === 'ArrowRight') setActiveIdx(i => (i + 1) % imgs.length)
+      if (e.key === 'ArrowLeft') setActiveIdx(i => (i - 1 + imgs.length) % imgs.length)
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
@@ -65,7 +64,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   }
 
   const openLightbox = useCallback((idx: number) => {
-    setLightboxIdx(idx)
+    setActiveIdx(idx)
     setLightboxOpen(true)
   }, [])
 
@@ -74,41 +73,12 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <>
       {/* ─── Main Gallery ─────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col gap-4">
 
-        {/* Thumbnails — desktop only (md+), LEFT side. On mobile, dots shown below. */}
-        {hasMultiple && (
-          <div className="hidden md:flex md:flex-col gap-2 overflow-y-auto md:overflow-x-hidden w-[72px] shrink-0 hide-scrollbar max-h-[440px]">
-            {imgs.map((src, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`View image ${idx + 1}`}
-                className={cn(
-                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-terracotta-600)]',
-                  activeIdx === idx
-                    ? 'border-[var(--color-terracotta-600)]'
-                    : 'border-transparent hover:border-[var(--color-ink-300)]'
-                )}
-              >
-                <Image
-                  src={src}
-                  fill
-                  sizes="72px"
-                  style={{ objectFit: 'cover' }}
-                  alt={`Thumbnail ${idx + 1}`}
-                  loading="lazy"
-                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
-                />
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Main image — flex-1 min-w-0 ensures it never shrinks into the thumbnail column */}
+        {/* Main image — w-full ensures it takes full width */}
         <div
           ref={containerRef}
-          className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden flex-1 min-w-0 cursor-zoom-in"
+          className="relative aspect-square md:aspect-[4/3] lg:aspect-[4/4] bg-[var(--color-cream-deep)] rounded-[var(--radius-lg)] overflow-hidden w-full cursor-zoom-in"
           onTouchStart={hasMultiple ? onTouchStart : undefined}
           onTouchEnd={hasMultiple ? onTouchEnd : undefined}
           onClick={() => openLightbox(activeIdx)}
@@ -139,7 +109,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 type="button"
                 onClick={e => { e.stopPropagation(); setActiveIdx(i => (i - 1 + imgs.length) % imgs.length) }}
                 aria-label="Previous image"
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-terracotta-600)]"
               >
                 <ChevronLeft className="w-4 h-4 text-[var(--color-ink-900)]" />
               </button>
@@ -147,7 +117,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 type="button"
                 onClick={e => { e.stopPropagation(); setActiveIdx(i => (i + 1) % imgs.length) }}
                 aria-label="Next image"
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm z-10 pointer-events-auto transition-colors hidden md:flex focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-terracotta-600)]"
               >
                 <ChevronRight className="w-4 h-4 text-[var(--color-ink-900)]" />
               </button>
@@ -164,6 +134,35 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             </span>
           </div>
         </div>
+
+        {/* Thumbnails — desktop only (md+), BELOW main image. On mobile, dots shown below. */}
+        {hasMultiple && (
+          <div className="hidden md:flex md:flex-row gap-2 overflow-x-auto md:overflow-y-hidden w-full shrink-0 hide-scrollbar h-[72px]">
+            {imgs.map((src, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIdx(idx)}
+                aria-label={`View image ${idx + 1}`}
+                className={cn(
+                  'relative w-[72px] h-[72px] rounded-[var(--radius-sm)] overflow-hidden shrink-0 border-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-terracotta-600)]',
+                  activeIdx === idx
+                    ? 'border-[var(--color-terracotta-600)]'
+                    : 'border-transparent hover:border-[var(--color-ink-300)]'
+                )}
+              >
+                <Image
+                  src={src}
+                  fill
+                  sizes="72px"
+                  style={{ objectFit: 'cover' }}
+                  alt={`Thumbnail ${idx + 1}`}
+                  loading="lazy"
+                  onError={e => { e.currentTarget.src = '/placeholder.jpg' }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Dot indicators — mobile only */}
         {hasMultiple && (
@@ -219,16 +218,16 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           {hasMultiple && (
             <>
               <button
-                onClick={e => { e.stopPropagation(); setLightboxIdx(i => (i - 1 + imgs.length) % imgs.length) }}
+                onClick={e => { e.stopPropagation(); setActiveIdx(i => (i - 1 + imgs.length) % imgs.length) }}
                 aria-label="Previous image"
-                className="absolute left-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white z-10"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
-                onClick={e => { e.stopPropagation(); setLightboxIdx(i => (i + 1) % imgs.length) }}
+                onClick={e => { e.stopPropagation(); setActiveIdx(i => (i + 1) % imgs.length) }}
                 aria-label="Next image"
-                className="absolute right-16 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white z-10"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -242,7 +241,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             onClick={e => e.stopPropagation()}
           >
             <Image
-              src={imgs[lightboxIdx]}
+              src={imgs[activeIdx]}
               fill
               sizes="90vw"
               style={{ objectFit: 'contain' }}
@@ -255,7 +254,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           {/* Counter */}
           {hasMultiple && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-xs">
-              {lightboxIdx + 1} / {imgs.length}
+              {activeIdx + 1} / {imgs.length}
             </div>
           )}
         </div>

@@ -30,7 +30,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
   const searchQuery = searchParams.get('search')
   const sortQuery = searchParams.get('sort') || 'newest'
   const page = parseInt(searchParams.get('page') || '1', 10)
-  const itemsPerPage = 25
+  const itemsPerPage = 28
   const totalPages = Math.ceil(total / itemsPerPage)
   
   // Array parameters
@@ -454,7 +454,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
               
               <div className="hidden lg:flex items-center justify-between">
                 <h2 className="text-heading-md text-[var(--color-ink-900)]">
-                  Showing {Math.min((page - 1) * 24 + 1, total)}–{Math.min(page * 24, total)} of {total} listings
+                  Showing {Math.min((page - 1) * itemsPerPage + 1, total)}–{Math.min(page * itemsPerPage, total)} of {total} listings
                 </h2>
                 <div className="flex items-center gap-2">
                   <span className="text-body-md text-[var(--color-ink-700)]">Sort by:</span>

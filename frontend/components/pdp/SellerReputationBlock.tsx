@@ -28,6 +28,7 @@ export function SellerReputationBlock({
   verified,
   location,
   reputation,
+  badges,
 }: SellerReputationBlockProps) {
   const [expanded, setExpanded] = useState(false)
 
@@ -61,6 +62,16 @@ export function SellerReputationBlock({
               </span>
             )}
           </div>
+
+          {badges && badges.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {badges.map(badge => (
+                <span key={badge} className="text-[10px] bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] rounded px-1.5 py-[1px] font-semibold tracking-wide">
+                  {badge}
+                </span>
+              ))}
+            </div>
+          )}
 
           {total > 0 && (
             <div className="flex items-center gap-1.5 mt-0.5">
