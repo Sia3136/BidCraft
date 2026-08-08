@@ -7,6 +7,7 @@ import { Footer } from '@/components/footer'
 
 export default function AddressPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const listingId = searchParams.get('listing_id')
   const offerId = searchParams.get('offer_id')
   

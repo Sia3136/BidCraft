@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
@@ -46,7 +47,7 @@ export default function AddressesPage() {
     if (!token) return
     setLoading(true)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.ok) {
@@ -105,7 +106,7 @@ export default function AddressesPage() {
     const method = isEditing ? 'PUT' : 'POST'
 
     try {
-      const res = await fetch(url, {
+      const res = await authenticatedFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ export default function AddressesPage() {
   const handleDelete = async (id: string) => {
     if (!token || !window.confirm('Are you sure you want to delete this address?')) return
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses/${id}`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -152,7 +153,7 @@ export default function AddressesPage() {
   const handleSetDefault = async (addr: Address) => {
     if (!token || addr.is_default) return
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses/${addr.id}`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/addresses/${addr.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -336,3 +337,5 @@ export default function AddressesPage() {
     </div>
   )
 }
+
+

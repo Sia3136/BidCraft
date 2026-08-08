@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
@@ -17,7 +18,7 @@ export default function RecentlyViewedPage() {
     const fetchRecent = async () => {
       if (!token) return
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/recently-viewed`, {
+        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/recently-viewed`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         if (res.ok) {
@@ -79,3 +80,5 @@ export default function RecentlyViewedPage() {
     </div>
   )
 }
+
+

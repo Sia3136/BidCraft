@@ -3,7 +3,7 @@ const router = express.Router();
 const { 
   register, 
   login, 
-  googleLogin, 
+
   me,
   logout,
   refreshToken,
@@ -16,7 +16,7 @@ const authMiddleware = require('../middleware/auth');
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/google', googleLogin);
+
 router.post('/refresh', refreshToken);
 router.post('/send-verification', sendVerification);
 router.post('/verify-email', verifyEmail);

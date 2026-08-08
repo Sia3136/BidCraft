@@ -8,8 +8,9 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 type AuthStore = {
   user: User | null
   token: string | null
+  refreshToken: string | null
   isAuthenticated: boolean
-  setAuth: (user: User, token: string) => void
+  setAuth: (user: User, token: string, refreshToken?: string) => void
   clearAuth: () => void
 }
 
@@ -18,9 +19,15 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       user: null,
       token: null,
+      refreshToken: null,
       isAuthenticated: false,
-      setAuth: async (user, token) => {
-        set({ user, token, isAuthenticated: true });
+      setAuth: async (user, token, refreshToken) => {
+        set((state) => ({ 
+          user, 
+          token, 
+          refreshToken: refreshToken || state.refreshToken, 
+          isAuthenticated: true 
+        }));
         try {
           const [cartRes, wishRes] = await Promise.all([
             fetch(`/api/cart`, { credentials: 'include' }),
@@ -39,7 +46,7 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
       clearAuth: () => {
-        set({ user: null, token: null, isAuthenticated: false });
+        set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
       },
     }),
     {
@@ -47,6 +54,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
+        refreshToken: state.refreshToken,
       }),
     }
   )

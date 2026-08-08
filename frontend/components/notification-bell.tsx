@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
@@ -6,7 +7,7 @@ import useSWR from 'swr'
 import Link from 'next/link'
 
 const fetcher = (url: string) => 
-  fetch(url, {
+  authenticatedFetch(url, {
     headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
   }).then(r => r.json())
 
@@ -33,7 +34,7 @@ export function NotificationBell() {
 
   const markAsRead = async (id: number) => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/${id}/read`, {
+      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/${id}/read`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
@@ -45,7 +46,7 @@ export function NotificationBell() {
 
   const markAllRead = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/read-all`, {
+      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/read-all`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
@@ -128,3 +129,5 @@ export function NotificationBell() {
     </div>
   )
 }
+
+

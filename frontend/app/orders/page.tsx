@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -27,7 +28,7 @@ export default function OrdersPage() {
 
     const fetchOrders = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/orders`, {
+        const res = await authenticatedFetch(`${API_BASE}/api/orders`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         if (res.ok) {
@@ -108,3 +109,5 @@ export default function OrdersPage() {
     </div>
   )
 }
+
+

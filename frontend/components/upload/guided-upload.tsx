@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import { useState } from 'react'
 
@@ -39,7 +40,7 @@ export function GuidedUpload({ onPhotosChange }: GuidedUploadProps) {
       const token = localStorage.getItem('accessToken')
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
       
-      const res = await fetch(`${apiUrl}/images/upload`, {
+      const res = await authenticatedFetch(`${apiUrl}/images/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -131,3 +132,5 @@ export function GuidedUpload({ onPhotosChange }: GuidedUploadProps) {
     </div>
   )
 }
+
+

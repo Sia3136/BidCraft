@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
@@ -19,7 +20,7 @@ export function SellerOrders() {
   const loadOrders = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=seller`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=seller`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -39,7 +40,7 @@ export function SellerOrders() {
 
     try {
       setSubmitting(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/shipments/${shippingOrderId}/tracking`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/shipments/${shippingOrderId}/tracking`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,3 +144,5 @@ export function SellerOrders() {
     </div>
   )
 }
+
+

@@ -8,8 +8,6 @@ const { sendEmail } = require('../services/emailService');
 const logger = require('../utils/logger');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
 
 // Rate limiting wrapper using Redis
 async function rateLimit(key, limit, windowSeconds) {
@@ -190,74 +188,7 @@ async function login(req, res, next) {
   }
 }
 
-// 4. GOOGLE LOGIN
-async function googleLogin(req, res, next) {
-  try {
-    const { token } = req.body;
-    if (!token || typeof token !== 'string') return res.status(400).json({ error: 'invalid_token' });
 
-    let payload;
-    if (token.startsWith('mock_token_') && process.env.NODE_ENV === 'test') {
-      const userId = token.replace('mock_token_', '');
-      payload = {
-        sub: `google_mock_id_${userId}`,
-        email: `google_mock_${userId}@example.com`,
-        name: `Google Mock User ${userId}`,
-        picture: 'https://example.com/avatar.png'
-      };
-    } else {
-      if (!googleClient) {
-        return res.status(500).json({ error: 'google_oauth_not_configured' });
-      }
-      const ticket = await googleClient.verifyIdToken({
-        idToken: token,
-        audience: GOOGLE_CLIENT_ID
-      });
-      payload = ticket.getPayload();
-    }
-
-    const { sub: googleId, email, name } = payload;
-
-    let userResult = await db.query('SELECT id, email, name, role, google_id, onboarding_completed, username FROM users WHERE google_id=$1 OR email=$2', [googleId, email]);
-    let user = userResult.rows[0];
-
-    if (user) {
-      if (!user.google_id) {
-        await db.query('UPDATE users SET google_id=$1, email_verified=true, email_verified_at=COALESCE(email_verified_at, NOW()), google_account=true, updated_at=NOW(), last_login_at=NOW() WHERE id=$2', [googleId, user.id]);
-        user.google_id = googleId;
-      } else {
-        await db.query('UPDATE users SET last_login_at=NOW() WHERE id=$1', [user.id]);
-      }
-      
-      await db.query('INSERT INTO profiles (user_id, created_at, updated_at) VALUES ($1, NOW(), NOW()) ON CONFLICT DO NOTHING', [user.id]);
-    } else {
-      const createResult = await db.query(
-        'INSERT INTO users (email, google_id, name, role, email_verified, email_verified_at, google_account, created_at, updated_at, last_login_at) VALUES ($1,$2,$3,$4,true,NOW(),true,NOW(),NOW(),NOW()) RETURNING id, email, name, role, onboarding_completed, username',
-        [email, googleId, name, 'buyer']
-      );
-      user = createResult.rows[0];
-      await db.query('INSERT INTO profiles (user_id, created_at, updated_at) VALUES ($1, NOW(), NOW()) ON CONFLICT DO NOTHING', [user.id]);
-    }
-
-    const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
-    const refreshTokenStr = crypto.randomBytes(40).toString('hex');
-    const hashedRefreshToken = crypto.createHash('sha256').update(refreshTokenStr).digest('hex');
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await db.query('INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES ($1, $2, $3)', [hashedRefreshToken, user.id, expiresAt]);
-
-    setSessionCookie(res, accessToken);
-    res.json({ 
-      user: { id: user.id, email: user.email, name: user.name, username: user.username, role: user.role, onboarding_completed: user.onboarding_completed }, 
-      accessToken, 
-      refreshToken: refreshTokenStr 
-    });
-  } catch (err) {
-    if (err.message && err.message.includes('verifyIdToken')) {
-      return res.status(401).json({ error: 'invalid_google_token' });
-    }
-    next(err);
-  }
-}
 
 // 5. OTHER AUTH METHODS
 
@@ -530,4 +461,4 @@ async function updatePassword(req, res, next) {
   }
 }
 
-module.exports = { register, login, googleLogin, me, logout, refreshToken, sendVerification, verifyEmail, forgotPassword, resetPassword, updateMe, updatePassword };
+module.exports = { register, login, me, logout, refreshToken, sendVerification, verifyEmail, forgotPassword, resetPassword, updateMe, updatePassword };

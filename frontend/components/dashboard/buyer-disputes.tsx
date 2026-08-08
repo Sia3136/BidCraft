@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useEffect, useState } from 'react'
 
@@ -13,7 +14,7 @@ export function BuyerDisputes() {
   const loadDisputes = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/disputes`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/disputes`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
       if (res.ok) {
@@ -49,3 +50,5 @@ export function BuyerDisputes() {
     </div>
   )
 }
+
+

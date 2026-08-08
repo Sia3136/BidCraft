@@ -1,4 +1,5 @@
 'use client'
+import { authenticatedFetch } from '@/lib/api'
 
 import React, { useEffect, useState } from 'react'
 import { confirmDelivery } from '@/lib/api'
@@ -16,7 +17,7 @@ export function BuyerOrders() {
   const loadOrders = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=buyer`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=buyer`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -79,3 +80,5 @@ export function BuyerOrders() {
     </div>
   )
 }
+
+
