@@ -119,9 +119,9 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           
           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
-              <span className="text-caption tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
-              <h1 className="text-4xl md:text-display-xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
-              <p className="text-body-lg text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+              <span className="text-body-lg tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
+              <h1 className="text-5xl md:text-7xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
+              <p className="text-xl md:text-2xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
               </p>
               <div className="flex flex-col md:flex-row gap-4">
@@ -223,6 +223,56 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
             </div>
           </section>
         )}
+
+        {/* 9. Manifesto */}
+        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-raised)]" style={{ minHeight: '380px' }}>
+          {/* Subtle radial gradient to frame text */}
+          <div className="absolute inset-0 z-0 opacity-40" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(193,96,58,0.06) 100%)' }} />
+          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
+            <div className="flex flex-col items-center w-full text-center">
+              {/* Decorative top divider */}
+              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40 mb-8" />
+              
+              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-6">
+                MANIFESTO
+              </span>
+              
+              <motion.h2 
+                initial={{ opacity: 0, y: 30 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut" }} 
+                viewport={{ once: true }}
+                className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)] text-[var(--color-ink-900)] leading-tight mb-8"
+              >
+                We don't celebrate mass production.<br />We celebrate originality.
+              </motion.h2>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} 
+                viewport={{ once: true }}
+                className="font-[family-name:var(--font-jakarta)] text-[20px] text-[var(--color-ink-700)] max-w-[620px] mb-10"
+              >
+                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
+              </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }} 
+                viewport={{ once: true }}
+              >
+                <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)] text-base text-[var(--color-terracotta-600)] font-semibold mb-8">
+                  Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
+                </Link>
+              </motion.div>
+
+              {/* Decorative bottom divider */}
+              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40" />
+            </div>
+          </div>
+        </section>
 
         <TrendingSection listings={trendingListings} />
 
@@ -349,77 +399,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         </section>
 
 
-        {/* 9. Manifesto */}
-        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px' }}>
-          {/* Subtle radial gradient to frame text */}
-          <div className="absolute inset-0 z-0 opacity-40" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(193,96,58,0.06) 100%)' }} />
-          <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
-            <div className="flex flex-col items-center w-full text-center">
-              {/* Decorative top divider */}
-              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40 mb-8" />
-              
-              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-6">
-                MANIFESTO
-              </span>
-              
-              <motion.h2 
-                initial={{ opacity: 0, y: 30 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ duration: 0.8, ease: "easeOut" }} 
-                viewport={{ once: true }}
-                className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)] text-[var(--color-ink-900)] leading-tight mb-8"
-              >
-                We don't celebrate mass production.<br />We celebrate originality.
-              </motion.h2>
-              
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} 
-                viewport={{ once: true }}
-                className="font-[family-name:var(--font-jakarta)] text-[20px] text-[var(--color-ink-700)] max-w-[620px] mb-10"
-              >
-                Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
-              </motion.p>
-              
-              {/* Stat Counters */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }} 
-                viewport={{ once: true }}
-                className="flex flex-row items-center justify-center gap-10 md:gap-16 mb-10"
-              >
-                <div className="flex flex-col items-center">
-                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">106+</span>
-                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Listings</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">500+</span>
-                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Happy Buyers</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">4.9★</span>
-                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Avg. Rating</span>
-                </div>
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }} 
-                whileInView={{ opacity: 1, y: 0 }} 
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }} 
-                viewport={{ once: true }}
-              >
-                <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)] text-base text-[var(--color-terracotta-600)] font-semibold mb-8">
-                  Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
-                </Link>
-              </motion.div>
-
-              {/* Decorative bottom divider */}
-              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40" />
-            </div>
-          </div>
-        </section>
 
         {/* 10. Gifts With a Story */}
         <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
