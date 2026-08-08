@@ -2,7 +2,6 @@ const db = require('../utils/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { OAuth2Client } = require('google-auth-library');
 const redisClient = require('../utils/redis');
 const { sendEmail } = require('../services/emailService');
 const logger = require('../utils/logger');
