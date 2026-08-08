@@ -451,7 +451,7 @@ const getListings = async (req, res) => {
     };
 
     try {
-      await redis.set(cacheKey, JSON.stringify(responsePayload), 300);
+      await redis.set(cacheKey, JSON.stringify(responsePayload), { EX: 300 });
     } catch (err) {
       console.warn('Redis write error:', err);
     }

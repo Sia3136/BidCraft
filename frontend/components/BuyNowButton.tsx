@@ -53,7 +53,7 @@ export function BuyNowButton({ listingId, price, listingTitle, offerId, offerPri
         disabled={loading}
         className="w-full h-11 rounded-full font-ui text-sm font-semibold flex items-center justify-center transition-colors duration-200 bg-[#B06A42] text-white hover:bg-[#8f5435] shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        {loading ? 'Processing...' : isAuthenticated ? (isOffer ? `Checkout Accepted Offer — ${formatPrice(displayPrice)}` : `Buy Now — ${formatPrice(displayPrice)}`) : 'Sign In to Buy'}
+        {loading ? 'Processing...' : isAuthenticated ? (isOffer ? `Checkout Accepted Offer — ${formatPrice(displayPrice)}` : 'Buy Now') : 'Sign In to Buy'}
       </button>
       {error && (
         <p className="text-[var(--color-urgent-600)] text-[14px] mt-2">

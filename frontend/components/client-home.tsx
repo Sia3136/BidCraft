@@ -119,9 +119,9 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           
           <div className="absolute inset-0 w-full max-w-[var(--container-max)] mx-auto px-[var(--space-5)] xl:px-[var(--space-8)] flex flex-col justify-end pb-24 z-[2]">
             <motion.div initial="hidden" animate="visible" variants={revealVariant} className="max-w-2xl">
-              <span className="text-body-lg tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
-              <h1 className="text-5xl md:text-7xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
-              <p className="text-xl md:text-2xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
+              <span className="text-body-md tracking-widest text-white/90 uppercase mb-4 block font-[family-name:var(--font-jakarta)]">Curated this week</span>
+              <h1 className="text-3xl md:text-5xl text-white mb-6 leading-tight font-[family-name:var(--font-playfair)]">Where creativity becomes opportunity.</h1>
+              <p className="text-body-lg md:text-xl text-white/85 mb-8 max-w-xl font-[family-name:var(--font-jakarta)]">
                 Discover unique handcrafted goods, bid on rare collectibles, and support independent creators in India's premier marketplace.
               </p>
               <div className="flex flex-col md:flex-row gap-4">
@@ -402,7 +402,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
 
 
         {/* 10. Gifts With a Story */}
-        <section className="py-24 bg-[var(--color-cream-raised)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
+        <section className="py-24 bg-[var(--color-cream-base)] px-[var(--space-5)] xl:px-[var(--space-8)] overflow-hidden">
           <div className="max-w-[var(--container-max)] mx-auto">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={revealVariant} className="text-display-lg text-[var(--color-ink-900)] text-center mb-12 font-[family-name:var(--font-playfair)]">
               Gifts With a Story

@@ -17,7 +17,6 @@ import { fetchOfferById } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { AuctionTimer } from '@/components/AuctionTimer';
 import { ImageGallery } from '@/components/pdp/ImageGallery';
-import { SellerReputationBlock } from '@/components/pdp/SellerReputationBlock';
 import { ShippingInfo } from '@/components/pdp/ShippingInfo';
 
 
@@ -149,15 +148,72 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               alt={product.title}
             />
 
-            {/* BLOCK E + G — Seller Card and Buyer Reviews (SellerReputationBlock contains both) */}
-            <div className="bg-[#F7F4EE] border border-[#D8C8BA] rounded-xl p-5 mt-6">
-              <SellerReputationBlock
-                sellerName={sellerName}
-                verified={!!product?.verified}
-                location={product?.shipsFrom}
-                reputation={product?.sellerReputation}
-                badges={product?.creatorBadges}
-              />
+            {/* BLOCK E + G — Seller Card and Buyer Reviews */}
+            <div className="bg-[#F7F4EE] border border-[#D8C8BA] rounded-[var(--radius-xl)] p-6 mt-6 flex flex-col gap-6">
+              
+              {/* Seller info */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-heading-sm text-[var(--color-ink-900)]">Seller Information</h2>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-terracotta-600)] flex items-center justify-center text-white font-bold text-lg shrink-0">
+                    {sellerName.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-body-md font-bold text-[var(--color-ink-900)]">
+                        <span className="hover:underline cursor-not-allowed">{sellerName}</span>
+                      </h3>
+                      {product?.verified && <CheckCircle className="w-4 h-4 text-[var(--color-success-600)]" />}
+                    </div>
+                    {(() => {
+                      const reviewsList = (product.reviews && product.reviews.length > 0) ? product.reviews : [];
+                      const count = reviewsList.length || Number(product.creatorReviewCount || product.sellerReputation?.totalReviews || 0);
+                      const avg = reviewsList.length > 0
+                        ? (reviewsList.reduce((acc: number, r: any) => acc + Number(r.rating || 5), 0) / reviewsList.length)
+                        : Number(product.creatorRating || product.sellerReputation?.averageRating || 4.5);
+                      
+                      return (
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-caption text-[var(--color-terracotta-600)] font-semibold">★ {avg.toFixed(1)}</span>
+                          <span className="text-caption text-[var(--color-ink-500)]">({count} Reviews)</span>
+                        </div>
+                      )
+                    })()}
+                    {product?.shipsFrom && (
+                      <div className="text-caption text-[var(--color-ink-500)] mt-0.5">
+                        {product.shipsFrom}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* What buyers say */}
+              <div className="pt-6 border-t border-[var(--color-border-subtle)]">
+                <h2 className="text-heading-sm text-[var(--color-ink-900)] mb-4">What buyers say about this seller</h2>
+                <div className="space-y-4">
+                  {(!product.reviews || product.reviews.length === 0) && (
+                    <p className="text-body-sm text-[var(--color-ink-500)] italic">No reviews yet for this seller.</p>
+                  )}
+                  {(product.reviews || []).slice(0, 4).map((review: any, idx: number) => (
+                    <div key={idx} className="p-4 bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-semibold text-sm text-[var(--color-ink-900)]">{review.buyer || review.name || 'Verified Buyer'}</span>
+                        <span className="text-[var(--color-terracotta-600)] text-xs font-bold flex items-center gap-0.5">
+                          <span>★</span><span>{Number(review.rating).toFixed(1)}</span>
+                        </span>
+                        <span className="text-[11px] text-[var(--color-ink-500)] ml-auto">
+                          {new Date(review.date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+                        </span>
+                      </div>
+                      <p className="text-body-sm text-[var(--color-ink-700)] leading-relaxed">{review.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -188,8 +244,11 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                 {product.buyingMethod === 'Buy Now' && (
                   <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Buy Now Price</p>
                 )}
+                {product.buyingMethod === 'Negotiable' && (
+                  <p className="text-caption font-semibold text-[var(--color-ink-500)] uppercase">Asking Price (Negotiable)</p>
+                )}
                 <p className="text-display-xl font-display text-[var(--color-ink-900)]">
-                  {formatPrice(product.currentBid ?? product.price)}
+                  {formatPrice(product.buyingMethod === 'Auction' ? (product.currentBid ?? product.price) : product.price)}
                 </p>
               </div>
 
@@ -208,15 +267,29 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               </p>
               <div aria-hidden className="border-t border-[var(--color-border-strong)] mb-4" />
 
-              <div className="text-body-md text-[var(--color-ink-700)] space-y-2">
-                {(product.description || "").split('\n').map((para: string, idx: number) => (
-                  <p key={idx}>{para}</p>
-                ))}
+              <div className="text-body-md text-[var(--color-ink-700)] space-y-3">
+                {(() => {
+                  const desc = product.description || "";
+                  const lines = desc.split('\n').filter(l => l.trim().length > 0);
+                  if (lines.length > 1) return lines.map((para, i) => <p key={i}>{para}</p>);
+                  if (desc.length > 300) {
+                    const mid = Math.floor(desc.length / 2);
+                    let splitIdx = desc.indexOf('. ', mid);
+                    if (splitIdx === -1) splitIdx = desc.lastIndexOf('. ', mid);
+                    if (splitIdx !== -1) {
+                      return [
+                        <p key="1">{desc.slice(0, splitIdx + 1)}</p>,
+                        <p key="2">{desc.slice(splitIdx + 1).trim()}</p>
+                      ];
+                    }
+                  }
+                  return <p>{desc}</p>;
+                })()}
               </div>
 
               {/* Specifications accordion */}
               {product.specifications && Object.keys(product.specifications).length > 0 && (
-                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-4">
+                <div className="border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden mt-8">
                   <button 
                     onClick={() => setSpecsOpen(!specsOpen)}
                     className="w-full flex items-center justify-between p-4 bg-[var(--color-cream-deep)] hover:bg-[var(--color-cream-raised)] transition-colors text-heading-sm text-[var(--color-ink-900)]"
@@ -303,6 +376,11 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
               {/* FIXED / OFFER: [ ♡ Wishlist ] [ Add to Cart ] [ Buy Now → ] [ Make an Offer ] */}
               {(product.buyingMethod === 'Buy Now' || product.buyingMethod === 'Negotiable') && (
                 <div className="flex flex-col gap-3">
+                  <div className="mb-4">
+                    <p className="text-[32px] font-bold text-[var(--color-ink-900)] font-display leading-none mt-1">
+                      {formatPrice(product.price)}
+                    </p>
+                  </div>
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
@@ -395,7 +473,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
         {/* Related Products — unchanged */}
         {related && related.length > 0 && (
           <div className="mt-24 pt-16 border-t border-[var(--color-border-subtle)]">
-            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {product.creator}</h2>
+            <h2 className="text-display-md text-[var(--color-ink-900)] mb-8">More from {sellerName}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map(p => (
                 <ProductCard key={p.id} product={p as any} />
