@@ -224,6 +224,8 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
           </section>
         )}
 
+        <TrendingSection listings={trendingListings} />
+
         {/* 5. Our Story */}
         <section id="our-story" className="w-full min-h-[480px] flex flex-col md:flex-row bg-[var(--color-slate-900)]">
           <div className="w-full md:w-1/2 h-[240px] md:h-auto relative bg-[var(--color-cream-deep)]">
@@ -270,8 +272,6 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
             </motion.div>
           </div>
         </section>
-
-        <TrendingSection listings={trendingListings} />
 
 
 
@@ -350,28 +350,74 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
 
 
         {/* 9. Manifesto */}
-        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px', borderTop: '2px solid #B06A42', borderBottom: '2px solid #B06A42' }}>
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.04, pointerEvents: 'none' }}>
-            <filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
-            <rect width="100%" height="100%" filter="url(#paper)"/>
-          </svg>
+        <section className="relative overflow-hidden py-16 w-full bg-[var(--color-cream-base)]" style={{ minHeight: '380px' }}>
+          {/* Subtle radial gradient to frame text */}
+          <div className="absolute inset-0 z-0 opacity-40" style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(193,96,58,0.06) 100%)' }} />
           <div className="max-w-[var(--container-max)] mx-auto flex flex-col items-center justify-center h-full relative z-10 px-4">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} viewport={{ once: true }} className="flex flex-col items-center w-full text-center">
-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8', marginBottom: '32px' }} />
-              <span className="font-[family-name:var(--font-jakarta)]" style={{ textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '11px', color: '#B06A42', marginBottom: '24px' }}>
+            <div className="flex flex-col items-center w-full text-center">
+              {/* Decorative top divider */}
+              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40 mb-8" />
+              
+              <span className="font-[family-name:var(--font-jakarta)] uppercase tracking-[0.25em] text-[11px] text-[var(--color-terracotta-600)] mb-6">
                 MANIFESTO
               </span>
-              <h2 style={{ color: '#2B211C', lineHeight: 1.1, marginBottom: '32px' }} className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)]">
+              
+              <motion.h2 
+                initial={{ opacity: 0, y: 30 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut" }} 
+                viewport={{ once: true }}
+                className="text-4xl md:text-[58px] font-medium font-[family-name:var(--font-playfair)] text-[var(--color-ink-900)] leading-tight mb-8"
+              >
                 We don't celebrate mass production.<br />We celebrate originality.
-              </h2>
-              <p className="font-[family-name:var(--font-jakarta)]" style={{ fontSize: '20px', color: 'rgba(43, 33, 28, 0.7)', maxWidth: '620px', marginBottom: '40px' }}>
+              </motion.h2>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} 
+                viewport={{ once: true }}
+                className="font-[family-name:var(--font-jakarta)] text-[20px] text-[var(--color-ink-700)] max-w-[620px] mb-10"
+              >
                 Whether it's an original painting, a handmade ceramic mug, or a limited-edition collectible, every listing belongs here because someone cared enough to create or preserve it.
-              </p>
-              <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)]" style={{ fontSize: '16px', color: '#B06A42', marginBottom: '32px' }}>
-                Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
-              </Link>
-              <div style={{ width: '120px', height: '1px', backgroundColor: '#C9B7A8' }} />
-            </motion.div>
+              </motion.p>
+              
+              {/* Stat Counters */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }} 
+                viewport={{ once: true }}
+                className="flex flex-row items-center justify-center gap-10 md:gap-16 mb-10"
+              >
+                <div className="flex flex-col items-center">
+                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">106+</span>
+                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Listings</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">500+</span>
+                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Happy Buyers</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[var(--color-terracotta-600)]">4.9★</span>
+                  <span className="font-[family-name:var(--font-jakarta)] text-sm text-[var(--color-ink-500)] font-medium mt-1">Avg. Rating</span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }} 
+                viewport={{ once: true }}
+              >
+                <Link href="/explore" className="group inline-flex items-center font-[family-name:var(--font-jakarta)] text-base text-[var(--color-terracotta-600)] font-semibold mb-8">
+                  Explore Marketplace <span className="transition-transform duration-200 ease-out group-hover:translate-x-[6px] inline-block ml-1">&rarr;</span>
+                </Link>
+              </motion.div>
+
+              {/* Decorative bottom divider */}
+              <div className="w-[80px] h-[1.5px] bg-[var(--color-terracotta-600)] opacity-40" />
+            </div>
           </div>
         </section>
 

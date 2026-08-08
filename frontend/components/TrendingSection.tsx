@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useRef, useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
@@ -47,10 +47,10 @@ export function TrendingSection({ listings }: TrendingSectionProps) {
         <div className="flex items-end justify-between mb-12">
           <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">Trending Now</h2>
           <Link
-            href="/explore?trending=true"
+            href="/explore?sort=trending"
             className="text-sm text-[#B06A42] hover:underline underline-offset-2 font-medium"
           >
-            Explore All Trending Items ΓåÆ
+            Explore All Trending Items →
           </Link>
         </div>
 

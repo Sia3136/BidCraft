@@ -190,8 +190,8 @@ function AuthPageContent() {
     <div className="min-h-screen flex flex-col lg:flex-row items-stretch bg-[var(--color-cream-base)] relative overflow-hidden">
       {/* BRANDING / IMAGE */}
       <div className={cn(
-        "relative shrink-0 overflow-hidden bg-[var(--color-slate-900)]",
-        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-[50%] h-56 sm:h-64 lg:h-auto lg:min-h-full"
+        "relative shrink-0 overflow-hidden bg-[#b8860b]",
+        isFullScreenBg ? "absolute inset-0 z-0" : "w-full lg:w-[50%] h-56 sm:h-64 lg:h-[100vh] lg:sticky lg:top-0"
       )}>
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-terracotta-900)]/40 to-[var(--color-ink-900)]/70 mix-blend-multiply z-10" />
         

@@ -46,11 +46,12 @@ export default async function ExplorePage({
   const offset = (page - 1) * limit;
 
   let data;
-  if (params.type === 'trending') {
+  if (params.type === 'trending' || params.sort === 'trending') {
     // Intercept trending without API change. Fetch a larger set and filter by TRENDING_IDS
     const { filterTrendingListings } = await import('@/lib/trending');
     const apiParams = { ...params };
     delete apiParams.type; // Don't send trending to API as it would map to listing_type
+    if (apiParams.sort === 'trending') delete apiParams.sort; // Don't send trending sort to API
     
     data = await fetchListings({ ...apiParams, limit: 200, offset: 0 });
     data.listings = filterTrendingListings(data.listings);

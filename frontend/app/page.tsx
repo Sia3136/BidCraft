@@ -17,9 +17,9 @@ export default async function Home() {
     liveAuctions = auctionsData.auctions || [];
     newArrivals = newArrivalsData.listings ? newArrivalsData.listings.slice(0, 4) : [];
 
-    const { TRENDING_IDS } = await import('@/lib/trending');
+    const { filterTrendingListings } = await import('@/lib/trending');
     const allListings = await fetchListings({ limit: 100 }).catch(() => ({ listings: [] }));
-    trendingListings = allListings.listings.filter((l: Listing) => TRENDING_IDS.includes(l.id));
+    trendingListings = filterTrendingListings(allListings.listings);
   } catch (err) {
     console.error('Failed to fetch homepage data', err);
     // fallback to empty arrays or handle gracefully
