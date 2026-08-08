@@ -10,6 +10,7 @@ export default function PaymentPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const listingId = searchParams.get('listing_id')
+  const offerId = searchParams.get('offer_id')
   const { token, user } = useAuthStore()
   
   const [loading, setLoading] = useState(true)
@@ -31,7 +32,7 @@ export default function PaymentPage() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ listing_id: parseInt(listingId, 10) })
+          body: JSON.stringify({ listing_id: parseInt(listingId, 10), ...(offerId && { offer_id: parseInt(offerId, 10) }) })
         })
         const data = await res.json()
         
@@ -67,7 +68,8 @@ export default function PaymentPage() {
                 },
                 body: JSON.stringify({
                   ...response,
-                  listing_id: parseInt(listingId, 10)
+                  listing_id: parseInt(listingId, 10),
+                  ...(offerId && { offer_id: parseInt(offerId, 10) })
                 })
               })
               const verifyData = await verifyRes.json()
@@ -101,7 +103,7 @@ export default function PaymentPage() {
     }
 
     initPayment()
-  }, [listingId, token, router, user])
+  }, [listingId, offerId, token, router, user])
 
   return (
     <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">

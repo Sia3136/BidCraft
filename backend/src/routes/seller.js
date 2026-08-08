@@ -24,6 +24,28 @@ router.get('/listings', auth, async (req, res) => {
   }
 })
 
+// GET /api/seller/offers — seller's received offers
+router.get('/offers', auth, async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        o.id, o.amount, o.status, o.created_at AS "createdAt",
+        l.id AS "listingId", l.title AS "listingTitle",
+        l.price AS "listingPrice", l.image_urls[1] AS "listingImage",
+        u.name AS "buyerName"
+      FROM offers o
+      JOIN listings l ON l.id = o.listing_id
+      JOIN users u ON u.id = o.buyer_id
+      WHERE l.seller_id = $1
+      ORDER BY o.created_at DESC
+    `, [req.userId])
+    res.json({ offers: result.rows })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch seller offers' })
+  }
+})
+
 // GET /api/seller/orders — orders for the seller's listings
 router.get('/orders', auth, async (req, res) => {
   try {

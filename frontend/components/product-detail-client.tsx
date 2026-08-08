@@ -12,7 +12,8 @@ import { MakeOfferPanel } from '@/components/MakeOfferPanel';
 import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { fetchOfferById } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { AuctionTimer } from '@/components/AuctionTimer';
 import { ImageGallery } from '@/components/pdp/ImageGallery';
@@ -58,10 +59,24 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
   const sellerSlug = sellerName?.toLowerCase().replace(/\s+/g, '-') ?? 'seller';
   
   const { toggleWishlist: storeToggleWishlist, wishlistIds, addToCart } = useStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, token } = useAuthStore();
   
   const isWishlisted = wishlistIds.includes(Number(product.numericId || product.id));
   const [added, setAdded] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const urlOfferId = searchParams.get('offerId');
+  const [acceptedOffer, setAcceptedOffer] = useState<any>(null);
+
+  useEffect(() => {
+    if (urlOfferId && isAuthenticated && token) {
+      fetchOfferById(urlOfferId, token).then(data => {
+        if (data && data.status === 'accepted' && data.listingId === Number(product.numericId || product.id)) {
+          setAcceptedOffer(data);
+        }
+      }).catch(err => console.error('Failed to fetch offer:', err));
+    }
+  }, [urlOfferId, isAuthenticated, token, product.id, product.numericId]);
   
   const [bidAmount, setBidAmount] = useState('');
   const [isBidding, setIsBidding] = useState(false);
@@ -335,7 +350,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                       Add to Cart
                     </button>
                     <div className="flex-1 min-w-0">
-                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} />
+                      <BuyNowButton listingId={String(product.numericId || product.id)} price={product.price} listingTitle={product.title} offerId={acceptedOffer?.id} offerPrice={acceptedOffer?.amount} />
                     </div>
                   </div>
                   {product.offersAllowed && (

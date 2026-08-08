@@ -3,19 +3,20 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
-import { fetchSellerListings, fetchSellerOrders, deleteListing, shipOrder } from '@/lib/api'
+import { fetchSellerListings, fetchSellerOrders, deleteListing, shipOrder, fetchSellerOffers } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
 import Link from 'next/link'
-import { Package, Tag, Clock, Trash2, Edit3, Truck } from 'lucide-react'
+import { Package, Tag, Clock, Trash2, Edit3, Truck, Inbox } from 'lucide-react'
 import { getProductRoute } from '@/lib/routes'
 
 export default function SellerDashboard() {
   const router = useRouter()
   const { isAuthenticated, token } = useAuthStore()
-  const [tab, setTab] = useState<'overview' | 'listings' | 'orders' | 'analytics' | 'profile' | 'settings'>('listings')
+  const [tab, setTab] = useState<'overview' | 'listings' | 'orders' | 'offers' | 'analytics' | 'profile' | 'settings'>('listings')
   
   const [listings, setListings] = useState<any[]>([])
   const [orders, setOrders] = useState<any[]>([])
+  const [offers, setOffers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   
   // Shipping form state
@@ -35,14 +36,18 @@ export default function SellerDashboard() {
         if (tab === 'listings') {
           const data = await fetchSellerListings(token!)
           setListings(data?.listings || [])
-        } else {
+        } else if (tab === 'orders') {
           const data = await fetchSellerOrders(token!)
           setOrders(data?.orders || [])
+        } else if (tab === 'offers') {
+          const data = await fetchSellerOffers(token!)
+          setOffers(data?.offers || [])
         }
       } catch (err) {
         console.error('Failed to load seller data', err)
         if (tab === 'orders') setOrders([])
         if (tab === 'listings') setListings([])
+        if (tab === 'offers') setOffers([])
       } finally {
         setLoading(false)
       }
@@ -102,6 +107,12 @@ export default function SellerDashboard() {
           className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'orders' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
         >
           Orders
+        </button>
+        <button 
+          onClick={() => setTab('offers')} 
+          className={`pb-4 font-bold text-lg border-b-2 transition-colors whitespace-nowrap ${tab === 'offers' ? 'border-[var(--color-terracotta-600)] text-[var(--color-ink-900)]' : 'border-transparent text-[var(--color-ink-500)] hover:text-[var(--color-ink-700)]'}`}
+        >
+          Offers
         </button>
         <button 
           onClick={() => setTab('analytics')} 
@@ -279,6 +290,66 @@ export default function SellerDashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+      {tab === 'offers' && (
+        <div>
+          {offers.length === 0 && !loading ? (
+            <div className="text-center py-24 bg-[var(--color-cream-raised)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+              <Inbox className="w-16 h-16 text-[var(--color-ink-300)] mx-auto mb-4" />
+              <p className="text-xl font-bold text-[var(--color-ink-900)] mb-2">You don't have any offers yet.</p>
+              <p className="text-[var(--color-ink-500)]">Offers from buyers will appear here.</p>
+            </div>
+          ) : (
+            <div className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] overflow-hidden">
+              <table className="w-full text-left">
+                <thead className="bg-[var(--color-cream-raised)] border-b border-[var(--color-border-subtle)]">
+                  <tr>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Listing</th>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Buyer</th>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Offer Amount</th>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Status</th>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)] text-right">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--color-border-subtle)]">
+                  {offers.map(offer => (
+                    <tr key={offer.id} className="hover:bg-[var(--color-cream-raised)] transition-colors cursor-pointer" onClick={() => router.push(`/seller/offers/${offer.id}`)}>
+                      <td className="p-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-[var(--radius-sm)] overflow-hidden bg-[var(--color-cream-deep)] shrink-0">
+                            {offer.listingImage && <img src={offer.listingImage} alt={offer.listingTitle} className="w-full h-full object-cover" />}
+                          </div>
+                          <div>
+                            <span className="font-bold text-[var(--color-ink-900)] block">{offer.listingTitle}</span>
+                            <span className="text-xs text-[var(--color-ink-500)]">Listed at {formatPrice(offer.listingPrice)}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-4 text-[var(--color-ink-900)] font-medium">
+                        {offer.buyerName || 'Anonymous'}
+                      </td>
+                      <td className="p-4 font-bold text-[var(--color-terracotta-600)]">
+                        {formatPrice(offer.amount)}
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-2 py-1 text-xs font-bold rounded-full uppercase tracking-wider inline-block text-center min-w-[80px] ${
+                          offer.status === 'accepted' ? 'bg-[var(--color-success-100)] text-[var(--color-success-600)]' :
+                          offer.status === 'rejected' ? 'bg-[var(--color-urgent-100)] text-[var(--color-urgent-600)]' :
+                          'bg-[#FFF3E0] text-[#E65100]'
+                        }`}>
+                          {offer.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-[var(--color-ink-500)] text-right">
+                        {new Date(offer.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

@@ -328,13 +328,58 @@ export async function deleteListing(listingId: string, token: string) {
 }
 
 export async function submitOffer(listingId: string, offerAmount: number, token: string) {
-  const res = await fetch(`${API_BASE}/api/listings/` + listingId + `/offers`, { credentials: 'include',
+  const res = await fetch(`${API_BASE}/api/offers`, { credentials: 'include',
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ listingId, offerAmount }),
   })
   const json = await res.json()
   if (!res.ok) throw new Error(json.error || 'Failed to submit offer')
+  return json
+}
+
+export async function fetchSellerOffers(token: string) {
+  const res = await fetch(`${API_BASE}/api/seller/offers`, { credentials: 'include',
+    headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
+  })
+  if (!res.ok) throw new Error('Failed to fetch seller offers')
+  return res.json()
+}
+
+export async function fetchBuyerOffers(token: string) {
+  const res = await fetch(`${API_BASE}/api/offers`, { credentials: 'include',
+    headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
+  })
+  if (!res.ok) throw new Error('Failed to fetch your offers')
+  return res.json()
+}
+
+export async function fetchOfferById(offerId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/offers/` + offerId, { credentials: 'include',
+    headers: { Authorization: `Bearer ${token}` }, cache: 'no-store'
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to fetch offer')
+  return json.offer || json
+}
+
+export async function acceptOffer(offerId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/offers/` + offerId + `/accept`, { credentials: 'include',
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to accept offer')
+  return json
+}
+
+export async function rejectOffer(offerId: string, token: string) {
+  const res = await fetch(`${API_BASE}/api/offers/` + offerId + `/reject`, { credentials: 'include',
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.error || 'Failed to reject offer')
   return json
 }
 

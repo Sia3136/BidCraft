@@ -14,7 +14,8 @@ const verifySchema = Joi.object({
 });
 
 const createCheckoutSchema = Joi.object({
-  listing_id: Joi.number().integer().required()
+  listing_id: Joi.number().integer().required(),
+  offer_id: Joi.number().integer().optional()
 });
 
 const verifyCheckoutSchema = Joi.object({
@@ -22,6 +23,7 @@ const verifyCheckoutSchema = Joi.object({
   razorpay_payment_id: Joi.string().required(),
   razorpay_signature: Joi.string().required(),
   listing_id: Joi.number().integer().required(),
+  offer_id: Joi.number().integer().optional(),
   address_id: Joi.number().integer().optional()
 });
 
@@ -30,7 +32,7 @@ async function createCheckout(req, res, next) {
     const { error, value } = createCheckoutSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { listing_id } = value;
+    const { listing_id, offer_id } = value;
     const userId = req.userId;
 
     const listingRes = await db.query('SELECT * FROM listings WHERE id = $1', [listing_id]);
@@ -38,11 +40,18 @@ async function createCheckout(req, res, next) {
     if (!listing) return res.status(404).json({ error: 'listing_not_found' });
     if (listing.seller_id === userId) return res.status(403).json({ error: 'cannot_buy_own_listing' });
     if (listing.status !== 'active') return res.status(400).json({ error: 'listing_not_active' });
-    if (listing.listing_type !== 'fixed' && listing.listing_type !== 'buy_now') return res.status(400).json({ error: 'listing_is_not_fixed_price' });
 
-    // Calculate total (including 2% platform fee if applicable, or just the listing price)
-    // The prompt says "platform fee (2%)" on the frontend order review, but does the backend calculate it? Let's assume price + 2% or just price for now. Wait, prompt says: "amount: totalInPaise". Let's calculate total: price. The UI can show fee, but if backend needs exact amount, let's just stick to listing price for now unless there's a fee field.
-    const amount = Number(listing.price);
+    let amount = Number(listing.price);
+    
+    if (offer_id) {
+      const offerRes = await db.query('SELECT * FROM offers WHERE id = $1 AND buyer_id = $2 AND status = $3', [offer_id, userId, 'accepted']);
+      const offer = offerRes.rows[0];
+      if (!offer) return res.status(400).json({ error: 'valid_accepted_offer_not_found' });
+      if (offer.listing_id !== listing_id) return res.status(400).json({ error: 'offer_listing_mismatch' });
+      amount = Number(offer.amount);
+    } else if (listing.listing_type !== 'fixed' && listing.listing_type !== 'buy_now') {
+      return res.status(400).json({ error: 'listing_is_not_fixed_price' });
+    }
 
     const rpOrder = await paymentService.createOrder({
       amount: amount,
@@ -67,7 +76,7 @@ async function verifyCheckout(req, res, next) {
     const { error, value } = verifyCheckoutSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, listing_id, address_id } = value;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, listing_id, offer_id, address_id } = value;
     const buyerId = req.userId;
 
     const valid = paymentService.verifySignature({
@@ -88,12 +97,24 @@ async function verifyCheckout(req, res, next) {
     const listing = listingRes.rows[0];
     if (!listing) return res.status(400).json({ error: 'Listing no longer available' });
 
+    let orderPrice = Number(listing.price);
+    
+    if (offer_id) {
+      const offerRes = await db.query('SELECT * FROM offers WHERE id = $1 AND buyer_id = $2 AND status = $3', [offer_id, buyerId, 'accepted']);
+      const offer = offerRes.rows[0];
+      if (!offer) return res.status(400).json({ error: 'valid_accepted_offer_not_found' });
+      if (offer.listing_id !== listing_id) return res.status(400).json({ error: 'offer_listing_mismatch' });
+      orderPrice = Number(offer.amount);
+    } else if (listing.listing_type !== 'fixed' && listing.listing_type !== 'buy_now') {
+      return res.status(400).json({ error: 'listing_is_not_fixed_price' });
+    }
+
     // Create the order
     const orderRes = await db.query(
       `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, 'paid', NOW(), NOW())
        RETURNING *`,
-      [buyerId, listing.seller_id, listing_id, listing.price]
+      [buyerId, listing.seller_id, listing_id, orderPrice]
     );
     const order = orderRes.rows[0];
 

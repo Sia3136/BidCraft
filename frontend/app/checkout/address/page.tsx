@@ -7,8 +7,8 @@ import { Footer } from '@/components/footer'
 
 export default function AddressPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const listingId = searchParams.get('listing_id')
+  const offerId = searchParams.get('offer_id')
   
   const [formData, setFormData] = useState({
     fullName: '',
@@ -28,7 +28,7 @@ export default function AddressPage() {
     e.preventDefault()
     // Ideally save to DB here. For now, move to payment.
     localStorage.setItem('checkout_address', JSON.stringify(formData))
-    router.push(`/checkout/payment?listing_id=${listingId}`)
+    router.push(`/checkout/payment?listing_id=${listingId}${offerId ? `&offer_id=${offerId}` : ''}`)
   }
 
   return (

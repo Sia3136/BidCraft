@@ -3,6 +3,55 @@ const router = express.Router();
 const db = require('../utils/db');
 const auth = require('../middleware/auth');
 
+// GET /api/offers — buyer fetches their own offers
+router.get('/', auth, async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        o.id, o.amount, o.status, o.created_at AS "createdAt",
+        l.id AS "listingId", l.title AS "listingTitle",
+        l.price AS "listingPrice", l.image_urls[1] AS "listingImage"
+      FROM offers o
+      JOIN listings l ON l.id = o.listing_id
+      WHERE o.buyer_id = $1
+      ORDER BY o.created_at DESC
+    `, [req.userId])
+    res.json({ offers: result.rows })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch your offers' })
+  }
+})
+
+// GET /api/offers/:offerId — get specific offer details (seller or buyer)
+router.get('/:offerId', auth, async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        o.id, o.amount, o.status, o.created_at AS "createdAt", o.buyer_id AS "buyerId",
+        l.id AS "listingId", l.title AS "listingTitle", l.seller_id AS "sellerId",
+        l.price AS "listingPrice", l.image_urls[1] AS "listingImage",
+        u.name AS "buyerName"
+      FROM offers o
+      JOIN listings l ON l.id = o.listing_id
+      JOIN users u ON u.id = o.buyer_id
+      WHERE o.id = $1
+    `, [req.params.offerId])
+
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Offer not found' })
+
+    const offer = result.rows[0]
+    if (offer.sellerId !== req.userId && offer.buyerId !== req.userId) {
+      return res.status(403).json({ error: 'Not authorized to view this offer' })
+    }
+
+    res.json({ offer })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch offer' })
+  }
+})
+
 // POST /api/offers — buyer submits an offer
 router.post('/', auth, async (req, res) => {
   try {
@@ -103,7 +152,38 @@ router.put('/:offerId/accept', auth, async (req, res) => {
       )
 
       await client.query('COMMIT')
-      res.json({ success: true, message: 'Offer accepted. Buyer will be notified to complete payment.' })
+
+      // Notify Buyer via Notification & Email
+      try {
+        const buyerRes = await db.query('SELECT u.email, u.id FROM users u WHERE u.id = $1', [result.rows[0].buyer_id]);
+        const listingRes = await db.query('SELECT title FROM listings WHERE id = $1', [result.rows[0].listing_id]);
+        
+        if (buyerRes.rows.length > 0 && listingRes.rows.length > 0) {
+          const buyerEmail = buyerRes.rows[0].email;
+          const listingTitle = listingRes.rows[0].title;
+          const amount = result.rows[0].amount;
+
+          // In-app notification
+          await db.query(`
+            INSERT INTO notifications (user_id, type, message, link)
+            VALUES ($1, 'offer_accepted', $2, $3)
+          `, [buyerRes.rows[0].id, `Your offer of ₹${amount} on ${listingTitle} was accepted!`, `/profile/offers`]);
+
+          // Email
+          const emailService = require('../services/emailService');
+          await emailService.sendEmail({
+            to: buyerEmail,
+            subject: `Offer Accepted: ${listingTitle}`,
+            text: `Good news! Your offer of ₹${amount} for "${listingTitle}" has been accepted.\n\nPlease complete your checkout to secure the item.`,
+            ctaLink: `/product/${result.rows[0].listing_id}?offerId=${req.params.offerId}`,
+            ctaText: `Complete Checkout`
+          });
+        }
+      } catch (notifyErr) {
+        console.error('Failed to send buyer acceptance notification:', notifyErr);
+      }
+
+      res.json({ success: true, message: 'Offer accepted. Buyer has been notified to complete payment.' })
     } catch (err) {
       await client.query('ROLLBACK')
       throw err
