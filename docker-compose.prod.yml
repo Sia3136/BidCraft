@@ -8,6 +8,9 @@ services:
     build:
       context: ./frontend
       target: production
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
     ports:
       - "3000:3000"
     environment:

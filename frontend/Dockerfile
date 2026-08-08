@@ -32,6 +32,14 @@ RUN npx prisma generate
 COPY . .
 # We disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Inject build-time variables for Next.js client-side code
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+# Provide dummy secret for static evaluation
+ENV JWT_SECRET=build_dummy_secret
 RUN npm run build
 
 # --------------------------------------------------
@@ -55,9 +63,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# We also copy Prisma client engine since it is needed at runtime
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+# Prisma client is generated to lib/generated/prisma and is included in the Next.js standalone output automatically due to tracing.
 
 USER nextjs
 

@@ -63,8 +63,12 @@ app.use((req, res, next) => {
   }
 });
 
+const corsOrigin = process.env.NODE_ENV === 'production'
+  ? (process.env.FRONTEND_ORIGIN) // Must be strictly set in production
+  : (process.env.FRONTEND_ORIGIN || 'http://localhost:3000');
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+  origin: corsOrigin,
   credentials: true
 }));
 if (process.env.NODE_ENV !== 'test') {
