@@ -231,6 +231,11 @@ export const Navbar = React.memo(function Navbar() {
                 <Link href="/contact" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
                   Contact
                 </Link>
+                {isAuthenticated && (
+                  <Link href="/account" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                    Dashboard
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -415,7 +420,7 @@ export const Navbar = React.memo(function Navbar() {
                       const activeCat = categories.find(c => c.slug === openDropdown);
                       if (!activeCat) return null;
                       return activeCat.subcategories.map(sub => {
-                        const href = `/explore?category=${encodeURIComponent(activeCat.name)}&subcategory=${encodeURIComponent(sub.name)}`;
+                        const href = `/explore?category=${encodeURIComponent(activeCat.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
                           <button
                             key={sub.slug}
@@ -490,7 +495,7 @@ export const Navbar = React.memo(function Navbar() {
                       className="flex flex-col pl-4 gap-3 overflow-hidden mt-2 mb-2 border-l-2 border-[var(--color-border-subtle)]"
                     >
                       {category.subcategories.map(sub => {
-                        const href = `/explore?category=${encodeURIComponent(category.name)}&subcategory=${encodeURIComponent(sub.name)}`;
+                        const href = `/explore?category=${encodeURIComponent(category.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
                           <button
                             key={sub.slug}
@@ -542,6 +547,14 @@ export const Navbar = React.memo(function Navbar() {
             >
               Contact
             </button>
+            {isAuthenticated && (
+              <button
+                onClick={() => { router.push('/account'); setIsMobileMenuOpen(false); }}
+                className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
+              >
+                Dashboard
+              </button>
+            )}
           </div>
         </div>
       </motion.div>

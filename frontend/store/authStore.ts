@@ -47,6 +47,8 @@ export const useAuthStore = create<AuthStore>()(
       },
       clearAuth: () => {
         set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
+        useStore.getState().clearCart();
+        useStore.getState().clearWishlist();
       },
     }),
     {

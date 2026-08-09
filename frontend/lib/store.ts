@@ -42,6 +42,7 @@ interface StoreState {
   // Wishlist Actions
   toggleWishlist: (listingId: number) => Promise<void>;
   loadWishlist: () => Promise<void>;
+  clearWishlist: () => void;
   
   // Cart load
   loadCart: () => Promise<void>;
@@ -112,6 +113,7 @@ export const useStore = create<StoreState>()(
         cart: state.cart.map(i => i.productId === productId ? { ...i, quantity } : i)
       })),
       clearCart: () => set({ cart: [] }),
+      clearWishlist: () => set({ wishlistIds: [], wishlistCount: 0 }),
       
       toggleWishlist: async (listingId: number) => {
         const { wishlistIds } = get()
