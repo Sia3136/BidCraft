@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageSquare, X, Send, User, Bot, ArrowRight } from 'lucide-react'
@@ -77,6 +77,12 @@ export function ChatWidget() {
       scrollToBottom()
     }
   }, [messages, isOpen])
+
+  useEffect(() => {
+    const handleOpenChat = () => setIsOpen(true)
+    window.addEventListener('open-chat', handleOpenChat)
+    return () => window.removeEventListener('open-chat', handleOpenChat)
+  }, [])
 
   const handleSendText = (text: string) => {
     if (!text.trim()) return

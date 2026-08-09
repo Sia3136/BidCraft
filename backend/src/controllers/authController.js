@@ -11,11 +11,20 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Rate limiting wrapper using Redis
 async function rateLimit(key, limit, windowSeconds) {
   if (process.env.NODE_ENV === 'test') return true;
-  const current = await redisClient.incr(key);
-  if (current === 1) {
-    await redisClient.expire(key, windowSeconds);
+  try {
+    const current = await redisClient.incr(key);
+    if (current === 1) {
+      await redisClient.expire(key, windowSeconds);
+    }
+    return current <= limit;
+  } catch (err) {
+    if (logger && logger.error) {
+      logger.error('Redis rate limit error:', err.message);
+    } else {
+      console.error('Redis rate limit error:', err.message);
+    }
+    return true; // Fail open
   }
-  return current <= limit;
 }
 
 function setSessionCookie(res, token) {
@@ -33,7 +42,7 @@ async function register(req, res, next) {
     const { email, password, name } = req.body;
     if (!email || !password || !name) return res.status(400).json({ error: 'Missing required fields' });
     
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip;
     if (!(await rateLimit(`ratelimit:register:${ip}`, 5, 3600))) {
       return res.status(429).json({ error: 'Too many registration attempts' });
     }
@@ -55,8 +64,28 @@ async function register(req, res, next) {
         await db.query('INSERT INTO profiles (user_id, created_at, updated_at) VALUES ($1, NOW(), NOW()) ON CONFLICT DO NOTHING', [user.id]);
       }
     } catch (err) {
-      if (err.code === '23505') return res.status(409).json({ error: 'email_taken' });
-      throw err;
+      if (err.code === '23505') {
+        // Verify if it's the email constraint by checking if the email exists
+        const existing = await db.query('SELECT id, email_verified FROM users WHERE email=$1', [email]);
+        if (existing.rows.length > 0) {
+          if (!existing.rows[0].email_verified) {
+             // Safe recovery: overwrite unverified account
+             const updateRes = await db.query(
+               'UPDATE users SET password_hash=$1, name=$2, updated_at=NOW() WHERE id=$3 RETURNING id, email, name', 
+               [hashed, name, existing.rows[0].id]
+             );
+             user = updateRes.rows[0];
+          } else {
+             // Verified account: properly reject
+             return res.status(409).json({ error: 'email_taken' });
+          }
+        } else {
+          // If collision was on another constraint (e.g. google_id)
+          return res.status(409).json({ error: 'conflict', message: 'A unique constraint was violated.' });
+        }
+      } else {
+        throw err;
+      }
     }
 
     // Generate 6 digit OTP
@@ -72,19 +101,29 @@ async function register(req, res, next) {
       [user.id, hashedOtp, expiresAt, 'email_verification']
     );
 
-    await sendEmail({
-      to: email,
-      subject: 'Verify your BidCraft email',
-      text: `Your verification code is: ${otp}\n\nIt expires in 10 minutes. Do not share it with anyone.`
-    });
+    let emailFailed = false;
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Verify your BidCraft email',
+        text: `Your verification code is: ${otp}\n\nIt expires in 10 minutes. Do not share it with anyone.`
+      });
+    } catch (err) {
+      console.error('Email sending failed for registration:', err.message);
+      emailFailed = true;
+    }
 
     if (process.env.NODE_ENV === 'test') {
       const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
       setSessionCookie(res, accessToken);
-      return res.json({ success: true, user: { id: user.id, email: user.email }, accessToken });
+      return res.status(201).json({ success: true, user: { id: user.id, email: user.email }, accessToken, email_failed: emailFailed });
     }
 
-    res.json({ success: true, message: 'Verification email sent', user: { id: user.id, email: user.email } });
+    if (emailFailed) {
+      return res.status(201).json({ success: true, message: 'Account created, but verification email failed to send. Please request a new code.', user: { id: user.id, email: user.email }, email_failed: true });
+    }
+
+    res.status(201).json({ success: true, message: 'Verification email sent', user: { id: user.id, email: user.email }, email_failed: false });
   } catch (err) {
     next(err);
   }
@@ -96,7 +135,7 @@ async function verifyEmail(req, res, next) {
     const { email, code } = req.body;
     if (!email || !code) return res.status(400).json({ error: 'Missing email or code' });
 
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip;
     if (!(await rateLimit(`ratelimit:verify:${ip}`, 10, 3600))) {
       return res.status(429).json({ error: 'Too many verification attempts' });
     }
@@ -150,8 +189,8 @@ async function login(req, res, next) {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'email_password_required' });
     
-    const ip = req.ip || req.connection.remoteAddress;
-    if (!(await rateLimit(`ratelimit:login:${email}`, 10, 1800))) {
+    const ip = req.ip;
+    if (!(await rateLimit(`ratelimit:login:${ip}`, 10, 1800))) {
       return res.status(429).json({ error: 'Too many login attempts' });
     }
 
@@ -255,7 +294,7 @@ async function forgotPassword(req, res, next) {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'email_required' });
     
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip;
     if (!(await rateLimit(`ratelimit:forgot:${ip}`, 5, 3600))) {
       return res.status(429).json({ error: 'Too many attempts' });
     }
@@ -263,8 +302,6 @@ async function forgotPassword(req, res, next) {
     const userRes = await db.query('SELECT id FROM users WHERE email = $1', [email]);
     const user = userRes.rows[0];
     
-    res.json({ success: true, message: 'If the email exists, a password reset link has been sent.' });
-
     if (user) {
       const otp = crypto.randomInt(100000, 1000000).toString();
       const hashedToken = crypto.createHash('sha256').update(otp).digest('hex');
@@ -277,18 +314,20 @@ async function forgotPassword(req, res, next) {
         [user.id, hashedToken, expiresAt, 'password_reset']
       );
 
-      await sendEmail({
-        to: email,
-        subject: 'Password Reset Request',
-        text: `Your password reset code is: ${otp}\n\nIt expires in 10 minutes.`
-      });
+      try {
+        await sendEmail({
+          to: email,
+          subject: 'Password Reset Request',
+          text: `Your password reset code is: ${otp}\n\nIt expires in 10 minutes.`
+        });
+      } catch (err) {
+        console.error('Email sending failed for forgot password:', err.message);
+      }
     }
+
+    res.json({ success: true, message: 'If the email exists, a password reset link has been sent.' });
   } catch (err) {
-    if (!res.headersSent) {
-      next(err);
-    } else {
-      console.error('Error in background forgotPassword task:', err);
-    }
+    next(err);
   }
 }
 
@@ -299,7 +338,7 @@ async function resetPassword(req, res, next) {
       return res.status(400).json({ error: 'Invalid input' });
     }
     
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip;
     if (!(await rateLimit(`ratelimit:reset:${ip}`, 5, 3600))) {
       return res.status(429).json({ error: 'Too many attempts' });
     }
@@ -379,7 +418,7 @@ async function sendVerification(req, res, next) {
     if (!user) return res.status(404).json({ error: 'User not found' });
     if (user.email_verified) return res.status(400).json({ error: 'already_verified' });
 
-    const ip = req.ip || req.connection.remoteAddress;
+    const ip = req.ip;
     if (!(await rateLimit(`ratelimit:resend:${user.id}:${ip}`, 3, 3600))) {
       return res.status(429).json({ error: 'Too many resend attempts' });
     }
@@ -394,13 +433,23 @@ async function sendVerification(req, res, next) {
       [user.id, hashedOtp, expiresAt, 'email_verification']
     );
 
-    await sendEmail({
-      to: user.email,
-      subject: 'Verify your BidCraft email',
-      text: `Your verification code is: ${otp}\n\nIt expires in 10 minutes. Do not share it with anyone.`
-    });
+    let emailFailed = false;
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: 'Verify your BidCraft email',
+        text: `Your verification code is: ${otp}\n\nIt expires in 10 minutes. Do not share it with anyone.`
+      });
+    } catch (err) {
+      console.error('Email sending failed for verification:', err.message);
+      emailFailed = true;
+    }
 
-    res.json({ success: true, message: 'verification_sent' });
+    if (emailFailed) {
+      return res.json({ success: true, message: 'Code generated but email delivery failed', email_failed: true });
+    }
+
+    res.json({ success: true, message: 'verification_sent', email_failed: false });
   } catch (err) {
     next(err);
   }

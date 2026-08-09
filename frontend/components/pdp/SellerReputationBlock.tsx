@@ -9,6 +9,7 @@ interface SellerReputationBlockProps {
   verified: boolean
   location?: string
   reputation?: SellerReputation
+  badges?: string[]
 }
 
 function StarFill({ rating }: { rating: number }) {

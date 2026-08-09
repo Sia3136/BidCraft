@@ -38,6 +38,7 @@ const reportsRoutes = require('./routes/reports');
 const categoriesRoutes = require('./routes/categories');
 
 const app = express();
+app.set('trust proxy', 1); // Trust the first proxy to securely populate req.ip
 // Disable CSP for API-only backend as it serves no HTML and restrictive CSPs provide no benefit while risking integration breakage
 app.use(helmet({
   contentSecurityPolicy: false
