@@ -49,8 +49,8 @@ function AuthPageContent() {
     setIsSubmitting(true)
     setError('')
     try {
-      const { user, token } = await apiLogin({ email: signInEmail, password: signInPassword })
-      setAuth(user, token)
+      const { user, token, refreshToken } = await apiLogin({ email: signInEmail, password: signInPassword })
+      setAuth(user, token, refreshToken)
       mergeAnonymousData()
       
       if (!user.onboarding_completed) {
@@ -111,8 +111,8 @@ function AuthPageContent() {
       if (!verifyRes.ok) throw new Error(verifyData.error === 'invalid_code' ? 'Invalid code' : 'Verification failed')
 
       // Auto login after verification
-      const { user, token } = await apiLogin({ email: signUpEmail, password: signUpPassword })
-      setAuth(user, token)
+      const { user, token, refreshToken } = await apiLogin({ email: signUpEmail, password: signUpPassword })
+      setAuth(user, token, refreshToken)
       mergeAnonymousData()
       
       router.push('/onboarding')

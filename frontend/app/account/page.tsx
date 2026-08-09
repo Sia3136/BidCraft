@@ -151,7 +151,7 @@ export default function AccountOverview() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {recentlyViewed.slice(0, 4).map((item) => (
-              <Link key={item.id} href={`/listing/${item.id}`} className="group block">
+              <Link key={item.id} href={`/product/${item.id}`} className="group block">
                 <div className="relative aspect-square bg-[var(--color-cream-raised)] rounded-[var(--radius-md)] overflow-hidden mb-2">
                   <Image 
                     src={item.image || item.images?.[0] || 'https://images.unsplash.com/photo-1615266895738-11f1371cd7e5?auto=format&fit=crop&q=80'} 

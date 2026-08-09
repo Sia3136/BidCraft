@@ -32,7 +32,7 @@ function useDebounce<T extends (...args: any[]) => void>(callback: T, delay: num
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const { user, token, setAuth } = useAuthStore()
+  const { user, token, refreshToken, setAuth } = useAuthStore()
   
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -138,7 +138,7 @@ export default function OnboardingPage() {
   }
 
   const handleFinish = async () => {
-    if (!token || !user) return
+    if (!user) return
     setIsSubmitting(true)
     setError('')
     try {
@@ -147,9 +147,9 @@ export default function OnboardingPage() {
         interests: selectedInterests,
         marketplace_role: marketplaceRole,
         onboarding_completed: true
-      }, token)
+      }, token || '')
 
-      setAuth({ ...user, ...profile }, token)
+      setAuth({ ...user, ...profile }, token, refreshToken)
       localStorage.removeItem('onboarding_step')
       router.push('/')
     } catch (err: any) {
