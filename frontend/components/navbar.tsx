@@ -354,13 +354,20 @@ export const Navbar = React.memo(function Navbar() {
         </div>
 
         {/* Row 2 - Categories Nav */}
-        <div className="relative hidden md:block border-b border-[var(--color-border-subtle)]/30 bg-[var(--color-cream-base)]">
+        <div 
+          className="relative hidden md:block border-b border-[var(--color-border-subtle)]/30 bg-[var(--color-cream-base)]"
+          onMouseLeave={() => setOpenDropdown(null)}
+        >
           <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between h-[56px] px-[var(--space-5)]">
             <div className="flex items-center gap-[32px] h-full pl-[48px]">
 
               {/* Categories */}
               {categories.map((category) => (
-                <div key={category.slug} className="relative h-full flex items-center">
+                <div 
+                  key={category.slug} 
+                  className="relative h-full flex items-center"
+                  onMouseEnter={() => setOpenDropdown(category.slug)}
+                >
                   <Link
                     href={`/explore?category=${category.slug}`}
                     onClick={() => {

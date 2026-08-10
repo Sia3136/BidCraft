@@ -33,27 +33,23 @@ export default function SellerDashboard() {
     async function loadData() {
       setLoading(true)
       try {
-        if (tab === 'listings') {
-          const data = await fetchSellerListings(token || '')
-          setListings(data?.listings || [])
-        } else if (tab === 'orders') {
-          const data = await fetchSellerOrders(token || '')
-          setOrders(data?.orders || [])
-        } else if (tab === 'offers') {
-          const data = await fetchSellerOffers(token || '')
-          setOffers(data?.offers || [])
-        }
+        const [listingsData, ordersData, offersData] = await Promise.all([
+          fetchSellerListings(token || '').catch(() => ({ listings: [] })),
+          fetchSellerOrders(token || '').catch(() => ({ orders: [] })),
+          fetchSellerOffers(token || '').catch(() => ({ offers: [] }))
+        ])
+        
+        setListings(listingsData?.listings || [])
+        setOrders(ordersData?.orders || [])
+        setOffers(offersData?.offers || [])
       } catch (err) {
         console.error('Failed to load seller data', err)
-        if (tab === 'orders') setOrders([])
-        if (tab === 'listings') setListings([])
-        if (tab === 'offers') setOffers([])
       } finally {
         setLoading(false)
       }
     }
     if (isAuthenticated) loadData()
-  }, [tab, isAuthenticated, router, token])
+  }, [isAuthenticated, router, token])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this listing?')) return
@@ -169,8 +165,24 @@ export default function SellerDashboard() {
                <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{orders.length}</p>
              </div>
              <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Total Listings</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
                <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Active Listings</p>
                <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.filter(l => l.status === 'active').length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Auction Listings</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.filter(l => l.buyingMethod === 'Auction').length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Buy Now Listings</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.filter(l => l.buyingMethod === 'Buy Now').length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Negotiable Listings</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.filter(l => l.buyingMethod === 'Negotiable').length}</p>
              </div>
              <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
                <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Pending Offers</p>
