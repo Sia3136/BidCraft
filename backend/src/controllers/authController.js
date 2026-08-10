@@ -120,7 +120,9 @@ async function register(req, res, next) {
     }
 
     if (emailFailed) {
-      return res.status(201).json({ success: true, message: 'Account created, but verification email failed to send. Please request a new code.', user: { id: user.id, email: user.email }, email_failed: true });
+      // Rollback or delete user? Or just return error? If we return error, user can't retry with same email easily unless we let them.
+      // Wait, we allow retrying registration if email isn't verified (line 69).
+      return res.status(500).json({ error: 'Account created, but verification email failed to send. Please try logging in to resend the code.' });
     }
 
     res.status(201).json({ success: true, message: 'Verification email sent', user: { id: user.id, email: user.email }, email_failed: false });
@@ -322,6 +324,7 @@ async function forgotPassword(req, res, next) {
         });
       } catch (err) {
         console.error('Email sending failed for forgot password:', err.message);
+        return res.status(500).json({ error: 'Failed to send password reset email. Please try again later.' });
       }
     }
 

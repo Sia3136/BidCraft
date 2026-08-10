@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
-import { fetchSellerListings, fetchSellerOrders, deleteListing, shipOrder, fetchSellerOffers } from '@/lib/api'
+import { fetchSellerListings, fetchSellerOrders, deleteListing, shipOrder, fetchSellerOffers, acceptOffer, rejectOffer } from '@/lib/api'
 import { formatPrice } from '@/lib/formatPrice'
 import Link from 'next/link'
-import { Package, Tag, Clock, Trash2, Edit3, Truck, Inbox } from 'lucide-react'
+import { Package, Tag, Clock, Trash2, Edit3, Truck, Inbox, Check, X, CheckCircle2 } from 'lucide-react'
 import { getProductRoute } from '@/lib/routes'
 
 export default function SellerDashboard() {
@@ -34,13 +34,13 @@ export default function SellerDashboard() {
       setLoading(true)
       try {
         if (tab === 'listings') {
-          const data = await fetchSellerListings(token!)
+          const data = await fetchSellerListings(token || '')
           setListings(data?.listings || [])
         } else if (tab === 'orders') {
-          const data = await fetchSellerOrders(token!)
+          const data = await fetchSellerOrders(token || '')
           setOrders(data?.orders || [])
         } else if (tab === 'offers') {
-          const data = await fetchSellerOffers(token!)
+          const data = await fetchSellerOffers(token || '')
           setOffers(data?.offers || [])
         }
       } catch (err) {
@@ -52,13 +52,13 @@ export default function SellerDashboard() {
         setLoading(false)
       }
     }
-    if (token) loadData()
+    if (isAuthenticated) loadData()
   }, [tab, isAuthenticated, router, token])
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this listing?')) return
     try {
-      await deleteListing(id, token!)
+      await deleteListing(id, token || '')
       setListings(listings.map(l => l.id === id ? { ...l, status: 'deleted' } : l))
     } catch (err) {
       alert('Failed to delete listing')
@@ -69,7 +69,7 @@ export default function SellerDashboard() {
     e.preventDefault()
     if (!shippingOrderId) return
     try {
-      await shipOrder(shippingOrderId, { trackingNumber, carrier }, token!)
+      await shipOrder(shippingOrderId, { trackingNumber, carrier }, token || '')
       setOrders(orders.map(o => o.id === shippingOrderId ? { ...o, escrowState: 'shipped' } : o))
       setShippingOrderId(null)
       setTrackingNumber('')
@@ -78,7 +78,30 @@ export default function SellerDashboard() {
     }
   }
 
-  if (loading && listings.length === 0 && orders.length === 0) return <div className="p-12 text-center text-[var(--color-ink-500)]">Loading...</div>
+  const handleAcceptOffer = async (e: React.MouseEvent, offerId: string) => {
+    e.stopPropagation()
+    if (!confirm('Are you sure you want to accept this offer? All other pending offers will be rejected.')) return
+    try {
+      await acceptOffer(offerId, token || '')
+      setOffers(offers.map(o => o.id === offerId ? { ...o, status: 'accepted' } : (o.listingId === offers.find(x => x.id === offerId)?.listingId && o.status === 'pending' ? { ...o, status: 'rejected' } : o)))
+      alert('Offer accepted successfully!')
+    } catch (err: any) {
+      alert(err.message || 'Failed to accept offer')
+    }
+  }
+
+  const handleRejectOffer = async (e: React.MouseEvent, offerId: string) => {
+    e.stopPropagation()
+    if (!confirm('Are you sure you want to reject this offer?')) return
+    try {
+      await rejectOffer(offerId, token || '')
+      setOffers(offers.map(o => o.id === offerId ? { ...o, status: 'rejected' } : o))
+    } catch (err: any) {
+      alert(err.message || 'Failed to reject offer')
+    }
+  }
+
+  if (loading && listings.length === 0 && orders.length === 0 && offers.length === 0) return <div className="p-12 text-center text-[var(--color-ink-500)]">Loading...</div>
 
   return (
     <div className="max-w-6xl mx-auto p-6 min-h-screen">
@@ -134,10 +157,126 @@ export default function SellerDashboard() {
         </button>
       </div>
 
-      {['overview', 'analytics', 'profile', 'settings'].includes(tab) && (
+      {tab === 'overview' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Total Sales</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{formatPrice(orders.reduce((sum, o) => sum + parseFloat(o.amount || 0), 0))}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Total Orders</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{orders.length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Active Listings</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{listings.filter(l => l.status === 'active').length}</p>
+             </div>
+             <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+               <p className="text-sm font-bold text-[var(--color-ink-500)] mb-2">Pending Offers</p>
+               <p className="text-3xl font-display font-bold text-[var(--color-ink-900)]">{offers.filter(o => o.status === 'pending').length}</p>
+             </div>
+          </div>
+          
+          <div className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] overflow-hidden">
+             <div className="p-6 border-b border-[var(--color-border-subtle)]">
+                <h3 className="text-lg font-bold text-[var(--color-ink-900)]">Recent Activity</h3>
+             </div>
+             <div className="p-6 text-center text-[var(--color-ink-500)]">
+                {orders.length === 0 && offers.length === 0 ? 'No recent activity.' : 'Check Orders and Offers tabs for detailed recent activity.'}
+             </div>
+          </div>
+        </div>
+      )}
+
+      {tab === 'analytics' && (() => {
+        const typeData = [
+          { label: 'Buy Now', value: listings.filter(l => l.buyingMethod === 'Buy Now').length },
+          { label: 'Auction', value: listings.filter(l => l.buyingMethod === 'Auction').length },
+          { label: 'Negotiable', value: listings.filter(l => l.buyingMethod === 'Negotiable').length }
+        ];
+        const maxType = Math.max(...typeData.map(d => d.value), 1);
+        
+        const statusData = [
+          { label: 'Active', value: listings.filter(l => l.status === 'active').length, color: 'var(--color-success-600)' },
+          { label: 'Sold', value: orders.length, color: 'var(--color-terracotta-600)' },
+          { label: 'Deleted', value: listings.filter(l => l.status === 'deleted').length, color: 'var(--color-urgent-600)' }
+        ];
+        const maxStatus = Math.max(...statusData.map(d => d.value), 1);
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+              <h3 className="font-bold text-[var(--color-ink-900)] mb-6">Listings by Method</h3>
+              <div className="space-y-4">
+                {typeData.map(d => (
+                  <div key={d.label}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-[var(--color-ink-700)] font-medium">{d.label}</span>
+                      <span className="text-[var(--color-ink-900)] font-bold">{d.value}</span>
+                    </div>
+                    <div className="h-2 bg-[var(--color-cream-raised)] rounded-full overflow-hidden">
+                      <div className="h-full bg-[var(--color-terracotta-600)] rounded-full" style={{ width: `${(d.value / maxType) * 100}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)]">
+              <h3 className="font-bold text-[var(--color-ink-900)] mb-6">Listing Status</h3>
+              <div className="space-y-4">
+                {statusData.map(d => (
+                  <div key={d.label}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-[var(--color-ink-700)] font-medium">{d.label}</span>
+                      <span className="text-[var(--color-ink-900)] font-bold">{d.value}</span>
+                    </div>
+                    <div className="h-2 bg-[var(--color-cream-raised)] rounded-full overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${(d.value / maxStatus) * 100}%`, backgroundColor: d.color }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {tab === 'profile' && (
+        <div className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-8">
+          <div className="flex items-center gap-6 mb-8 pb-8 border-b border-[var(--color-border-subtle)]">
+            <div className="w-24 h-24 rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-4xl font-display shrink-0">
+               {useAuthStore.getState().user?.name?.[0]?.toUpperCase() || 'U'}
+            </div>
+            <div>
+               <h2 className="text-2xl font-bold text-[var(--color-ink-900)]">{useAuthStore.getState().user?.name}</h2>
+               <p className="text-[var(--color-ink-500)] mb-2">{useAuthStore.getState().user?.email}</p>
+               <span className="px-3 py-1 bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] rounded-full text-sm font-bold uppercase tracking-wider">{useAuthStore.getState().user?.role}</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-8">
+             <div>
+               <p className="text-sm font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-1">Joined</p>
+               <p className="text-lg text-[var(--color-ink-900)]">{new Date(useAuthStore.getState().user?.createdAt || Date.now()).toLocaleDateString()}</p>
+             </div>
+             <div>
+               <p className="text-sm font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-1">Status</p>
+               <p className="text-lg text-[var(--color-success-600)] font-medium flex items-center gap-2">
+                 <CheckCircle2 className="w-5 h-5" /> Active Seller
+               </p>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {tab === 'settings' && (
         <div className="text-center py-24 bg-[var(--color-cream-raised)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
-          <p className="text-xl font-bold text-[var(--color-ink-900)] mb-2">Coming Soon</p>
-          <p className="text-[var(--color-ink-500)]">We are working on bringing you powerful new tools for your dashboard.</p>
+          <p className="text-xl font-bold text-[var(--color-ink-900)] mb-4">Account Settings</p>
+          <p className="text-[var(--color-ink-500)] mb-6">Manage your profile, identity, and marketplace role in your main account settings.</p>
+          <Link href="/account/settings" className="px-6 py-3 bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-block">
+            Go to Account Settings
+          </Link>
         </div>
       )}
 
@@ -312,6 +451,7 @@ export default function SellerDashboard() {
                     <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Offer Amount</th>
                     <th className="p-4 text-sm font-bold text-[var(--color-ink-500)]">Status</th>
                     <th className="p-4 text-sm font-bold text-[var(--color-ink-500)] text-right">Date</th>
+                    <th className="p-4 text-sm font-bold text-[var(--color-ink-500)] text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--color-border-subtle)]">
@@ -345,6 +485,18 @@ export default function SellerDashboard() {
                       </td>
                       <td className="p-4 text-sm text-[var(--color-ink-500)] text-right">
                         {new Date(offer.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
+                        {offer.status === 'pending' && (
+                          <div className="flex justify-end gap-2">
+                            <button onClick={(e) => handleAcceptOffer(e, offer.id)} className="p-2 bg-[var(--color-success-100)] text-[var(--color-success-600)] hover:bg-[var(--color-success-200)] rounded-full transition-colors" title="Accept">
+                              <Check className="w-4 h-4" />
+                            </button>
+                            <button onClick={(e) => handleRejectOffer(e, offer.id)} className="p-2 bg-[var(--color-urgent-100)] text-[var(--color-urgent-600)] hover:bg-[var(--color-urgent-200)] rounded-full transition-colors" title="Reject">
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}

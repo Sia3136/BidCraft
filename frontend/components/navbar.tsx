@@ -232,7 +232,7 @@ export const Navbar = React.memo(function Navbar() {
                   Contact
                 </Link>
                 {isAuthenticated && (
-                  <Link href="/account" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                  <Link href="/dashboard/buyer" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
                     Dashboard
                   </Link>
                 )}
@@ -361,21 +361,16 @@ export const Navbar = React.memo(function Navbar() {
               {/* Categories */}
               {categories.map((category) => (
                 <div key={category.slug} className="relative h-full flex items-center">
-                  <button
-                    onClick={(e) => {
-                      setOpenDropdown(openDropdown === category.slug ? null : category.slug);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setOpenDropdown(openDropdown === category.slug ? null : category.slug);
-                      }
+                  <Link
+                    href={`/explore?category=${category.slug}`}
+                    onClick={() => {
+                      setOpenDropdown(null);
                     }}
                     aria-expanded={openDropdown === category.slug}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative cursor-pointer", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
                   >
                     {category.name}
-                  </button>
+                  </Link>
                 </div>
               ))}
 
@@ -422,20 +417,16 @@ export const Navbar = React.memo(function Navbar() {
                       return activeCat.subcategories.map(sub => {
                         const href = `/explore?category=${encodeURIComponent(activeCat.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
-                          <button
+                          <Link
                             key={sub.slug}
+                            href={href}
                             onClick={() => {
-                              console.log(`[Nav Flow - Desktop] 1. Click fired for ${sub.name}`);
-                              console.log(`[Nav Flow - Desktop] 2. Generated href: ${href}`);
-                              console.log(`[Nav Flow - Desktop] 3. Calling router.push()`);
-                              router.push(href);
-                              console.log(`[Nav Flow - Desktop] 4. router.push called, closing dropdown`);
                               setOpenDropdown(null);
                             }}
                             className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
                           >
                             {sub.name}
-                          </button>
+                          </Link>
                         );
                       });
                     })()}
@@ -497,21 +488,17 @@ export const Navbar = React.memo(function Navbar() {
                       {category.subcategories.map(sub => {
                         const href = `/explore?category=${encodeURIComponent(category.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
-                          <button
+                          <Link
                             key={sub.slug}
+                            href={href}
                             onClick={() => {
-                              console.log(`[Nav Flow - Mobile] 1. Click fired for ${sub.name}`);
-                              console.log(`[Nav Flow - Mobile] 2. Generated href: ${href}`);
-                              console.log(`[Nav Flow - Mobile] 3. Calling router.push()`);
-                              router.push(href);
-                              console.log(`[Nav Flow - Mobile] 4. router.push called, closing dropdown`);
                               setOpenDropdown(null);
                               setIsMobileMenuOpen(false);
                             }}
-                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)]"
+                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] block"
                           >
                             {sub.name}
-                          </button>
+                          </Link>
                         )
                       })}
                     </motion.div>
@@ -549,7 +536,7 @@ export const Navbar = React.memo(function Navbar() {
             </button>
             {isAuthenticated && (
               <button
-                onClick={() => { router.push('/account'); setIsMobileMenuOpen(false); }}
+                onClick={() => { router.push('/dashboard/buyer'); setIsMobileMenuOpen(false); }}
                 className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
               >
                 Dashboard

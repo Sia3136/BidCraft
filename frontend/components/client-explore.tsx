@@ -11,12 +11,12 @@ import { CATEGORIES, COLLECTIONS, OCCASIONS, resolveDisplayTitle } from '@/lib/c
 
 const BUYING_METHODS = ['Buy Now', 'Auction', 'Negotiable']
 const TYPES = [
+  { label: 'Live Auctions', value: 'auction' },
   { label: 'New Arrivals', value: 'new-arrivals' },
-  { label: 'Live Auctions', value: 'auction' }
+  { label: 'Trending', value: 'trending' }
 ]
 
 const SORT_OPTIONS = [
-  { label: 'Trending', value: 'trending' },
   { label: 'Newest', value: 'newest' },
   { label: 'Price: Low to High', value: 'price-asc' },
   { label: 'Price: High to Low', value: 'price-desc' }

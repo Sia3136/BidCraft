@@ -331,7 +331,7 @@ const getListings = async (req, res) => {
     const parsedLimit = parseInt(limit);
     const finalLimit = isNaN(parsedLimit) ? DEFAULT_PAGE_SIZE : Math.max(1, Math.min(parsedLimit, MAX_PAGE_SIZE));
 
-    const conditions = ["l.status = 'active'", "(l.buying_method != 'Auction' OR l.auction_ends_at > NOW())"]
+    const conditions = ["l.status = 'active'"]
     const values = []
     let idx = 1
 

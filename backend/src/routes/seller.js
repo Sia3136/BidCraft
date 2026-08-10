@@ -53,7 +53,7 @@ router.get('/orders', auth, async (req, res) => {
       SELECT
         o.id, o.total_amount AS amount, o.status AS "orderStatus",
         o.created_at AS "createdAt",
-        e.state AS "escrowState",
+        e.status AS "escrowState",
         l.id AS "listingId", l.title AS "listingTitle",
         l.image_urls[1] AS "listingImage",
         u.name AS "buyerName", u.email AS "buyerEmail"

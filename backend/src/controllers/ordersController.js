@@ -70,10 +70,22 @@ async function getOrderById(req, res, next) {
     const userId = req.userId;
 
     const result = await db.query(
-      `SELECT o.*,
-              l.title as listing_title, l.photos as listing_photos,
-              buyer.name as buyer_name, seller.name as seller_name
+      `SELECT o.id,
+              o.buyer_id as "buyerId",
+              o.seller_id as "sellerId",
+              o.listing_id as "listingId",
+              o.total_amount as amount,
+              o.status as "orderStatus",
+              o.created_at as "createdAt",
+              e.status as "escrowState",
+              s.carrier,
+              s.tracking_number as "trackingNumber",
+              l.title as "listingTitle",
+              l.photos->>0 as "listingImage",
+              seller.name as "sellerName"
        FROM orders o
+       LEFT JOIN escrow e ON e.order_id = o.id
+       LEFT JOIN shipments s ON s.order_id = o.id
        LEFT JOIN listings l ON l.id = o.listing_id
        JOIN users buyer  ON buyer.id  = o.buyer_id
        JOIN users seller ON seller.id = o.seller_id

@@ -149,7 +149,7 @@ export default function OnboardingPage() {
         onboarding_completed: true
       }, token || '')
 
-      setAuth({ ...user, ...profile }, token, refreshToken)
+      setAuth({ ...user, ...profile }, token || '', refreshToken || '')
       localStorage.removeItem('onboarding_step')
       router.push('/')
     } catch (err: any) {
