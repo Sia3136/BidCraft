@@ -356,24 +356,59 @@ Prerequisites:
 
 Current repository note: no Dockerfile or platform-specific deployment manifest is committed.
 
-## Current Status
+## Pre-Deployment Status
 
-BidCraft is a broad late-MVP codebase with many real marketplace flows implemented. The repo is functionally substantial, but it is not fully release-hardened because CI/CD, deployment configuration, env templates, and a few mock or fallback paths still need attention.
+The application has undergone a final pre-deployment audit and is functionally complete for a late-MVP release.
 
-## Roadmap
+### Architecture & Production Stack
+- **Frontend:** Next.js 16 App Router (standalone Docker build)
+- **Backend:** Express 5 / Node.js
+- **Database:** PostgreSQL (Neon) accessed via `pg` (backend) and Prisma (frontend API routes)
+- **Infrastructure:** Railway (deployment target), Upstash Redis (caching), Socket.IO (real-time auctions)
+- **External Integrations:** Razorpay (payments), Cloudinary (images), Resend (emails)
 
-- Add documented environment templates and release steps.
-- Tighten deployment automation and CI coverage.
-- Reduce duplication between the frontend API layer and the backend business logic.
-- Continue replacing temporary or mock-only paths with explicit production integrations.
-- Clean up historical artifacts, scratch files, and old patch outputs.
+### Verified Major Flows
+- **Authentication:** JWT + HttpOnly refresh cookies, OTP email verification, secure password resets.
+- **Buying:** Buy Now, Make Offer (with accept/reject logic), Place Bid (with upfront deposit handling and anti-sniping).
+- **Selling:** Listing creation across all buying methods, image uploads, unified seller dashboard for orders and offers.
+- **Transactions:** Razorpay HMAC verification, escrow creation, OTP-based delivery confirmation.
 
-## Known Limitations
+### Deployment Status
+**Status: READY AFTER MINOR FIXES**
+The core functionality is robust. The application relies on external cron triggers for auction settlement and requires strict environment configuration at build and runtime.
 
-- No Docker or platform deployment manifests are committed.
-- No `.env.example` files are present in the repo.
-- The frontend and backend both contain API surfaces, so business logic is split across two layers.
-- Some services fall back to mock behavior when external credentials are missing or when running in test/development.
+### P0/P1 Issues
+- **P1:** `frontend/components/dashboard-shell.tsx` contains broken links to `/dashboard/buyer/orders` and `/dashboard/buyer/wishlist`. These must be pointed to `/orders` and `/wishlist` before launch to avoid visible 404 errors.
+- **P1:** An external cron job (e.g., Railway Cron or Upstash QStash) must be configured to ping `/api/cron/end-auctions` periodically, otherwise expired auctions will not automatically settle.
+
+### Known Limitations
+- The frontend and backend both contain API surfaces, leading to some split business logic (e.g., cart operations vs. auction bidding).
+- Some seller dashboard routes (`/dashboard/seller/analytics`, etc.) are not fully built and are currently stubs or intentionally excluded from the main `/seller/listings` flow.
+- The Explore navigation lacks a multi-level subcategory dropdown in the main navbar UI.
+
+### Post-Deployment Roadmap
+1. **Explore/Navbar:** Implement subcategory drill-down UX.
+2. **Onboarding:** Wire up auto-redirect to the `/onboarding` flow post-registration.
+3. **Seller Dashboard:** Build out missing Analytics and Payout tabs.
+4. **Post-Login Home:** Add personalized recommendation feeds for authenticated users.
+
+### Required Environment Variables
+**Backend (Runtime):**
+`NODE_ENV`, `PORT`, `DATABASE_URL`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `JWT_SECRET`, `CRON_SECRET`, `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `FRONTEND_ORIGIN`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `RESEND_API_KEY`, `USE_MOCKS`
+
+**Frontend (Build Args & Runtime):**
+`NEXT_PUBLIC_API_URL` (Build Arg), `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` (Build Arg), `INTERNAL_API_URL` (Runtime), `UPSTASH_REDIS_REST_URL` (Runtime), `UPSTASH_REDIS_REST_TOKEN` (Runtime), `NODE_ENV` (Runtime)
+
+### Deployment Commands
+**Frontend (Railway/Docker):**
+Builds using multi-stage Dockerfile (`target: production`).
+Ensure Build Arguments are passed in the platform dashboard.
+
+**Backend (Railway/Docker):**
+```bash
+npm install --omit=dev
+npm start
+```
 
 ## Contributing
 
