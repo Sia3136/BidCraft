@@ -14,7 +14,7 @@ export function SellerPayouts() {
   const loadOrders = async () => {
     try {
       setLoading(true)
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=seller`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders?role=seller`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
       if (res.ok) {

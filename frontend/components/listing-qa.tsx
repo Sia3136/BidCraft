@@ -31,7 +31,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
       const headers: Record<string, string> = {}
       if (token) headers['Authorization'] = `Bearer ${token}`
 
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/qa/listing/${listingId}`, { headers })
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/listing/${listingId}`, { headers })
       const data = await res.json()
       if (res.ok) setQuestions(data.questions || [])
     } catch (err) {
@@ -50,7 +50,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
     }
 
     try {
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/qa/ask`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
 
     const token = localStorage.getItem('accessToken')
     try {
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/qa/${qId}/answer`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/${qId}/answer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

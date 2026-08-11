@@ -14,7 +14,7 @@ export function BuyerDisputes() {
   const loadDisputes = async () => {
     try {
       setLoading(true)
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/disputes`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/disputes`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
       if (res.ok) {

@@ -27,7 +27,7 @@ export default function PaymentPage() {
     const initPayment = async () => {
       try {
         // Step 1: Create Razorpay checkout session
-        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/payments/create-checkout`, {
+        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-checkout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ export default function PaymentPage() {
           handler: async (response: any) => {
             // Step 4: Verify payment
             try {
-              const verifyRes = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/payments/verify-checkout`, {
+              const verifyRes = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-checkout`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

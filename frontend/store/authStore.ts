@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { User } from '@/lib/api'
 import { useStore } from '@/lib/store'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_BASE = process.env.NEXT_PUBLIC_API_URL
 
 type AuthStore = {
   user: User | null

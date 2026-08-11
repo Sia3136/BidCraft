@@ -12,6 +12,17 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
   
+  let listing;
+  try {
+    listing = await fetchListingById(id);
+  } catch {
+    return notFound();
+  }
+
+  if (listing.buyingMethod === 'Auction' && listing.auctionEndsAt && new Date(listing.auctionEndsAt) < new Date()) {
+    redirect(`/auction/ended/${id}`);
+  }
+  
   return (
     <Suspense fallback={
       <div className="w-full max-w-[var(--container-max)] mx-auto px-[var(--space-4)] md:px-[var(--space-6)] xl:px-[var(--space-8)] py-8 md:py-12 animate-pulse">
@@ -28,22 +39,14 @@ export default async function ProductPage({
         </div>
       </div>
     }>
-      <ProductDetailData id={id} />
+      <ProductDetailData initialListing={listing} />
     </Suspense>
   );
 }
 
-async function ProductDetailData({ id }: { id: string }) {
-  let listing;
-  try {
-    listing = await fetchListingById(id);
-  } catch {
-    return notFound();
-  }
-
-  if (listing.buyingMethod === 'Auction' && listing.auctionEndsAt && new Date(listing.auctionEndsAt) < new Date()) {
-    redirect(`/auction/ended/${id}`);
-  }
+async function ProductDetailData({ initialListing }: { initialListing: any }) {
+  const listing = initialListing;
+  const id = listing.id;
 
   // Fetch candidate listings for similar and seller products
   // We use limit 100 to cast a reasonably wide net without hardcoding multiple pagination calls.

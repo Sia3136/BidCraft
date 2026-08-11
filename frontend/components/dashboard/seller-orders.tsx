@@ -20,7 +20,7 @@ export function SellerOrders() {
   const loadOrders = async () => {
     try {
       setLoading(true)
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/orders?role=seller`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders?role=seller`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -40,7 +40,7 @@ export function SellerOrders() {
 
     try {
       setSubmitting(true)
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/shipments/${shippingOrderId}/tracking`, {
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/shipments/${shippingOrderId}/tracking`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

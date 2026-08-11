@@ -11,7 +11,7 @@ import { getProductRoute } from '@/lib/routes'
 
 export default function SellerDashboard() {
   const router = useRouter()
-  const { isAuthenticated, token } = useAuthStore()
+  const { isAuthenticated, token, user } = useAuthStore()
   const [tab, setTab] = useState<'overview' | 'listings' | 'orders' | 'offers' | 'analytics' | 'profile' | 'settings'>('listings')
   
   const [listings, setListings] = useState<any[]>([])
@@ -258,19 +258,34 @@ export default function SellerDashboard() {
       {tab === 'profile' && (
         <div className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-lg)] p-8">
           <div className="flex items-center gap-6 mb-8 pb-8 border-b border-[var(--color-border-subtle)]">
-            <div className="w-24 h-24 rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-4xl font-display shrink-0">
-               {useAuthStore.getState().user?.name?.[0]?.toUpperCase() || 'U'}
-            </div>
+            {user?.avatar ? (
+              <div className="w-24 h-24 rounded-full overflow-hidden shrink-0 border border-[var(--color-border-subtle)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={user.avatar} alt={user?.name || 'User'} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-[var(--color-terracotta-600)] text-white flex items-center justify-center text-4xl font-display shrink-0">
+                 {user?.name?.[0]?.toUpperCase() || 'U'}
+              </div>
+            )}
             <div>
-               <h2 className="text-2xl font-bold text-[var(--color-ink-900)]">{useAuthStore.getState().user?.name}</h2>
-               <p className="text-[var(--color-ink-500)] mb-2">{useAuthStore.getState().user?.email}</p>
-               <span className="px-3 py-1 bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] rounded-full text-sm font-bold uppercase tracking-wider">{useAuthStore.getState().user?.role}</span>
+               <h2 className="text-2xl font-bold text-[var(--color-ink-900)]">{user?.name}</h2>
+               <p className="text-[var(--color-ink-500)] mb-2">{user?.email}</p>
+               <span className="px-3 py-1 bg-[var(--color-cream-deep)] text-[var(--color-ink-700)] rounded-full text-sm font-bold uppercase tracking-wider">{user?.role}</span>
             </div>
+          </div>
+          <div className="mb-8 pb-8 border-b border-[var(--color-border-subtle)]">
+            <h3 className="text-lg font-bold text-[var(--color-ink-900)] mb-2">About</h3>
+            {user?.bio ? (
+              <p className="text-[var(--color-ink-700)] whitespace-pre-wrap">{user.bio}</p>
+            ) : (
+              <p className="text-[var(--color-ink-500)] italic">No bio provided yet.</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-8">
              <div>
                <p className="text-sm font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-1">Joined</p>
-               <p className="text-lg text-[var(--color-ink-900)]">{new Date(useAuthStore.getState().user?.createdAt || Date.now()).toLocaleDateString()}</p>
+               <p className="text-lg text-[var(--color-ink-900)]">{new Date(user?.createdAt || Date.now()).toLocaleDateString()}</p>
              </div>
              <div>
                <p className="text-sm font-bold text-[var(--color-ink-500)] uppercase tracking-wider mb-1">Status</p>
@@ -285,10 +300,7 @@ export default function SellerDashboard() {
       {tab === 'settings' && (
         <div className="text-center py-24 bg-[var(--color-cream-raised)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
           <p className="text-xl font-bold text-[var(--color-ink-900)] mb-4">Account Settings</p>
-          <p className="text-[var(--color-ink-500)] mb-6">Manage your profile, identity, and marketplace role in your main account settings.</p>
-          <Link href="/account/settings" className="px-6 py-3 bg-[var(--color-terracotta-600)] text-white font-bold rounded-[var(--radius-md)] hover:bg-[var(--color-terracotta-700)] transition-colors inline-block">
-            Go to Account Settings
-          </Link>
+          <p className="text-[var(--color-ink-500)] mb-6">Coming soon</p>
         </div>
       )}
 

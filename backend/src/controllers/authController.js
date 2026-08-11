@@ -397,7 +397,10 @@ async function resetPassword(req, res, next) {
 async function me(req, res, next) {
   try {
     const userId = req.userId;
-    const result = await db.query('SELECT id, email, name, role, username, onboarding_completed, email_verified FROM users WHERE id=$1', [userId]);
+    const result = await db.query(
+      'SELECT u.id, u.email, u.name, u.role, u.username, u.onboarding_completed, u.email_verified, u.avatar_url AS avatar, p.bio FROM users u LEFT JOIN profiles p ON p.user_id = u.id WHERE u.id=$1',
+      [userId]
+    );
     if (!result.rows[0]) return res.status(404).json({ error: 'not_found' });
     res.json({ user: result.rows[0] });
   } catch (err) {

@@ -17,7 +17,7 @@ export function NotificationBell() {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const { data, mutate } = useSWR(
-    user ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications` : null,
+    user ? `${process.env.NEXT_PUBLIC_API_URL}/api/notifications` : null,
     fetcher,
     { refreshInterval: 30000 }
   )
@@ -34,7 +34,7 @@ export function NotificationBell() {
 
   const markAsRead = async (id: number) => {
     try {
-      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/${id}/read`, {
+      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications/${id}/read`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })
@@ -46,7 +46,7 @@ export function NotificationBell() {
 
   const markAllRead = async () => {
     try {
-      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/notifications/read-all`, {
+      await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications/read-all`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
       })

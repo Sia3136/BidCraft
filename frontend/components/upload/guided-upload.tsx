@@ -38,7 +38,7 @@ export function GuidedUpload({ onPhotosChange }: GuidedUploadProps) {
       formData.append('images', file)
 
       const token = localStorage.getItem('accessToken')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/api` : ''
       
       const res = await authenticatedFetch(`${apiUrl}/images/upload`, {
         method: 'POST',

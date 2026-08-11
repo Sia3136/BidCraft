@@ -18,7 +18,7 @@ export function CloudinaryImage({ publicId, width, height, alt, ...props }: Clou
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'duzlsyzwa'
     const fallbackUrl = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,w_${width}/${publicId}`
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
     fetch(`${apiUrl}/api/images/resolve/${publicId}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to resolve')
