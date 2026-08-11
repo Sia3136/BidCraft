@@ -40,22 +40,22 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   ]
   
   const sellerNav = [
-    { name: 'Overview', href: '/dashboard/seller', icon: Home },
-    { name: 'Listings', href: '/dashboard/seller/listings', icon: FileText },
-    { name: 'Orders', href: '/dashboard/seller/orders', icon: ShoppingBag },
-    { name: 'Auctions', href: '/dashboard/seller/auctions', icon: Gavel },
-    { name: 'Offers Received', href: '/dashboard/seller/offers', icon: Tag },
-    { name: 'Trades Received', href: '/dashboard/seller/trades', icon: RefreshCcw },
-    { name: 'Analytics', href: '/dashboard/seller/analytics', icon: BarChart2 },
+    { name: 'Overview', href: '/seller/listings', icon: Home },
+    { name: 'Listings', href: '/seller/listings', icon: FileText },
+    { name: 'Orders', href: '/seller/listings', icon: ShoppingBag },
+    { name: 'Auctions', href: '/seller/listings', icon: Gavel },
+    { name: 'Offers Received', href: '/seller/listings', icon: Tag },
+    { name: 'Trades Received', href: '/seller/listings', icon: RefreshCcw },
+    { name: 'Analytics', href: '/seller/listings', icon: BarChart2 },
     { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { name: 'Notifications', href: '/dashboard/notifications', icon: Bell },
-    { name: 'Payouts', href: '/dashboard/seller/payouts', icon: DollarSign },
+    { name: 'Payouts', href: '/seller/listings', icon: DollarSign },
   ]
   
   const mobileNav = [
-    { name: 'Home', href: isSellerContext ? '/dashboard/seller' : '/dashboard/buyer', icon: Home },
-    { name: 'Orders', href: isSellerContext ? '/dashboard/seller/orders' : '/dashboard/buyer/orders', icon: ShoppingBag },
-    { name: isSellerContext ? 'Sell/+' : 'Wishlist', href: isSellerContext ? '/dashboard/seller/listings/new' : '/dashboard/buyer/wishlist', icon: isSellerContext ? PlusCircle : Heart },
+    { name: 'Home', href: isSellerContext ? '/seller/listings' : '/dashboard/buyer', icon: Home },
+    { name: 'Orders', href: isSellerContext ? '/seller/listings' : '/dashboard/buyer/orders', icon: ShoppingBag },
+    { name: isSellerContext ? 'Sell/+' : 'Wishlist', href: isSellerContext ? '/sell/new' : '/dashboard/buyer/wishlist', icon: isSellerContext ? PlusCircle : Heart },
     { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { name: 'Profile', href: '/dashboard/settings', icon: User },
   ]

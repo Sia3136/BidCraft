@@ -55,6 +55,7 @@ export const useAuthStore = create<AuthStore>()(
       name: 'bidcraft-auth',
       partialize: (state) => ({
         user: state.user,
+        token: state.token,
         isAuthenticated: state.isAuthenticated,
         refreshToken: state.refreshToken,
       }),

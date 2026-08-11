@@ -10,3 +10,9 @@ Dockerfile
 test_output.log
 trace.log
 *.log
+
+# Ignore data dumps and scratch files
+*.json
+!package.json
+!package-lock.json
+*.md
