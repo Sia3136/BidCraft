@@ -31,10 +31,16 @@ export default function ReviewPage() {
 
     // Fetch listing details
     const p1 = fetch(`/api/products`)
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch products');
+        return data;
+      })
       .then(data => {
-        const item = data.find((d: any) => d.id === listingId)
-        if (item) setListing({ ...item, sellerName: item.creator })
+        if (Array.isArray(data)) {
+          const item = data.find((d: any) => d.id === listingId)
+          if (item) setListing({ ...item, sellerName: item.creator })
+        }
       })
 
     // If there's an offer_id, we need to fetch the offer to get the accepted price.

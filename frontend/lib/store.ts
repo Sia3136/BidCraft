@@ -127,9 +127,9 @@ export const useStore = create<StoreState>()(
         })
       
         try {
-          const res = await fetch('/api/wishlist', {
+          const { authenticatedFetch } = await import('@/lib/api')
+          const res = await authenticatedFetch('/api/wishlist', {
             method: 'POST',
-            credentials: 'include',        // CRITICAL — sends session cookie
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ listing_id: listingId }),
           })

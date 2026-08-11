@@ -4,6 +4,8 @@ import { authenticatedFetch } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuthStore } from '@/store/authStore'
+import { useRouter } from 'next/navigation'
 
 interface QA {
   id: number
@@ -20,6 +22,8 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
   const [newQuestion, setNewQuestion] = useState('')
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [loading, setLoading] = useState(true)
+  const { isAuthenticated } = useAuthStore()
+  const router = useRouter()
 
   useEffect(() => {
     fetchQuestions()
@@ -27,15 +31,16 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
 
   const fetchQuestions = async () => {
     try {
-      const token = localStorage.getItem('accessToken')
-      const headers: Record<string, string> = {}
-      if (token) headers['Authorization'] = `Bearer ${token}`
-
-      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/listing/${listingId}`, { headers })
+      const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/listing/${listingId}`)
       const data = await res.json()
-      if (res.ok) setQuestions(data.questions || [])
+      if (res.ok) {
+        setQuestions(data.questions || [])
+      } else {
+        setQuestions([])
+      }
     } catch (err) {
       console.error(err)
+      setQuestions([])
     } finally {
       setLoading(false)
     }
@@ -43,20 +48,16 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
 
   const handleAsk = async () => {
     if (!newQuestion.trim()) return
-    const token = localStorage.getItem('accessToken')
-    if (!token) {
-      alert('Please login to ask a question.')
+    if (!isAuthenticated) {
+      router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
       return
     }
 
     try {
       const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/ask`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ listing_id: listingId, question: newQuestion })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listing_id: listingId, question: newQuestion.trim() })
       })
       if (res.ok) {
         setNewQuestion('')
@@ -74,19 +75,18 @@ export function ListingQA({ listingId, isSeller }: { listingId: number, isSeller
     const answerText = answers[qId]
     if (!answerText?.trim()) return
 
-    const token = localStorage.getItem('accessToken')
     try {
       const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/qa/${qId}/answer`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ answer: answerText })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer: answerText.trim() })
       })
       if (res.ok) {
         setAnswers(prev => ({ ...prev, [qId]: '' }))
         fetchQuestions()
+      } else {
+        const data = await res.json()
+        alert(data.error || 'Failed to submit answer')
       }
     } catch (err) {
       console.error(err)

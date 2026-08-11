@@ -98,7 +98,7 @@ export default function OrderTrackingPage() {
       <Navbar />
       
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-12 md:py-24">
-        <Link href={`/dashboard/buyer-orders`} className="inline-flex items-center text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] font-medium mb-8 transition-colors">
+        <Link href={`/orders`} className="inline-flex items-center text-[var(--color-ink-500)] hover:text-[var(--color-ink-900)] font-medium mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Orders
         </Link>

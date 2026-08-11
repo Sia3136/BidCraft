@@ -71,8 +71,8 @@ router.post('/', auth, async (req, res) => {
     if (listing.status !== 'active') return res.status(400).json({ error: 'Listing is no longer available' })
     if (listing.seller_id === buyerId) return res.status(400).json({ error: 'Cannot make offer on your own listing' })
 
-    const floorPercent = listing.minimum_offer_percent ?? 30;
-    const minimumOffer = Math.ceil(listing.price * (1 - floorPercent / 100));
+    const floorPercent = listing.minimum_offer_percent && listing.minimum_offer_percent > 0 ? listing.minimum_offer_percent : 60;
+    const minimumOffer = Math.ceil(listing.price * (floorPercent / 100));
     if (offerAmount < minimumOffer) {
       return res.status(400).json({
         error: `Minimum offer is ₹${minimumOffer}`

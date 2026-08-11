@@ -409,7 +409,7 @@ export const Navbar = React.memo(function Navbar() {
 
           {/* 3-Column Grid Subcategory Panel */}
           <AnimatePresence>
-            {openDropdown && (
+            {openDropdown && categories.some(c => c.slug === openDropdown) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}

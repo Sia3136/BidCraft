@@ -30,11 +30,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   
   const buyerNav = [
     { name: 'Overview', href: '/dashboard/buyer', icon: Home },
-    { name: 'Orders', href: '/dashboard/buyer/orders', icon: ShoppingBag },
-    { name: 'Auctions', href: '/dashboard/buyer/auctions', icon: Gavel },
+    { name: 'Orders', href: '/orders', icon: ShoppingBag },
     { name: 'Offers', href: '/dashboard/buyer/offers', icon: Tag },
-    { name: 'Trades', href: '/dashboard/buyer/trades', icon: RefreshCcw },
-    { name: 'Wishlist', href: '/dashboard/buyer/wishlist', icon: Heart },
+    { name: 'Wishlist', href: '/wishlist', icon: Heart },
     { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { name: 'Notifications', href: '/dashboard/notifications', icon: Bell },
   ]
@@ -54,8 +52,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   
   const mobileNav = [
     { name: 'Home', href: isSellerContext ? '/seller/listings' : '/dashboard/buyer', icon: Home },
-    { name: 'Orders', href: isSellerContext ? '/seller/listings' : '/dashboard/buyer/orders', icon: ShoppingBag },
-    { name: isSellerContext ? 'Sell/+' : 'Wishlist', href: isSellerContext ? '/sell/new' : '/dashboard/buyer/wishlist', icon: isSellerContext ? PlusCircle : Heart },
+    { name: 'Orders', href: isSellerContext ? '/seller/listings' : '/orders', icon: ShoppingBag },
+    { name: isSellerContext ? 'Sell/+' : 'Wishlist', href: isSellerContext ? '/sell/new' : '/wishlist', icon: isSellerContext ? PlusCircle : Heart },
     { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { name: 'Profile', href: '/dashboard/settings', icon: User },
   ]

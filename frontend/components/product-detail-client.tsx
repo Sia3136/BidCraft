@@ -13,7 +13,7 @@ import { Shield, ChevronRight, Heart, CheckCircle, ChevronDown, ChevronUp } from
 import { useStore } from '@/lib/store';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { fetchOfferById } from '@/lib/api';
+import { fetchOfferById, authenticatedFetch } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { AuctionTimer } from '@/components/AuctionTimer';
 import { ImageGallery } from '@/components/pdp/ImageGallery';
@@ -398,9 +398,8 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                           return
                         }
                         try {
-                          const res = await fetch(`/api/cart`, {
+                          const res = await authenticatedFetch(`/api/cart`, {
                             method: 'POST',
-                            credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
                           })
@@ -432,7 +431,7 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                     </div>
                   </div>
                   {product.offersAllowed && (
-                    <MakeOfferPanel listingId={product.id} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
+                    <MakeOfferPanel listingId={String(product.numericId || product.id)} price={product.price} minimumOfferPercent={product.minimumOfferPercent || 70} />
                   )}
                 </div>
               )}

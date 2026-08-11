@@ -4,8 +4,12 @@ import { useAuthStore } from '@/store/authStore'
 import { useStore } from '@/lib/store'
 import { getMe } from '@/lib/api'
 
+import { usePathname, useRouter } from 'next/navigation'
+
 export function AuthRehydrator() {
-  const { token, clearAuth, setAuth } = useAuthStore()
+  const { token, clearAuth, setAuth, user, isAuthenticated } = useAuthStore()
+  const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     if (!token) return
@@ -17,6 +21,14 @@ export function AuthRehydrator() {
       })   // refresh user data
       .catch(() => clearAuth())              // token expired → sign out
   }, [token, setAuth, clearAuth])  // add deps
+
+  useEffect(() => {
+    if (isAuthenticated && user && !user.onboarding_completed) {
+      if (pathname !== '/onboarding' && pathname !== '/auth') {
+        router.push('/onboarding')
+      }
+    }
+  }, [isAuthenticated, user, pathname, router])
 
   return null  // renders nothing
 }
