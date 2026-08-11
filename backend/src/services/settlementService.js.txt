@@ -1,2 +1,0 @@
-// Add processDecline to settlementService.js
-// Wait, I can just replace the file contents to add it at the end.
