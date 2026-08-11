@@ -198,7 +198,7 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
         {liveAuctions.length > 0 && (
           <section className="px-6 lg:px-16 py-14">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-[#1C1C1C] font-[family-name:var(--font-playfair)]">Live Auctions</h2>
+              <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">Live Auctions</h2>
               <span className="flex items-center gap-2 text-sm font-medium font-[family-name:var(--font-jakarta)]">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                 Live Now
@@ -307,9 +307,9 @@ export default function ClientHome({ newArrivals = [], liveAuctions = [], trendi
               <h2 className="text-display-lg text-[var(--color-ink-900)] font-[family-name:var(--font-playfair)]">New Arrivals</h2>
             </motion.div>
             
-            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 sm:gap-6 lg:gap-8 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
+            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 pb-8 -mx-[var(--space-5)] px-[var(--space-5)] xl:mx-0 xl:px-0 mb-10">
               {newArrivals.map((p, idx) => (
-                <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[calc(25%-24px)] min-w-[280px]">
+                <div key={p.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[calc(25%-12px)] min-w-[280px]">
                   <ProductCard product={p} priority={idx < 4} />
                 </div>
               ))}
