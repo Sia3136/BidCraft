@@ -9,7 +9,9 @@ const {
   getPaymentByOrder,
   saveCard,
   createCheckout,
-  verifyCheckout
+  verifyCheckout,
+  createCartCheckout,
+  verifyCartCheckout
 } = require('../controllers/paymentsController');
 
 // Webhook needs raw body for signature verification
@@ -18,6 +20,8 @@ router.post('/webhook', handleWebhook);
 
 router.post('/create-checkout', authMiddleware, createCheckout);
 router.post('/verify-checkout', authMiddleware, verifyCheckout);
+router.post('/create-cart-checkout', authMiddleware, createCartCheckout);
+router.post('/verify-cart-checkout', authMiddleware, verifyCartCheckout);
 router.post('/create-order', authMiddleware, createPaymentOrder);
 router.post('/create-setup-order', authMiddleware, createSetupOrder);
 router.post('/verify',       authMiddleware, verifyPayment);

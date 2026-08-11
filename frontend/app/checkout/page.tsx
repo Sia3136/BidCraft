@@ -8,6 +8,8 @@ import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { authenticatedFetch } from '@/lib/api'
+import { useAuthStore } from '@/store/authStore'
 
 type CheckoutStep = 'shipping' | 'payment' | 'review' | 'success'
 
@@ -24,24 +26,30 @@ export default function CheckoutPage() {
     cardNumber: '', expiry: '', cvc: ''
   })
 
-  const [items, setItems] = useState<{title: string, price: number}[]>([])
+  const [items, setItems] = useState<{id?: number, title: string, price: number, quantity?: number}[]>([])
   const [subtotal, setSubtotal] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [processing, setProcessing] = useState(false)
+  const { token, user } = useAuthStore()
   const shipping = 250
   const total = subtotal + (items.length > 0 ? shipping : 0)
 
   useEffect(() => {
-    fetch('/api/cart')
+    if (!token) return;
+    authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/cart`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
-        if (data.items) {
-          setItems(data.items)
-          setSubtotal(data.items.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0))
+        if (data.cart) {
+          setItems(data.cart)
+          setSubtotal(data.cart.reduce((acc: number, item: any) => acc + (item.price * (item.quantity || 1)), 0))
         }
       })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [])
+  }, [token])
 
   if (loading) return null;
 
@@ -70,11 +78,92 @@ export default function CheckoutPage() {
     )
   }
 
-  const handleNext = (e: React.FormEvent) => {
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault()
     if (currentStep === 'shipping') setCurrentStep('payment')
     else if (currentStep === 'payment') setCurrentStep('review')
-    else if (currentStep === 'review') setCurrentStep('success')
+    else if (currentStep === 'review') {
+      if (!token) return;
+      setProcessing(true);
+      setError('');
+      try {
+        // Step 1: Create Razorpay checkout session for Cart
+        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/payments/create-cart-checkout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({})
+        })
+        const data = await res.json()
+        
+        if (!res.ok) throw new Error(data.error || 'Failed to initialize payment')
+
+        // Step 2: Load Razorpay
+        if (!(window as any).Razorpay) {
+          await new Promise<void>((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+            script.onload = () => resolve()
+            script.onerror = () => reject(new Error('Failed to load Razorpay'))
+            document.body.appendChild(script)
+          })
+        }
+
+        // Step 3: Open Razorpay
+        const rzp = new (window as any).Razorpay({
+          key: data.key_id,
+          amount: data.amount * 100, // INR to paise
+          currency: data.currency,
+          order_id: data.provider_order_id,
+          name: 'BidCraft',
+          description: `Checkout for Cart`,
+          handler: async (response: any) => {
+            // Step 4: Verify payment
+            try {
+              const verifyRes = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/payments/verify-cart-checkout`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  ...response,
+                  shipping_address: formData
+                })
+              })
+              const verifyData = await verifyRes.json()
+              if (verifyData.success) {
+                setCurrentStep('success')
+              } else {
+                setError(verifyData.error || 'Verification failed')
+                setProcessing(false)
+              }
+            } catch (err: any) {
+              setError('Payment verification failed. Contact support.')
+              setProcessing(false)
+            }
+          },
+          prefill: {
+            name: user?.name || '',
+            email: user?.email || '',
+          },
+          theme: { color: '#C8643A' },
+          modal: {
+            ondismiss: () => {
+              setError('Payment cancelled.')
+              setProcessing(false)
+            }
+          }
+        })
+
+        rzp.open()
+      } catch (err: any) {
+        setError(err.message)
+        setProcessing(false)
+      }
+    }
   }
 
   return (
@@ -127,13 +216,13 @@ export default function CheckoutPage() {
                 <div className="bg-white rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-[var(--space-6)] animate-fade-up">
                   <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-[var(--space-5)]">Shipping Address</h2>
                   <div className="grid grid-cols-2 gap-[var(--space-4)] mb-[var(--space-4)]">
-                    <Input placeholder="First Name" required />
-                    <Input placeholder="Last Name" required />
+                    <Input placeholder="First Name" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} required />
+                    <Input placeholder="Last Name" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} required />
                   </div>
-                  <Input placeholder="Street Address" className="mb-[var(--space-4)]" required />
+                  <Input placeholder="Street Address" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="mb-[var(--space-4)]" required />
                   <div className="grid grid-cols-2 gap-[var(--space-4)] mb-[var(--space-6)]">
-                    <Input placeholder="City" required />
-                    <Input placeholder="ZIP Code" required />
+                    <Input placeholder="City" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} required />
+                    <Input placeholder="ZIP Code" value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} required />
                   </div>
                   <Button type="submit" size="large" className="w-full">Continue to Payment</Button>
                 </div>
@@ -195,7 +284,10 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full h-[52px] text-[16px]">Place Order — ₹{total.toLocaleString('en-IN')}</Button>
+                  {error && <div className="text-[var(--color-urgent-600)] text-center text-sm font-semibold">{error}</div>}
+                  <Button type="submit" disabled={processing || items.length === 0} className="w-full h-[52px] text-[16px]">
+                    {processing ? 'Processing...' : `Place Order — ₹${total.toLocaleString('en-IN')}`}
+                  </Button>
                   <p className="text-caption text-[var(--color-ink-500)] text-center">
                     By placing your order, you agree to BidCraft's Terms of Service and Escrow Agreement.
                   </p>

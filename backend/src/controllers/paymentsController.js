@@ -27,6 +27,193 @@ const verifyCheckoutSchema = Joi.object({
   address_id: Joi.number().integer().optional()
 });
 
+const verifyCartCheckoutSchema = Joi.object({
+  razorpay_order_id:  Joi.string().required(),
+  razorpay_payment_id: Joi.string().required(),
+  razorpay_signature: Joi.string().required(),
+  shipping_address: Joi.object().optional() // from cart checkout wizard
+});
+
+async function createCartCheckout(req, res, next) {
+  try {
+    const userId = req.userId;
+
+    const cartRes = await db.query(
+      `SELECT c.quantity, l.*
+       FROM cart_items c
+       JOIN listings l ON c.listing_id = l.id
+       WHERE c.user_id = $1`,
+      [userId]
+    );
+
+    if (cartRes.rows.length === 0) {
+      return res.status(400).json({ error: 'cart_is_empty' });
+    }
+
+    let totalAmount = 0;
+    for (const item of cartRes.rows) {
+      if (item.seller_id === userId) return res.status(403).json({ error: 'cannot_buy_own_listing' });
+      if (item.status !== 'active') return res.status(400).json({ error: `listing_not_active_${item.id}` });
+      totalAmount += Number(item.price) * (item.quantity || 1);
+    }
+
+    const rpOrder = await paymentService.createOrder({
+      amount: totalAmount,
+      currency: 'INR',
+      receipt: `cart_${userId}_${Date.now()}`,
+      notes: { cart_user_id: String(userId) }
+    });
+
+    res.status(201).json({
+      provider_order_id: rpOrder.id,
+      amount: totalAmount,
+      currency: 'INR',
+      key_id: process.env.RAZORPAY_KEY_ID
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function verifyCartCheckout(req, res, next) {
+  let client;
+  try {
+    const { error, value } = verifyCartCheckoutSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, shipping_address } = value;
+    const buyerId = req.userId;
+
+    const valid = paymentService.verifySignature({
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature
+    });
+
+    if (!valid) {
+      if (require('../utils/mockHelper').isDevelopmentMockEnabled('payment') && razorpay_signature === 'test_mock_signature') {
+        // mock logic strictly bounded to test env
+      } else {
+        return res.status(400).json({ error: 'invalid_signature' });
+      }
+    }
+
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    // Fetch cart items, locking listings
+    const cartRes = await client.query(
+      `SELECT c.quantity, l.*
+       FROM cart_items c
+       JOIN listings l ON c.listing_id = l.id
+       WHERE c.user_id = $1 FOR UPDATE OF l`,
+      [buyerId]
+    );
+
+    if (cartRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'cart_is_empty' });
+    }
+    
+    // Check for existing duplicate payment for this exact Razorpay order
+    const dupRes = await client.query('SELECT id FROM payments WHERE razorpay_order_id = $1 LIMIT 1', [razorpay_order_id]);
+    if (dupRes.rows.length > 0) {
+      await client.query('ROLLBACK');
+      return res.status(200).json({ success: true, message: 'already_processed' }); // idempotent
+    }
+
+    const orderIds = [];
+    const notificationService = require('../services/notificationService');
+    const emailService = require('../services/emailService');
+
+    for (const item of cartRes.rows) {
+      if (item.status !== 'active') {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: `listing_not_active_${item.id}` });
+      }
+
+      const itemPrice = Number(item.price) * (item.quantity || 1);
+
+      // 1. Create order
+      const orderRes = await client.query(
+        `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, shipping_address, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, 'paid', $5, NOW(), NOW())
+         RETURNING id`,
+        [buyerId, item.seller_id, item.id, itemPrice, shipping_address || null]
+      );
+      const orderId = orderRes.rows[0].id;
+      orderIds.push(orderId);
+
+      // 2. Create payment record
+      await client.query(
+        `INSERT INTO payments (order_id, amount, payment_provider, provider_order_id, razorpay_order_id, razorpay_payment_id, status, created_at, updated_at)
+         VALUES ($1, $2, 'razorpay', $3, $3, $4, 'paid', NOW(), NOW())`,
+        [orderId, itemPrice, razorpay_order_id, razorpay_payment_id]
+      );
+
+      // 3. Create escrow
+      await client.query(
+        `INSERT INTO escrow (order_id, buyer_id, seller_id, amount_held, status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, 'held', NOW(), NOW())`,
+        [orderId, buyerId, item.seller_id, itemPrice]
+      );
+
+      // 4. Update listing
+      await client.query(`UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`, [item.id]);
+
+      // 5. Notify seller
+      await notificationService.createNotification(client, {
+        userId: item.seller_id,
+        type: 'payment_received',
+        title: 'Payment Received!',
+        message: `Payment of ₹${itemPrice} received for "${item.title || 'item'}".`,
+        data: { order_id: orderId, amount: itemPrice }
+      });
+      
+      const sellerUserRes = await client.query('SELECT email FROM users WHERE id = $1', [item.seller_id]);
+      if (sellerUserRes.rows[0]) {
+        await emailService.sendEmail({
+          to: sellerUserRes.rows[0].email,
+          subject: `Payment Received: Order #${orderId}`,
+          text: `You have received a payment of ₹${itemPrice} for your item "${item.title || 'item'}".\n\nPlease visit your dashboard to view the order and ship the item.`,
+          ctaLink: `/seller/dashboard`,
+          ctaText: `View Dashboard`
+        });
+      }
+    }
+
+    // 6. Notify buyer for the entire cart
+    await notificationService.createNotification(client, {
+      userId: buyerId,
+      type: 'order_confirmed',
+      title: 'Cart Order Confirmed!',
+      message: `Your payment was successful for ${cartRes.rows.length} items.`,
+      data: { order_ids: orderIds }
+    });
+    const buyerRes = await client.query('SELECT email, name FROM users WHERE id = $1', [buyerId]);
+    if (buyerRes.rows[0]) {
+      await emailService.sendEmail({
+        to: buyerRes.rows[0].email,
+        subject: `Order Confirmed: ${cartRes.rows.length} items`,
+        text: `Hi ${buyerRes.rows[0].name || 'Buyer'},\n\nYour cart payment was successful. The funds are securely held in escrow until you receive your items.\n\nThank you for shopping on BidCraft!`,
+        ctaLink: `/orders`,
+        ctaText: `View Orders`
+      });
+    }
+
+    // 7. Clear cart
+    await client.query(`DELETE FROM cart_items WHERE user_id = $1`, [buyerId]);
+
+    await client.query('COMMIT');
+    res.json({ success: true, order_ids: orderIds, status: 'paid' });
+  } catch (err) {
+    if (client) await client.query('ROLLBACK');
+    next(err);
+  } finally {
+    if (client) client.release();
+  }
+}
+
 async function createCheckout(req, res, next) {
   try {
     const { error, value } = createCheckoutSchema.validate(req.body);
@@ -540,5 +727,7 @@ module.exports = {
   getPaymentByOrder,
   saveCard,
   createCheckout,
-  verifyCheckout
+  verifyCheckout,
+  createCartCheckout,
+  verifyCartCheckout
 };
