@@ -95,11 +95,15 @@ router.post('/', auth, async (req, res) => {
     `, [listingId, buyerId, offerAmount])
     const offerId = result.rows[0].id;
 
-    // Notify seller
     await db.query(`
-      INSERT INTO notifications (user_id, type, message, link)
-      VALUES ($1, 'new_offer', $2, $3)
-    `, [listing.seller_id, `You received an offer of ₹${offerAmount} on ${listing.title}`, `/seller/offers/${offerId}`]);
+      INSERT INTO notifications (user_id, type, title, message, data, is_read, created_at)
+      VALUES ($1, 'new_offer', $2, $3, $4, FALSE, NOW())
+    `, [
+      listing.seller_id,
+      'New Offer Received',
+      `You received an offer of ₹${offerAmount} on ${listing.title}`,
+      JSON.stringify({ link: `/seller/offers/${offerId}` })
+    ]);
 
     try {
       const sellerRes = await db.query('SELECT email FROM users WHERE id = $1', [listing.seller_id]);
@@ -165,9 +169,14 @@ router.put('/:offerId/accept', auth, async (req, res) => {
 
           // In-app notification
           await db.query(`
-            INSERT INTO notifications (user_id, type, message, link)
-            VALUES ($1, 'offer_accepted', $2, $3)
-          `, [buyerRes.rows[0].id, `Your offer of ₹${amount} on ${listingTitle} was accepted!`, `/profile/offers`]);
+            INSERT INTO notifications (user_id, type, title, message, data, is_read, created_at)
+            VALUES ($1, 'offer_accepted', $2, $3, $4, FALSE, NOW())
+          `, [
+            buyerRes.rows[0].id,
+            'Offer Accepted',
+            `Your offer of ₹${amount} on ${listingTitle} was accepted!`,
+            JSON.stringify({ link: '/profile/offers' })
+          ]);
 
           // Email
           const emailService = require('../services/emailService');

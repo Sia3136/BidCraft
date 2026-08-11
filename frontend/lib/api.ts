@@ -202,7 +202,13 @@ export async function login(data: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  const json = await res.json()
+  const text = await res.text()
+  let json
+  try {
+    json = JSON.parse(text)
+  } catch {
+    json = { error: res.ok ? 'Invalid JSON response' : text || 'An unexpected error occurred' }
+  }
   if (!res.ok) throw new Error(json.message || json.error || 'Login failed')
   return { user: json.user, token: json.accessToken, refreshToken: json.refreshToken }
 }

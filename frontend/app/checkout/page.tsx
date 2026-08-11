@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Check, ShieldCheck } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
@@ -24,14 +24,26 @@ export default function CheckoutPage() {
     cardNumber: '', expiry: '', cvc: ''
   })
 
-  // Simulated Order Items
-  const items = [
-    { title: 'Hand-thrown Ceramic Match Striker', price: 1200 },
-    { title: 'Resin Ocean Wave Charcuterie Board', price: 4500 }
-  ]
-  const subtotal = 5700
+  const [items, setItems] = useState<{title: string, price: number}[]>([])
+  const [subtotal, setSubtotal] = useState(0)
+  const [loading, setLoading] = useState(true)
   const shipping = 250
-  const total = subtotal + shipping
+  const total = subtotal + (items.length > 0 ? shipping : 0)
+
+  useEffect(() => {
+    fetch('/api/cart')
+      .then(res => res.json())
+      .then(data => {
+        if (data.items) {
+          setItems(data.items)
+          setSubtotal(data.items.reduce((acc: number, item: any) => acc + (item.price * item.quantity), 0))
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return null;
 
   if (currentStep === 'success') {
     return (

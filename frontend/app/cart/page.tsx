@@ -86,9 +86,11 @@ export default async function CartPage() {
                 <span>Total</span>
                 <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
-              <button className="w-full bg-[#C4501A] text-white py-3 rounded-lg font-semibold hover:bg-[#A34316] transition">
-                Proceed to Checkout
-              </button>
+              <Link href="/checkout">
+                <button className="w-full bg-[#C4501A] text-white py-3 rounded-lg font-semibold hover:bg-[#A34316] transition">
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           </div>
         </div>

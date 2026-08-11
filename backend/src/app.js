@@ -73,7 +73,11 @@ app.use(cors({
   credentials: true
 }));
 if (process.env.NODE_ENV !== 'test') {
-  app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
+  app.use(rateLimit({ 
+    windowMs: 15 * 60 * 1000, 
+    max: 200,
+    message: { error: 'Too many requests. Please wait and try again.' }
+  }));
 }
 
 app.get('/', (req, res) => {
