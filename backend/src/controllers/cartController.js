@@ -8,7 +8,7 @@ async function getCart(req, res, next) {
   try {
     const userId = parseInt(req.userId, 10);
     const result = await db.query(
-      `SELECT c.id as cart_item_id, c.quantity, l.*, seller.name as seller_name
+      `SELECT c.id as cart_item_id, 1 as quantity, l.*, seller.name as seller_name
        FROM cart_items c
        JOIN listings l ON l.id = c.listing_id
        JOIN users seller ON seller.id = l.seller_id

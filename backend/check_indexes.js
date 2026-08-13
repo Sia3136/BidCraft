@@ -1,1 +1,0 @@
-require('dotenv/config'); const db = require('./src/utils/db.js'); const test = async () => { try { const res = await db.query('SELECT indexname, indexdef FROM pg_indexes WHERE tablename = ''listings'''); console.table(res.rows); } catch(e) { console.error(e); } finally { db.pool.end(); } }; test();

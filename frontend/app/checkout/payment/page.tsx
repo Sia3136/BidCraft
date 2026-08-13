@@ -12,13 +12,15 @@ export default function PaymentPage() {
   const searchParams = useSearchParams()
   const listingId = searchParams.get('listing_id')
   const offerId = searchParams.get('offer_id')
+  const isCart = searchParams.get('cart') === 'true'
   const { token, user } = useAuthStore()
   
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isMock, setIsMock] = useState(false)
 
   useEffect(() => {
-    if (!listingId || !token) {
+    if ((!listingId && !isCart) || !token) {
       if (!token) router.push('/auth')
       else router.push('/')
       return
@@ -26,18 +28,71 @@ export default function PaymentPage() {
 
     const initPayment = async () => {
       try {
+        const endpoint = isCart ? `/api/payments/create-cart-checkout` : `/api/payments/create-checkout`
+        const reqBody = isCart ? {} : { listing_id: parseInt(listingId as string, 10), ...(offerId && { offer_id: parseInt(offerId, 10) }) }
+        
         // Step 1: Create Razorpay checkout session
-        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-checkout`, {
+        const res = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ listing_id: parseInt(listingId, 10), ...(offerId && { offer_id: parseInt(offerId, 10) }) })
+          body: JSON.stringify(reqBody)
         })
         const data = await res.json()
         
         if (!res.ok) throw new Error(data.error || 'Failed to initialize payment')
+
+        if (data.is_mock) setIsMock(true)
+
+        if (data.is_mock) {
+          const mockPaymentId = `pay_mock_${Date.now()}`;
+          const mockOrderId = data.provider_order_id;
+          try {
+            const verifyEndpoint = isCart ? `/api/payments/verify-cart-checkout` : `/api/payments/verify-checkout`
+            let shipping_address = {}
+            if (isCart) {
+              try { shipping_address = JSON.parse(localStorage.getItem('checkout_address') || '{}') } catch (e) {}
+            }
+            const verifyBody = isCart ? {
+              razorpay_order_id: mockOrderId,
+              razorpay_payment_id: mockPaymentId,
+              razorpay_signature: 'mock_signature',
+              shipping_address
+            } : {
+              razorpay_order_id: mockOrderId,
+              razorpay_payment_id: mockPaymentId,
+              razorpay_signature: 'mock_signature',
+              listing_id: parseInt(listingId as string, 10),
+              ...(offerId && { offer_id: parseInt(offerId, 10) })
+            }
+
+            const verifyRes = await authenticatedFetch(
+              `${process.env.NEXT_PUBLIC_API_URL}${verifyEndpoint}`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(verifyBody)
+              }
+            )
+            const verifyData = await verifyRes.json()
+            if (verifyData.success) {
+              const orderIdToPass = verifyData.order_id || (verifyData.order_ids && verifyData.order_ids[0]) || ''
+              router.push(`/checkout/success?order_id=${orderIdToPass}`)
+            } else {
+              setError(verifyData.error || 'Mock verification failed')
+              setLoading(false)
+            }
+          } catch (err: any) {
+            setError('Mock payment verification failed.')
+            setLoading(false)
+          }
+          return
+        }
 
         // Step 2: Load Razorpay
         if (!(window as any).Razorpay) {
@@ -57,21 +112,33 @@ export default function PaymentPage() {
           currency: data.currency,
           order_id: data.provider_order_id,
           name: 'BidCraft',
-          description: `Checkout for listing #${listingId}`,
+          description: isCart ? `Checkout for Cart` : `Checkout for listing #${listingId}`,
           handler: async (response: any) => {
             // Step 4: Verify payment
             try {
-              const verifyRes = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-checkout`, {
+              const verifyEndpoint = isCart ? `/api/payments/verify-cart-checkout` : `/api/payments/verify-checkout`
+              
+              let shipping_address = {}
+              if (isCart) {
+                try { shipping_address = JSON.parse(localStorage.getItem('checkout_address') || '{}') } catch (e) {}
+              }
+
+              const verifyBody = isCart ? {
+                ...response,
+                shipping_address
+              } : {
+                ...response,
+                listing_id: parseInt(listingId as string, 10),
+                ...(offerId && { offer_id: parseInt(offerId, 10) })
+              }
+              
+              const verifyRes = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}${verifyEndpoint}`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                  ...response,
-                  listing_id: parseInt(listingId, 10),
-                  ...(offerId && { offer_id: parseInt(offerId, 10) })
-                })
+                body: JSON.stringify(verifyBody)
               })
               const verifyData = await verifyRes.json()
               if (verifyData.success) {
@@ -104,7 +171,7 @@ export default function PaymentPage() {
     }
 
     initPayment()
-  }, [listingId, offerId, token, router, user])
+  }, [listingId, offerId, isCart, token, router, user])
 
   return (
     <div className="min-h-screen bg-[var(--color-cream-base)] flex flex-col">
@@ -114,14 +181,16 @@ export default function PaymentPage() {
           <div>
             <h1 className="text-display-sm font-display mb-4 text-[var(--color-urgent-600)]">Payment Failed</h1>
             <p className="mb-6">{error}</p>
-            <button onClick={() => router.push(`/checkout/review?listing_id=${listingId}`)} className="h-12 px-6 bg-[var(--color-ink-900)] text-white rounded-[var(--radius-pill)]">
+            <button onClick={() => router.push(isCart ? `/checkout/address?cart=true` : `/checkout/review?listing_id=${listingId}`)} className="h-12 px-6 bg-[var(--color-ink-900)] text-white rounded-[var(--radius-pill)]">
               Try Again
             </button>
           </div>
         ) : (
           <div>
             <h1 className="text-display-sm font-display mb-4">Initializing Payment...</h1>
-            <p className="text-[var(--color-ink-500)]">Please complete the payment in the secure window.</p>
+            <p className="text-[var(--color-ink-500)]">
+              {isMock ? 'Processing mock payment...' : 'Please complete the payment in the secure window.'}
+            </p>
           </div>
         )}
       </main>
@@ -129,5 +198,3 @@ export default function PaymentPage() {
     </div>
   )
 }
-
-

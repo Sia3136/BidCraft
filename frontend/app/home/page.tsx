@@ -13,16 +13,17 @@ export default async function AuthenticatedHomePage() {
     const [auctionsData, arrivalsData, trendingData] = await Promise.all([
       fetchListings({ method: 'auction', sort: 'newest', limit: 6 }),
       fetchListings({ sort: 'newest', limit: 7 }),
-      fetchListings({ sort: 'trending', limit: 6 })
+      fetchListings({ sort: 'price-desc', limit: 6 })
     ]);
     
     liveAuctions = auctionsData.listings || [];
     newArrivals = arrivalsData.listings || [];
-    trending = trendingData.listings || [];
+    const arrivalIds = new Set(newArrivals.map(l => l.id));
+    trending = (trendingData.listings || []).filter(l => !arrivalIds.has(l.id));
 
-    // Picks for you: 1 each from a few categories (e.g. Art, Fashion, Vintage)
-    const picksPromises = ['Art', 'Fashion', 'Vintage'].map(cat => 
-       fetchListings({ category: cat.toLowerCase(), limit: 1 })
+    // Picks for you: 1 each from valid existing categories
+    const picksPromises = ['art', 'collectibles', 'lifestyle-gifts'].map(cat => 
+       fetchListings({ category: cat, limit: 1 })
     );
     const picksResults = await Promise.all(picksPromises);
     picksForYou = picksResults.flatMap(res => res.listings || []);

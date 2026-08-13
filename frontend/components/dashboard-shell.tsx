@@ -44,10 +44,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     { name: 'Auctions', href: '/seller/listings', icon: Gavel },
     { name: 'Offers Received', href: '/seller/listings', icon: Tag },
     { name: 'Trades Received', href: '/seller/listings', icon: RefreshCcw },
-    { name: 'Analytics', href: '/seller/listings', icon: BarChart2 },
-    { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
+    { name: 'Analytics', href: '/seller/analytics', icon: BarChart2 },
+    { name: 'Messages', href: '/seller/messages', icon: MessageSquare },
     { name: 'Notifications', href: '/dashboard/notifications', icon: Bell },
-    { name: 'Payouts', href: '/seller/listings', icon: DollarSign },
+    { name: 'Payouts', href: '/seller/payouts', icon: DollarSign },
   ]
   
   const mobileNav = [

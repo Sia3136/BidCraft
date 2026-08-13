@@ -1,6 +1,7 @@
 const db = require('../utils/db');
 const Joi = require('joi');
 const paymentService = require('../services/paymentService');
+const { IS_MOCK } = require('../services/paymentService');
 
 const createOrderSchema = Joi.object({
   order_id: Joi.number().integer().required()
@@ -39,7 +40,7 @@ async function createCartCheckout(req, res, next) {
     const userId = req.userId;
 
     const cartRes = await db.query(
-      `SELECT c.quantity, l.*
+      `SELECT 1 as quantity, l.*
        FROM cart_items c
        JOIN listings l ON c.listing_id = l.id
        WHERE c.user_id = $1`,
@@ -68,7 +69,8 @@ async function createCartCheckout(req, res, next) {
       provider_order_id: rpOrder.id,
       amount: totalAmount,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID
+      key_id: process.env.RAZORPAY_KEY_ID,
+      is_mock: IS_MOCK
     });
   } catch (err) {
     next(err);
@@ -103,7 +105,7 @@ async function verifyCartCheckout(req, res, next) {
 
     // Fetch cart items, locking listings
     const cartRes = await client.query(
-      `SELECT c.quantity, l.*
+      `SELECT 1 as quantity, l.*
        FROM cart_items c
        JOIN listings l ON c.listing_id = l.id
        WHERE c.user_id = $1 FOR UPDATE OF l`,
@@ -251,7 +253,8 @@ async function createCheckout(req, res, next) {
       provider_order_id: rpOrder.id,
       amount: amount,
       currency: 'INR',
-      key_id: process.env.RAZORPAY_KEY_ID
+      key_id: process.env.RAZORPAY_KEY_ID,
+      is_mock: IS_MOCK
     });
   } catch (err) {
     next(err);
@@ -259,6 +262,7 @@ async function createCheckout(req, res, next) {
 }
 
 async function verifyCheckout(req, res, next) {
+  let client;
   try {
     const { error, value } = verifyCheckoutSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
@@ -273,31 +277,51 @@ async function verifyCheckout(req, res, next) {
     });
 
     if (!valid) {
-    if (require('../utils/mockHelper').isDevelopmentMockEnabled('payment') && razorpay_signature === 'test_mock_signature') {
+      if (require('../utils/mockHelper').isDevelopmentMockEnabled('payment') && razorpay_signature === 'test_mock_signature') {
         // mock logic strictly bounded to test env
       } else {
         return res.status(400).json({ error: 'invalid_signature' });
       }
     }
 
-    const listingRes = await db.query('SELECT * FROM listings WHERE id = $1 AND status = $2 FOR UPDATE', [listing_id, 'active']);
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    // Check for existing duplicate payment for this exact Razorpay order
+    const dupRes = await client.query('SELECT id, order_id FROM payments WHERE razorpay_order_id = $1 LIMIT 1', [razorpay_order_id]);
+    if (dupRes.rows.length > 0) {
+      await client.query('ROLLBACK');
+      return res.status(200).json({ success: true, order_id: dupRes.rows[0].order_id, status: 'paid', message: 'already_processed' });
+    }
+
+    const listingRes = await client.query('SELECT * FROM listings WHERE id = $1 FOR UPDATE', [listing_id]);
     const listing = listingRes.rows[0];
-    if (!listing) return res.status(400).json({ error: 'Listing no longer available' });
+    if (!listing || listing.status !== 'active') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'Listing no longer available' });
+    }
 
     let orderPrice = Number(listing.price);
     
     if (offer_id) {
-      const offerRes = await db.query('SELECT * FROM offers WHERE id = $1 AND buyer_id = $2 AND status = $3', [offer_id, buyerId, 'accepted']);
+      const offerRes = await client.query('SELECT * FROM offers WHERE id = $1 AND buyer_id = $2 AND status = $3', [offer_id, buyerId, 'accepted']);
       const offer = offerRes.rows[0];
-      if (!offer) return res.status(400).json({ error: 'valid_accepted_offer_not_found' });
-      if (offer.listing_id !== listing_id) return res.status(400).json({ error: 'offer_listing_mismatch' });
+      if (!offer) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'valid_accepted_offer_not_found' });
+      }
+      if (offer.listing_id !== listing_id) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'offer_listing_mismatch' });
+      }
       orderPrice = Number(offer.amount);
     } else if (listing.listing_type !== 'fixed' && listing.listing_type !== 'buy_now') {
+      await client.query('ROLLBACK');
       return res.status(400).json({ error: 'listing_is_not_fixed_price' });
     }
 
     // Create the order
-    const orderRes = await db.query(
+    const orderRes = await client.query(
       `INSERT INTO orders (buyer_id, seller_id, listing_id, total_amount, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, 'paid', NOW(), NOW())
        RETURNING *`,
@@ -306,28 +330,33 @@ async function verifyCheckout(req, res, next) {
     const order = orderRes.rows[0];
 
     // Create payment record
-    await db.query(
+    await client.query(
       `INSERT INTO payments (order_id, amount, payment_provider, provider_order_id, razorpay_order_id, razorpay_payment_id, status, created_at, updated_at)
        VALUES ($1, $2, 'razorpay', $3, $3, $4, 'paid', NOW(), NOW())`,
       [order.id, order.total_amount, razorpay_order_id, razorpay_payment_id]
     );
 
     // Create escrow record
-    await db.query(
+    await client.query(
       `INSERT INTO escrow (order_id, buyer_id, seller_id, amount_held, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, 'held', NOW(), NOW())`,
       [order.id, order.buyer_id, order.seller_id, order.total_amount]
     );
 
-    // Notify users
-    await notifyUsersOfPayment(order.id);
-
     // Update listing status
-    await db.query(`UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`, [listing_id]);
+    await client.query(`UPDATE listings SET status = 'sold', updated_at = NOW() WHERE id = $1`, [listing_id]);
+
+    await client.query('COMMIT');
+
+    // Notify users AFTER commit so queries inside see the new state
+    await notifyUsersOfPayment(order.id).catch(err => console.error('Notification error:', err));
 
     res.json({ success: true, order_id: order.id, status: 'paid' });
   } catch (err) {
+    if (client) await client.query('ROLLBACK');
     next(err);
+  } finally {
+    if (client) client.release();
   }
 }
 

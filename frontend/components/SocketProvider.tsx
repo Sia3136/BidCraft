@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/store/authStore';
 import { SOCKET_EVENTS, OutbidEvent } from '@/lib/socketEvents';
 import toast from 'react-hot-toast';
+import { authenticatedFetch } from '@/lib/api';
 
 interface SocketContextType {
   socket: Socket | null;
@@ -51,8 +52,16 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     });
 
-    newSocket.on('connect_error', (err) => {
+    newSocket.on('connect_error', async (err) => {
       console.error('[SocketProvider] Connection error:', err.message);
+      if (err.message.includes('Authentication error')) {
+        try {
+          const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+          await authenticatedFetch(`${API_URL}/api/auth/me`);
+        } catch (refreshErr) {
+          console.error('[SocketProvider] Failed to refresh token on connection error:', refreshErr);
+        }
+      }
     });
 
     // Global listeners

@@ -47,12 +47,12 @@ export default async function ExplorePage({
 
   let data;
   if (params.type === 'trending' || params.sort === 'trending') {
-    const apiParams = { ...params, sort: 'newest' };
-    delete apiParams.type;
-    data = await fetchListings({ ...apiParams, limit, offset });
+    const { type, ...apiParams } = params;
+    data = await fetchListings({ ...apiParams, sort: 'newest', limit, offset });
   } else {
     data = await fetchListings({ ...params, limit, offset });
   }
 
-  return <ClientExplore initialListings={data.listings} total={data.total} initialParams={params} />;
+  const exploreKey = `${params.category || ''}-${params.subcategory || ''}`;
+  return <ClientExplore key={exploreKey} initialListings={data.listings} total={data.total} initialParams={params} />;
 }

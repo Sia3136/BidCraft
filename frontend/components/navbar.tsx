@@ -368,16 +368,15 @@ export const Navbar = React.memo(function Navbar() {
                   className="relative h-full flex items-center"
                   onMouseEnter={() => setOpenDropdown(category.slug)}
                 >
-                  <Link
-                    href={`/explore?category=${category.slug}`}
+                  <button
                     onClick={() => {
-                      setOpenDropdown(null);
+                      setOpenDropdown(openDropdown === category.slug ? null : category.slug);
                     }}
                     aria-expanded={openDropdown === category.slug}
                     className={cn("h-full flex items-center text-body-md font-medium transition-colors relative cursor-pointer", textClass, openDropdown === category.slug && "text-[var(--color-terracotta-600)]")}
                   >
                     {category.name}
-                  </Link>
+                  </button>
                 </div>
               ))}
 

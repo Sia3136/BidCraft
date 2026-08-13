@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/authStore'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CATEGORIES } from '@/lib/categories'
+import { slugify } from '@/lib/slugify'
 import { ArrowRight, Flame, Clock, Sparkles } from 'lucide-react'
 
 export default function ClientHomeFeed({ 
@@ -113,7 +114,7 @@ export default function ClientHomeFeed({
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-heading-xl font-display text-[var(--color-ink-900)] flex items-center gap-3">
                 <Flame className="w-6 h-6 text-[var(--color-terracotta-600)]" />
-                Trending Now
+                Premium Collection
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -126,30 +127,37 @@ export default function ClientHomeFeed({
           </section>
         )}
 
-        {/* Picks for You */}
-        {picksForYou.length > 0 && (
-          <section className="bg-[var(--color-cream-raised)] -mx-6 px-6 py-16 border-y border-[var(--color-border-subtle)]">
-            <div className="max-w-[var(--container-max)] mx-auto">
-              <h2 className="text-heading-xl font-display text-[var(--color-ink-900)] mb-8">Picks for You</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {picksForYou.map(item => (
-                  <div key={item.id}>
-                    <ProductCard product={item as any} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        {/* End of primary constrained sections */}
+      </div>
 
-        {/* Browse by Category */}
-        <section>
-          <h2 className="text-heading-xl font-display text-[var(--color-ink-900)] mb-8">Browse by Category</h2>
+      {/* Full-width Picks for You */}
+      {picksForYou.length > 0 && (
+        <section className="bg-[var(--color-cream-raised)] py-20 border-y border-[var(--color-border-subtle)] mt-24">
+          <div className="max-w-[var(--container-max)] mx-auto px-6">
+            <div className="flex flex-col items-center mb-12">
+              <span className="text-caption text-[var(--color-terracotta-600)] tracking-widest uppercase mb-4 font-[family-name:var(--font-jakarta)]">Handpicked For You</span>
+              <h2 className="text-display-md font-display text-[var(--color-ink-900)] text-center">Curated based on your interests</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {picksForYou.map(item => (
+                <div key={item.id}>
+                  <ProductCard product={item as any} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Browse by Category (Full Width) */}
+      <section className="bg-white py-20 border-b border-[var(--color-border-subtle)] w-full">
+        <div className="max-w-[var(--container-max)] mx-auto px-6">
+          <h2 className="text-heading-xl font-display text-[var(--color-ink-900)] mb-10 text-center">Browse by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {CATEGORIES.map(cat => (
               <Link 
                 key={cat.name} 
-                href={`/explore?category=${cat.name.toLowerCase()}`}
+                href={`/explore?category=${slugify(cat.name)}`}
                 className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] p-6 text-center hover:border-[var(--color-terracotta-600)] hover:shadow-md transition-all group"
               >
                 <div className="w-12 h-12 bg-[var(--color-cream-base)] rounded-full mx-auto mb-4 flex items-center justify-center group-hover:bg-[var(--color-terracotta-100)] transition-colors">
@@ -159,9 +167,8 @@ export default function ClientHomeFeed({
               </Link>
             ))}
           </div>
-        </section>
-
-      </div>
+        </div>
+      </section>
     </div>
   )
 }

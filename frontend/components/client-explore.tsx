@@ -527,15 +527,15 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 }
 
 export default function ClientExplore({ initialListings = [], total = 0, initialParams }: { initialListings?: Listing[], total?: number, initialParams?: any }) {
-  const categoryKey = [
+  const stableKey = [
     initialParams?.category || '',
     initialParams?.subcategory || ''
-  ].join('|')
+  ].join('::')
   
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
       <ClientExploreInner 
-        key={categoryKey}
+        key={stableKey}
         initialListings={initialListings} 
         total={total} 
       />
