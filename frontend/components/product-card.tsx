@@ -24,6 +24,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
     e.preventDefault()
     e.stopPropagation()
     
+    const { isAuthenticated } = useAuthStore.getState()
     if (!isAuthenticated) {
       router.push(`/auth?returnTo=${encodeURIComponent(window.location.pathname)}`)
       return
@@ -41,9 +42,9 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
       return
     }
     try {
-      const res = await fetch('/api/cart', {
+      const { authenticatedFetch } = await import('@/lib/api')
+      const res = await authenticatedFetch('/api/cart', {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ listing_id: Number(product.numericId || product.id) })
       })

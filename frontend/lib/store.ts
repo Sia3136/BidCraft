@@ -83,7 +83,8 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            await fetch('/api/cart', {
+            const { authenticatedFetch } = await import('@/lib/api');
+            await authenticatedFetch('/api/cart', {
               method: 'POST',
               credentials: 'include',
               headers: { 'Content-Type': 'application/json' },
@@ -100,7 +101,8 @@ export const useStore = create<StoreState>()(
 
         if (isAuthenticated && token) {
           try {
-            await fetch(`/api/cart?listing_id=${productId}`, {
+            const { authenticatedFetch } = await import('@/lib/api');
+            await authenticatedFetch(`/api/cart?listing_id=${productId}`, {
               method: 'DELETE',
               credentials: 'include'
             });

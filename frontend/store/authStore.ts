@@ -29,18 +29,19 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: true 
         }));
         try {
+          const { authenticatedFetch } = await import('@/lib/api');
           const [cartRes, wishRes] = await Promise.all([
-            fetch(`/api/cart`, { credentials: 'include' }),
-            fetch(`/api/wishlist`, { credentials: 'include' })
+            authenticatedFetch(`/api/cart`, { credentials: 'include' }),
+            authenticatedFetch(`/api/wishlist`, { credentials: 'include' })
           ]);
           
-          let serverCart = { cart: [] };
-          let serverWishlist = { wishlist: [] };
+          let serverCart = { items: [] };
+          let serverWishlist = { items: [] };
           
           if (cartRes.ok) serverCart = await cartRes.json();
           if (wishRes.ok) serverWishlist = await wishRes.json();
           
-          useStore.getState().mergeWithServer(serverCart.cart || [], serverWishlist.wishlist || []);
+          useStore.getState().mergeWithServer(serverCart.items || [], serverWishlist.items || []);
         } catch (e) {
           console.error("Failed to merge with server", e);
         }

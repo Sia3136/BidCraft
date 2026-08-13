@@ -383,8 +383,15 @@ function ProductDetailClient({ product, related = [], similar = [] }: { product:
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product.numericId || product.id); }}
+                      onClick={(e) => { 
+                        e.stopPropagation();
+                        const { isAuthenticated } = useAuthStore.getState();
+                        if (!isAuthenticated) {
+                          alert('Please sign in to add to wishlist');
+                          return;
+                        }
+                        toggleWishlist(product.numericId || product.id); 
+                      }}
                       className="h-11 px-5 rounded-full border border-[var(--color-border-strong)] text-[var(--color-ink-900)] text-sm font-medium flex items-center gap-2 hover:border-[var(--color-terracotta-600)] hover:text-[var(--color-terracotta-600)] transition-colors duration-200"
                     >
                       <Heart className={cn("w-4 h-4", isWishlisted ? "fill-[var(--color-terracotta-600)] text-[var(--color-terracotta-600)]" : "text-current")} />
