@@ -116,10 +116,13 @@ export default function ClientHomeFeed({
                 <Flame className="w-6 h-6 text-[var(--color-terracotta-600)]" />
                 Premium Collection
               </h2>
+              <Link href="/explore?type=trending" className="text-body-md font-bold text-[var(--color-terracotta-600)] flex items-center gap-2 hover:underline">
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex gap-6 overflow-x-auto pb-6 hide-scrollbar snap-x">
               {trending.map(item => (
-                <div key={item.id}>
+                <div key={item.id} className="min-w-[280px] md:min-w-[320px] snap-start">
                   <ProductCard product={item as any} />
                 </div>
               ))}
@@ -151,14 +154,14 @@ export default function ClientHomeFeed({
 
       {/* Browse by Category (Full Width) */}
       <section className="bg-white py-20 border-b border-[var(--color-border-subtle)] w-full">
-        <div className="max-w-[var(--container-max)] mx-auto px-6">
+        <div className="w-full px-6 md:px-12 mx-auto">
           <h2 className="text-heading-xl font-display text-[var(--color-ink-900)] mb-10 text-center">Browse by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {CATEGORIES.map(cat => (
               <Link 
                 key={cat.name} 
                 href={`/explore?category=${slugify(cat.name)}`}
-                className="bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] p-6 text-center hover:border-[var(--color-terracotta-600)] hover:shadow-md transition-all group"
+                className="flex-1 min-w-[180px] max-w-[240px] bg-white border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] p-6 text-center hover:border-[var(--color-terracotta-600)] hover:shadow-md transition-all group"
               >
                 <div className="w-12 h-12 bg-[var(--color-cream-base)] rounded-full mx-auto mb-4 flex items-center justify-center group-hover:bg-[var(--color-terracotta-100)] transition-colors">
                   <span className="text-xl">{cat.name.charAt(0)}</span>

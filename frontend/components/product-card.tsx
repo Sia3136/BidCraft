@@ -91,7 +91,7 @@ export const ProductCard = React.memo(function ProductCard({ product, priority =
 
   return (
     <div className="group relative flex flex-col h-full border border-[var(--color-border-subtle)] rounded-[var(--radius-md)] overflow-hidden bg-white hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
-      <Link href={getProductRoute(product)} className="block relative aspect-square w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
+      <Link href={getProductRoute(product)} className="block relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-cream-deep)] animate-pulse-light">
         <Image
           src={imageUrl}
           alt={product.title}

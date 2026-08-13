@@ -38,6 +38,8 @@ export const Navbar = React.memo(function Navbar() {
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const navRef = useRef<HTMLDivElement>(null)
+  const categoriesRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0)
 
@@ -63,7 +65,11 @@ export const Navbar = React.memo(function Navbar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(event.target as Node);
+      const isOutsideCategories = categoriesRef.current && !categoriesRef.current.contains(event.target as Node);
+      const isOutsideMobile = mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node);
+      
+      if (isOutsideDropdown && isOutsideCategories && isOutsideMobile) {
         setOpenDropdown(null)
       }
     }
@@ -356,6 +362,7 @@ export const Navbar = React.memo(function Navbar() {
 
         {/* Row 2 - Categories Nav */}
         <div 
+          ref={categoriesRef}
           className="relative hidden md:block border-b border-[var(--color-border-subtle)]/30 bg-[var(--color-cream-base)]"
         >
           <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between h-[56px] px-[var(--space-5)]">
@@ -423,15 +430,15 @@ export const Navbar = React.memo(function Navbar() {
                       return activeCat.subcategories.map(sub => {
                         const href = `/explore?category=${encodeURIComponent(activeCat.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
-                          <Link
+                          <button
                             key={sub.slug}
-                            href={href}
-                            prefetch={false}
-                            onClick={() => setOpenDropdown(null)}
-                            className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
+                            onClick={() => {
+                              window.location.assign(href);
+                            }}
+                            className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full cursor-pointer"
                           >
                             {sub.name}
-                          </Link>
+                          </button>
                         );
                       });
                     })()}
@@ -456,6 +463,7 @@ export const Navbar = React.memo(function Navbar() {
       onClick={() => setIsMobileMenuOpen(false)}
     >
       <motion.div
+        ref={mobileMenuRef}
         initial={{ x: '-100%' }}
         animate={{ x: 0 }}
         exit={{ x: '-100%' }}
@@ -493,18 +501,15 @@ export const Navbar = React.memo(function Navbar() {
                       {category.subcategories.map(sub => {
                         const href = `/explore?category=${encodeURIComponent(category.slug)}&subcategory=${encodeURIComponent(sub.slug)}`;
                         return (
-                          <Link
+                          <button
                             key={sub.slug}
-                            href={href}
-                            prefetch={false}
                             onClick={() => {
-                              setOpenDropdown(null);
-                              setIsMobileMenuOpen(false);
+                              window.location.assign(href);
                             }}
-                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] block w-full"
+                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] block w-full cursor-pointer"
                           >
                             {sub.name}
-                          </Link>
+                          </button>
                         )
                       })}
                     </motion.div>
