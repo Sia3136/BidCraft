@@ -104,7 +104,7 @@ export function SellerOrders() {
               shippingOrderId === order.id ? (
                 <form onSubmit={handleAddTracking} className="p-4 border border-border rounded-lg bg-background mt-4 space-y-3">
                   <h4 className="font-semibold text-sm">Add Tracking Info</h4>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
                       placeholder="Carrier (e.g. FedEx)"

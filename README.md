@@ -1,115 +1,257 @@
-# BidCraft
+<div align="center">
+  <pre>
+ B I D C R A F T
+ ────────────────
+ Creator Marketplace • Auctions • Offers • Buy Now
+  </pre>
+  
+  <p><strong>A full-stack marketplace supporting fixed-price purchases, live auctions, and negotiated offers.</strong></p>
 
-![Status](https://img.shields.io/badge/status-Production--Ready-green)
-![Stack](https://img.shields.io/badge/stack-Next.js%2016%20%7C%20Express%20%7C%20PostgreSQL-black)
+  <p>
+    <a href="#overview">Overview</a> •
+    <a href="#key-features">Key Features</a> •
+    <a href="#architecture">Architecture</a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#installation--setup">Installation</a>
+  </p>
+</div>
 
-BidCraft is a creator marketplace for discovering, buying, offering on, and auctioning unique items with escrow-backed transactions, seller tools, and marketplace trust features.
+---
 
-## 1. Project Overview
+## 1. Overview
 
-BidCraft aims to give creators, collectors, and buyers a single place to browse listings, join auctions, make offers, complete secure checkout, and manage orders with escrow protection. It addresses the gap in generic marketplaces by combining curated discovery, trust signals, auction support, and buyer protection using an escrow-first order flow.
+**BidCraft** is a production-grade creator marketplace built for flexibility and performance. Rather than limiting sellers to a single transaction model, BidCraft supports three parallel purchasing flows: **Buy Now (Fixed Price)**, **Live Auctions (Bidding)**, and **Make Offer (Negotiation)**.
 
-## 2. Current Architecture
+Engineered with a decoupled Next.js 16 frontend and an Express REST API backend, BidCraft handles transactional consistency, escrow states, realtime bid updates, and background auction settlements at scale.
 
-BidCraft uses a hybrid client-server architecture:
-- **Frontend**: Renders the marketplace UI, product exploration, and checkout.
-- **Backend**: Owns the core business logic, payment integrations, real-time auction broadcasting, and Escrow.
+## 2. Key Features
 
+- **Multi-Modal Transactions**: Support for fixed-price, standard bidding, and private offers.
+- **Real-Time Auctions**: WebSockets (Socket.io) provide instant bid propagation and countdown synchronization.
+- **Automated Settlement**: Configurable cron jobs (internal `node-cron` and external webhook triggers) evaluate auction endpoints, declare winners, and mutate escrow states.
+- **Escrow & Dispute Management**: Secure lifecycle handling for funds, with dedicated dispute resolution pathways.
+- **Seller Dashboard**: Comprehensive analytics, order tracking, and inventory management.
+- **Responsive UI**: Built with Tailwind CSS, Shadcn, and Framer Motion for a premium, accessible mobile-first experience.
+
+## 3. Product Experience
+
+BidCraft emphasizes an artisan marketplace aesthetic. It departs from generic e-commerce templates by utilizing warm cream/off-white visual languages, clean typography, and restrained, high-density layouts optimized for serious buyers and collectors.
+
+## 4. User Workflows
+
+### Buyer Workflow
 ```mermaid
-flowchart LR
-   U[User Browser] --> F[Next.js Frontend]
-   F -->|REST + cookies| B[Express Backend API]
-   F -->|Local Route Handlers| P[(PostgreSQL via Prisma)]
-   B --> P[(PostgreSQL)]
-   B --> R[(Redis)]
-   B --> S[Socket.io]
-   B --> X[External Services]
+flowchart TD
+    A[Browse / Explore] --> B[View Listing]
+    B --> C{Purchase Method?}
+    C -->|Buy Now| D[Checkout]
+    C -->|Bid| E[Real-Time Auction]
+    C -->|Make Offer| F[Seller Negotiation]
+    D --> G[Razorpay Payment]
+    E -->|Win| D
+    F -->|Accepted| D
+    G --> H[Order Complete]
 ```
 
-## 3. Frontend Stack
-- **Framework**: Next.js 16 (App Router)
-- **UI/Styling**: React 19, Tailwind CSS, Framer Motion
-- **State Management**: Zustand
-- **API Interactions**: Standard `fetch` with cookies & Prisma (Server routes)
+### Auction Lifecycle
+```mermaid
+flowchart TD
+    A[Seller Creates Auction] --> B[Active Status]
+    B --> C[Buyers Place Bids via WebSockets]
+    C --> D{End Time Reached?}
+    D -- No --> C
+    D -- Yes --> E[Cron Job Triggers Settlement]
+    E --> F[Determine Highest Bidder]
+    F --> G[Generate Pending Order]
+```
 
-## 4. Backend Stack
-- **Framework**: Node.js, Express 5
-- **Realtime**: Socket.io (for auction bidding and notifications)
-- **Security & Validation**: JWT, Joi, bcryptjs, Helmet, Express Rate Limit
-- **Media**: multer (for parsing before Cloudinary)
+## 5. Architecture
 
-## 5. Database
-- **Engine**: PostgreSQL
-- **Migration & ORM**: node-pg-migrate (Backend), Prisma (Frontend)
-- **Caching**: Upstash Redis for caching hot reads (fallback to mock in-memory store if env vars are missing).
+BidCraft follows a modern, decoupled architecture:
+1. **Client**: Next.js 16 (App Router) serving responsive React Server Components and Client Components.
+2. **API**: Express.js REST backend handling business logic and authorization.
+3. **Real-time Layer**: Socket.io server integrated with Express for instant bid distribution.
+4. **Data Layer**: PostgreSQL database managed via raw SQL migrations (`node-pg-migrate`).
+5. **Caching & Rate Limiting**: Upstash Redis for high-performance session and request management.
 
-## 6. Authentication
-- **Flow**: Email/password registration -> OTP Verification -> JWT Issuance.
-- **Tokens**: Access Token (short-lived) and Refresh Token (HTTP-only cookie).
-- **Session**: Both frontend client state (Zustand) and server-side route guards respect the JWT.
+### System Architecture Diagram
+```mermaid
+flowchart LR
+    Client([Client Browser]) <-->|HTTPS| Frontend[Vercel: Next.js Frontend]
+    Client <-->|WSS / HTTPS| Backend[Render: Express API]
+    Frontend <-->|REST| Backend
+    Backend <-->|SQL| DB[(Neon: PostgreSQL)]
+    Backend <-->|Redis| Cache[(Upstash: Redis)]
+    Backend <-->|Webhooks| Payment[Razorpay API]
+```
 
-## 7. Buying Flows (CURRENTLY WORKING)
-- **Buy Now**: Direct purchase of fixed-price listings with instant Cart addition.
-- **Make Offer**: Buyers can propose negotiated prices. Sellers can accept or reject.
-- **Cart Checkout**: Multiple items can be checked out at once. Exactly one Razorpay transaction atomically resolves into individual orders and escrow records for each item.
-- **Wishlist**: Users can save items to a personal wishlist.
+### Database Architecture
+```mermaid
+erDiagram
+    users ||--o{ listings : "creates"
+    users ||--o{ bids : "places"
+    users ||--o{ orders : "makes"
+    listings ||--o| auctions : "has"
+    listings ||--o{ offers : "receives"
+    auctions ||--o{ bids : "receives"
+    orders ||--o| escrow : "secured by"
+    escrow ||--o{ disputes : "may have"
+```
 
-## 8. Selling Flows (CURRENTLY WORKING)
-- **Create Listing**: Sellers can post new items and configure the buying method (Fixed, Negotiable, or Auction).
-- **Image Upload**: Seamless integration with Cloudinary.
-- **Dashboard**: A unified dashboard for sellers to view listings and inbound orders.
+## 6. API Overview
 
-## 9. Auction System (CURRENTLY WORKING)
-- **Bidding**: Real-time bidding via Socket.io.
-- **Deposits**: Required upfront deposit logic prior to placing bids.
-- **Settlement**: Cron-based automated settlement for expired auctions. Zero-bid auctions safely expire.
+The REST API is logically grouped into domains. All protected routes require a JWT Bearer token.
 
-## 10. Payment/Escrow System (CURRENTLY WORKING)
-- **Gateway**: Razorpay integration for INR transactions.
-- **Webhook & Verification**: HMAC signature verification secures the backend against payment spoofing.
-- **Escrow**: Funds are locked in `escrow` records tied strictly to the order. Payouts require delivery confirmation or dispute resolution.
+| Endpoint | Method | Purpose | Auth |
+|---|---|---|---|
+| `/api/auth/*` | POST | Login, Registration, Token Refresh | No |
+| `/api/listings` | GET, POST | Fetch marketplace listings or create new | Yes (POST) |
+| `/api/auctions/:id/bid` | POST | Place a bid on an active auction | Yes |
+| `/api/offers` | GET, POST | Fetch user offers or submit new offer | Yes |
+| `/api/orders` | POST | Finalize checkout and create order | Yes |
+| `/api/cron/end-auctions` | POST | Settle expired auctions (Webhook) | CRON_SECRET |
 
-## 11. Cloudinary/Image Handling
-- Images are uploaded directly through the backend to Cloudinary.
-- URLs are stored as strings in PostgreSQL.
+## 7. Authentication & Authorization
 
-## 12. Required Environment Variables
+- **Stateless Sessions**: JWT-based authentication with short-lived access tokens and secure refresh tokens.
+- **Password Hashing**: `bcryptjs` applied prior to database insertion.
+- **Role-Based Access**: Internal checks distinguish between generic users, admins, and listing owners (e.g., only a listing's owner can accept an offer).
 
-### Backend (Runtime)
-- `NODE_ENV=production`
-- `PORT=8000`
-- `DATABASE_URL` (PostgreSQL)
-- `UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN`
-- `JWT_SECRET`
-- `CRON_SECRET`
-- `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`
-- `FRONTEND_ORIGIN` (Crucial for CORS)
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- `RESEND_API_KEY` (or SMTP fallbacks)
+## 8. Caching & Performance
 
-### Frontend (Build Args & Runtime)
-- `NEXT_PUBLIC_API_URL` (Build time)
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` (Build time)
-- `INTERNAL_API_URL` (Runtime)
-- `UPSTASH_REDIS_REST_URL` & `UPSTASH_REDIS_REST_TOKEN` (Runtime)
-- `NODE_ENV=production`
+Redis is utilized to mitigate database load for high-traffic read operations and to enforce rate limiting on sensitive endpoints (e.g., authentication, bidding). This ensures the application remains highly available during bidding wars.
 
-## 13. Railway Deployment Requirements
-- Deploy as two separate services (Frontend and Backend) connected to a PostgreSQL database.
-- The **Frontend** can be built automatically using Nixpacks or the provided multi-stage `Dockerfile`.
-- The **Backend** can be built automatically using Nixpacks or the provided multi-stage `Dockerfile`.
-- Ensure all Production environment variables are mapped to both services.
+## 9. Security
 
-## 14. Auction Cron Requirement
-- The backend currently utilizes an internal `node-cron` instance in `server.js`.
-- **For production deployments (especially scaled to multiple instances):** It is recommended to use an external scheduler (like Railway Cron or Upstash QStash) to hit `POST /api/cron/end-auctions` with the header `Authorization: Bearer <CRON_SECRET>` every minute, to prevent duplicate job execution and ensure reliable settlement.
+- **Input Validation**: `Joi` schema validation across all mutating API endpoints.
+- **SQL Parameterization**: Complete utilization of `pg` parameterized queries to prevent SQL injection.
+- **Rate Limiting**: `express-rate-limit` prevents brute-force and DDoS attempts.
+- **Security Headers**: `helmet` enforces modern HTTP security policies.
 
-## 15. Current Known Limitations
-- Stub pages such as `/dashboard/messages`, `/dashboard/notifications`, and some deep admin routes exist but lack full implementation.
-- Multi-level subcategory drill-down UX in the desktop navbar is simplified.
+## 10. Tech Stack
 
-## 16. Post-Deployment Roadmap (P3)
-1. **Onboarding Auto-Redirect**: Wire up automatic redirection for users who have not completed profile onboarding.
-2. **Seller Dashboard Enhancements**: Build out the missing Analytics, Messages, and Payout tabs.
-3. **Explore UX**: Enhance the Explore navigation with deeper subcategory drill-down trees.
-4. **Post-Login Personalization**: Implement recommendation feeds based on previously viewed items and wishlist contents.
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Frontend** | Next.js 16, React 19 | Web application framework |
+| **Styling** | Tailwind CSS, Shadcn | UI component architecture |
+| **State/Data** | Zustand, SWR | Client state & data fetching |
+| **Backend** | Node.js, Express | REST API server |
+| **Database** | PostgreSQL, `node-pg-migrate` | Persistent data & migrations |
+| **Cache/Limits** | Redis (Upstash) | High-performance caching |
+| **Real-time** | Socket.io | Live auction updates |
+| **Payments** | Razorpay | Transaction processing |
+| **Media** | Cloudinary | Asset & image storage |
+
+## 11. Project Structure
+
+```text
+BidCraft/
+├── frontend/
+│   ├── app/              # Next.js App Router pages
+│   ├── components/       # Shared UI and domain components
+│   ├── lib/              # Utility functions and API clients
+│   └── store/            # Zustand state stores
+├── backend/
+│   ├── src/
+│   │   ├── controllers/  # Route request handlers
+│   │   ├── routes/       # Express route definitions
+│   │   ├── services/     # Core business logic (e.g., settlement)
+│   │   ├── middleware/   # Auth and validation guards
+│   │   └── jobs/         # node-cron scheduled tasks
+│   └── migrations/       # SQL database migrations
+└── docs/                 # Architectural Decision Records (ADRs)
+```
+
+## 12. Installation & Setup
+
+### Prerequisites
+- Node.js (v20 or higher)
+- PostgreSQL
+- Redis (optional for local development, recommended)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/bidcraft.git
+cd bidcraft
+```
+
+### 2. Backend Setup
+```bash
+cd backend
+npm install
+
+# Create local environment configuration
+cp .env.example .env
+
+# Run database migrations
+npm run migrate
+
+# Start the development server
+npm run dev
+```
+
+### 3. Frontend Setup
+```bash
+cd ../frontend
+npm install
+
+# Create local environment configuration
+cp .env.example .env.local
+
+# Start the Next.js development server
+npm run dev
+```
+
+### Environment Variables
+Key variables required for local operation:
+- `DATABASE_URL`: PostgreSQL connection string.
+- `JWT_SECRET`: Secret key for signing tokens.
+- `REDIS_URL`: Upstash or local Redis connection.
+- `CLOUDINARY_*`: Image hosting credentials.
+- `RAZORPAY_*`: Payment gateway keys.
+*(Refer to the `.env.example` files in both directories for the complete list.)*
+
+## 13. Usage
+
+1. **Register/Login**: Create an account to access buyer and seller features.
+2. **Explore**: Navigate the marketplace using real-time filters and categories.
+3. **Participate**: 
+   - Add fixed-price items to your cart.
+   - Enter active auctions and watch live bid updates.
+   - Negotiate by submitting private offers.
+4. **Checkout**: Securely complete purchases via Razorpay.
+5. **Sell**: Access the Seller Dashboard to create listings, track orders, and manage escrow releases.
+
+## 14. Testing
+
+BidCraft implements testing on the backend utilizing Jest and Supertest for API validation.
+
+```bash
+# From the backend directory
+npm test
+```
+
+## 15. Known Limitations
+
+- **Cron Dependency**: Production auction settlement relies on external cron triggers (e.g., Vercel Cron) pinging the protected `/api/cron/end-auctions` endpoint to guarantee exact-time settlements across scaled instances.
+- **Payment Gateway**: Currently tightly coupled to Razorpay; supporting Stripe/PayPal would require abstracting the payment service layer.
+
+## 16. Future Improvements
+
+- **Scalability**: Decouple the Socket.io server from the main Express API to allow independent horizontal scaling of the real-time layer.
+- **Search**: Implement Elasticsearch or Typesense for advanced full-text search and typo tolerance.
+- **Observability**: Integrate Datadog or Sentry for deeper tracing and error tracking in production.
+- **Recommendations**: Add a collaborative filtering engine for personalized listing suggestions.
+
+## 17. Screenshots
+
+*(Screenshots can be added here by referencing the `/images` directory.)*
+
+| Home | Marketplace Explore |
+|:---:|:---:|
+| *(Placeholder: Add home screenshot)* | *(Placeholder: Add explore screenshot)* |
+| **Auction Bidding** | **Seller Dashboard** |
+| *(Placeholder: Add auction screenshot)* | *(Placeholder: Add dashboard screenshot)* |
+
+---
+*Built with precision for creators and collectors.*

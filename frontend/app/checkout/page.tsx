@@ -215,12 +215,12 @@ export default function CheckoutPage() {
               {currentStep === 'shipping' && (
                 <div className="bg-white rounded-[var(--radius-md)] shadow-[var(--shadow-card)] p-[var(--space-6)] animate-fade-up">
                   <h2 className="text-heading-lg text-[var(--color-ink-900)] mb-[var(--space-5)]">Shipping Address</h2>
-                  <div className="grid grid-cols-2 gap-[var(--space-4)] mb-[var(--space-4)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--space-4)] mb-[var(--space-4)]">
                     <Input placeholder="First Name" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} required />
                     <Input placeholder="Last Name" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} required />
                   </div>
                   <Input placeholder="Street Address" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="mb-[var(--space-4)]" required />
-                  <div className="grid grid-cols-2 gap-[var(--space-4)] mb-[var(--space-6)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--space-4)] mb-[var(--space-6)]">
                     <Input placeholder="City" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} required />
                     <Input placeholder="ZIP Code" value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} required />
                   </div>
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <Input placeholder="Card Number" className="mb-[var(--space-4)] font-mono" required />
-                  <div className="grid grid-cols-2 gap-[var(--space-4)] mb-[var(--space-6)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-[var(--space-4)] mb-[var(--space-6)]">
                     <Input placeholder="MM/YY" className="font-mono" required />
                     <Input placeholder="CVC" className="font-mono" required />
                   </div>
