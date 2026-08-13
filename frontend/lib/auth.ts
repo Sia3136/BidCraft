@@ -1,9 +1,8 @@
 import { cookies, headers } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET is not set');
-}
+const getApiUrl = () => { if (typeof window === 'undefined') { return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || '' } return process.env.NEXT_PUBLIC_API_URL || '' }; 
+const API_BASE = getApiUrl();
 
 export const authOptions = {};
 
@@ -21,9 +20,29 @@ export async function getServerSession(options?: any) {
 
   if (!token) return null;
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    return { user: { id: payload.userId } };
+    if (process.env.JWT_SECRET) {
+      const payload = jwt.verify(token, process.env.JWT_SECRET) as any;
+      return { user: { id: payload.userId } };
+    }
+    throw new Error('No JWT_SECRET');
   } catch (e) {
+    // If local verification fails (mismatched secret in deployment or missing secret), fallback to backend
+    if (API_BASE) {
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.user && json.user.id) {
+            return { user: { id: json.user.id } };
+          }
+        }
+      } catch (err) {
+        return null;
+      }
+    }
     return null;
   }
 }
