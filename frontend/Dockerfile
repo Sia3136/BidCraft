@@ -16,6 +16,9 @@ COPY prisma ./prisma/
 RUN npm ci
 RUN npx prisma generate
 
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 # We don't copy the rest of the source code here because it will be mounted via docker-compose.
 CMD ["npm", "run", "dev"]
 

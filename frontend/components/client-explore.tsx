@@ -176,14 +176,6 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
         }
       }
 
-      if (categoriesParam.length > 0) {
-        if (!categoriesParam.includes(slugify(p.category))) return false;
-      }
-
-      if (subcategoriesParam.length > 0) {
-        if (!p.subcategory || !subcategoriesParam.includes(slugify(p.subcategory))) return false;
-      }
-
       if (methodsParam.length > 0) {
         if (!methodsParam.includes(slugify(p.buyingMethod))) return false;
       }
@@ -213,7 +205,7 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
       if (sortQuery === 'price-desc') return b.price - a.price
       return 0 
     })
-  }, [initialListings, searchQuery, categoriesParam, subcategoriesParam, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
+  }, [initialListings, searchQuery, methodsParam, collectionParam, occasionParam, typeParam, priceMinParam, priceMaxParam, sortQuery])
 
   const sidebarContent = (
     <div className="space-y-6">
@@ -535,9 +527,18 @@ function ExploreContent({ initialListings = [], total = 0 }: { initialListings?:
 }
 
 export default function ClientExplore({ initialListings = [], total = 0, initialParams }: { initialListings?: Listing[], total?: number, initialParams?: any }) {
+  const categoryKey = [
+    initialParams?.category || '',
+    initialParams?.subcategory || ''
+  ].join('|')
+  
   return (
     <Suspense fallback={<div className="p-8">Loading...</div>}>
-      <ClientExploreInner initialListings={initialListings} total={total} />
+      <ClientExploreInner 
+        key={categoryKey}
+        initialListings={initialListings} 
+        total={total} 
+      />
     </Suspense>
   )
 }

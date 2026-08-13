@@ -200,6 +200,7 @@ export const Navbar = React.memo(function Navbar() {
       <div className="h-[128px] md:h-[136px]" /> {/* Spacer for fixed header (80px + 56px approx) */}
       <header
         ref={navRef}
+        onMouseLeave={() => setOpenDropdown(null)}
         style={{ fontFamily: 'var(--font-display)' }}
         className={cn(
           "w-full fixed top-0 z-50 transition-all duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] border-b",
@@ -232,8 +233,8 @@ export const Navbar = React.memo(function Navbar() {
                   Contact
                 </Link>
                 {isAuthenticated && (
-                  <Link href="/dashboard/buyer" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
-                    Dashboard
+                  <Link href="/home" className={cn("text-body-md font-medium transition-colors duration-fast", textClass)}>
+                    Home
                   </Link>
                 )}
               </div>
@@ -356,7 +357,6 @@ export const Navbar = React.memo(function Navbar() {
         {/* Row 2 - Categories Nav */}
         <div 
           className="relative hidden md:block border-b border-[var(--color-border-subtle)]/30 bg-[var(--color-cream-base)]"
-          onMouseLeave={() => setOpenDropdown(null)}
         >
           <div className="w-full max-w-[var(--container-max)] mx-auto flex items-center justify-between h-[56px] px-[var(--space-5)]">
             <div className="flex items-center gap-[32px] h-full pl-[48px]">
@@ -427,9 +427,8 @@ export const Navbar = React.memo(function Navbar() {
                           <Link
                             key={sub.slug}
                             href={href}
-                            onClick={() => {
-                              setOpenDropdown(null);
-                            }}
+                            prefetch={false}
+                            onClick={() => setOpenDropdown(null)}
                             className="text-left text-body-sm font-medium text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] transition-colors block w-full"
                           >
                             {sub.name}
@@ -498,11 +497,12 @@ export const Navbar = React.memo(function Navbar() {
                           <Link
                             key={sub.slug}
                             href={href}
+                            prefetch={false}
                             onClick={() => {
                               setOpenDropdown(null);
                               setIsMobileMenuOpen(false);
                             }}
-                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] block"
+                            className="text-left text-body-md text-[var(--color-ink-700)] hover:text-[var(--color-terracotta-600)] block w-full"
                           >
                             {sub.name}
                           </Link>
@@ -543,10 +543,10 @@ export const Navbar = React.memo(function Navbar() {
             </button>
             {isAuthenticated && (
               <button
-                onClick={() => { router.push('/dashboard/buyer'); setIsMobileMenuOpen(false); }}
+                onClick={() => { router.push('/home'); setIsMobileMenuOpen(false); }}
                 className="text-body-lg text-[var(--color-ink-900)] hover:text-[var(--color-terracotta-600)] py-2 font-medium text-left"
               >
-                Dashboard
+                Home
               </button>
             )}
           </div>

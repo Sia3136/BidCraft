@@ -57,7 +57,7 @@ function AuthPageContent() {
         router.push('/onboarding')
       } else {
         const returnTo = searchParams.get('returnTo')
-        router.push(returnTo || '/')
+        router.push(returnTo || '/home')
       }
     } catch (err: any) {
       if (err.message === 'email_unverified') {
