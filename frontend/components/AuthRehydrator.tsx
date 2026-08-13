@@ -20,7 +20,7 @@ export function AuthRehydrator() {
         useStore.getState().loadCart()
       })   // refresh user data
       .catch(() => clearAuth())              // token expired → sign out
-  }, [token, setAuth, clearAuth])  // add deps
+  }, [])  // Run only on mount to prevent infinite loops if token refreshes
 
   useEffect(() => {
     if (isAuthenticated && user && !user.onboarding_completed) {

@@ -28,6 +28,10 @@ export const useAuthStore = create<AuthStore>()(
           refreshToken: refreshToken || state.refreshToken, 
           isAuthenticated: true 
         }));
+        
+        if (typeof document !== 'undefined') {
+          document.cookie = `session_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+        }
         try {
           const { authenticatedFetch } = await import('@/lib/api');
           const [cartRes, wishRes] = await Promise.all([
@@ -48,6 +52,9 @@ export const useAuthStore = create<AuthStore>()(
       },
       clearAuth: () => {
         set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
+        if (typeof document !== 'undefined') {
+          document.cookie = 'session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+        }
         useStore.getState().clearCart();
         useStore.getState().clearWishlist();
       },
