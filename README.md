@@ -16,8 +16,15 @@
 [![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
-[![Deployed on Vercel](https://img.shields.io/badge/Vercel-Frontend-black?style=flat-square&logo=vercel)](https://vercel.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=flat-square&logo=vercel)](https://bid-craft-nine.vercel.app)
+[![Dribbble Shot](https://img.shields.io/badge/Dribbble-Design_Showcase-EA4C89?style=flat-square&logo=dribbble&logoColor=white)](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
 [![Deployed on Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=flat-square&logo=render)](https://render.com)
+
+[**Live Website ↗**](https://bid-craft-nine.vercel.app) · [**Dribbble Design Showcase ↗**](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
+
+<br />
+
+<img src="docs/screenshots/hero-home.webp" alt="BidCraft Homepage Hero" width="100%" />
 
 </div>
 
@@ -25,7 +32,7 @@
 
 ## Navigation
 
-[Overview](#overview) · [Features](#key-features) · [Product Flows](#product-flows) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Security](#security--engineering) · [API](#api-reference) · [Setup](#local-setup) · [Deployment](#deployment) · [Testing](#testing) · [Roadmap](#roadmap)
+[Overview](#overview) · [Interface Preview](#interface-preview) · [Features](#key-features) · [Product Flows](#product-flows) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Security](#security--engineering) · [API](#api-reference) · [Setup](#local-setup) · [Deployment](#deployment) · [Testing](#testing) · [Roadmap](#roadmap)
 
 ---
 
@@ -34,6 +41,16 @@
 **BidCraft** is a production-grade creator marketplace that supports three parallel purchasing modes: **fixed-price purchases**, **live auctions**, and **private offer negotiation**. Rather than forcing a single transaction model, BidCraft lets sellers choose how they sell and lets buyers choose how they buy.
 
 The backend is a decoupled Express REST API with Socket.io for real-time bid propagation, PostgreSQL for persistent state, and Redis for caching and rate limiting. The frontend is a Next.js 16 App Router application with an artisan aesthetic — warm typography, restrained layouts, and mobile-first responsiveness optimized for collectors and creators.
+
+---
+
+## Interface Preview
+
+| Live WebSocket Auctions | Multi-Mode Explore & Filtering |
+| :---: | :---: |
+| <img src="docs/screenshots/live-auctions.webp" alt="Live Auctions Rail" width="100%" /> | <img src="docs/screenshots/explore-filters.webp" alt="Explore and Filter View" width="100%" /> |
+| **Listing Detail & Live Bidding** | **Curated Collections** |
+| <img src="docs/screenshots/product-detail.webp" alt="Product Detail Page" width="100%" /> | <img src="docs/screenshots/curated-collections.webp" alt="Curated Collections" width="100%" /> |
 
 ---
 
@@ -59,7 +76,7 @@ The backend is a decoupled Express REST API with Socket.io for real-time bid pro
 
 ### Seller
 - Listing creation and management (Buy Now / Auction / Negotiable)
-- Seller Dashboard with recent orders, active offers, and analytics
+- Seller workspace for managing active listings, incoming orders, and buyer offers
 - Offer accept/reject workflow
 - Order tracking with shipping number management
 
