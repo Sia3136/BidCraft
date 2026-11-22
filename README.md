@@ -23,10 +23,6 @@
 [![Engineering Blog](https://img.shields.io/badge/Engineering_Blog-2962FF?style=flat-square&logo=hashnode&logoColor=white)](https://gradientsandgroundtruth.hashnode.dev/bidcraft-building-trust-into-a-creator-marketplace)
 [![Design Showcase](https://img.shields.io/badge/Design_Showcase-EA4C89?style=flat-square&logo=dribbble&logoColor=white)](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
 
-<br />
-
-<img src="docs/screenshots/hero-home.jpg" alt="BidCraft Homepage" width="100%" />
-
 </div>
 
 ---
@@ -42,20 +38,6 @@
 **BidCraft** is a production-grade creator marketplace that supports three parallel purchasing modes: **fixed-price purchases**, **live auctions**, and **private offer negotiation**. Rather than forcing a single transaction model, BidCraft lets sellers choose how they sell and lets buyers choose how they buy.
 
 The backend is a decoupled Express REST API with Socket.io for real-time bid propagation, PostgreSQL for persistent state, and Redis for caching and rate limiting. The frontend is a Next.js 16 App Router application with an artisan aesthetic — warm typography, restrained layouts, and mobile-first responsiveness optimized for collectors and creators.
-
-<details>
-<summary><b>View more screenshots</b> (Live Auctions, Explore & Filters, Listing Detail, Collections)</summary>
-<br />
-
-| Live Auctions | Explore & Filters |
-| :---: | :---: |
-| <img src="docs/screenshots/live-auctions.webp" alt="Live Auctions" width="100%" /> | <img src="docs/screenshots/explore-filters.webp" alt="Explore and Filters" width="100%" /> |
-
-| Listing Detail | Curated Collections |
-| :---: | :---: |
-| <img src="docs/screenshots/product-detail.webp" alt="Listing Detail" width="100%" /> | <img src="docs/screenshots/curated-collections.webp" alt="Curated Collections" width="100%" /> |
-
-</details>
 
 ---
 
