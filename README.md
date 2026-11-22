@@ -13,21 +13,19 @@
 
 *A full-stack marketplace where creators sell and collectors discover through multiple transaction modes.*
 
-[![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
+[![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
-[![Vercel](https://img.shields.io/badge/Vercel-Frontend-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
+[![Vercel](https://img.shields.io/badge/Vercel-Frontend-black?style=flat-square&logo=vercel)](https://vercel.com)
 [![Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=flat-square&logo=render&logoColor=black)](https://render.com)
 
-<br />
-
-[![Live Website](https://img.shields.io/badge/Live_Website-bid--craft--nine.vercel.app-C8643A?style=for-the-badge&logo=vercel&logoColor=white)](https://bid-craft-nine.vercel.app)
-[![Engineering Blog](https://img.shields.io/badge/Engineering_Blog-Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white)](https://gradientsandgroundtruth.hashnode.dev/bidcraft-building-trust-into-a-creator-marketplace)
-[![Design Showcase](https://img.shields.io/badge/Design_Showcase-Dribbble-EA4C89?style=for-the-badge&logo=dribbble&logoColor=white)](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
+[![Live Website](https://img.shields.io/badge/Live_Website-C8643A?style=flat-square&logo=vercel&logoColor=white)](https://bid-craft-nine.vercel.app)
+[![Engineering Blog](https://img.shields.io/badge/Engineering_Blog-2962FF?style=flat-square&logo=hashnode&logoColor=white)](https://gradientsandgroundtruth.hashnode.dev/bidcraft-building-trust-into-a-creator-marketplace)
+[![Design Showcase](https://img.shields.io/badge/Design_Showcase-EA4C89?style=flat-square&logo=dribbble&logoColor=white)](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
 
 <br />
 
-<img src="docs/screenshots/hero-home.webp" alt="BidCraft Homepage Hero" width="100%" />
+<img src="docs/screenshots/hero-home.jpg" alt="BidCraft Homepage" width="100%" />
 
 </div>
 
@@ -35,7 +33,7 @@
 
 ## Navigation
 
-[Overview](#overview) · [Interface](#interface) · [Features](#key-features) · [Product Flows](#product-flows) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Security](#security--engineering) · [API](#api-reference) · [Setup](#local-setup) · [Deployment](#deployment) · [Testing](#testing) · [Roadmap](#roadmap) · [Contributing](#contributing)
+[Overview](#overview) · [Features](#key-features) · [Product Flows](#product-flows) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Security](#security--engineering) · [API](#api-reference) · [Setup](#local-setup) · [Deployment](#deployment) · [Testing](#testing) · [Roadmap](#roadmap) · [Contributing](#contributing)
 
 ---
 
@@ -45,32 +43,19 @@
 
 The backend is a decoupled Express REST API with Socket.io for real-time bid propagation, PostgreSQL for persistent state, and Redis for caching and rate limiting. The frontend is a Next.js 16 App Router application with an artisan aesthetic — warm typography, restrained layouts, and mobile-first responsiveness optimized for collectors and creators.
 
----
+<details>
+<summary><b>View more screenshots</b> (Live Auctions, Explore & Filters, Listing Detail, Collections)</summary>
+<br />
 
-## Interface
+| Live Auctions | Explore & Filters |
+| :---: | :---: |
+| <img src="docs/screenshots/live-auctions.webp" alt="Live Auctions" width="100%" /> | <img src="docs/screenshots/explore-filters.webp" alt="Explore and Filters" width="100%" /> |
 
-<table>
-  <tr>
-    <td width="50%" align="center">
-      <img src="docs/screenshots/live-auctions.webp" alt="Live Auctions Rail" width="100%" /><br />
-      <sub><b>Live Auctions</b> — Real-time bid propagation & synchronized countdowns</sub>
-    </td>
-    <td width="50%" align="center">
-      <img src="docs/screenshots/explore-filters.webp" alt="Explore and Filter View" width="100%" /><br />
-      <sub><b>Explore & Filters</b> — Buy Now, Make Offer, and Auction discovery</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center">
-      <img src="docs/screenshots/product-detail.webp" alt="Product Detail Page" width="100%" /><br />
-      <sub><b>Listing Detail</b> — Image gallery, specs, and live bidding panel</sub>
-    </td>
-    <td width="50%" align="center">
-      <img src="docs/screenshots/curated-collections.webp" alt="Curated Collections" width="100%" /><br />
-      <sub><b>Curated Collections</b> — Editorial discovery across craft categories</sub>
-    </td>
-  </tr>
-</table>
+| Listing Detail | Curated Collections |
+| :---: | :---: |
+| <img src="docs/screenshots/product-detail.webp" alt="Listing Detail" width="100%" /> | <img src="docs/screenshots/curated-collections.webp" alt="Curated Collections" width="100%" /> |
+
+</details>
 
 ---
 
