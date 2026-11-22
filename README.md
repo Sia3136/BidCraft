@@ -3,7 +3,7 @@
 ```
   ██████╗ ██╗██████╗  ██████╗██████╗  █████╗ ███████╗████████╗
   ██╔══██╗██║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
-  ██████╔╝██║██║  ██║██║     ██████╔╝███████║█████╗     ██║   
+  ██████╔╝██║██║  ██║██║     ██████╔╝███████║████╗     ██║   
   ██╔══██╗██║██║  ██║██║     ██╔══██╗██╔══██║██╔══╝     ██║   
   ██████╔╝██║██████╔╝╚██████╗██║  ██║██║  ██║██║        ██║   
   ╚═════╝ ╚═╝╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   
@@ -16,11 +16,10 @@
 [![Next.js](https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org)
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=flat-square&logo=vercel)](https://bid-craft-nine.vercel.app)
-[![Dribbble Shot](https://img.shields.io/badge/Dribbble-Design_Showcase-EA4C89?style=flat-square&logo=dribbble&logoColor=white)](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
-[![Deployed on Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=flat-square&logo=render)](https://render.com)
+[![Vercel](https://img.shields.io/badge/Vercel-Frontend-black?style=flat-square&logo=vercel)](https://vercel.com)
+[![Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=flat-square&logo=render)](https://render.com)
 
-[**Live Website ↗**](https://bid-craft-nine.vercel.app) · [**Dribbble Design Showcase ↗**](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce)
+[**Live Demo**](https://bid-craft-nine.vercel.app) · [**Engineering Blog**](https://gradientsandgroundtruth.hashnode.dev/bidcraft-building-trust-into-a-creator-marketplace) · [**Design Showcase**](https://dribbble.com/shots/27878056-BidCraft-Where-Indian-Craft-Meets-Honest-Commerce) · [**Contribute**](#contributing)
 
 <br />
 
@@ -409,12 +408,14 @@ Coverage includes auth flows, listing creation, bid validation, and order finali
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome.
+BidCraft is actively maintained and open to contributions — whether it's bug fixes, performance improvements, UI refinements, or items from the [Roadmap](#roadmap).
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m 'feat: add your feature'`
-4. Push and open a Pull Request
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit your changes: `git commit -m 'feat: add your feature'`
+4. Push to your fork and open a Pull Request
+
+For larger architectural changes, feel free to open an issue first to discuss the approach.
 
 ---
 
